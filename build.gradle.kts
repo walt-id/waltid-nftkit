@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.6.10"
+    id("org.web3j") version "4.9.0"
     application
     `maven-publish`
 }
@@ -18,6 +19,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
+    implementation ("org.web3j:core:4.9.0")
 }
 
 tasks.withType<KotlinCompile> {
@@ -26,6 +28,16 @@ tasks.withType<KotlinCompile> {
 
 application {
     mainClass.set("id.walt.nftkit.AppKt")
+}
+
+solidity {
+    optimizeRuns = 500
+}
+
+web3j {
+    generatedPackageName = "com.mycompany.{0}"
+    generatedFilesBaseDir = "$buildDir/custom/destination"
+    useNativeJavaTypes = false
 }
 
 publishing {
