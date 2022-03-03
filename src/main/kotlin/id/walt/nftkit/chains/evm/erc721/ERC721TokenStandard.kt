@@ -1,4 +1,4 @@
-package id.walt.nftkit.chains.evm
+package id.walt.nftkit.chains.evm.erc721
 
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.Bool

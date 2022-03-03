@@ -1,4 +1,4 @@
-package id.walt.nftkit.chains.evm
+package id.walt.nftkit.chains.evm.erc721
 
 import id.walt.nftkit.WaltIdGasProvider
 import id.walt.nftkit.smart_contract_wrapper.Erc721OnchainCredentialWrapper
@@ -48,7 +48,7 @@ class Erc721OnchainCredential : ERC721TokenStandard {
         val basicWeb3Instance : BasicWeb3Instance = BasicWeb3Instance()
         val web3j = basicWeb3Instance.getWeb3j()
 
-        val credentials: Credentials = Credentials.create("")
+        val credentials: Credentials = Credentials.create("d720ef2cb49c6cbe94175ed413d27e635c5acaa1b7cf03d1faad3a0abc2f53f3")
 
         val gasProvider: ContractGasProvider = WaltIdGasProvider
 

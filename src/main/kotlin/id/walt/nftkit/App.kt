@@ -1,6 +1,6 @@
 package id.walt.nftkit
 
-import id.walt.nftkit.chains.evm.Erc721OnchainCredential
+import id.walt.nftkit.chains.evm.erc721.Erc721OnchainCredential
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.Utf8String
 import org.web3j.abi.datatypes.generated.Uint256
