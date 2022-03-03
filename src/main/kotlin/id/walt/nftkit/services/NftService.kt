@@ -1,6 +1,11 @@
 package id.walt.nftkit.services
 
+import kotlinx.serialization.SerializationStrategy
+import java.math.BigInteger
+import kotlinx.serialization.Serializable
 
+
+@Serializable
 data class NftMetadata(
     val description: String,
     val name: String,
@@ -13,6 +18,11 @@ data class NftMetadata(
         val display_type: DisplayType?
     )
 }
+
+data class TokenInfo(
+    val name: String,
+    val symbol: String
+)
 
 enum class Chain {
     ETHEREUM,
@@ -70,11 +80,20 @@ data class MintingOptions(
 )
 
 
-
 data class TransactionResponse(
     val chain: String,
     val transactionId: String,
     val transactionExternalUrl: String
+)
+
+data class DeploymentResponse(
+    val transactionResponse: TransactionResponse,
+    val contractAddress: String
+)
+
+data class MintingResponse(
+    val transactionResponse: TransactionResponse,
+    val tokenId: BigInteger
 )
 
 
@@ -83,13 +102,29 @@ data class TransactionResponse(
 
 object NftService {
 
-    fun DeployNewSmartContractToken(chain: Chain, deploymentParameter: DeploymentParameter, options: DeploymentOptions?){
+    fun DeployNewSmartContractToken(chain: Chain, deploymentParameter: DeploymentParameter, options: DeploymentOptions?) /*: TransactionResponse*/{
 
     }
 
-    fun mintToken(chain: Chain, contractAddress: String, MintingParameter: MintingParameter, options: MintingOptions?) {
+    fun mintToken(chain: Chain, contractAddress: String, MintingParameter: MintingParameter, options: MintingOptions?) /*: TransactionResponse*/{
 
     }
 
-    fun getNftMetadata(chain: Chain,contractAddress: String, tokenId: Int){}
+    fun getNftMetadata(chain: Chain,contractAddress: String, tokenId: Int)/*: NftMetadata*/{
+    }
+
+    fun getNftMetadataUri(chain: Chain,contractAddress: String, tokenId: Int): String{
+        return String()
+    }
+
+    fun balanceOf(chain: Chain,contractAddress: String, tokenId: Int) : BigInteger {
+        return BigInteger.valueOf(0)
+    }
+
+    fun ownerOf(tokenId: Int): String{
+        return String()
+    }
+
+    fun getTokenInfo(chain: Chain,contractAddress: String)/*: TokenInfo*/{
+    }
 }
