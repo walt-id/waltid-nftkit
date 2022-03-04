@@ -1,15 +1,12 @@
 package id.walt.nftkit.chains.evm.erc721
 
 import org.web3j.abi.datatypes.Address
-import org.web3j.abi.datatypes.Bool
 import org.web3j.abi.datatypes.Utf8String
 import org.web3j.abi.datatypes.generated.Uint256
-import org.web3j.protocol.core.RemoteFunctionCall
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 import java.math.BigInteger
-import org.web3j.abi.datatypes.DynamicBytes;
 
-interface ERC721TokenStandard {
+interface IErc721TokenStandard {
 
 
     //fun DeployNewToken(tokenOwnerId: string?, TokenName: string?, TokenSymbol: string?): Task<TransactionReciept?>?
