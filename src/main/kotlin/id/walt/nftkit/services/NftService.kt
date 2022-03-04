@@ -1,8 +1,20 @@
 package id.walt.nftkit.services
 
-import kotlinx.serialization.SerializationStrategy
-import java.math.BigInteger
+import id.walt.nftkit.chains.evm.erc721.Erc721TokenStandard
+import id.walt.nftkit.metadata.MetadataUri
+import id.walt.nftkit.metadata.MetadataUriFactory
+import id.walt.nftkit.smart_contract_wrapper.Erc721OnchainCredentialWrapper
 import kotlinx.serialization.Serializable
+import org.web3j.abi.EventEncoder
+import org.web3j.abi.EventValues
+import org.web3j.abi.FunctionReturnDecoder
+import org.web3j.abi.TypeReference
+import org.web3j.abi.datatypes.*
+import org.web3j.abi.datatypes.generated.Uint256
+import org.web3j.protocol.core.methods.response.Log
+import org.web3j.protocol.core.methods.response.TransactionReceipt
+import java.math.BigInteger
+import java.util.*
 
 
 @Serializable
@@ -12,6 +24,7 @@ data class NftMetadata(
     val image: String?,
     val attributes: List<Attributes>
 ) {
+    @Serializable
     data class Attributes(
         val trait_type: String,
         val value: String,
@@ -68,20 +81,19 @@ data class DeploymentParameter(
 )
 
 data class MintingParameter(
-    val metadataUri : String,
+    val metadataUri : String?,
     val recipientAddress: String,
     val metadata: NftMetadata,
-    val tokenStandard: TokenStandard
 )
 
 data class MintingOptions(
+    val tokenStandard: TokenStandard,
     val metadataStorageType: MetadataStorageType,
-    val offChainMetadataStorageType: OffChainMetadataStorageType?
+    val offChainMetadataStorageType: OffChainMetadataStorageType?,
 )
 
 
 data class TransactionResponse(
-    val chain: String,
     val transactionId: String,
     val transactionExternalUrl: String
 )
@@ -92,8 +104,8 @@ data class DeploymentResponse(
 )
 
 data class MintingResponse(
-    val transactionResponse: TransactionResponse,
-    val tokenId: BigInteger
+    val transactionResponse: TransactionResponse?,
+    val tokenId: BigInteger?
 )
 
 
@@ -102,12 +114,20 @@ data class MintingResponse(
 
 object NftService {
 
-    fun DeployNewSmartContractToken(chain: Chain, deploymentParameter: DeploymentParameter, options: DeploymentOptions?) /*: TransactionResponse*/{
+    fun DeployNewSmartContractToken(chain: Chain, parameter: DeploymentParameter, options: DeploymentOptions?) /*: TransactionResponse*/{
 
     }
 
-    fun mintToken(chain: Chain, contractAddress: String, MintingParameter: MintingParameter, options: MintingOptions?) /*: TransactionResponse*/{
+    fun mintToken(chain: Chain, contractAddress: String, parameter: MintingParameter, options: MintingOptions) :MintingResponse {
+       var tokenUri: String;
+        if(parameter.metadataUri != null){
+            tokenUri = parameter.metadataUri
+        }else{
+            val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri()
+            tokenUri = metadataUri.getTokenUri(parameter.metadata)
+        }
 
+        return mintNewToken(parameter.recipientAddress, tokenUri, chain, contractAddress, TokenStandard.ERC721)
     }
 
     fun getNftMetadata(chain: Chain,contractAddress: String, tokenId: Int)/*: NftMetadata*/{
@@ -127,4 +147,47 @@ object NftService {
 
     fun getTokenInfo(chain: Chain,contractAddress: String)/*: TokenInfo*/{
     }
+
+    fun encBase64Str(data: String): String = String(Base64.getEncoder().encode(data.toByteArray()))
+
+    private fun mintNewToken(recipientAddress: String, metadataUri: String, chain: Chain ,contractAddress: String,tokenStandard: TokenStandard): MintingResponse{
+        if(tokenStandard == TokenStandard.ERC721){
+            val erc721TokenStandard = Erc721TokenStandard()
+            val recipient: Address = Address(recipientAddress)
+            val tokenUri: Utf8String = Utf8String(metadataUri)
+            val transactionReceipt: TransactionReceipt? = erc721TokenStandard.mintToken(contractAddress,recipient, tokenUri)
+            val eventValues: EventValues? = staticExtractEventParameters(Erc721OnchainCredentialWrapper.TRANSFER_EVENT, transactionReceipt?.logs?.get(0))
+            val ts: TransactionResponse = TransactionResponse(transactionReceipt!!.transactionHash,"https://ropsten.etherscan.io/tx/"+ transactionReceipt!!.transactionHash)
+            val mr: MintingResponse = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
+            return mr
+        }else{
+
+        }
+        return MintingResponse(null, null)
+    }
+
+
+    private fun staticExtractEventParameters(
+        event: Event, log: Log?
+    ): EventValues? {
+        val topics: List<String> = log!!.getTopics()
+        val encodedEventSignature = EventEncoder.encode(event)
+        if (topics == null || topics.size == 0 || topics[0] != encodedEventSignature) {
+            return null
+        }
+        val indexedValues: MutableList<Type<*>?> = ArrayList<Type<*>?>()
+        val nonIndexedValues: List<Type<*>?>? = FunctionReturnDecoder.decode(
+            log.getData(), event.getNonIndexedParameters()
+        )
+        val indexedParameters: List<TypeReference<Type<*>?>> = event.getIndexedParameters()
+        for (i in indexedParameters.indices) {
+            val value: Type<*>? = FunctionReturnDecoder.decodeIndexedValue<Type<*>>(
+                topics[i + 1], indexedParameters[i]
+            )
+            indexedValues.add(value)
+        }
+        return EventValues(indexedValues, nonIndexedValues)
+    }
+
+
 }

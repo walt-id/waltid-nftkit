@@ -11,7 +11,7 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.tx.gas.ContractGasProvider
 import java.math.BigInteger
 
-class Erc721OnchainCredential : ERC721TokenStandard {
+class Erc721TokenStandard : IErc721TokenStandard {
 
 
     override fun mintToken(contractAddress: String, recipient: Address, tokenURI: Utf8String): TransactionReceipt? {
@@ -55,4 +55,6 @@ class Erc721OnchainCredential : ERC721TokenStandard {
         return Erc721OnchainCredentialWrapper.load(address, web3j, credentials, gasProvider)
 
     }
+
+
 }
