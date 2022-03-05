@@ -27,10 +27,11 @@ import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Contact
 import io.swagger.v3.oas.models.security.SecurityScheme
 import io.swagger.v3.oas.models.servers.Server
+import mu.KotlinLogging
 
 object NftKitApi {
 
-//    private val log = KotlinLogging.logger {}
+    private val log = KotlinLogging.logger {}
 
     internal const val DEFAULT_CORE_API_PORT = 7000
 
@@ -52,7 +53,7 @@ object NftKitApi {
         bindAddress: String = DEFAULT_BIND_ADDRESS,
         apiTargetUrls: List<String> = listOf()
     ) {
-//        log.info { "Starting NFT KIT API ...\n" }
+       log.info { "Starting NFT KIT API ...\n" }
 
        api = Javalin.create {
             it.apply {
@@ -130,15 +131,15 @@ object NftKitApi {
                 }
             }
         }.exception(InvalidFormatException::class.java) { e, ctx ->
-//            log.error(e.stackTraceToString())
+            log.error(e.stackTraceToString())
             ctx.json(ErrorResponse(e.message ?: " Unknown application error", 400))
             ctx.status(400)
         }.exception(IllegalArgumentException::class.java) { e, ctx ->
-//            log.error(e.stackTraceToString())
+            log.error(e.stackTraceToString())
             ctx.json(ErrorResponse(e.message ?: " Unknown application error", 400))
             ctx.status(400)
         }.exception(Exception::class.java) { e, ctx ->
-//            log.error(e.stackTraceToString())
+            log.error(e.stackTraceToString())
             ctx.json(ErrorResponse(e.message ?: " Unknown server error", 500))
             ctx.status(500)
         }.start(bindAddress, port)
