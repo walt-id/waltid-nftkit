@@ -31,6 +31,8 @@ interface IErc721TokenStandard {
 
     fun balanceOf(chain: Chain, contractAddress: String, owner: Address): BigInteger?
 
+    fun supportsInterface(chain: Chain, contractAddress: String) : Boolean
+
 
     /*fun transfer(
         contractAddress: String?,

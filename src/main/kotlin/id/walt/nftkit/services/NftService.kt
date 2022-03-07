@@ -5,6 +5,8 @@ import id.walt.nftkit.metadata.MetadataUri
 import id.walt.nftkit.metadata.MetadataUriFactory
 import id.walt.nftkit.smart_contract_wrapper.Erc721OnchainCredentialWrapper
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import org.web3j.abi.EventEncoder
 import org.web3j.abi.EventValues
 import org.web3j.abi.FunctionReturnDecoder
@@ -13,6 +15,8 @@ import org.web3j.abi.datatypes.*
 import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.protocol.core.methods.response.Log
 import org.web3j.protocol.core.methods.response.TransactionReceipt
+import java.lang.Byte.decode
+import java.lang.Integer.decode
 import java.math.BigInteger
 import java.util.*
 
@@ -130,11 +134,16 @@ object NftService {
         return mintNewToken(parameter.recipientAddress, tokenUri, chain, contractAddress, TokenStandard.ERC721)
     }
 
-    fun getNftMetadata(chain: Chain,contractAddress: String, tokenId: Int)/*: NftMetadata*/{
+    fun getNftMetadata(chain: Chain,contractAddress: String, tokenId: BigInteger): NftMetadata{
+        //Work just for on-chain metadata
+        var uri= getMetadatUri(chain, contractAddress,tokenId)
+        val decodedUri = decBase64Str(uri!!.substring(29))
+        val decodedJson  = Json.decodeFromString<NftMetadata>( decodedUri )
+        return decodedJson
     }
 
-    fun getNftMetadataUri(chain: Chain,contractAddress: String, tokenId: Int): String{
-        return String()
+    fun getNftMetadataUri(chain: Chain,contractAddress: String, tokenId: BigInteger): String?{
+        return getMetadatUri(chain, contractAddress,tokenId)
     }
 
     fun balanceOf(chain: Chain,contractAddress: String, tokenId: Int) : BigInteger {
@@ -150,6 +159,8 @@ object NftService {
 
     fun encBase64Str(data: String): String = String(Base64.getEncoder().encode(data.toByteArray()))
 
+    fun decBase64Str(base64: String): String = String(Base64.getDecoder().decode(base64))
+
     private fun mintNewToken(recipientAddress: String, metadataUri: String, chain: Chain ,contractAddress: String,tokenStandard: TokenStandard): MintingResponse{
         if(tokenStandard == TokenStandard.ERC721){
             val erc721TokenStandard = Erc721TokenStandard()
@@ -164,6 +175,14 @@ object NftService {
 
         }
         return MintingResponse(null, null)
+    }
+
+    private fun getMetadatUri(chain: Chain ,contractAddress: String, tokenId: BigInteger): String?{
+        val erc721TokenStandard = Erc721TokenStandard()
+        if(erc721TokenStandard.supportsInterface(chain, contractAddress) == true){
+            return erc721TokenStandard.tokenURI(chain, contractAddress, Uint256(tokenId))
+        }
+        return ""
     }
 
 
