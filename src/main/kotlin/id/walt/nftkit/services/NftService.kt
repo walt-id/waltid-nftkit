@@ -155,7 +155,7 @@ object NftService {
             val erc721TokenStandard = Erc721TokenStandard()
             val recipient: Address = Address(recipientAddress)
             val tokenUri: Utf8String = Utf8String(metadataUri)
-            val transactionReceipt: TransactionReceipt? = erc721TokenStandard.mintToken(contractAddress,recipient, tokenUri)
+            val transactionReceipt: TransactionReceipt? = erc721TokenStandard.mintToken(chain, contractAddress,recipient, tokenUri)
             val eventValues: EventValues? = staticExtractEventParameters(Erc721OnchainCredentialWrapper.TRANSFER_EVENT, transactionReceipt?.logs?.get(0))
             val ts: TransactionResponse = TransactionResponse(transactionReceipt!!.transactionHash,"https://ropsten.etherscan.io/tx/"+ transactionReceipt!!.transactionHash)
             val mr: MintingResponse = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)

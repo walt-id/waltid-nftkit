@@ -1,5 +1,6 @@
 package id.walt.nftkit.chains.evm.erc721
 
+import id.walt.nftkit.services.Chain
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.Utf8String
 import org.web3j.abi.datatypes.generated.Uint256
@@ -13,21 +14,22 @@ interface IErc721TokenStandard {
 
 
     fun mintToken(
+        chain: Chain,
         contractAddress: String,
         recipient: Address,
         tokenURI: Utf8String
     ): TransactionReceipt?
 
 
-    fun ownerOf(contractAddress: String, tokenId: Uint256): String?
+    fun ownerOf(chain: Chain, contractAddress: String, tokenId: Uint256): String?
 
-    fun name(contractAddress: String): String?
+    fun name(chain: Chain, contractAddress: String): String?
 
-    fun symbol(contractAddress: String): String?
+    fun symbol(chain: Chain, contractAddress: String): String?
 
-    fun tokenURI(contractAddress: String, tokenId: Uint256): String?
+    fun tokenURI(chain: Chain, contractAddress: String, tokenId: Uint256): String?
 
-    fun balanceOf(contractAddress: String, owner: Address): BigInteger?
+    fun balanceOf(chain: Chain, contractAddress: String, owner: Address): BigInteger?
 
 
     /*fun transfer(
