@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "1.6.10"
     id("org.web3j") version "4.9.0"
+    kotlin("plugin.serialization") version "1.6.10"
     application
     `maven-publish`
 }
@@ -20,6 +21,9 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation ("org.web3j:core:4.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.2")
+
+
 }
 
 tasks.withType<KotlinCompile> {
