@@ -2,10 +2,12 @@ package id.walt.nftkit
 
 import id.walt.nftkit.chains.evm.erc721.Erc721TokenStandard
 import id.walt.nftkit.services.*
+import id.walt.nftkit.smart_contract_wrapper.Erc721OnchainCredentialWrapper
 import org.web3j.abi.FunctionReturnDecoder
 import org.web3j.abi.TypeReference
 import org.web3j.abi.datatypes.Type
 import org.web3j.abi.datatypes.generated.Uint256
+import java.math.BigInteger
 import java.util.*
 
 
@@ -52,12 +54,21 @@ fun main(){
     val encodedStr: String = encBase64Str(str)
     println(encodedStr)
 */
-    val erc721TokenStandard = Erc721TokenStandard()//next id: 16
-    val tokenUri =  erc721TokenStandard.tokenURI("0xc831de165bD2356230e60DF549324034dB5A3BD5", Uint256(23))
+    /*val erc721TokenStandard = Erc721TokenStandard()//next id: 16
+    val tokenUri =  erc721TokenStandard.tokenURI(Chain.RINKEBY,"0xc831de165bD2356230e60DF549324034dB5A3BD5", Uint256(23))
     println(tokenUri)
+
+    println(erc721TokenStandard.supportsInterface(Chain.RINKEBY,"0xc831de165bD2356230e60DF549324034dB5A3BD5"))*/
+
     /*val mintingOptions : MintingOptions = MintingOptions(TokenStandard.ERC721, MetadataStorageType.ON_CHAIN, null)
     val mintingParameter: MintingParameter = MintingParameter(null, "0x2555e3a97c4ac9705D70b9e5B9b6cc6Fe2977A74",nftMetadata)
     val ms: MintingResponse = NftService.mintToken(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", mintingParameter, mintingOptions)
 
     println(ms)*/
+
+    val tokenUri = NftService.getNftMetadataUri(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", BigInteger.valueOf(20) )
+    println(tokenUri)
+
+    NftService.getNftMetadata(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", BigInteger.valueOf(20) )
+
 }

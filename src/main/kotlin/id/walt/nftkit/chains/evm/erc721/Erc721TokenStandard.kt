@@ -6,11 +6,14 @@ import id.walt.nftkit.smart_contract_wrapper.Erc721OnchainCredentialWrapper
 import id.walt.nftkit.utilis.RopstenWeb3Instance
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.Utf8String
+import org.web3j.abi.datatypes.generated.Bytes4
 import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.crypto.Credentials
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.tx.gas.ContractGasProvider
+import org.web3j.utils.Numeric
 import java.math.BigInteger
+
 
 class Erc721TokenStandard : IErc721TokenStandard {
 
@@ -43,6 +46,14 @@ class Erc721TokenStandard : IErc721TokenStandard {
     override fun balanceOf(chain: Chain, contractAddress: String, owner: Address): BigInteger? {
         val erc721OnchainCredentialWrapper = loadContract(chain, contractAddress)
         return erc721OnchainCredentialWrapper.balanceOf(owner).send().value
+    }
+
+    override fun supportsInterface(chain: Chain, contractAddress: String) : Boolean {
+        val erc721OnchainCredentialWrapper = loadContract(chain, contractAddress)
+        //ERC1155 0xd9b67a26 interface id
+        val data = Numeric.hexStringToByteArray("0x5b5e139f") // ERC721 interface id
+        val interfaceId = Bytes4(data)
+        return erc721OnchainCredentialWrapper.supportsInterface(interfaceId).send().value
     }
 
     private fun loadContract(chain: Chain, address: String) : Erc721OnchainCredentialWrapper{
