@@ -22,8 +22,13 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation ("org.web3j:core:4.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.2")
+    implementation("io.javalin:javalin-bundle:4.3.0")
+    implementation("com.beust:klaxon:5.5")
 
-
+    // Logging
+    implementation("org.slf4j:slf4j-api:2.0.0-alpha6")
+    implementation("org.slf4j:slf4j-simple:2.0.0-alpha6")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
 }
 
 tasks.withType<KotlinCompile> {
