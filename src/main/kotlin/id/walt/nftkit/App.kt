@@ -42,11 +42,11 @@ class App {
 
 
 fun main(){
-    val attribute1 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a3", value = "v3", display_type = null)
-    val attribute2 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a3", value = "v3", display_type = null)
+    val attribute1 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a5", value = "v5", display_type = null)
+    val attribute2 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a5", value = "v5", display_type = null)
 
     val attributes = mutableListOf(attribute1, attribute2)
-    val nftMetadata : NftMetadata = NftMetadata(name = "m3", description = "m3", image = "", attributes = attributes)
+    val nftMetadata : NftMetadata = NftMetadata(name = "m5", description = "m5", image = "", attributes = attributes)
 
     /*val str : String = Json.encodeToString(serializer(),nftMetadata)
     println(str)
@@ -66,9 +66,19 @@ fun main(){
 
     println(ms)*/
 
-    val tokenUri = NftService.getNftMetadataUri(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", BigInteger.valueOf(20) )
+    /*val tokenUri = NftService.getNftMetadataUri(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", BigInteger.valueOf(25) )
     println(tokenUri)
 
-    NftService.getNftMetadata(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", BigInteger.valueOf(20) )
+    val metadata = NftService.getNftMetadata(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", BigInteger.valueOf(25) )
+    println(metadata)*/
+
+
+    /*val balance = NftService.balanceOf(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", "0xc831de165bd2356230e60df549324034db5a3bd5", 0)
+    println(balance)*/
+
+/*val owner = NftService.ownerOf(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", 4)
+println(owner)*/
+    val tokenCollectionInfo = NftService.getTokenCollectionInfo(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5")
+    println(tokenCollectionInfo)
 
 }

@@ -15,8 +15,6 @@ import org.web3j.abi.datatypes.*
 import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.protocol.core.methods.response.Log
 import org.web3j.protocol.core.methods.response.TransactionReceipt
-import java.lang.Byte.decode
-import java.lang.Integer.decode
 import java.math.BigInteger
 import java.util.*
 
@@ -36,7 +34,7 @@ data class NftMetadata(
     )
 }
 
-data class TokenInfo(
+data class TokenCollectionInfo(
     val name: String,
     val symbol: String
 )
@@ -146,27 +144,38 @@ object NftService {
         return getMetadatUri(chain, contractAddress,tokenId)
     }
 
-    fun balanceOf(chain: Chain,contractAddress: String, tokenId: Int) : BigInteger {
+    fun balanceOf(chain: Chain,contractAddress: String, owner: String,tokenId: Int) : BigInteger? {
+        if(isErc721Standard(chain, contractAddress) == true){
+            return Erc721TokenStandard.balanceOf(chain, contractAddress, Address(owner))
+        }
         return BigInteger.valueOf(0)
     }
 
-    fun ownerOf(tokenId: Int): String{
+    fun ownerOf(chain: Chain,contractAddress: String, tokenId: Long): String?{
+        //in the case of ERC721
+        if(isErc721Standard(chain, contractAddress) == true){
+            return Erc721TokenStandard.ownerOf(chain, contractAddress,Uint256(BigInteger.valueOf(tokenId)))
+        }
         return String()
     }
 
-    fun getTokenInfo(chain: Chain,contractAddress: String)/*: TokenInfo*/{
-    }
-
-    fun encBase64Str(data: String): String = String(Base64.getEncoder().encode(data.toByteArray()))
-
-    fun decBase64Str(base64: String): String = String(Base64.getDecoder().decode(base64))
+    fun getTokenCollectionInfo(chain: Chain,contractAddress: String): TokenCollectionInfo{
+        //in the case of ERC721
+        if(isErc721Standard(chain, contractAddress) == true) {
+            val name = Erc721TokenStandard.name(chain,contractAddress)
+            val symbol = Erc721TokenStandard.symbol(chain, contractAddress)
+            val tokenCollectionInfo = TokenCollectionInfo(name, symbol)
+            return tokenCollectionInfo
+        }
+        return TokenCollectionInfo("","")
+        }
 
     private fun mintNewToken(recipientAddress: String, metadataUri: String, chain: Chain ,contractAddress: String,tokenStandard: TokenStandard): MintingResponse{
         if(tokenStandard == TokenStandard.ERC721){
-            val erc721TokenStandard = Erc721TokenStandard()
+            //val erc721TokenStandard = Erc721TokenStandard()
             val recipient: Address = Address(recipientAddress)
             val tokenUri: Utf8String = Utf8String(metadataUri)
-            val transactionReceipt: TransactionReceipt? = erc721TokenStandard.mintToken(chain, contractAddress,recipient, tokenUri)
+            val transactionReceipt: TransactionReceipt? = Erc721TokenStandard.mintToken(chain, contractAddress,recipient, tokenUri)
             val eventValues: EventValues? = staticExtractEventParameters(Erc721OnchainCredentialWrapper.TRANSFER_EVENT, transactionReceipt?.logs?.get(0))
             val ts: TransactionResponse = TransactionResponse(transactionReceipt!!.transactionHash,"https://ropsten.etherscan.io/tx/"+ transactionReceipt!!.transactionHash)
             val mr: MintingResponse = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
@@ -178,13 +187,19 @@ object NftService {
     }
 
     private fun getMetadatUri(chain: Chain ,contractAddress: String, tokenId: BigInteger): String?{
-        val erc721TokenStandard = Erc721TokenStandard()
-        if(erc721TokenStandard.supportsInterface(chain, contractAddress) == true){
-            return erc721TokenStandard.tokenURI(chain, contractAddress, Uint256(tokenId))
+        if(isErc721Standard(chain, contractAddress) == true){
+            return Erc721TokenStandard.tokenURI(chain, contractAddress, Uint256(tokenId))
         }
         return ""
     }
 
+    fun encBase64Str(data: String): String = String(Base64.getEncoder().encode(data.toByteArray()))
+
+    fun decBase64Str(base64: String): String = String(Base64.getDecoder().decode(base64))
+
+    private fun  isErc721Standard(chain: Chain,contractAddress: String): Boolean{
+        return Erc721TokenStandard.supportsInterface(chain, contractAddress)
+    }
 
     private fun staticExtractEventParameters(
         event: Event, log: Log?

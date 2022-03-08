@@ -15,7 +15,7 @@ import org.web3j.utils.Numeric
 import java.math.BigInteger
 
 
-class Erc721TokenStandard : IErc721TokenStandard {
+object Erc721TokenStandard : IErc721TokenStandard {
 
 
     override fun mintToken(chain: Chain, contractAddress: String, recipient: Address, tokenURI: Utf8String): TransactionReceipt? {
