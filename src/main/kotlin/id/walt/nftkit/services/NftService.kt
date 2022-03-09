@@ -102,8 +102,9 @@ data class TransactionResponse(
 
 data class DeploymentResponse(
     val transactionResponse: TransactionResponse,
-    val contractAddress: String
-)
+    val contractAddress: String,
+    val contractExternalUrl: String
+    )
 
 data class MintingResponse(
     val transactionResponse: TransactionResponse?,
