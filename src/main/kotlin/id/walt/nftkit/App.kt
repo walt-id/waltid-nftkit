@@ -42,11 +42,11 @@ class App {
 
 
 fun main(){
-    val attribute1 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a5", value = "v5", display_type = null)
-    val attribute2 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a5", value = "v5", display_type = null)
+    val attribute1 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a6", value = "v6", display_type = null)
+    val attribute2 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a6", value = "v6", display_type = null)
 
     val attributes = mutableListOf(attribute1, attribute2)
-    val nftMetadata : NftMetadata = NftMetadata(name = "m5", description = "m5", image = "", attributes = attributes)
+    val nftMetadata : NftMetadata = NftMetadata(name = "m6", description = "m6", image = "", attributes = attributes)
 
     /*val str : String = Json.encodeToString(serializer(),nftMetadata)
     println(str)
@@ -60,25 +60,30 @@ fun main(){
 
     println(erc721TokenStandard.supportsInterface(Chain.RINKEBY,"0xc831de165bD2356230e60DF549324034dB5A3BD5"))*/
 
-    /*val mintingOptions : MintingOptions = MintingOptions(TokenStandard.ERC721, MetadataStorageType.ON_CHAIN, null)
+   /* val mintingOptions : MintingOptions = MintingOptions(TokenStandard.ERC721, MetadataStorageType.ON_CHAIN, null)
     val mintingParameter: MintingParameter = MintingParameter(null, "0x2555e3a97c4ac9705D70b9e5B9b6cc6Fe2977A74",nftMetadata)
     val ms: MintingResponse = NftService.mintToken(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", mintingParameter, mintingOptions)
 
     println(ms)*/
 
-    /*val tokenUri = NftService.getNftMetadataUri(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", BigInteger.valueOf(25) )
+    val tokenUri = NftService.getNftMetadataUri(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", BigInteger.valueOf(26) )
     println(tokenUri)
 
-    val metadata = NftService.getNftMetadata(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", BigInteger.valueOf(25) )
-    println(metadata)*/
+    val metadata = NftService.getNftMetadata(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", BigInteger.valueOf(26) )
+    println(metadata)
 
 
     /*val balance = NftService.balanceOf(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", "0xc831de165bd2356230e60df549324034db5a3bd5", 0)
     println(balance)*/
 
-/*val owner = NftService.ownerOf(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", 4)
+/**val owner = NftService.ownerOf(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", 4)
 println(owner)*/
-    val tokenCollectionInfo = NftService.getTokenCollectionInfo(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5")
-    println(tokenCollectionInfo)
+    /*val tokenCollectionInfo = NftService.getTokenCollectionInfo(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5")
+    println(tokenCollectionInfo)*/
 
 }
+
+/*fun main(){
+    val dr = Erc721TokenStandard.deployContract(Chain.RINKEBY,"name", "symbol")
+    println(dr)
+}*/
