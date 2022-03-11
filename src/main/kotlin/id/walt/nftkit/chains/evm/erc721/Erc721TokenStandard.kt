@@ -26,13 +26,9 @@ object Erc721TokenStandard : IErc721TokenStandard {
         val web3j = basicWeb3Instance.getWeb3j()
         val credentials: Credentials = Credentials.create("d720ef2cb49c6cbe94175ed413d27e635c5acaa1b7cf03d1faad3a0abc2f53f3")
         val gasProvider: ContractGasProvider = WaltIdGasProvider
-        println("deployment")
         val contract= ERC721URIStorage.deploy(web3j,credentials,gasProvider,Utf8String(name),Utf8String(symbol)).send()
-        //val contract = Erc721OnchainCredentialWrapper.deploy(web3j,credentials,gasProvider).send()
-        println(contract.transactionReceipt.get().transactionHash)
-        println(contract.contractAddress)
-        val ts = TransactionResponse(contract.transactionReceipt.get().transactionHash,"https://ropsten.etherscan.io/tx/"+ contract.transactionReceipt.get().transactionHash)
-        return DeploymentResponse(ts, contract.contractAddress, "https://ropsten.etherscan.io/token/"+ contract.contractAddress)
+        val ts = TransactionResponse(contract.transactionReceipt.get().transactionHash,"https://rinkeby.etherscan.io/tx/"+ contract.transactionReceipt.get().transactionHash)
+        return DeploymentResponse(ts, contract.contractAddress, "https://rinkeby.etherscan.io/token/"+ contract.contractAddress)
 
     }
     override fun mintToken(chain: Chain, contractAddress: String, recipient: Address, tokenURI: Utf8String): TransactionReceipt? {

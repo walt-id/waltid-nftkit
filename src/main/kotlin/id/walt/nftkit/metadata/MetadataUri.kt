@@ -4,5 +4,5 @@ import id.walt.nftkit.services.NftMetadata
 
 interface MetadataUri {
 
-    fun getTokenUri(nftMetadata: NftMetadata): String
+    fun getTokenUri(nftMetadata: NftMetadata?): String
 }
