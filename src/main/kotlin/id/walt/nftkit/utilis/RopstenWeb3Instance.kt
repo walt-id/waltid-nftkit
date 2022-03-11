@@ -5,6 +5,6 @@ import org.web3j.protocol.http.HttpService
 
 class RopstenWeb3Instance : Web3jInstance {
     override fun getWeb3j(): Web3j {
-        return Web3j.build(HttpService("https://ropsten.infura.io/v3/868f60c9c4d149fe9dbd1c0acd378ae4"))
+        return Web3j.build(HttpService("https://rinkeby.infura.io/v3/0184192d0f2942c3b0322d79eca162b2"))
     }
 }

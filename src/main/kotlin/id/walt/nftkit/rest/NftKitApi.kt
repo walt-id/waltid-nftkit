@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import id.walt.nftkit.Values
 import id.walt.nftkit.rest.RootController.healthDocs
+import id.walt.nftkit.services.NftService
 import id.walt.rest.ErrorResponse
 import id.walt.rest.OpenAPIUtils.documentedIgnored
 import io.javalin.Javalin
@@ -129,7 +130,18 @@ object NftKitApi {
                     post("import", documented(KeyController.importDocs(), KeyController::import))
                     post("export", documented(KeyController.exportDocs(), KeyController::export))
                 }
+                path("nft"){
+                    post("deploy", documented(documentedIgnored(), NftController::deploy))
+                    post("mint", documented(documentedIgnored(), NftController::mint))
+                    get("chain/{chain}/contract/{contractAddress}/token/{tokenId}/metadataUri", documented(documentedIgnored(), NftController::getNftMetadatUri))
+                    get("chain/{chain}/contract/{contractAddress}/token/{tokenId}/metadata", documented(documentedIgnored(), NftController::getNftMetadata))
+                    get("chain/{chain}/contract/{contractAddress}/owner/{ownerAddress}/balance", documented(documentedIgnored(), NftController::balance))
+                    get("chain/{chain}/contract/{contractAddress}/token/{tokenId}/owner", documented(documentedIgnored(), NftController::owner))
+                    get("chain/{chain}/contract/{contractAddress}/info", documented(documentedIgnored(), NftController::tokenCollectionInfo))
+
+                }
             }
+
         }.exception(InvalidFormatException::class.java) { e, ctx ->
             log.error(e.stackTraceToString())
             ctx.json(ErrorResponse(e.message ?: " Unknown application error", 400))

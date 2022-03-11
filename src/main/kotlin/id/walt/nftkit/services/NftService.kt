@@ -30,7 +30,7 @@ data class NftMetadata(
     data class Attributes(
         val trait_type: String,
         val value: String,
-        val display_type: DisplayType?
+        //val display_type: DisplayType?
     )
 }
 
@@ -44,7 +44,8 @@ enum class Chain {
     PALYGON,
     BSC,
     RINKEBY,
-    CELO
+    CELO,
+    ROPSTEN
 }
 enum class TokenStandard {
     ERC721,
@@ -85,11 +86,10 @@ data class DeploymentParameter(
 data class MintingParameter(
     val metadataUri : String?,
     val recipientAddress: String,
-    val metadata: NftMetadata,
+    val metadata: NftMetadata?,
 )
 
 data class MintingOptions(
-    val tokenStandard: TokenStandard,
     val metadataStorageType: MetadataStorageType,
     val offChainMetadataStorageType: OffChainMetadataStorageType?,
 )
@@ -117,36 +117,37 @@ data class MintingResponse(
 
 object NftService {
 
-    fun DeployNewSmartContractToken(chain: Chain, parameter: DeploymentParameter, options: DeploymentOptions?) /*: TransactionResponse*/{
-
+    fun deploySmartContractToken(chain: Chain, parameter: DeploymentParameter, options: DeploymentOptions?) : DeploymentResponse{
+        //if(options?.tokenStandard == TokenStandard.ERC721){
+            return Erc721TokenStandard.deployContract(chain, parameter.name, parameter.symbol)
+        //}
     }
 
     fun mintToken(chain: Chain, contractAddress: String, parameter: MintingParameter, options: MintingOptions) :MintingResponse {
-       var tokenUri: String;
-        if(parameter.metadataUri != null){
+       var tokenUri: String?;
+        if(parameter.metadataUri != null && parameter.metadataUri != ""){
             tokenUri = parameter.metadataUri
         }else{
             val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri()
             tokenUri = metadataUri.getTokenUri(parameter.metadata)
         }
 
-        return mintNewToken(parameter.recipientAddress, tokenUri, chain, contractAddress, TokenStandard.ERC721)
+        return mintNewToken(parameter.recipientAddress, tokenUri, chain, contractAddress)
     }
 
-    fun getNftMetadata(chain: Chain,contractAddress: String, tokenId: BigInteger): NftMetadata{
+    fun getNftMetadata(chain: Chain, contractAddress: String, tokenId: BigInteger): NftMetadata {
         //Work just for on-chain metadata
-        var uri= getMetadatUri(chain, contractAddress,tokenId)
+        var uri = getMetadatUri(chain, contractAddress, tokenId)
         val decodedUri = decBase64Str(uri!!.substring(29))
-        val decodedJson  = Json.decodeFromString<NftMetadata>( decodedUri )
-        return decodedJson
+        return Json.decodeFromString(decodedUri)
     }
 
     fun getNftMetadataUri(chain: Chain,contractAddress: String, tokenId: BigInteger): String?{
         return getMetadatUri(chain, contractAddress,tokenId)
     }
 
-    fun balanceOf(chain: Chain,contractAddress: String, owner: String,tokenId: Int) : BigInteger? {
-        if(isErc721Standard(chain, contractAddress) == true){
+    fun balanceOf(chain: Chain,contractAddress: String, owner: String) : BigInteger? {
+        if(isErc721Standard(chain, contractAddress)){
             return Erc721TokenStandard.balanceOf(chain, contractAddress, Address(owner))
         }
         return BigInteger.valueOf(0)
@@ -162,7 +163,7 @@ object NftService {
 
     fun getTokenCollectionInfo(chain: Chain,contractAddress: String): TokenCollectionInfo{
         //in the case of ERC721
-        if(isErc721Standard(chain, contractAddress) == true) {
+        if(isErc721Standard(chain, contractAddress)) {
             val name = Erc721TokenStandard.name(chain,contractAddress)
             val symbol = Erc721TokenStandard.symbol(chain, contractAddress)
             val tokenCollectionInfo = TokenCollectionInfo(name, symbol)
@@ -171,14 +172,14 @@ object NftService {
         return TokenCollectionInfo("","")
         }
 
-    private fun mintNewToken(recipientAddress: String, metadataUri: String, chain: Chain ,contractAddress: String,tokenStandard: TokenStandard): MintingResponse{
-        if(tokenStandard == TokenStandard.ERC721){
+    private fun mintNewToken(recipientAddress: String, metadataUri: String, chain: Chain ,contractAddress: String): MintingResponse{
+        if(isErc721Standard(chain, contractAddress) == true){
             //val erc721TokenStandard = Erc721TokenStandard()
-            val recipient: Address = Address(recipientAddress)
-            val tokenUri: Utf8String = Utf8String(metadataUri)
+            val recipient = Address(recipientAddress)
+            val tokenUri = Utf8String(metadataUri)
             val transactionReceipt: TransactionReceipt? = Erc721TokenStandard.mintToken(chain, contractAddress,recipient, tokenUri)
             val eventValues: EventValues? = staticExtractEventParameters(Erc721OnchainCredentialWrapper.TRANSFER_EVENT, transactionReceipt?.logs?.get(0))
-            val ts: TransactionResponse = TransactionResponse(transactionReceipt!!.transactionHash,"https://ropsten.etherscan.io/tx/"+ transactionReceipt!!.transactionHash)
+            val ts = TransactionResponse(transactionReceipt!!.transactionHash,"https://ropsten.etherscan.io/tx/"+ transactionReceipt!!.transactionHash)
             val mr: MintingResponse = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
             return mr
         }else{
