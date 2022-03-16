@@ -8,7 +8,8 @@
 		"158e07ea-07a0-46c5-a04f-4c42e8257a69",
 		"3e7a80f0-2712-5ef9-44f9-d06b944f36ba",
 		"3ae5447b-3495-8325-7bb0-2cfda61b58bb",
-		"6203070a-0ee8-7fe3-600a-278ea5c79a08"
+		"6203070a-0ee8-7fe3-600a-278ea5c79a08",
+		"d0d4db6c-fb9d-4bc2-b1bc-b69535f343e2"
 	],
 	"folders": [],
 	"folders_order": [],
@@ -43,24 +44,22 @@
 			"id": "1a9620be-5e63-0a7e-3912-d0f797ba1b87",
 			"headers": "",
 			"headerData": [],
-			"url": "http://127.0.0.1:7000/v1/nft/chain/rinkeby/contract/0xc831de165bd2356230e60df549324034db5a3bd5/token/33/metadataUri",
+			"url": "http://127.0.0.1:7000/v1/nft/chain/rinkeby/contract/0xabbbfac683ae7188fb895c137e030b7a07147bcd/token/4/metadataUri",
 			"queryParams": [],
+			"preRequestScript": null,
 			"pathVariables": {},
 			"pathVariableData": [],
-			"preRequestScript": null,
 			"method": "GET",
-			"collectionId": "49e363c5-cf0d-d89f-a3c9-890b37d235bd",
 			"data": null,
 			"dataMode": "params",
-			"name": "http://127.0.0.1:7000/v1/nft/chain/rinkeby/contract/0xc831de165bd2356230e60df549324034db5a3bd5/token/33/metadataUri",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1646912635505,
-			"version": 2,
-			"responses": [],
 			"tests": null,
 			"currentHelper": "normal",
-			"helperAttributes": {}
+			"helperAttributes": {},
+			"time": 1647445388243,
+			"name": "http://127.0.0.1:7000/v1/nft/chain/rinkeby/contract/0xc831de165bd2356230e60df549324034db5a3bd5/token/33/metadataUri",
+			"description": "",
+			"collectionId": "49e363c5-cf0d-d89f-a3c9-890b37d235bd",
+			"responses": []
 		},
 		{
 			"id": "3ae5447b-3495-8325-7bb0-2cfda61b58bb",
@@ -96,7 +95,7 @@
 					"enabled": true
 				}
 			],
-			"url": "http://127.0.0.1:7000/v1/nft/mint",
+			"url": "http://127.0.0.1:7000/v1/nft/chain/rinkeby/contract/0x82d1c84a4ddd7c062c05e40735e05bda766428c9/token/mint",
 			"queryParams": [],
 			"preRequestScript": null,
 			"pathVariables": {},
@@ -107,12 +106,12 @@
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1646923547158,
+			"time": 1647445796655,
 			"name": "http://127.0.0.1:7000/v1/nft/mint",
 			"description": "",
 			"collectionId": "49e363c5-cf0d-d89f-a3c9-890b37d235bd",
 			"responses": [],
-			"rawModeData": "{\n\t\"chain\": \"ROPSTEN\",\n    \"contractAddress\": \"0xAbbBfaC683aE7188Fb895C137e030b7a07147bCD\",\n    \"metadataUri\" : \"\",\n    \"metadata\": {\n    \t\"name\": \"m7\",\n    \t\"description\": \"m7\",\n\t\t\"image\": \"\",\n    \t\"attributes\": [\n    \t\t{\n    \t\t\t\"trait_type\": \"a7\",\n        \t\t\"value\": \"v7\"\n    \t\t},\n    \t\t\t{\n    \t\t\t\"trait_type\": \"a7\",\n        \t\t\"value\": \"v7\"\n    \t\t}\n    \t\t]\n    },\n    \"recipientAddress\": \"0xaf87c5Ce7a1fb6BD5aaDB6dd9C0b8EF51EF1BC31\",\n    \"metadataStorageType\": \"ON_CHAIN\",\n    \"offChainMetadataStorageType\": \"IPFS\"\n}"
+			"rawModeData": "{\n\n    \"metadataUri\" : \"\",\n    \"metadata\": {\n    \t\"name\": \"Blockchain name\",\n    \t\"description\": \"Blcokchain description\",\n\t\t\"image\": \"http://ihub.asu.edu.eg/uploads/1/4/0/8/14081679/blockchain-1_3.jpg\",\n    \t\"attributes\": [\n    \t\t{\n    \t\t\t\"trait_type\": \"a1\",\n        \t\t\"value\": \"v1\"\n    \t\t},\n    \t\t\t{\n    \t\t\t\"trait_type\": \"a2\",\n        \t\t\"value\": \"v2\"\n    \t\t}\n    \t\t]\n    },\n    \"recipientAddress\": \"0xaf87c5Ce7a1fb6BD5aaDB6dd9C0b8EF51EF1BC31\",\n    \"metadataStorageType\": \"ON_CHAIN\",\n    \"offChainMetadataStorageType\": \"IPFS\"\n}"
 		},
 		{
 			"id": "3e7a80f0-2712-5ef9-44f9-d06b944f36ba",
@@ -159,6 +158,35 @@
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {}
+		},
+		{
+			"id": "d0d4db6c-fb9d-4bc2-b1bc-b69535f343e2",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://127.0.0.1:7000/v1/nft/chain/rinkeby/contract/deploy",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1647445794542,
+			"name": "http://127.0.0.1:7000/v1/nft/deploy",
+			"description": "",
+			"collectionId": "49e363c5-cf0d-d89f-a3c9-890b37d235bd",
+			"responses": [],
+			"rawModeData": "{\n    \"name\": \"Metaverse\",\n    \"symbol\" : \"Mv\",\n    \"tokenStandard\": \"ERC721\"\n}"
 		}
 	]
 }
