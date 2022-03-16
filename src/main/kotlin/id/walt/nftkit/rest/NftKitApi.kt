@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import id.walt.nftkit.Values
 import id.walt.nftkit.rest.RootController.healthDocs
-import id.walt.nftkit.services.NftService
 import id.walt.rest.ErrorResponse
 import id.walt.rest.OpenAPIUtils.documentedIgnored
 import io.javalin.Javalin
@@ -131,13 +130,13 @@ object NftKitApi {
                     post("export", documented(KeyController.exportDocs(), KeyController::export))
                 }
                 path("nft"){
-                    post("deploy", documented(documentedIgnored(), NftController::deploy))
-                    post("mint", documented(documentedIgnored(), NftController::mint))
-                    get("chain/{chain}/contract/{contractAddress}/token/{tokenId}/metadataUri", documented(documentedIgnored(), NftController::getNftMetadatUri))
-                    get("chain/{chain}/contract/{contractAddress}/token/{tokenId}/metadata", documented(documentedIgnored(), NftController::getNftMetadata))
-                    get("chain/{chain}/contract/{contractAddress}/owner/{ownerAddress}/balance", documented(documentedIgnored(), NftController::balance))
-                    get("chain/{chain}/contract/{contractAddress}/token/{tokenId}/owner", documented(documentedIgnored(), NftController::owner))
-                    get("chain/{chain}/contract/{contractAddress}/info", documented(documentedIgnored(), NftController::tokenCollectionInfo))
+                    post("chain/{chain}/contract/deploy", documented(NftController.deployDocs(), NftController::deploy))
+                    post("chain/{chain}/contract/{contractAddress}/token/mint", documented(NftController.mintDocs(), NftController::mint))
+                    get("chain/{chain}/contract/{contractAddress}/token/{tokenId}/metadataUri", documented(NftController.getNftMetadatUriDocs(), NftController::getNftMetadatUri))
+                    get("chain/{chain}/contract/{contractAddress}/token/{tokenId}/metadata", documented(NftController.getNftMetadataDocs(), NftController::getNftMetadata))
+                    get("chain/{chain}/contract/{contractAddress}/owner/{ownerAddress}/balance", documented(NftController.balanceDocs(), NftController::balance))
+                    get("chain/{chain}/contract/{contractAddress}/token/{tokenId}/owner", documented(NftController.ownerDocs(), NftController::owner))
+                    get("chain/{chain}/contract/{contractAddress}/info", documented(NftController.tokenCollectionInfoDocs(), NftController::tokenCollectionInfo))
 
                 }
             }
