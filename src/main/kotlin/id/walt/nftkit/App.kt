@@ -81,8 +81,9 @@ println(owner)*/
     /*val tokenCollectionInfo = NftService.getTokenCollectionInfo(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5")
     println(tokenCollectionInfo)*/
 
-val dr = Erc721TokenStandard.deployContract(Chain.RINKEBY,"Metaverse", "MV")
-    println(dr)
+/*val dr = Erc721TokenStandard.deployContract(Chain.RINKEBY,"Metaverse", "MV")
+    println(dr)*/
+    println(WaltIdServices.loadProvidersConfig())
 
 }
 

@@ -1,7 +1,7 @@
 package id.walt.nftkit.metadata
 
 import id.walt.nftkit.services.NftMetadata
-import id.walt.nftkit.services.NftService.encBase64Str
+import id.walt.nftkit.services.WaltIdServices.encBase64Str
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 

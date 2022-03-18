@@ -1,4 +1,4 @@
-package id.walt.nftkit.utilis
+package id.walt.nftkit.utilis.providers
 
 import org.web3j.protocol.Web3j
 
