@@ -1,0 +1,19 @@
+hikariDataSource:
+  jdbcUrl: jdbc:sqlite:data/walt.db
+  maximumPoolSize: 5
+  autoCommit: false
+  dataSource:
+    journalMode: WAL
+    fullColumnNames: false
+
+azureKeyVaultConfig:
+  baseURL:
+  id:
+  secret:
+
+providers:
+  ethereum: "ethereum"
+  rinkeby: "https://rinkeby.infura.io/v3/0184192d0f2942c3b0322d79eca162b2"
+  ropsten: "https://ropsten.infura.io/v3/0184192d0f2942c3b0322d79eca162b2"
+  polygon: "Polygon"
+
