@@ -5,8 +5,8 @@ import id.walt.nftkit.services.Chain
 import id.walt.nftkit.services.DeploymentResponse
 import id.walt.nftkit.services.TransactionResponse
 import id.walt.nftkit.smart_contract_wrapper.ERC721URIStorage
-import id.walt.nftkit.smart_contract_wrapper.Erc721OnchainCredentialWrapper
-import id.walt.nftkit.utilis.RopstenWeb3Instance
+import id.walt.nftkit.utilis.providers.ProviderFactory
+import id.walt.nftkit.utilis.providers.RopstenWeb3
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.Utf8String
 import org.web3j.abi.datatypes.generated.Bytes4
@@ -22,13 +22,12 @@ object Erc721TokenStandard : IErc721TokenStandard {
 
 
     fun deployContract(chain: Chain, name: String, symbol: String): DeploymentResponse {
-        val basicWeb3Instance  = RopstenWeb3Instance()
-        val web3j = basicWeb3Instance.getWeb3j()
+        val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
         val credentials: Credentials = Credentials.create("d720ef2cb49c6cbe94175ed413d27e635c5acaa1b7cf03d1faad3a0abc2f53f3")
         val gasProvider: ContractGasProvider = WaltIdGasProvider
         val contract= ERC721URIStorage.deploy(web3j,credentials,gasProvider,Utf8String(name),Utf8String(symbol)).send()
-        val ts = TransactionResponse(contract.transactionReceipt.get().transactionHash,"https://rinkeby.etherscan.io/tx/"+ contract.transactionReceipt.get().transactionHash)
-        return DeploymentResponse(ts, contract.contractAddress, "https://rinkeby.etherscan.io/token/"+ contract.contractAddress)
+        val ts = TransactionResponse(contract.transactionReceipt.get().transactionHash,"https://ropsten.etherscan.io/tx/"+ contract.transactionReceipt.get().transactionHash)
+        return DeploymentResponse(ts, contract.contractAddress, "https://ropsten.etherscan.io/token/"+ contract.contractAddress)
 
     }
     override fun mintToken(chain: Chain, contractAddress: String, recipient: Address, tokenURI: Utf8String): TransactionReceipt? {
@@ -70,8 +69,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
     }
 
     private fun loadContract(chain: Chain, address: String) : ERC721URIStorage{
-        val basicWeb3Instance  = RopstenWeb3Instance()
-        val web3j = basicWeb3Instance.getWeb3j()
+        val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
 
         val credentials: Credentials = Credentials.create("d720ef2cb49c6cbe94175ed413d27e635c5acaa1b7cf03d1faad3a0abc2f53f3")
 

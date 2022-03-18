@@ -3,6 +3,7 @@ package id.walt.nftkit.services
 import id.walt.nftkit.chains.evm.erc721.Erc721TokenStandard
 import id.walt.nftkit.metadata.MetadataUri
 import id.walt.nftkit.metadata.MetadataUriFactory
+import id.walt.nftkit.services.WaltIdServices.decBase64Str
 import id.walt.nftkit.smart_contract_wrapper.Erc721OnchainCredentialWrapper
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -41,10 +42,8 @@ data class TokenCollectionInfo(
 
 enum class Chain {
     ETHEREUM,
-    PALYGON,
-    BSC,
+    POLYGON,
     RINKEBY,
-    CELO,
     ROPSTEN
 }
 enum class TokenStandard {
@@ -195,9 +194,7 @@ object NftService {
         return ""
     }
 
-    fun encBase64Str(data: String): String = String(Base64.getEncoder().encode(data.toByteArray()))
 
-    fun decBase64Str(base64: String): String = String(Base64.getDecoder().decode(base64))
 
     private fun  isErc721Standard(chain: Chain,contractAddress: String): Boolean{
         return Erc721TokenStandard.supportsInterface(chain, contractAddress)

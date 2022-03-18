@@ -29,6 +29,11 @@ dependencies {
     implementation("org.slf4j:slf4j-api:2.0.0-alpha6")
     implementation("org.slf4j:slf4j-simple:2.0.0-alpha6")
     implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
+
+    // Config
+    implementation("com.sksamuel.hoplite:hoplite-core:1.4.16")
+    implementation("com.sksamuel.hoplite:hoplite-yaml:1.4.16")
+    implementation("com.sksamuel.hoplite:hoplite-hikaricp:1.4.16")
 }
 
 tasks.withType<KotlinCompile> {
