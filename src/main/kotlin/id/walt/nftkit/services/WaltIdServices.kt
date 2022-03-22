@@ -8,7 +8,7 @@ import java.io.File
 import java.util.*
 
 
-data class Providers(val ethereum: String, val rinkeby: String, val ropsten: String, val polygon:String)
+data class Providers(val ethereum: String, val rinkeby: String, val ropsten: String, val polygon:String, val mumbai: String)
 data class providersConfig(val providers: Providers)
 
 object WaltIdServices {

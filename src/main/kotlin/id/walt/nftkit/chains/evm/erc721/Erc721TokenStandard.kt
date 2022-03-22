@@ -1,5 +1,6 @@
 package id.walt.nftkit.chains.evm.erc721
 
+import id.walt.nftkit.Values
 import id.walt.nftkit.WaltIdGasProvider
 import id.walt.nftkit.services.Chain
 import id.walt.nftkit.services.DeploymentResponse
@@ -11,6 +12,7 @@ import org.web3j.abi.datatypes.Utf8String
 import org.web3j.abi.datatypes.generated.Bytes4
 import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.crypto.Credentials
+import org.web3j.protocol.core.RemoteCall
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.tx.RawTransactionManager
 import org.web3j.tx.TransactionManager
@@ -26,12 +28,23 @@ object Erc721TokenStandard : IErc721TokenStandard {
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
         val credentials: Credentials = Credentials.create("bd4cb3e507f342ee3a710370cef39dda48f17b0a158b0b8dd3f000fbd5b2c2d9")
         val gasProvider: ContractGasProvider = WaltIdGasProvider
-        val transactionManager: TransactionManager = RawTransactionManager(
-            web3j, credentials, 80001
-        )
-        //val contract= ERC721URIStorage.deploy(web3j,credentials,gasProvider,Utf8String(name),Utf8String(symbol)).send()
-        val contract= ERC721URIStorage.deploy(web3j,transactionManager,gasProvider,Utf8String(name),Utf8String(symbol)).send()
+        val remotCall : RemoteCall<ERC721URIStorage>
+        if(chain == Chain.POLYGON || chain == Chain.MUMBAI){
+            val chainId : Long
+            if(chain == Chain.POLYGON){
+                chainId = Values.POLYGON_MAINNET_CHAIN_ID
+            }else{
+                chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
+            }
+            val transactionManager: TransactionManager = RawTransactionManager(
+                web3j, credentials, chainId
+            )
+            remotCall = ERC721URIStorage.deploy(web3j,transactionManager,gasProvider,Utf8String(name),Utf8String(symbol))
+        }else{
+            remotCall = ERC721URIStorage.deploy(web3j,credentials,gasProvider,Utf8String(name),Utf8String(symbol))
+        }
 
+        val contract= remotCall.send()
         val ts = TransactionResponse(contract.transactionReceipt.get().transactionHash,"https://ropsten.etherscan.io/tx/"+ contract.transactionReceipt.get().transactionHash)
         return DeploymentResponse(ts, contract.contractAddress, "https://ropsten.etherscan.io/token/"+ contract.contractAddress)
 
@@ -80,15 +93,22 @@ object Erc721TokenStandard : IErc721TokenStandard {
         //val credentials: Credentials = Credentials.create("d720ef2cb49c6cbe94175ed413d27e635c5acaa1b7cf03d1faad3a0abc2f53f3")
         val credentials: Credentials = Credentials.create("bd4cb3e507f342ee3a710370cef39dda48f17b0a158b0b8dd3f000fbd5b2c2d9")
 
-
         val gasProvider: ContractGasProvider = WaltIdGasProvider
 
-        val transactionManager: TransactionManager = RawTransactionManager(
-            web3j, credentials, 80001
-        )
-
-        return ERC721URIStorage.load(address, web3j, transactionManager, gasProvider)
-
+        if(chain == Chain.POLYGON || chain == Chain.MUMBAI){
+            val chainId : Long
+            if(chain == Chain.POLYGON){
+                chainId = Values.POLYGON_MAINNET_CHAIN_ID
+            }else{
+                chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
+            }
+            val transactionManager: TransactionManager = RawTransactionManager(
+                web3j, credentials, chainId
+            )
+             return  ERC721URIStorage.load(address, web3j,transactionManager,gasProvider)
+        }else{
+            return ERC721URIStorage.load(address, web3j,credentials,gasProvider)
+        }
     }
 
 
