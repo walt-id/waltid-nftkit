@@ -9,6 +9,7 @@ object ProviderFactory {
         Chain.ROPSTEN -> RopstenWeb3()
         Chain.RINKEBY -> RinkebyWeb3()
         Chain.POLYGON -> PolygonWeb3()
+        Chain.MUMBAI -> MumbaiWeb3()
         else -> null
     }
 }
