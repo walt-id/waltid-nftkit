@@ -44,7 +44,8 @@ enum class Chain {
     ETHEREUM,
     POLYGON,
     RINKEBY,
-    ROPSTEN
+    ROPSTEN,
+    MUMBAI
 }
 enum class TokenStandard {
     ERC721,
