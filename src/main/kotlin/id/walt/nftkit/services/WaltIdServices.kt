@@ -9,7 +9,10 @@ import java.util.*
 
 
 data class Providers(val ethereum: String, val rinkeby: String, val ropsten: String, val polygon:String, val mumbai: String)
-data class providersConfig(val providers: Providers)
+data class ProvidersConfig(val providers: Providers)
+
+data class ChainScanApiKeys(val ethereum: String, val polygon:String)
+data class ChainScanApiKeyConfig(val chainScanApiKeys: ChainScanApiKeys)
 
 object WaltIdServices {
 
@@ -19,11 +22,19 @@ object WaltIdServices {
 
     fun decBase64Str(base64: String): String = String(Base64.getDecoder().decode(base64))
 
-    fun loadProvidersConfig() = ConfigLoader.Builder()
+    fun loadProvidersConfig()= ConfigLoader.Builder()
         .addFileExtensionMapping("yaml", YamlParser())
         .addSource(PropertySource.file(File("walt.yaml"), optional = true))
         .addSource(PropertySource.resource("/walt-default.yaml"))
         .addDecoder(HikariDataSourceDecoder())
         .build()
-        .loadConfigOrThrow<providersConfig>()
+        .loadConfigOrThrow<ProvidersConfig>()
+
+    fun loadChainScanApiKeys()= ConfigLoader.Builder()
+        .addFileExtensionMapping("yaml", YamlParser())
+        .addSource(PropertySource.file(File("walt.yaml"), optional = true))
+        .addSource(PropertySource.resource("/walt-default.yaml"))
+        .addDecoder(HikariDataSourceDecoder())
+        .build()
+        .loadConfigOrThrow<ChainScanApiKeyConfig>()
 }
