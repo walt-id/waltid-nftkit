@@ -83,8 +83,8 @@ println(owner)*/
 
 /*val dr = Erc721TokenStandard.deployContract(Chain.RINKEBY,"Metaverse", "MV")
     println(dr)*/
-    println(WaltIdServices.loadProvidersConfig())
-
+    //println(WaltIdServices.loadProvidersConfig())
+    NftService.getNFTsPerAddress(Chain.MUMBAI, "0x2555e3a97c4ac9705D70b9e5B9b6cc6Fe2977A74")
 }
 
 /*fun main(){
