@@ -5,6 +5,7 @@ import id.walt.nftkit.WaltIdGasProvider
 import id.walt.nftkit.services.Chain
 import id.walt.nftkit.services.DeploymentResponse
 import id.walt.nftkit.services.TransactionResponse
+import id.walt.nftkit.services.WaltIdServices
 import id.walt.nftkit.smart_contract_wrapper.ERC721URIStorage
 import id.walt.nftkit.utilis.providers.ProviderFactory
 import org.web3j.abi.datatypes.Address
@@ -43,10 +44,11 @@ object Erc721TokenStandard : IErc721TokenStandard {
         }else{
             remotCall = ERC721URIStorage.deploy(web3j,credentials,gasProvider,Utf8String(name),Utf8String(symbol))
         }
-
         val contract= remotCall.send()
-        val ts = TransactionResponse(contract.transactionReceipt.get().transactionHash,"https://ropsten.etherscan.io/tx/"+ contract.transactionReceipt.get().transactionHash)
-        return DeploymentResponse(ts, contract.contractAddress, "https://ropsten.etherscan.io/token/"+ contract.contractAddress)
+
+        val url = WaltIdServices.getBlockExplorerUrl(chain)
+        val ts = TransactionResponse(contract.transactionReceipt.get().transactionHash,  "$url/tx/${contract.transactionReceipt.get().transactionHash}" )
+        return DeploymentResponse(ts, contract.contractAddress, "$url/address/${contract.contractAddress}" )
 
     }
     override fun mintToken(chain: Chain, contractAddress: String, recipient: Address, tokenURI: Utf8String): TransactionReceipt? {
