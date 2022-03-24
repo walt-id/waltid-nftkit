@@ -130,25 +130,12 @@ data class NFTsEtherScanResult(
 )
 @Serializable
 data class Token(
-    /*val blockNumber: String,
-    val timeStamp: String,
-    val hash: String,
-    val nonce: String,
-    val blockHash: String,*/
     val from: String,
     val contractAddress: String,
     val to: String,
     val tokenID: String,
     val tokenName: String,
     val tokenSymbol: String,
-    /*val tokenDecimal: String,
-    val transactionIndex: String,
-    val gas: String,
-    val gasPrice: String,
-    val gasUsed: String,
-    val cumulativeGasUsed: String,
-    val input: String,
-    val confirmations: String,*/
 )
 
 
@@ -221,28 +208,26 @@ object NftService {
         return TokenCollectionInfo("","")
     }
 
-      fun getNFTsPerAddress(chain: Chain, address: String): List<Token> {
-          return runBlocking {
-              val url = when(chain){
-                  Chain.ETHEREUM -> Values.ETHEREUM_TESTNET_RINKEBY_SCAN_URL
-                  Chain.RINKEBY -> Values.ETHEREUM_TESTNET_RINKEBY_SCAN_URL
-                  Chain.POLYGON -> Values.POLYGON_MAINNET_SCAN_URL
-                  Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_SCAN_URL
-                  else -> ""
-              }
+    fun getNFTsPerAddress(chain: Chain, address: String): List<Token> {
+        return runBlocking {
+            val url = when(chain){
+                Chain.RINKEBY -> Values.ETHEREUM_TESTNET_RINKEBY_SCAN_API_URL
+                Chain.POLYGON -> Values.POLYGON_MAINNET_SCAN_API_URL
+                Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_SCAN_API_URL
+                else -> ""
+            }
 
-              val apiKey = when(chain){
-                  Chain.ETHEREUM -> WaltIdServices.loadChainScanApiKeys().chainScanApiKeys.ethereum
-                  Chain.RINKEBY -> WaltIdServices.loadChainScanApiKeys().chainScanApiKeys.ethereum
-                  Chain.POLYGON -> WaltIdServices.loadChainScanApiKeys().chainScanApiKeys.polygon
-                  Chain.MUMBAI -> WaltIdServices.loadChainScanApiKeys().chainScanApiKeys.polygon
-                  else -> ""
-              }
+            val apiKey = when(chain){
+                Chain.RINKEBY -> WaltIdServices.loadChainScanApiKeys().blockExplorerScanApiKeys.ethereum
+                Chain.POLYGON -> WaltIdServices.loadChainScanApiKeys().blockExplorerScanApiKeys.polygon
+                Chain.MUMBAI -> WaltIdServices.loadChainScanApiKeys().blockExplorerScanApiKeys.polygon
+                else -> ""
+            }
 
-              val result = fetchTokens(address,1, url, apiKey)
-              return@runBlocking result
-          }
-      }
+            val result = fetchTokens(address,1, url, apiKey)
+            return@runBlocking result
+        }
+    }
 
     private suspend fun fetchTokens(address: String, page: Int, url: String, apiKey: String): List<Token> {
         val txs =
@@ -266,7 +251,9 @@ object NftService {
             val tokenUri = Utf8String(metadataUri)
             val transactionReceipt: TransactionReceipt? = Erc721TokenStandard.mintToken(chain, contractAddress,recipient, tokenUri)
             val eventValues: EventValues? = staticExtractEventParameters(Erc721OnchainCredentialWrapper.TRANSFER_EVENT, transactionReceipt?.logs?.get(0))
-            val ts = TransactionResponse(transactionReceipt!!.transactionHash,"https://ropsten.etherscan.io/tx/"+ transactionReceipt!!.transactionHash)
+
+            val url = WaltIdServices.getBlockExplorerUrl(chain)
+            val ts = TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt!!.transactionHash}" )
             val mr: MintingResponse = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
             return mr
         }else{

@@ -13,12 +13,11 @@ azureKeyVaultConfig:
 
 providers:
   ethereum: "ethereum"
-  rinkeby: ""
-  ropsten: ""
-  polygon: ""
-  mumbai: ""
+  rinkeby: "https://rinkeby.infura.io/v3/0184192d0f2942c3b0322d79eca162b2"
+  ropsten: "https://ropsten.infura.io/v3/0184192d0f2942c3b0322d79eca162b2"
+  polygon: "https://polygon-mumbai.g.alchemy.com/v2/yjbYhlaH3U_vfnTiRQ3miGQS0cKwQMkB"
+  mumbai: "https://polygon-mumbai.g.alchemy.com/v2/yjbYhlaH3U_vfnTiRQ3miGQS0cKwQMkB"
 
-chainScanApiKeys:
-  ethereum: ""
-  polygon: ""
-
+blockExplorerScanApiKeys:
+  ethereum: "JGD5ZUUBHE8CUXPNKZASVQPHRGBMB7A5XV"
+  polygon: "DZ3PFVWGJE5B8DMDQPRZ5JFBR6U484B82G"
