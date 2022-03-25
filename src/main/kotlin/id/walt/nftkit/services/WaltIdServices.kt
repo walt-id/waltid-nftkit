@@ -10,34 +10,31 @@ import java.util.*
 
 
 data class Providers(val ethereum: String, val rinkeby: String, val ropsten: String, val polygon:String, val mumbai: String)
-data class ProvidersConfig(val providers: Providers)
+data class ChainConfig(val providers: Providers, val privateKey: String)
 
 data class BlockExplorerScanApiKeys(val ethereum: String, val polygon:String)
 data class BlockExplorerScanApiKeyConfig(val blockExplorerScanApiKeys: BlockExplorerScanApiKeys)
 
 object WaltIdServices {
 
-    const val etherScan =""
-
     fun encBase64Str(data: String): String = String(Base64.getEncoder().encode(data.toByteArray()))
 
     fun decBase64Str(base64: String): String = String(Base64.getDecoder().decode(base64))
 
-    fun loadProvidersConfig()= ConfigLoader.Builder()
+    fun loadChainConfig()= ConfigLoader.Builder()
         .addFileExtensionMapping("yaml", YamlParser())
         .addSource(PropertySource.file(File("walt.yaml"), optional = true))
         .addSource(PropertySource.resource("/walt-default.yaml"))
-        .addDecoder(HikariDataSourceDecoder())
         .build()
-        .loadConfigOrThrow<ProvidersConfig>()
+        .loadConfigOrThrow<ChainConfig>()
 
     fun loadChainScanApiKeys()= ConfigLoader.Builder()
         .addFileExtensionMapping("yaml", YamlParser())
         .addSource(PropertySource.file(File("walt.yaml"), optional = true))
         .addSource(PropertySource.resource("/walt-default.yaml"))
-        .addDecoder(HikariDataSourceDecoder())
         .build()
         .loadConfigOrThrow<BlockExplorerScanApiKeyConfig>()
+
 
     fun getBlockExplorerUrl(chain: Chain): String {
         return when(chain){

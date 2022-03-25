@@ -6,6 +6,6 @@ import org.web3j.protocol.http.HttpService
 
 class RinkebyWeb3: Web3jInstance {
     override fun getWeb3j(): Web3j {
-        return Web3j.build(HttpService(WaltIdServices.loadProvidersConfig().providers.rinkeby))
+        return Web3j.build(HttpService(WaltIdServices.loadChainConfig().providers.rinkeby))
     }
 }

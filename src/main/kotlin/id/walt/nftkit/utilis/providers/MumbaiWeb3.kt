@@ -6,6 +6,6 @@ import org.web3j.protocol.http.HttpService
 
 class MumbaiWeb3 : Web3jInstance {
     override fun getWeb3j(): Web3j {
-        return Web3j.build(HttpService(WaltIdServices.loadProvidersConfig().providers.mumbai))
+        return Web3j.build(HttpService(WaltIdServices.loadChainConfig().providers.mumbai))
     }
 }
