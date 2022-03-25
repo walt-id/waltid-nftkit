@@ -27,7 +27,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
 
     fun deployContract(chain: Chain, name: String, symbol: String): DeploymentResponse {
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
-        val credentials: Credentials = Credentials.create("bd4cb3e507f342ee3a710370cef39dda48f17b0a158b0b8dd3f000fbd5b2c2d9")
+        val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
         val gasProvider: ContractGasProvider = WaltIdGasProvider
         val remotCall : RemoteCall<ERC721URIStorage>
         if(chain == Chain.POLYGON || chain == Chain.MUMBAI){
@@ -83,7 +83,6 @@ object Erc721TokenStandard : IErc721TokenStandard {
 
     override fun supportsInterface(chain: Chain, contractAddress: String) : Boolean {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress)
-        //ERC1155 0xd9b67a26 interface id
         val data = Numeric.hexStringToByteArray("0x5b5e139f") // ERC721 interface id
         val interfaceId = Bytes4(data)
         return erc721URIStorageWrapper.supportsInterface(interfaceId).send().value
@@ -92,8 +91,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
     private fun loadContract(chain: Chain, address: String) : ERC721URIStorage{
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
 
-        //val credentials: Credentials = Credentials.create("d720ef2cb49c6cbe94175ed413d27e635c5acaa1b7cf03d1faad3a0abc2f53f3")
-        val credentials: Credentials = Credentials.create("bd4cb3e507f342ee3a710370cef39dda48f17b0a158b0b8dd3f000fbd5b2c2d9")
+        val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
 
         val gasProvider: ContractGasProvider = WaltIdGasProvider
 
