@@ -136,6 +136,7 @@ data class Token(
     val tokenID: String,
     val tokenName: String,
     val tokenSymbol: String,
+    val timeStamp: Long
 )
 
 
@@ -206,7 +207,7 @@ object NftService {
         return TokenCollectionInfo("","")
     }
 
-    fun getNFTsPerAddress(chain: Chain, address: String): List<Token> {
+    fun getNFTsPerAddress(chain: Chain, address: String): List<Token?> {
         return runBlocking {
             val url = when(chain){
                 Chain.RINKEBY -> Values.ETHEREUM_TESTNET_RINKEBY_SCAN_API_URL
@@ -222,7 +223,11 @@ object NftService {
                 else -> ""
             }
 
-            val result = fetchTokens(address,1, url, apiKey)
+            val events = fetchTokens(address,1, url, apiKey)
+            val result = events.groupBy { Pair(it.contractAddress, it.tokenID) }
+                .map { it.value.maxByOrNull { it.timeStamp } }
+                .filter { address.lowercase().equals(it?.to?.lowercase())}
+
             return@runBlocking result
         }
     }
