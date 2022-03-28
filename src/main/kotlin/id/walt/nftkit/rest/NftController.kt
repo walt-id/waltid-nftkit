@@ -4,7 +4,6 @@ import cc.vileda.openapi.dsl.schema
 import id.walt.nftkit.services.*
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
-import io.swagger.annotations.ApiModelProperty
 import kotlinx.serialization.Serializable
 import java.math.BigInteger
 
@@ -15,7 +14,7 @@ data class MintRequest(
     val metadata: NftMetadata?,
     val recipientAddress: String,
     val metadataStorageType: MetadataStorageType,
-    val offChainMetadataStorageType: OffChainMetadataStorageType?,
+    //val offChainMetadataStorageType: OffChainMetadataStorageType?,
 )
 
 @Serializable
@@ -53,7 +52,7 @@ object NftController {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val mintingParameter = MintingParameter(mintReq.metadataUri, mintReq.recipientAddress,mintReq.metadata)
-        val mintingOptions = MintingOptions(mintReq.metadataStorageType, mintReq.offChainMetadataStorageType)
+        val mintingOptions = MintingOptions(mintReq.metadataStorageType)
         val result = NftService.mintToken(Chain.valueOf(chain?.uppercase()!!),contractAddress, mintingParameter, mintingOptions)
         ctx.json(
             result

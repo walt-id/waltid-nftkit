@@ -60,12 +60,12 @@ enum class Chain {
 }
 enum class TokenStandard {
     ERC721,
-    ERC1155
+    //ERC1155
 }
 
 enum class MetadataStorageType {
     ON_CHAIN,
-    OFF_CHAIN
+    //OFF_CHAIN
 }
 
 enum class OffChainMetadataStorageType {
@@ -102,7 +102,7 @@ data class MintingParameter(
 
 data class MintingOptions(
     val metadataStorageType: MetadataStorageType,
-    val offChainMetadataStorageType: OffChainMetadataStorageType?,
+    //val offChainMetadataStorageType: OffChainMetadataStorageType?,
 )
 
 
@@ -154,9 +154,7 @@ object NftService {
     }
 
     fun deploySmartContractToken(chain: Chain, parameter: DeploymentParameter, options: DeploymentOptions?) : DeploymentResponse{
-        //if(options?.tokenStandard == TokenStandard.ERC721){
             return Erc721TokenStandard.deployContract(chain, parameter.name, parameter.symbol)
-        //}
     }
 
     fun mintToken(chain: Chain, contractAddress: String, parameter: MintingParameter, options: MintingOptions) :MintingResponse {
