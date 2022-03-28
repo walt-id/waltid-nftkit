@@ -39,8 +39,8 @@ Following code snipped gives a first impression how to use the NFT Kit for deplo
         val result = NftService.deploySmartContractToken(Chain.POLYGON, deploymentParameter, deploymentOptions)
     
         // Mint new NFT
-        val attribute1 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "trait_type1", value = "value1"/*, display_type = null*/)
-        val attribute2 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "trait_type2", value = "value2"/*, display_type = null*/)
+        val attribute1 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "trait_type1", value = "value1")
+        val attribute2 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "trait_type2", value = "value2")
         val attributes = mutableListOf(attribute1, attribute2)
         val nftMetadata : NftMetadata = NftMetadata(name = "name", description = "description", image = "", attributes = attributes)
         val mintingParameter = MintingParameter("", "0xaf87c5Ce7a1fb6BD5aaDB6dd9C0b8EF51EF1BC31",nftMetadata)
