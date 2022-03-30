@@ -28,6 +28,7 @@ import io.swagger.v3.oas.models.info.Contact
 import io.swagger.v3.oas.models.security.SecurityScheme
 import io.swagger.v3.oas.models.servers.Server
 import mu.KotlinLogging
+import org.bouncycastle.asn1.x500.style.RFC4519Style.owner
 
 object NftKitApi {
 
@@ -138,7 +139,10 @@ object NftKitApi {
                     get("chain/{chain}/contract/{contractAddress}/token/{tokenId}/owner", documented(NftController.ownerDocs(), NftController::owner))
                     get("chain/{chain}/contract/{contractAddress}/info", documented(NftController.tokenCollectionInfoDocs(), NftController::tokenCollectionInfo))
                     get("chain/{chain}/owner/{ownerAddress}", documented(NftController.getNFTsDocs(), NftController::getNFTs))
-
+                }
+                path("nft") {
+                    post("chain/{chain}/contract/{contractAddress}/verifyCollection", documented(VerificationController.verifyCollectionDocs(), VerificationController::verifyCollection))
+                    post("chain/{chain}/contract/{contractAddress}/verifyTrait", documented(VerificationController.verifyCollectionDocs(), VerificationController::verifyCollection))
                 }
             }
 
