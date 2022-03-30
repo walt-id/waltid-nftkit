@@ -142,3 +142,6 @@ $RECYCLE.BIN/
 *.msp
 *.lnk
 .idea
+
+secret_maven_username.txt
+secret_maven_password.txt
