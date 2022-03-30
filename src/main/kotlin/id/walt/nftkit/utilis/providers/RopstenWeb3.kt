@@ -6,6 +6,6 @@ import org.web3j.protocol.http.HttpService
 
 class RopstenWeb3 : Web3jInstance {
     override fun getWeb3j(): Web3j {
-        return Web3j.build(HttpService(WaltIdServices.loadProvidersConfig().providers.ropsten))
+        return Web3j.build(HttpService(WaltIdServices.loadChainConfig().providers.ropsten))
     }
 }

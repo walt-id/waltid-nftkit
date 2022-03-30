@@ -34,6 +34,13 @@ dependencies {
     implementation("com.sksamuel.hoplite:hoplite-core:1.4.16")
     implementation("com.sksamuel.hoplite:hoplite-yaml:1.4.16")
     implementation("com.sksamuel.hoplite:hoplite-hikaricp:1.4.16")
+
+    // HTTP
+    implementation("io.ktor:ktor-client-core:1.6.7")
+    implementation("io.ktor:ktor-client-cio:1.6.7")
+    implementation("io.ktor:ktor-client-serialization:1.6.7")
+    implementation("io.ktor:ktor-client-logging:1.6.7")
+    implementation("io.github.rybalkinsd", "kohttp", "0.12.0")
 }
 
 tasks.withType<KotlinCompile> {

@@ -1,6 +1,7 @@
 package id.walt.nftkit
 
 import id.walt.nftkit.chains.evm.erc721.Erc721TokenStandard
+import id.walt.nftkit.rest.NftKitApi
 import id.walt.nftkit.services.*
 import id.walt.nftkit.smart_contract_wrapper.Erc721OnchainCredentialWrapper
 import org.web3j.abi.FunctionReturnDecoder
@@ -42,11 +43,12 @@ class App {
 
 
 fun main(){
-    val attribute1 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a6", value = "v6"/*, display_type = null*/)
-    val attribute2 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a6", value = "v6"/*, display_type = null*/)
+    NftKitApi.start()
+/*    val attribute1 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a6", value = "v6"*//*, display_type = null*//*)
+    val attribute2 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a6", value = "v6"*//*, display_type = null*//*)
 
     val attributes = mutableListOf(attribute1, attribute2)
-    val nftMetadata : NftMetadata = NftMetadata(name = "m6", description = "m6", image = "", attributes = attributes)
+    val nftMetadata : NftMetadata = NftMetadata(name = "m6", description = "m6", image = "", attributes = attributes)*/
 
     /*val str : String = Json.encodeToString(serializer(),nftMetadata)
     println(str)
@@ -83,8 +85,8 @@ println(owner)*/
 
 /*val dr = Erc721TokenStandard.deployContract(Chain.RINKEBY,"Metaverse", "MV")
     println(dr)*/
-    println(WaltIdServices.loadProvidersConfig())
-
+    //println(WaltIdServices.loadProvidersConfig())
+    NftService.getNFTsPerAddress(Chain.MUMBAI, "0x2555e3a97c4ac9705D70b9e5B9b6cc6Fe2977A74")
 }
 
 /*fun main(){

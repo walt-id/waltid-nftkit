@@ -26,7 +26,15 @@ For the block explorer api keys: you can get them from from [Ethereum](https://e
         ethereum: "<api-key>"
         polygon:  "<api-key>"
 
-    
+
+## Build
+
+    docker build -t nftkit .
+
+
+## RUN
+
+     docker run -p 7000:7000 -it nftkit
 
 ## Examples
 Following code snipped gives a first impression how to use the NFT Kit for deploying **ERC721 smart contract**, for minting **new token** and for fetching **NFT metadata**.
@@ -78,3 +86,4 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
+
