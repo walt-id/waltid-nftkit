@@ -80,7 +80,6 @@ fabric.properties
 **/build/
 !src/**/build/
 gradle-app.setting
-!gradle-wrapper.jar
 .gradletasknamecache
 *.class
 *.log
