@@ -35,7 +35,7 @@ object NftKitApi {
 
     internal const val DEFAULT_CORE_API_PORT = 7000
 
-    internal const val DEFAULT_BIND_ADDRESS = "127.0.0.1"
+    internal const val DEFAULT_BIND_ADDRESS = "0.0.0.0"
 
     /**
      * Currently used instance of the Nft Kit API server
@@ -137,6 +137,7 @@ object NftKitApi {
                     get("chain/{chain}/contract/{contractAddress}/owner/{ownerAddress}/balance", documented(NftController.balanceDocs(), NftController::balance))
                     get("chain/{chain}/contract/{contractAddress}/token/{tokenId}/owner", documented(NftController.ownerDocs(), NftController::owner))
                     get("chain/{chain}/contract/{contractAddress}/info", documented(NftController.tokenCollectionInfoDocs(), NftController::tokenCollectionInfo))
+                    get("chain/{chain}/owner/{ownerAddress}", documented(NftController.getNFTsDocs(), NftController::getNFTs))
 
                 }
             }

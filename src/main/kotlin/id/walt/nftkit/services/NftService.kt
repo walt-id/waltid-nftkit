@@ -1,10 +1,19 @@
 package id.walt.nftkit.services
 
+import id.walt.nftkit.Values
 import id.walt.nftkit.chains.evm.erc721.Erc721TokenStandard
 import id.walt.nftkit.metadata.MetadataUri
 import id.walt.nftkit.metadata.MetadataUriFactory
 import id.walt.nftkit.services.WaltIdServices.decBase64Str
 import id.walt.nftkit.smart_contract_wrapper.Erc721OnchainCredentialWrapper
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.features.json.*
+import io.ktor.client.features.json.serializer.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -18,6 +27,8 @@ import org.web3j.protocol.core.methods.response.Log
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 import java.math.BigInteger
 import java.util.*
+
+
 
 
 @Serializable
@@ -49,12 +60,12 @@ enum class Chain {
 }
 enum class TokenStandard {
     ERC721,
-    ERC1155
+    //ERC1155
 }
 
 enum class MetadataStorageType {
     ON_CHAIN,
-    OFF_CHAIN
+    //OFF_CHAIN
 }
 
 enum class OffChainMetadataStorageType {
@@ -91,7 +102,7 @@ data class MintingParameter(
 
 data class MintingOptions(
     val metadataStorageType: MetadataStorageType,
-    val offChainMetadataStorageType: OffChainMetadataStorageType?,
+    //val offChainMetadataStorageType: OffChainMetadataStorageType?,
 )
 
 
@@ -111,16 +122,40 @@ data class MintingResponse(
     val tokenId: BigInteger?
 )
 
+@Serializable
+data class NFTsEtherScanResult(
+    val status: String,
+    val message: String,
+    val result : List<Token>
+)
+@Serializable
+data class Token(
+    val from: String,
+    val contractAddress: String,
+    val to: String,
+    val tokenID: String,
+    val tokenName: String,
+    val tokenSymbol: String,
+    val timeStamp: Long
+)
+
 
 
 
 
 object NftService {
 
+    val client = HttpClient(CIO) {
+        install(JsonFeature) {
+            serializer = KotlinxSerializer(kotlinx.serialization.json.Json {
+                ignoreUnknownKeys = true
+            })
+        }
+        expectSuccess = false
+    }
+
     fun deploySmartContractToken(chain: Chain, parameter: DeploymentParameter, options: DeploymentOptions?) : DeploymentResponse{
-        //if(options?.tokenStandard == TokenStandard.ERC721){
             return Erc721TokenStandard.deployContract(chain, parameter.name, parameter.symbol)
-        //}
     }
 
     fun mintToken(chain: Chain, contractAddress: String, parameter: MintingParameter, options: MintingOptions) :MintingResponse {
@@ -170,7 +205,47 @@ object NftService {
             return tokenCollectionInfo
         }
         return TokenCollectionInfo("","")
+    }
+
+    fun getNFTsPerAddress(chain: Chain, address: String): List<Token?> {
+        return runBlocking {
+            val url = when(chain){
+                Chain.RINKEBY -> Values.ETHEREUM_TESTNET_RINKEBY_SCAN_API_URL
+                Chain.POLYGON -> Values.POLYGON_MAINNET_SCAN_API_URL
+                Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_SCAN_API_URL
+                else -> ""
+            }
+
+            val apiKey = when(chain){
+                Chain.RINKEBY -> WaltIdServices.loadChainScanApiKeys().blockExplorerScanApiKeys.ethereum
+                Chain.POLYGON -> WaltIdServices.loadChainScanApiKeys().blockExplorerScanApiKeys.polygon
+                Chain.MUMBAI -> WaltIdServices.loadChainScanApiKeys().blockExplorerScanApiKeys.polygon
+                else -> ""
+            }
+
+            val events = fetchTokens(address,1, url, apiKey)
+            val result = events.groupBy { Pair(it.contractAddress, it.tokenID) }
+                .map { it.value.maxByOrNull { it.timeStamp } }
+                .filter { address.lowercase().equals(it?.to?.lowercase())}
+
+            return@runBlocking result
         }
+    }
+
+    private suspend fun fetchTokens(address: String, page: Int, url: String, apiKey: String): List<Token> {
+        val txs =
+            client.get<NFTsEtherScanResult>("https://$url/api?module=account&action=tokennfttx&address=$address&page=$page&offset=5&startblock=0&sort=asc&apikey=$apiKey") {
+                contentType(ContentType.Application.Json)
+            }
+
+        if(txs.status == "1"){
+            return txs.result.plus(fetchTokens(address, page+1, url, apiKey))
+        }else{
+            return txs.result
+        }
+    }
+
+
 
     private fun mintNewToken(recipientAddress: String, metadataUri: String, chain: Chain ,contractAddress: String): MintingResponse{
         if(isErc721Standard(chain, contractAddress) == true){
@@ -179,7 +254,9 @@ object NftService {
             val tokenUri = Utf8String(metadataUri)
             val transactionReceipt: TransactionReceipt? = Erc721TokenStandard.mintToken(chain, contractAddress,recipient, tokenUri)
             val eventValues: EventValues? = staticExtractEventParameters(Erc721OnchainCredentialWrapper.TRANSFER_EVENT, transactionReceipt?.logs?.get(0))
-            val ts = TransactionResponse(transactionReceipt!!.transactionHash,"https://ropsten.etherscan.io/tx/"+ transactionReceipt!!.transactionHash)
+
+            val url = WaltIdServices.getBlockExplorerUrl(chain)
+            val ts = TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt!!.transactionHash}" )
             val mr: MintingResponse = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
             return mr
         }else{
@@ -222,6 +299,8 @@ object NftService {
         }
         return EventValues(indexedValues, nonIndexedValues)
     }
+
+
 
 
 }
