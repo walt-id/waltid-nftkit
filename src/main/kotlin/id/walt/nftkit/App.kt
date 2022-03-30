@@ -1,6 +1,7 @@
 package id.walt.nftkit
 
 import id.walt.nftkit.chains.evm.erc721.Erc721TokenStandard
+import id.walt.nftkit.rest.NftKitApi
 import id.walt.nftkit.services.*
 import id.walt.nftkit.smart_contract_wrapper.Erc721OnchainCredentialWrapper
 import org.web3j.abi.FunctionReturnDecoder
@@ -42,11 +43,12 @@ class App {
 
 
 fun main(){
-    val attribute1 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a6", value = "v6"/*, display_type = null*/)
-    val attribute2 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a6", value = "v6"/*, display_type = null*/)
+    NftKitApi.start()
+/*    val attribute1 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a6", value = "v6"*//*, display_type = null*//*)
+    val attribute2 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a6", value = "v6"*//*, display_type = null*//*)
 
     val attributes = mutableListOf(attribute1, attribute2)
-    val nftMetadata : NftMetadata = NftMetadata(name = "m6", description = "m6", image = "", attributes = attributes)
+    val nftMetadata : NftMetadata = NftMetadata(name = "m6", description = "m6", image = "", attributes = attributes)*/
 
     /*val str : String = Json.encodeToString(serializer(),nftMetadata)
     println(str)

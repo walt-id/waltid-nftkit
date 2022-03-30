@@ -35,7 +35,7 @@ object NftKitApi {
 
     internal const val DEFAULT_CORE_API_PORT = 7000
 
-    internal const val DEFAULT_BIND_ADDRESS = "127.0.0.1"
+    internal const val DEFAULT_BIND_ADDRESS = "0.0.0.0"
 
     /**
      * Currently used instance of the Nft Kit API server
