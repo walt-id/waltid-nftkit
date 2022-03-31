@@ -210,17 +210,19 @@ object NftService {
     fun getNFTsPerAddress(chain: Chain, address: String): List<Token?> {
         return runBlocking {
             val url = when(chain){
+                Chain.ETHEREUM -> Values.ETHEREUM_MAINNET_BLOCK_EXPLORER_URL
                 Chain.RINKEBY -> Values.ETHEREUM_TESTNET_RINKEBY_SCAN_API_URL
+                Chain.ROPSTEN -> Values.ETHEREUM_TESTNET_ROPSTEN_BLOCK_EXPLORER_URL
                 Chain.POLYGON -> Values.POLYGON_MAINNET_SCAN_API_URL
                 Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_SCAN_API_URL
-                else -> ""
             }
 
             val apiKey = when(chain){
+                Chain.ETHEREUM -> WaltIdServices.loadChainScanApiKeys().blockExplorerScanApiKeys.ethereum
                 Chain.RINKEBY -> WaltIdServices.loadChainScanApiKeys().blockExplorerScanApiKeys.ethereum
+                Chain.ROPSTEN -> WaltIdServices.loadChainScanApiKeys().blockExplorerScanApiKeys.ethereum
                 Chain.POLYGON -> WaltIdServices.loadChainScanApiKeys().blockExplorerScanApiKeys.polygon
                 Chain.MUMBAI -> WaltIdServices.loadChainScanApiKeys().blockExplorerScanApiKeys.polygon
-                else -> ""
             }
 
             val events = fetchTokens(address,1, url, apiKey)
