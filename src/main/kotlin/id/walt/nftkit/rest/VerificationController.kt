@@ -39,13 +39,39 @@ object VerificationController {
     }
 
     fun verifyCollectionDocs() = document().operation {
-        it.summary("NFT minting")
-            .operationId("mintNft").addTagsItem("NFT verification")
+        it.summary("Owner NFT verification")
+            .operationId("NftVerification").addTagsItem("NFT verification")
     }.pathParam<String>("chain") {
         it.schema<Chain> {  }
     }.pathParam<String>("contractAddress") {
-    }.body<MintRequest> {
+    }.body<VerifyCollectionRequest> {
         it.description("")
-    }.json<MintingResponse>("200") { it.description("Transaction ID and token ID") }
+    }.json<Boolean>("200") {  }
+
+    fun verifyCollectionWithTraits(ctx: Context) {
+        val req = ctx.bodyAsClass(VerifyTraitRequest::class.java)
+        val chain = ctx.pathParam("chain").let {
+            if (it.isEmpty()){
+                throw Exception("No chain defined")
+            }
+            Chain.valueOf(it.uppercase())
+        }
+
+        val contractAddress = ctx.pathParam("contractAddress")
+
+        val result = VerificationService.verifyTrait(chain, contractAddress, req.accountAddress, req.traitType,req.traitValue)
+        ctx.json(result)
+    }
+
+
+    fun verifyCollectionWithTraitsDocs() = document().operation {
+        it.summary("Owner NFT verification with Traits")
+            .operationId("NftAndTraitsVerification").addTagsItem("NFT verification")
+    }.pathParam<String>("chain") {
+        it.schema<Chain> {  }
+    }.pathParam<String>("contractAddress") {
+    }.body<VerifyTraitRequest> {
+        it.description("")
+    }.json<Boolean>("200") {  }
 
 }
