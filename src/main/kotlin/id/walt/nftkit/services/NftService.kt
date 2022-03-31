@@ -226,7 +226,7 @@ object NftService {
             val events = fetchTokens(address,1, url, apiKey)
             val result = events.groupBy { Pair(it.contractAddress, it.tokenID) }
                 .map { it.value.maxByOrNull { it.timeStamp } }
-                .filter { address.lowercase().equals(it?.to?.lowercase())}
+                .filter { address.equals(it?.to, ignoreCase = true)}
 
             return@runBlocking result
         }

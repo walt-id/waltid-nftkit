@@ -183,7 +183,7 @@ object NftController {
     }.pathParam<String>("chain") {
         it.schema<Chain> {  }
     }.pathParam<String>("ownerAddress") {
-    }.json<List<Token>>("200") { it.description("NFTs list") }
+    }.json<Array<Token>>("200") { it.description("NFTs list") }
 
 
 }
