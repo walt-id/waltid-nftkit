@@ -36,6 +36,21 @@ For the block explorer api keys: you can get them from from [Ethereum](https://e
 
      docker run -p 7000:7000 -it nftkit
 
+### Use as JVM Depenceny
+
+Using Gradle:
+
+    implementation("id.walt:waltid-nftkit:1.0.0")
+
+or Maven:
+
+    <dependency>
+        <groupId>id.walt</groupId>
+        <artifactId>waltid-nftkit</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+
+
 ## Examples
 Following code snipped gives a first impression how to use the NFT Kit for deploying **ERC721 smart contract**, for minting **new token** and for fetching **NFT metadata**.
 
@@ -64,10 +79,6 @@ Following code snipped gives a first impression how to use the NFT Kit for deplo
     
         
     }
-
-
-## Funded & supported by
-<img src="logos-supporter.png">
 
 ## License
 
