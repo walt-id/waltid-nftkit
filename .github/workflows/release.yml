@@ -52,11 +52,11 @@ jobs:
           version: ${{ github.event.inputs.versionName }}
 
       - name: Commit & Push changes
-        uses: actions-js/push@master
+        uses: actions-js/push@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           message: Automatic release commits for ${{ github.event.inputs.versionName }}
-          branch: master
+          branch: main
 
       - name: Docker Build and Push
         uses: philpotisk/github-action-docker-build-push@master
