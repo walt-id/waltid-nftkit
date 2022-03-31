@@ -142,7 +142,7 @@ object NftKitApi {
                 }
                 path("nft") {
                     post("chain/{chain}/contract/{contractAddress}/verifyCollection", documented(VerificationController.verifyCollectionDocs(), VerificationController::verifyCollection))
-                    post("chain/{chain}/contract/{contractAddress}/verifyTrait", documented(VerificationController.verifyCollectionDocs(), VerificationController::verifyCollection))
+                    post("chain/{chain}/contract/{contractAddress}/verifyTrait", documented(VerificationController.verifyCollectionWithTraitsDocs(), VerificationController::verifyCollectionWithTraits))
                 }
             }
 
