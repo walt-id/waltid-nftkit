@@ -28,7 +28,6 @@ import io.swagger.v3.oas.models.info.Contact
 import io.swagger.v3.oas.models.security.SecurityScheme
 import io.swagger.v3.oas.models.servers.Server
 import mu.KotlinLogging
-import org.bouncycastle.asn1.x500.style.RFC4519Style.owner
 
 object NftKitApi {
 
@@ -39,7 +38,7 @@ object NftKitApi {
     internal const val DEFAULT_BIND_ADDRESS = "0.0.0.0"
 
     /**
-     * Currently used instance of the Nft Kit API server
+     * Currently used instance of the NFT Kit API server
      */
     var api: Javalin? = null
 
@@ -63,7 +62,7 @@ object NftKitApi {
                 registerPlugin(OpenApiPlugin(OpenApiOptions(InitialConfigurationCreator {
                     OpenAPI().apply {
                         info {
-                            title = "walt.id Nft Kit API"
+                            title = "walt.id NFT Kit API"
                             description = "The walt.id public API documentation"
                             contact = Contact().apply {
                                 name = "walt.id"
@@ -94,8 +93,8 @@ object NftKitApi {
                     }
                 }).apply {
                     path("/v1/api-documentation")
-                    swagger(SwaggerOptions("/v1/swagger").title("walt.id Nft Kit API"))
-                    reDoc(ReDocOptions("/v1/redoc").title("walt.id Nft Kit API"))
+                    swagger(SwaggerOptions("/v1/swagger").title("walt.id NFT Kit API"))
+                    reDoc(ReDocOptions("/v1/redoc").title("walt.id NFT Kit API"))
                 }))
 
                 val mapper: ObjectMapper = com.fasterxml.jackson.databind.json.JsonMapper.builder()
@@ -162,7 +161,7 @@ object NftKitApi {
     }
 
     /**
-     * Stop Nft Kit API if it's currently running
+     * Stop NFT Kit API if it's currently running
      */
     fun stop() = api?.stop()
 }

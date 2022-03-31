@@ -11,7 +11,7 @@ object RootController {
                     "<html>\n" +
                     "<body>\n" +
                     "\n" +
-                    "<h1>walt.id Core API</h1>\n" +
+                    "<h1>walt.id NFT Kit API</h1>\n" +
                     "<p><a href='/api-routes'>API Routes</a></p>\n" +
                     "<p><a href='/v1/swagger'>Swagger</a></p>\n" +
                     "<p><a href='/v1/redoc'>Redoc</a></p>\n" +
@@ -28,7 +28,6 @@ object RootController {
         }.json<String>("200")
 
     fun health(ctx: Context) {
-        // TODO: implement: WaltIdServices.checkHealth()
         ctx.html("OK")
     }
 }
