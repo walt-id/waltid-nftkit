@@ -44,3 +44,11 @@ jobs:
           DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
           DOCKER_FILE: Dockerfile
           CONTAINER_TAG: waltid/nftkit:latest
+      - name: Prepare CD
+        run: sed "s/_DEFAULT_DEPLOYMENT_/$GITHUB_SHA/g" k8s/deployment-dev.yaml > k8s/deployment-dev_mod.yaml
+      - name: Continuous deployment
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        with:
+          args: apply -n dev -f k8s/deployment-dev_mod.yaml
