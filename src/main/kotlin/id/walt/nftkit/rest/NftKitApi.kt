@@ -137,7 +137,7 @@ object NftKitApi {
                     get("chain/{chain}/contract/{contractAddress}/owner/{ownerAddress}/balance", documented(NftController.balanceDocs(), NftController::balance))
                     get("chain/{chain}/contract/{contractAddress}/token/{tokenId}/owner", documented(NftController.ownerDocs(), NftController::owner))
                     get("chain/{chain}/contract/{contractAddress}/info", documented(NftController.tokenCollectionInfoDocs(), NftController::tokenCollectionInfo))
-                    get("chain/{chain}/owner/{ownerAddress}", documented(NftController.getNFTsDocs(), NftController::getNFTs))
+                    get("chain/{chain}/owner/{ownerAddress}", documented(NftController.getAccountNFTsDocs(), NftController::getAccountNFTs))
                 }
                 path("nft") {
                     post("chain/{chain}/contract/{contractAddress}/verifyCollection", documented(VerificationController.verifyCollectionDocs(), VerificationController::verifyCollection))

@@ -35,7 +35,7 @@ object VerificationService {
         if(accountNfts.size > 0){
             accountNfts.forEach{
                 val nftMetadata = NftService.getNftMetadata(chain, it!!.contractAddress, BigInteger( it?.tokenID))
-                if(nftMetadata.attributes.filter { (it.trait_type.equals(traitType) && it.value.equals(traitValue)) || (traitValue == null && traitType.equals(it.trait_type) ) }.size > 0){
+                if(nftMetadata.attributes?.filter { (it.trait_type.equals(traitType) && it.value.equals(traitValue)) || (traitValue == null && traitType.equals(it.trait_type) ) }!!.size > 0){
                     return true
                 }
             }
@@ -44,7 +44,7 @@ object VerificationService {
     }
 
     private fun getAccountNftsPerContract(chain: Chain, contractAddress: String, accountAddress: String): List<Token?> {
-        val nfts = NftService.getNFTsPerAddress(chain, accountAddress)
+        val nfts = NftService.getAccountNFTsByChainScan(chain, accountAddress)
         return nfts.filter { it?.contractAddress.equals(contractAddress, ignoreCase = true) }
     }
 
