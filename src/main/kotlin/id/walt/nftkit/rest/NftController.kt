@@ -168,22 +168,22 @@ object NftController {
     }.pathParam<String>("contractAddress") {
     }.json<TokenCollectionInfo>("200") { it.description("Token info") }
 
-    fun getNFTs(ctx: Context){
+    fun getAccountNFTs(ctx: Context){
         val chain = ctx.pathParam("chain")
         val ownerAdress = ctx.pathParam("ownerAddress")
-        val result = NftService.getNFTsPerAddress(Chain.valueOf(chain?.uppercase()!!), ownerAdress)
+        val result = NftService.getAccountNFTsByAlchemy(Chain.valueOf(chain?.uppercase()!!), ownerAdress)
         ctx.json(
             result!!
         )
     }
 
-    fun getNFTsDocs() = document().operation {
+    fun getAccountNFTsDocs() = document().operation {
         it.summary("Get NFTs")
             .operationId("GetNFTs").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
     }.pathParam<String>("chain") {
         it.schema<Chain> {  }
     }.pathParam<String>("ownerAddress") {
-    }.json<Array<Token>>("200") { it.description("NFTs list") }
+    }.json<Array<NFTsAlchemyResult.NftTokenByAlchemy>>("200") { it.description("NFTs list") }
 
 
 }
