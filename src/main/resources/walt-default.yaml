@@ -19,8 +19,8 @@ providers:
     mumbai: "https://polygon-mumbai.g.alchemy.com/v2/yjbYhlaH3U_vfnTiRQ3miGQS0cKwQMkB"
 privateKey: "bd4cb3e507f342ee3a710370cef39dda48f17b0a158b0b8dd3f000fbd5b2c2d9"
 
-
-blockExplorerScanApiKeys:
-  ethereum: "JGD5ZUUBHE8CUXPNKZASVQPHRGBMB7A5XV"
-  polygon: "DZ3PFVWGJE5B8DMDQPRZ5JFBR6U484B82G"
+apiKeys:
+  ethereumBlockExplorer: "JGD5ZUUBHE8CUXPNKZASVQPHRGBMB7A5XV"
+  polygonBlockExplorer: "DZ3PFVWGJE5B8DMDQPRZ5JFBR6U484B82G"
+  alchemy: "yjbYhlaH3U_vfnTiRQ3miGQS0cKwQMkB"
 

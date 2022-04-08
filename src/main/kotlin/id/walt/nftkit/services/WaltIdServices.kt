@@ -11,8 +11,8 @@ import java.util.*
 data class Providers(val ethereum: String, val rinkeby: String, val ropsten: String, val polygon:String, val mumbai: String)
 data class ChainConfig(val providers: Providers, val privateKey: String)
 
-data class BlockExplorerScanApiKeys(val ethereum: String, val polygon:String)
-data class BlockExplorerScanApiKeyConfig(val blockExplorerScanApiKeys: BlockExplorerScanApiKeys)
+data class ApiKeys(val ethereumBlockExplorer: String, val polygonBlockExplorer: String, val alchemy: String)
+data class BlockExplorerScanApiKeyConfig(val apiKeys: ApiKeys)
 
 object WaltIdServices {
 
@@ -27,7 +27,7 @@ object WaltIdServices {
         .build()
         .loadConfigOrThrow<ChainConfig>()
 
-    fun loadChainScanApiKeys()= ConfigLoader.Builder()
+    fun loadApiKeys()= ConfigLoader.Builder()
         .addFileExtensionMapping("yaml", YamlParser())
         .addSource(PropertySource.file(File("walt.yaml"), optional = true))
         .addSource(PropertySource.resource("/walt-default.yaml"))

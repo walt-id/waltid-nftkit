@@ -27,15 +27,16 @@ import org.web3j.abi.datatypes.Utf8String
 import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.protocol.core.methods.response.Log
 import org.web3j.protocol.core.methods.response.TransactionReceipt
+import java.lang.Long.parseLong
 import java.math.BigInteger
 
 
 @Serializable
 data class NftMetadata(
-    val description: String,
+    val description: String?= null,
     val name: String,
-    val image: String?,
-    val attributes: List<Attributes>
+    val image: String?=null,
+    val attributes: List<Attributes>?=null
 ) {
     @Serializable
     data class Attributes(
@@ -139,6 +140,82 @@ data class Token(
 )
 
 
+/*@Serializable
+data class NFTsAlchemyResult(
+    val ownedNfts : List<NftTokenByAlchemy>,
+    val totalCount: Long,
+    val blockHash: String?= null,
+    val pageKey: String?= null
+){
+    @Serializable
+    data class NftTokenByAlchemy(
+        val contract: ContractAddressByAlchemy,
+        val id: TokenIdByAlchemy,
+    ){
+        @Serializable
+        data class ContractAddressByAlchemy(
+            val address: String,
+        )
+
+        @Serializable
+        data class TokenIdByAlchemy(
+            var tokenId: String,
+        )
+    }
+}*/
+
+
+@Serializable
+data class NFTsAlchemyResult(
+    val ownedNfts : List<NftTokenByAlchemy>,
+    val totalCount: Long,
+    val blockHash: String?= null,
+    val pageKey: String?= null
+){
+    @Serializable
+    data class NftTokenByAlchemy(
+        val contract: ContractAddressByAlchemy,
+        val id: TokenIdByAlchemy,
+        val title: String,
+        val description: String?= null,
+        val tokenUri: TokenUriByAlchemy,
+        //val media: MediaByAlchemy,
+        val metadata: NftMetadata?
+    ){
+        @Serializable
+        data class ContractAddressByAlchemy(
+            val address: String,
+        )
+
+        @Serializable
+        data class TokenIdByAlchemy(
+            var tokenId: String,
+            val tokenMetadata:TokenTypeByAlchemy
+        ){
+            @Serializable
+            data class TokenTypeByAlchemy(
+                val tokenType: String
+            )
+        }
+
+        @Serializable
+        data class TokenUriByAlchemy(
+            val raw: String,
+            val gateway: String
+        )
+
+        @Serializable
+        data class MediaByAlchemy(
+            val raw: String,
+            val gateway: String
+        )
+    }
+}
+
+
+
+
+
 
 
 
@@ -206,7 +283,7 @@ object NftService {
         return TokenCollectionInfo("","")
     }
 
-    fun getNFTsPerAddress(chain: Chain, address: String): List<Token?> {
+    fun getAccountNFTsByChainScan(chain: Chain, address: String): List<Token?> {
         return runBlocking {
             val url = when(chain){
                 Chain.ETHEREUM -> Values.ETHEREUM_MAINNET_BLOCK_EXPLORER_URL
@@ -217,14 +294,14 @@ object NftService {
             }
 
             val apiKey = when(chain){
-                Chain.ETHEREUM -> WaltIdServices.loadChainScanApiKeys().blockExplorerScanApiKeys.ethereum
-                Chain.RINKEBY -> WaltIdServices.loadChainScanApiKeys().blockExplorerScanApiKeys.ethereum
-                Chain.ROPSTEN -> WaltIdServices.loadChainScanApiKeys().blockExplorerScanApiKeys.ethereum
-                Chain.POLYGON -> WaltIdServices.loadChainScanApiKeys().blockExplorerScanApiKeys.polygon
-                Chain.MUMBAI -> WaltIdServices.loadChainScanApiKeys().blockExplorerScanApiKeys.polygon
+                Chain.ETHEREUM -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
+                Chain.RINKEBY -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
+                Chain.ROPSTEN -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
+                Chain.POLYGON -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
+                Chain.MUMBAI -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
             }
 
-            val events = fetchTokens(address,1, url, apiKey)
+            val events = fetchAccountNFTsTokens(address,1, url, apiKey)
             val result = events.groupBy { Pair(it.contractAddress, it.tokenID) }
                 .map { it.value.maxByOrNull { it.timeStamp } }
                 .filter { address.equals(it?.to, ignoreCase = true)}
@@ -233,16 +310,53 @@ object NftService {
         }
     }
 
-    private suspend fun fetchTokens(address: String, page: Int, url: String, apiKey: String): List<Token> {
+    fun getAccountNFTsByAlchemy(chain: Chain, account: String): List<NFTsAlchemyResult.NftTokenByAlchemy> {
+        return runBlocking {
+            val url = when(chain){
+                Chain.ETHEREUM -> Values.ETHEREUM_MAINNET_ALCHEMY_URL
+                Chain.RINKEBY -> Values.ETHEREUM_TESTNET_RINKEBY_ALCHEMY_URL
+                Chain.ROPSTEN -> Values.ETHEREUM_TESTNET_ROPSTEN_ALCHEMY_URL
+                Chain.POLYGON -> Values.POLYGON_MAINNET_ALCHEMY_URL
+                Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_ALCHEMY_URL
+            }
+
+            val result = fetchAccountNFTsTokensByAlchemy(account = account, url = url)
+            result.forEach{
+                if("0X" in it.id.tokenId || "0x" in it.id.tokenId){
+                    it.id.tokenId= BigInteger(it.id.tokenId.substring(2),16).toString()
+                }
+            }
+            return@runBlocking result
+        }
+    }
+
+
+    private suspend fun fetchAccountNFTsTokens(address: String, page: Int, url: String, apiKey: String): List<Token> {
         val txs =
             client.get<NFTsEtherScanResult>("https://$url/api?module=account&action=tokennfttx&address=$address&page=$page&offset=5&startblock=0&sort=asc&apikey=$apiKey") {
                 contentType(ContentType.Application.Json)
             }
 
         if(txs.status == "1"){
-            return txs.result.plus(fetchTokens(address, page+1, url, apiKey))
+            return txs.result.plus(fetchAccountNFTsTokens(address, page+1, url, apiKey))
         }else{
             return txs.result
+        }
+    }
+
+    private suspend fun fetchAccountNFTsTokensByAlchemy(account: String, url: String, apiKey: String?= null): List<NFTsAlchemyResult.NftTokenByAlchemy> {
+        var apiKeyUrlParameter =""
+        if(apiKey != null){
+            apiKeyUrlParameter = "&pageKey=$apiKey"
+        }
+        val nfts = client.get<NFTsAlchemyResult>("$url${WaltIdServices.loadApiKeys().apiKeys.alchemy}/getNFTs/?owner=$account&withMetadata = true$apiKeyUrlParameter") {
+            contentType(ContentType.Application.Json)
+        }
+
+        if(nfts.pageKey != null){
+            return nfts.ownedNfts.plus(fetchAccountNFTsTokensByAlchemy(account, url, nfts.pageKey))
+        }else{
+            return nfts.ownedNfts
         }
     }
 
