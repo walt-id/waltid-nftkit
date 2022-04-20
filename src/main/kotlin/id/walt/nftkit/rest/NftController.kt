@@ -21,7 +21,9 @@ data class MintRequest(
 data class DeployRequest(
     val name: String,
     val symbol : String,
-    val tokenStandard: TokenStandard
+    val tokenStandard: TokenStandard,
+    val accessControl: AccessControl,
+    val options: DeploymentParameter.Options
 )
 
 object NftController {
@@ -29,8 +31,8 @@ object NftController {
     fun deploy(ctx: Context){
         val deployReq = ctx.bodyAsClass(DeployRequest::class.java)
         val chain = ctx.pathParam("chain")
-        val deploymentOptions = DeploymentOptions(tokenStandard = deployReq.tokenStandard)
-        val deploymentParameter = DeploymentParameter(deployReq.name!!, deployReq.symbol!!,"","")
+        val deploymentOptions = DeploymentOptions(deployReq.accessControl, deployReq.tokenStandard)
+        val deploymentParameter = DeploymentParameter(deployReq.name!!, deployReq.symbol!!, deployReq.options)
         val result = NftService.deploySmartContractToken(Chain.valueOf(chain?.uppercase()!!), deploymentParameter, deploymentOptions)
         ctx.json(
             result

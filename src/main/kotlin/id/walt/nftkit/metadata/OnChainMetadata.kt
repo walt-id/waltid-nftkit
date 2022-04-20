@@ -7,9 +7,9 @@ import kotlinx.serialization.serializer
 
 class OnChainMetadata : MetadataUri {
     override fun getTokenUri(nftMetadata: NftMetadata?): String {
-        val str : String = Json.encodeToString(serializer(),nftMetadata)
-        val encodedStr: String = encBase64Str(str)
+        val str = Json.encodeToString(serializer(),nftMetadata)
+        val encodedStr = encBase64Str(str)
 
-        return encodedStr;
+        return "data:application/json;base64,$encodedStr";
     }
 }
