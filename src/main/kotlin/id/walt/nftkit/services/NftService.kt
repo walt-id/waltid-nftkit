@@ -34,7 +34,7 @@ import java.math.BigInteger
 @Serializable
 data class NftMetadata(
     val description: String?= null,
-    val name: String,
+    val name: String?=null,
     val image: String?=null,
     val attributes: List<Attributes>?=null
 ) {
@@ -82,17 +82,28 @@ enum class DisplayType{
     DATE
 }
 
+enum class AccessControl{
+    OWNABLE,
+    ROLE_BASED_ACCESS_CONTROL
+}
+
 data class DeploymentOptions(
-    val onchain: Boolean = true,
+    val accessControl: AccessControl,
     val tokenStandard: TokenStandard,
 )
 
 data class DeploymentParameter(
     val name: String,
     val symbol: String,
-    val uri: String,
-    val owner: String
-)
+    val owner: String,
+    val options: Options
+){
+    @Serializable
+    data class Options(
+        val transferable: Boolean,
+        val burnable: Boolean
+    )
+}
 
 data class MintingParameter(
     val metadataUri : String?,
@@ -230,8 +241,8 @@ object NftService {
         expectSuccess = false
     }
 
-    fun deploySmartContractToken(chain: Chain, parameter: DeploymentParameter, options: DeploymentOptions?) : DeploymentResponse{
-            return Erc721TokenStandard.deployContract(chain, parameter.name, parameter.symbol)
+    fun deploySmartContractToken(chain: Chain, parameter: DeploymentParameter, options: DeploymentOptions) : DeploymentResponse{
+            return Erc721TokenStandard.deployContract(chain, parameter, options)
     }
 
     fun mintToken(chain: Chain, contractAddress: String, parameter: MintingParameter, options: MintingOptions) :MintingResponse {

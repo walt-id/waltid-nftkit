@@ -1,10 +1,12 @@
 package id.walt.nftkit
 
 import id.walt.nftkit.rest.NftKitApi
+import id.walt.nftkit.services.AccessControlService
 import id.walt.nftkit.services.Chain
-import id.walt.nftkit.services.NftService
-import io.javalin.core.util.RouteOverviewUtil.metaInfo
-import java.lang.Long.parseLong
+import io.ktor.utils.io.core.*
+import org.bouncycastle.util.encoders.Hex
+import org.web3j.crypto.Hash
+import kotlin.text.toByteArray
 
 
 class App {
@@ -15,19 +17,27 @@ class App {
 }
 
 
+//fun ByteArray.toHex(): String = joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }
 
 fun main(){
 
 
     NftKitApi.start()
 
-    //val result = NftService.getAccountNFTsByAlchemy(Chain.MUMBAI, "0x2555e3a97c4ac9705D70b9e5B9b6cc6Fe2977A74");
-    //0xf56345338cb4cddaf915ebef3bfde63e70fe3053 1000nfts
-    //0xaf87c5Ce7a1fb6BD5aaDB6dd9C0b8EF51EF1BC31    0x2555e3a97c4ac9705D70b9e5B9b6cc6Fe2977A74
-    /*println(result.size)
-    result.forEach{println(it
-            )}*/
 
+    //println(AccessControlService.hasRole(Chain.RINKEBY, "0x24ce09fe8d26662f606bf9741e3667a0b6f1f896", "MINTER_ROLE", "0x8448Ff4b2733b52f62d81ca46d64bD16786299Cd"))
+    //println(AccessControlService.renounceRole(Chain.RINKEBY, "0x24ce09fe8d26662f606bf9741e3667a0b6f1f896", "MINTER_ROLE", "0x8448Ff4b2733b52f62d81ca46d64bD16786299Cd"))
+
+    //println(AccessControlService.revokeRole(Chain.RINKEBY, "0x24ce09fe8d26662f606bf9741e3667a0b6f1f896", "MINTER_ROLE", "0x6E7448a6335d5C947953994d071D4Dc1F6e5BE96"))
+
+    //AccessControlService.hasRole(Chain.RINKEBY, "0x24ce09fe8d26662f606bf9741e3667a0b6f1f896", "DEFAULT_ADMIN_ROLE", "0xaf87c5Ce7a1fb6BD5aaDB6dd9C0b8EF51EF1BC31")
+    //AccessControlService.getRoleAdmin(Chain.RINKEBY, "0x24ce09fe8d26662f606bf9741e3667a0b6f1f896", "MINTER_ROLE")
+    //println(AccessControlService.grantRole(Chain.RINKEBY, "0x24ce09fe8d26662f606bf9741e3667a0b6f1f896", "MINTER_ROLE", "0x6E7448a6335d5C947953994d071D4Dc1F6e5BE96"))
+
+
+
+
+//0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6
 /*    val attribute1 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a6", value = "v6"*//*, display_type = null*//*)
     val attribute2 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a6", value = "v6"*//*, display_type = null*//*)
 
