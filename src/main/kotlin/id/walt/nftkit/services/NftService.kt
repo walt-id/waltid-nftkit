@@ -41,7 +41,7 @@ data class NftMetadata(
     @Serializable
     data class Attributes(
         val trait_type: String,
-        val value: String,
+        var value: String,
         //val display_type: DisplayType?
     )
 }
@@ -95,7 +95,6 @@ data class DeploymentOptions(
 data class DeploymentParameter(
     val name: String,
     val symbol: String,
-    val owner: String,
     val options: Options
 ){
     @Serializable
@@ -383,7 +382,7 @@ object NftService {
 
             val url = WaltIdServices.getBlockExplorerUrl(chain)
             val ts = TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt!!.transactionHash}" )
-            val mr: MintingResponse = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
+            val mr = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
             return mr
         }else{
 
