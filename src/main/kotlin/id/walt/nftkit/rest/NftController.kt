@@ -32,7 +32,7 @@ object NftController {
         val deployReq = ctx.bodyAsClass(DeployRequest::class.java)
         val chain = ctx.pathParam("chain")
         val deploymentOptions = DeploymentOptions(deployReq.accessControl, deployReq.tokenStandard)
-        val deploymentParameter = DeploymentParameter(deployReq.name!!, deployReq.symbol!!,"", deployReq.options)
+        val deploymentParameter = DeploymentParameter(deployReq.name!!, deployReq.symbol!!, deployReq.options)
         val result = NftService.deploySmartContractToken(Chain.valueOf(chain?.uppercase()!!), deploymentParameter, deploymentOptions)
         ctx.json(
             result
