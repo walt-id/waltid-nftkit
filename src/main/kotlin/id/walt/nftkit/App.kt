@@ -4,7 +4,11 @@ import id.walt.nftkit.rest.NftKitApi
 import id.walt.nftkit.rest.UpdateTokenURIRequest
 import id.walt.nftkit.services.*
 import id.walt.nftkit.utilis.providers.ProviderFactory
+import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
+import io.ktor.http.*
 import io.ktor.utils.io.core.*
+import kotlinx.coroutines.runBlocking
 import org.bouncycastle.util.encoders.Hex
 import org.web3j.abi.datatypes.Address
 import org.web3j.crypto.Credentials
@@ -12,7 +16,9 @@ import org.web3j.crypto.Hash
 import org.web3j.tx.RawTransactionManager
 import org.web3j.tx.TransactionManager
 import org.web3j.tx.gas.ContractGasProvider
+import java.io.File
 import java.math.BigInteger
+import java.nio.file.Paths
 import kotlin.text.toByteArray
 
 
@@ -24,20 +30,29 @@ class App {
 }
 
 
-//fun ByteArray.toHex(): String = joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }
 
-fun main(){
+suspend fun main(){
 
-    NftKitApi.start()
+    //Store metadata API
+    println(nftStorageAddMetadataTest("{\"description\": \"string\",     \"name\": \"string\",     \"image\": \"string\",     \"attributes\": [       {         \"trait_type\": \"string\",         \"value\": \"string\"       }     ]}"))
 
-//0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6
+    //Upload file API
+    println(nftStorageUploadFileTest())
+
+
+    //NftKitApi.start()
+    //updateMetadataUseCase()
+
+    //val attribute1 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "valid", value = "true")
+    //val attributes = mutableListOf(attribute1)
+    //val nftMetadata = NftMetadata(name = "Bored apes", description = "Bored apes#01", image = "https://thumbor.forbes.com/thumbor/fit-in/900x510/https://www.forbes.com/advisor/in/wp-content/uploads/2022/03/monkey-g412399084_1280.jpg", attributes = attributes)
+
+
 /*    val attribute1 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a6", value = "v6"*//*, display_type = null*//*)
     val attribute2 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a6", value = "v6"*//*, display_type = null*//*)
 
     val attributes = mutableListOf(attribute1, attribute2)
     val nftMetadata : NftMetadata = NftMetadata(name = "m6", description = "m6", image = "", attributes = attributes)*/
-
-
 
     /*println(erc721TokenStandard.supportsInterface(Chain.RINKEBY,"0xc831de165bD2356230e60DF549324034dB5A3BD5"))*/
 
@@ -46,6 +61,75 @@ fun main(){
     val ms: MintingResponse = NftService.mintToken(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", mintingParameter, mintingOptions)
 */
 }
+
+suspend fun nftStorageUploadFileTest(): String {
+    return runBlocking {
+
+        val file= File("metadata.json")
+        //file.forEachLine { println(it) }
+        val result= NftService.client.post<String>("https://api.nft.storage/upload") {
+            headers {
+                append(
+                    "Authorization",
+                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDYwNDNEYThENjU2RTU3NTg2ZDk3MkM1ZDM5RUNENzI1NTNCM2Q1NjAiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY1MDUzNzUzNjk2OSwibmFtZSI6Ik5GVHMifQ.MBK_rahk6e6fCTheE7qLJeZ_OIyKGkbP63aVLPas1sw"
+                )
+
+            }
+
+            body = MultiPartFormDataContent(
+                formData {
+                    append("file", file.readBytes(), Headers.build {
+                        //append(HttpHeaders.ContentType, "image/png")
+                        append(HttpHeaders.ContentDisposition, "filename=${file.name}")
+                    })
+                },
+            )
+        }
+        return@runBlocking result
+    }
+}
+
+
+suspend fun nftStorageAddMetadataTest(metadata: String): String {
+
+    return runBlocking {
+
+        val result= NftService.client.post<String>("https://api.nft.storage/store") {
+            headers {
+                append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDYwNDNEYThENjU2RTU3NTg2ZDk3MkM1ZDM5RUNENzI1NTNCM2Q1NjAiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY1MDUzNzUzNjk2OSwibmFtZSI6Ik5GVHMifQ.MBK_rahk6e6fCTheE7qLJeZ_OIyKGkbP63aVLPas1sw")
+                append("accept", "application/json")
+
+            }
+            body = MultiPartFormDataContent(
+                formData {
+                    this.append("meta", metadata, Headers.build {
+                        // append(HttpHeaders.ContentType, "text/plain")
+                        //append(HttpHeaders.ContentDisposition, "name=meta")
+
+                    })
+                }
+            )
+
+        }
+        return@runBlocking result
+    }
+
+}
+
+suspend fun nftStorageReadMetadataTest(): String {
+    return runBlocking {
+
+
+        val result= NftService.client.get<String>("https://api.nft.storage/") {
+            headers {
+                append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDYwNDNEYThENjU2RTU3NTg2ZDk3MkM1ZDM5RUNENzI1NTNCM2Q1NjAiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY1MDUzNzUzNjk2OSwibmFtZSI6Ik5GVHMifQ.MBK_rahk6e6fCTheE7qLJeZ_OIyKGkbP63aVLPas1sw")
+
+            }
+        }
+        return@runBlocking result
+    }
+}
+
 
 fun updateMetadataUseCase(){
     //Deploy new RBAC smart contract

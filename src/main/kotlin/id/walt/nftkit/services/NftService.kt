@@ -10,8 +10,12 @@ import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
+import io.ktor.client.features.logging.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
 import io.ktor.http.*
+import io.ktor.http.cio.*
+import io.ktor.utils.io.core.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -27,7 +31,7 @@ import org.web3j.abi.datatypes.Utf8String
 import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.protocol.core.methods.response.Log
 import org.web3j.protocol.core.methods.response.TransactionReceipt
-import java.lang.Long.parseLong
+import java.io.File
 import java.math.BigInteger
 
 
@@ -237,6 +241,11 @@ object NftService {
                 ignoreUnknownKeys = true
             })
         }
+            install(Logging) {
+                logger = Logger.SIMPLE
+                level = LogLevel.BODY
+                //LogLevel.BODY
+            }
         expectSuccess = false
     }
 
@@ -424,8 +433,5 @@ object NftService {
         }
         return EventValues(indexedValues, nonIndexedValues)
     }
-
-
-
-
+    
 }
