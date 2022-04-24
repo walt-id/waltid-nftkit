@@ -18,12 +18,12 @@ import java.io.File
 suspend fun main() {
 
     // Store metadata API
-    println("Result is: " + nftStorageAddMetadataTest("{\"description\":\"string\",\"name\":\"string\",\"image\":\"string\",\"attributes\":[{\"trait_type\":\"string\",\"value\":\"string\"}]}"))
+    println("Store metadata result is: " + nftStorageAddMetadataTest("{\"description\":\"string\",\"name\":\"string\",\"image\":\"string\",\"attributes\":[{\"trait_type\":\"string\",\"value\":\"string\"}]}"))
 
-    // println("\n\n\n\n\n\n\n\n\n")
+    println("\n\n\n")
 
     // Upload file API
-    // println(nftStorageUploadFileTest())
+    println("Upload file result is: " + nftStorageUploadFileTest())
 
     /* /////////// */
     /* /////////// */
@@ -52,30 +52,12 @@ suspend fun main() {
 
 suspend fun nftStorageUploadFileTest(): String {
     return runBlocking {
+        val file = File("metadata.json") // WARNING -> metadata.json is not an image
 
-        val file = File("metadata.json")
-        //file.forEachLine { println(it) }
-        val res = NftService.client.submitFormWithBinaryData(
-            url = "https://api.nft.storage/upload",
-            formData = formData {
-                append("image", file.readBytes(), Headers.build {
-                    append(HttpHeaders.ContentType, "image/*")
-                    append(HttpHeaders.ContentDisposition, "filename=${file.name}")
-                })
-            }
-        ).bodyAsText()
-
-
-        /*val result = NftService.client.post("https://api.nft.storage/upload") {
-            body = MultiPartFormDataContent(
-                formData {
-                    append("file", file.readBytes(), Headers.build {
-                        //append(HttpHeaders.ContentType, "image/png")
-                        append(HttpHeaders.ContentDisposition, "filename=${file.name}")
-                    })
-                },
-            )
-        }*/
+        val res = NftService.client.post("https://api.nft.storage/upload") {
+            contentType(ContentType.Image.Any)
+            setBody(file.readBytes())
+        }.bodyAsText()
 
         return@runBlocking res
     }
