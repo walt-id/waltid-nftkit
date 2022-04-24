@@ -49,6 +49,12 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:2.0.0")
     implementation("io.ktor:ktor-client-logging:2.0.0")
     implementation("io.ktor:ktor-client-auth:2.0.0")
+
+    // Persistence
+    implementation("org.jetbrains.exposed:exposed-core:0.38.2")
+    implementation("org.jetbrains.exposed:exposed-dao:0.38.2")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.38.2")
+    implementation("org.xerial:sqlite-jdbc:3.36.0.3")
 }
 
 tasks.withType<KotlinCompile> {
