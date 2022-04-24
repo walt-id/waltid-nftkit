@@ -1,1 +1,1 @@
-{"description": "string",     "name": "string",     "image": "string",     "attributes": [       {         "trait_type": "string",         "value": "string"       }     ]}
+{"description":"string","name":"string","image":"string","attributes":[{"trait_type":"string","value":"string"}]}
