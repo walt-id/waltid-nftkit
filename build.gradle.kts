@@ -20,27 +20,29 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation ("org.web3j:core:4.9.0")
+    implementation ("org.web3j:core:5.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.2")
-    implementation("io.javalin:javalin-bundle:4.3.0")
-    implementation("com.beust:klaxon:5.5")
+    implementation("io.javalin:javalin-bundle:4.4.0")
+    implementation("com.beust:klaxon:5.6")
 
     // Logging
-    implementation("org.slf4j:slf4j-api:2.0.0-alpha6")
-    implementation("org.slf4j:slf4j-simple:2.0.0-alpha6")
-    implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
+    implementation("org.slf4j:slf4j-api:2.0.0-alpha7")
+    implementation("org.slf4j:slf4j-simple:2.0.0-alpha7")
+    implementation("io.github.microutils:kotlin-logging:2.1.21")
 
     // Config
-    implementation("com.sksamuel.hoplite:hoplite-core:1.4.16")
-    implementation("com.sksamuel.hoplite:hoplite-yaml:1.4.16")
-    implementation("com.sksamuel.hoplite:hoplite-hikaricp:1.4.16")
+    implementation("com.sksamuel.hoplite:hoplite-core:2.1.2")
+    implementation("com.sksamuel.hoplite:hoplite-yaml:2.1.2")
+    implementation("com.sksamuel.hoplite:hoplite-hikaricp:2.1.2")
 
     // HTTP
-    implementation("io.ktor:ktor-client-core:1.6.7")
-    implementation("io.ktor:ktor-client-cio:1.6.7")
-    implementation("io.ktor:ktor-client-serialization:1.6.7")
-    implementation("io.ktor:ktor-client-logging:1.6.7")
-    implementation("io.github.rybalkinsd", "kohttp", "0.12.0")
+    // implementation("io.github.rybalkinsd", "kohttp", "0.12.0")
+    implementation("io.ktor:ktor-client-core:2.0.0")
+    implementation("io.ktor:ktor-client-content-negotiation:2.0.0")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.0")
+    implementation("io.ktor:ktor-client-cio:2.0.0")
+    implementation("io.ktor:ktor-client-logging:2.0.0")
+    implementation("io.ktor:ktor-client-auth:2.0.0")
 }
 
 tasks.withType<KotlinCompile> {

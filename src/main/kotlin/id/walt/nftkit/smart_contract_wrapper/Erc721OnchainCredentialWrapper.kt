@@ -1,24 +1,23 @@
 package id.walt.nftkit.smart_contract_wrapper
 
-import org.web3j.protocol.Web3j
-import org.web3j.tx.gas.ContractGasProvider
-import org.web3j.tx.TransactionManager
-import org.web3j.protocol.core.methods.response.TransactionReceipt
-import org.web3j.abi.datatypes.generated.Uint256
 import io.reactivex.Flowable
-import io.reactivex.functions.Function
-import org.web3j.protocol.core.DefaultBlockParameter
 import org.web3j.abi.EventEncoder
 import org.web3j.abi.TypeReference
 import org.web3j.abi.datatypes.*
-import org.web3j.protocol.core.RemoteFunctionCall
+import org.web3j.abi.datatypes.Function
 import org.web3j.abi.datatypes.generated.Bytes4
+import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.crypto.Credentials
+import org.web3j.protocol.Web3j
+import org.web3j.protocol.core.DefaultBlockParameter
 import org.web3j.protocol.core.RemoteCall
+import org.web3j.protocol.core.RemoteFunctionCall
 import org.web3j.protocol.core.methods.request.EthFilter
 import org.web3j.protocol.core.methods.response.BaseEventResponse
-import org.web3j.protocol.core.methods.response.Log
+import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.tx.Contract
+import org.web3j.tx.TransactionManager
+import org.web3j.tx.gas.ContractGasProvider
 import java.math.BigInteger
 import java.util.*
 
@@ -95,17 +94,15 @@ class Erc721OnchainCredentialWrapper : Contract {
     }
 
     fun approvalEventFlowable(filter: EthFilter?): Flowable<ApprovalEventResponse> {
-        return web3j.ethLogFlowable(filter).map(object : Function<Log?, ApprovalEventResponse> {
-            override fun apply(log: Log): ApprovalEventResponse {
-                val eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log)
-                val typedResponse = ApprovalEventResponse()
-                typedResponse.log = log
-                typedResponse.owner = eventValues.indexedValues[0] as Address
-                typedResponse.approved = eventValues.indexedValues[1] as Address
-                typedResponse.tokenId = eventValues.indexedValues[2] as Uint256
-                return typedResponse
+        return web3j.ethLogFlowable(filter).map {
+            val eventValues = extractEventParametersWithLog(APPROVAL_EVENT, it)
+            ApprovalEventResponse().apply {
+                log = it
+                owner = eventValues.indexedValues[0] as Address
+                approved = eventValues.indexedValues[1] as Address
+                tokenId = eventValues.indexedValues[2] as Uint256
             }
-        })
+        }
     }
 
     fun approvalEventFlowable(
@@ -131,19 +128,16 @@ class Erc721OnchainCredentialWrapper : Contract {
         return responses
     }
 
-    fun approvalForAllEventFlowable(filter: EthFilter?): Flowable<ApprovalForAllEventResponse> {
-        return web3j.ethLogFlowable(filter).map(object : Function<Log?, ApprovalForAllEventResponse> {
-            override fun apply(log: Log): ApprovalForAllEventResponse {
-                val eventValues = extractEventParametersWithLog(APPROVALFORALL_EVENT, log)
-                val typedResponse = ApprovalForAllEventResponse()
-                typedResponse.log = log
-                typedResponse.owner = eventValues.indexedValues[0] as Address
-                typedResponse.operator = eventValues.indexedValues[1] as Address
-                typedResponse.approved = eventValues.nonIndexedValues[0] as Bool
-                return typedResponse
+    fun approvalForAllEventFlowable(filter: EthFilter?): Flowable<ApprovalForAllEventResponse> =
+        web3j.ethLogFlowable(filter).map {
+            val eventValues = extractEventParametersWithLog(APPROVALFORALL_EVENT, it)
+            ApprovalForAllEventResponse().apply {
+                log = it
+                owner = eventValues.indexedValues[0] as Address
+                operator = eventValues.indexedValues[1] as Address
+                approved = eventValues.nonIndexedValues[0] as Bool
             }
-        })
-    }
+        }
 
     fun approvalForAllEventFlowable(
         startBlock: DefaultBlockParameter?,
@@ -168,16 +162,14 @@ class Erc721OnchainCredentialWrapper : Contract {
     }
 
     fun ownershipTransferredEventFlowable(filter: EthFilter?): Flowable<OwnershipTransferredEventResponse> {
-        return web3j.ethLogFlowable(filter).map(object : Function<Log?, OwnershipTransferredEventResponse> {
-            override fun apply(log: Log): OwnershipTransferredEventResponse {
-                val eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, log)
-                val typedResponse = OwnershipTransferredEventResponse()
-                typedResponse.log = log
-                typedResponse.previousOwner = eventValues.indexedValues[0] as Address
-                typedResponse.newOwner = eventValues.indexedValues[1] as Address
-                return typedResponse
+        return web3j.ethLogFlowable(filter).map {
+            val eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, it)
+            OwnershipTransferredEventResponse().apply {
+                log = it
+                previousOwner = eventValues.indexedValues[0] as Address
+                newOwner = eventValues.indexedValues[1] as Address
             }
-        })
+        }
     }
 
     fun ownershipTransferredEventFlowable(
@@ -203,19 +195,16 @@ class Erc721OnchainCredentialWrapper : Contract {
         return responses
     }
 
-    fun transferEventFlowable(filter: EthFilter?): Flowable<TransferEventResponse> {
-        return web3j.ethLogFlowable(filter).map(object : Function<Log?, TransferEventResponse> {
-            override fun apply(log: Log): TransferEventResponse {
-                val eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log)
-                val typedResponse = TransferEventResponse()
-                typedResponse.log = log
-                typedResponse.from = eventValues.indexedValues[0] as Address
-                typedResponse.to = eventValues.indexedValues[1] as Address
-                typedResponse.tokenId = eventValues.indexedValues[2] as Uint256
-                return typedResponse
+    fun transferEventFlowable(filter: EthFilter?): Flowable<TransferEventResponse> =
+        web3j.ethLogFlowable(filter).map {
+            val eventValues = extractEventParametersWithLog(TRANSFER_EVENT, it)
+            TransferEventResponse().apply {
+                log = it
+                from = eventValues.indexedValues[0] as Address
+                to = eventValues.indexedValues[1] as Address
+                tokenId = eventValues.indexedValues[2] as Uint256
             }
-        })
-    }
+        }
 
     fun transferEventFlowable(
         startBlock: DefaultBlockParameter?,
@@ -491,7 +480,14 @@ class Erc721OnchainCredentialWrapper : Contract {
             credentials: Credentials?,
             contractGasProvider: ContractGasProvider?
         ): RemoteCall<Erc721OnchainCredentialWrapper> {
-            return deployRemoteCall(Erc721OnchainCredentialWrapper::class.java, web3j, credentials, contractGasProvider, BINARY, "")
+            return deployRemoteCall(
+                Erc721OnchainCredentialWrapper::class.java,
+                web3j,
+                credentials,
+                contractGasProvider,
+                BINARY,
+                ""
+            )
         }
 
         fun deploy(
@@ -516,7 +512,15 @@ class Erc721OnchainCredentialWrapper : Contract {
             gasPrice: BigInteger?,
             gasLimit: BigInteger?
         ): RemoteCall<Erc721OnchainCredentialWrapper> {
-            return deployRemoteCall(Erc721OnchainCredentialWrapper::class.java, web3j, credentials, gasPrice, gasLimit, BINARY, "")
+            return deployRemoteCall(
+                Erc721OnchainCredentialWrapper::class.java,
+                web3j,
+                credentials,
+                gasPrice,
+                gasLimit,
+                BINARY,
+                ""
+            )
         }
 
         @Deprecated("")

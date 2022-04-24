@@ -1,27 +1,25 @@
 package id.walt.nftkit.smart_contract_wrapper
 
-import org.web3j.protocol.Web3j
-import org.web3j.tx.gas.ContractGasProvider
-import org.web3j.tx.TransactionManager
-import org.web3j.protocol.core.methods.response.TransactionReceipt
-import org.web3j.abi.datatypes.generated.Uint256
 import io.reactivex.Flowable
-import io.reactivex.functions.Function
-import org.web3j.protocol.core.DefaultBlockParameter
 import org.web3j.abi.EventEncoder
-import org.web3j.protocol.core.RemoteFunctionCall
-import org.web3j.abi.datatypes.generated.Bytes4
-import org.web3j.protocol.core.methods.response.BaseEventResponse
 import org.web3j.abi.FunctionEncoder
 import org.web3j.abi.TypeReference
 import org.web3j.abi.datatypes.*
+import org.web3j.abi.datatypes.Function
+import org.web3j.abi.datatypes.generated.Bytes4
+import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.crypto.Credentials
+import org.web3j.protocol.Web3j
+import org.web3j.protocol.core.DefaultBlockParameter
 import org.web3j.protocol.core.RemoteCall
+import org.web3j.protocol.core.RemoteFunctionCall
 import org.web3j.protocol.core.methods.request.EthFilter
-import org.web3j.protocol.core.methods.response.Log
+import org.web3j.protocol.core.methods.response.BaseEventResponse
+import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.tx.Contract
+import org.web3j.tx.TransactionManager
+import org.web3j.tx.gas.ContractGasProvider
 import java.math.BigInteger
-import java.util.*
 
 /**
  *
@@ -95,19 +93,17 @@ class ERC721URIStorage : Contract {
         return responses
     }
 
-    fun approvalEventFlowable(filter: EthFilter?): Flowable<ApprovalEventResponse> {
-        return web3j.ethLogFlowable(filter).map(object : Function<Log?, ApprovalEventResponse> {
-            override fun apply(log: Log): ApprovalEventResponse {
-                val eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log)
-                val typedResponse = ApprovalEventResponse()
-                typedResponse.log = log
-                typedResponse.owner = eventValues.indexedValues[0] as Address
-                typedResponse.approved = eventValues.indexedValues[1] as Address
-                typedResponse.tokenId = eventValues.indexedValues[2] as Uint256
-                return typedResponse
+    fun approvalEventFlowable(filter: EthFilter?): Flowable<ApprovalEventResponse> =
+        web3j.ethLogFlowable(filter).map {
+            val eventValues = extractEventParametersWithLog(APPROVAL_EVENT, it)
+
+            ApprovalEventResponse().apply {
+                log = it
+                owner = eventValues.indexedValues[0] as Address
+                approved = eventValues.indexedValues[1] as Address
+                tokenId = eventValues.indexedValues[2] as Uint256
             }
-        })
-    }
+        }
 
     fun approvalEventFlowable(
         startBlock: DefaultBlockParameter?,
@@ -119,32 +115,29 @@ class ERC721URIStorage : Contract {
     }
 
     fun getApprovalForAllEvents(transactionReceipt: TransactionReceipt?): List<ApprovalForAllEventResponse> {
-        val valueList = extractEventParametersWithLog(APPROVALFORALL_EVENT, transactionReceipt)
-        val responses = ArrayList<ApprovalForAllEventResponse>(valueList.size)
-        for (eventValues in valueList) {
-            val typedResponse = ApprovalForAllEventResponse()
-            typedResponse.log = eventValues.log
-            typedResponse.owner = eventValues.indexedValues[0] as Address
-            typedResponse.operator = eventValues.indexedValues[1] as Address
-            typedResponse.approved = eventValues.nonIndexedValues[0] as Bool
-            responses.add(typedResponse)
+        val eventValues = extractEventParametersWithLog(APPROVALFORALL_EVENT, transactionReceipt)
+
+        return eventValues.map {
+            ApprovalForAllEventResponse().apply {
+                log = it.log
+                owner = it.indexedValues[0] as Address
+                operator = it.indexedValues[1] as Address
+                approved = it.nonIndexedValues[0] as Bool
+            }
         }
-        return responses
     }
 
-    fun approvalForAllEventFlowable(filter: EthFilter?): Flowable<ApprovalForAllEventResponse> {
-        return web3j.ethLogFlowable(filter).map(object : Function<Log?, ApprovalForAllEventResponse> {
-            override fun apply(log: Log): ApprovalForAllEventResponse {
-                val eventValues = extractEventParametersWithLog(APPROVALFORALL_EVENT, log)
-                val typedResponse = ApprovalForAllEventResponse()
-                typedResponse.log = log
-                typedResponse.owner = eventValues.indexedValues[0] as Address
-                typedResponse.operator = eventValues.indexedValues[1] as Address
-                typedResponse.approved = eventValues.nonIndexedValues[0] as Bool
-                return typedResponse
+    fun approvalForAllEventFlowable(filter: EthFilter?): Flowable<ApprovalForAllEventResponse> =
+        web3j.ethLogFlowable(filter).map {
+            val eventValues = extractEventParametersWithLog(APPROVALFORALL_EVENT, it)
+
+            ApprovalForAllEventResponse().apply {
+                log = it
+                owner = eventValues.indexedValues[0] as Address
+                operator = eventValues.indexedValues[1] as Address
+                approved = eventValues.nonIndexedValues[0] as Bool
             }
-        })
-    }
+        }
 
     fun approvalForAllEventFlowable(
         startBlock: DefaultBlockParameter?,
@@ -156,30 +149,26 @@ class ERC721URIStorage : Contract {
     }
 
     fun getOwnershipTransferredEvents(transactionReceipt: TransactionReceipt?): List<OwnershipTransferredEventResponse> {
-        val valueList = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, transactionReceipt)
-        val responses = ArrayList<OwnershipTransferredEventResponse>(valueList.size)
-        for (eventValues in valueList) {
-            val typedResponse = OwnershipTransferredEventResponse()
-            typedResponse.log = eventValues.log
-            typedResponse.previousOwner = eventValues.indexedValues[0] as Address
-            typedResponse.newOwner = eventValues.indexedValues[1] as Address
-            responses.add(typedResponse)
+        val eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, transactionReceipt)
+
+        return eventValues.map {
+            OwnershipTransferredEventResponse().apply {
+                log = it.log
+                previousOwner = it.indexedValues[0] as Address
+                newOwner = it.indexedValues[1] as Address
+            }
         }
-        return responses
     }
 
-    fun ownershipTransferredEventFlowable(filter: EthFilter?): Flowable<OwnershipTransferredEventResponse> {
-        return web3j.ethLogFlowable(filter).map(object : Function<Log?, OwnershipTransferredEventResponse> {
-            override fun apply(log: Log): OwnershipTransferredEventResponse {
-                val eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, log)
-                val typedResponse = OwnershipTransferredEventResponse()
-                typedResponse.log = log
-                typedResponse.previousOwner = eventValues.indexedValues[0] as Address
-                typedResponse.newOwner = eventValues.indexedValues[1] as Address
-                return typedResponse
+    fun ownershipTransferredEventFlowable(filter: EthFilter?): Flowable<OwnershipTransferredEventResponse> =
+        web3j.ethLogFlowable(filter).map {
+            val eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, it)
+            OwnershipTransferredEventResponse().apply {
+                log = it
+                previousOwner = eventValues.indexedValues[0] as Address
+                newOwner = eventValues.indexedValues[1] as Address
             }
-        })
-    }
+        }
 
     fun ownershipTransferredEventFlowable(
         startBlock: DefaultBlockParameter?,
@@ -191,32 +180,27 @@ class ERC721URIStorage : Contract {
     }
 
     fun getTransferEvents(transactionReceipt: TransactionReceipt?): List<TransferEventResponse> {
-        val valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt)
-        val responses = ArrayList<TransferEventResponse>(valueList.size)
-        for (eventValues in valueList) {
-            val typedResponse = TransferEventResponse()
-            typedResponse.log = eventValues.log
-            typedResponse.from = eventValues.indexedValues[0] as Address
-            typedResponse.to = eventValues.indexedValues[1] as Address
-            typedResponse.tokenId = eventValues.indexedValues[2] as Uint256
-            responses.add(typedResponse)
+        val eventValues = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt)
+        return eventValues.map {
+            TransferEventResponse().apply {
+                log = it.log
+                from = it.indexedValues[0] as Address
+                to = it.indexedValues[1] as Address
+                tokenId = it.indexedValues[2] as Uint256
+            }
         }
-        return responses
     }
 
-    fun transferEventFlowable(filter: EthFilter?): Flowable<TransferEventResponse> {
-        return web3j.ethLogFlowable(filter).map(object : Function<Log?, TransferEventResponse> {
-            override fun apply(log: Log): TransferEventResponse {
-                val eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log)
-                val typedResponse = TransferEventResponse()
-                typedResponse.log = log
-                typedResponse.from = eventValues.indexedValues[0] as Address
-                typedResponse.to = eventValues.indexedValues[1] as Address
-                typedResponse.tokenId = eventValues.indexedValues[2] as Uint256
-                return typedResponse
+    fun transferEventFlowable(filter: EthFilter?): Flowable<TransferEventResponse> =
+        web3j.ethLogFlowable(filter).map {
+            val eventValues = extractEventParametersWithLog(TRANSFER_EVENT, it)
+            TransferEventResponse().apply {
+                log = it
+                from = eventValues.indexedValues[0] as Address
+                to = eventValues.indexedValues[1] as Address
+                tokenId = eventValues.indexedValues[2] as Uint256
             }
-        })
-    }
+        }
 
     fun transferEventFlowable(
         startBlock: DefaultBlockParameter?,
@@ -229,86 +213,90 @@ class ERC721URIStorage : Contract {
 
     fun approve(to: Address, tokenId: Uint256): RemoteFunctionCall<TransactionReceipt> {
         val function = Function(
-            FUNC_APPROVE,
-            Arrays.asList<Type<*>>(to, tokenId), emptyList()
+            /* name = */ FUNC_APPROVE,
+            /* inputParameters = */ listOf<Type<*>>(to, tokenId),
+            /* outputParameters = */ emptyList()
         )
         return executeRemoteCallTransaction(function)
     }
 
     fun balanceOf(owner: Address): RemoteFunctionCall<Uint256> {
         val function = Function(
-            FUNC_BALANCEOF,
-            Arrays.asList<Type<*>>(owner),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Uint256?>() {})
+            /* name = */ FUNC_BALANCEOF,
+            /* inputParameters = */ listOf<Type<*>>(owner),
+            /* outputParameters = */ listOf<TypeReference<*>>(object : TypeReference<Uint256?>() {})
         )
         return executeRemoteCallSingleValueReturn(function)
     }
 
     fun getApproved(tokenId: Uint256): RemoteFunctionCall<Address> {
         val function = Function(
-            FUNC_GETAPPROVED,
-            Arrays.asList<Type<*>>(tokenId),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Address?>() {})
+            /* name = */ FUNC_GETAPPROVED,
+            /* inputParameters = */ listOf<Type<*>>(tokenId),
+            /* outputParameters = */ listOf<TypeReference<*>>(object : TypeReference<Address?>() {})
         )
         return executeRemoteCallSingleValueReturn(function)
     }
 
     fun isApprovedForAll(owner: Address, operator: Address): RemoteFunctionCall<Bool> {
         val function = Function(
-            FUNC_ISAPPROVEDFORALL,
-            Arrays.asList<Type<*>>(owner, operator),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Bool?>() {})
+            /* name = */ FUNC_ISAPPROVEDFORALL,
+            /* inputParameters = */ listOf<Type<*>>(owner, operator),
+            /* outputParameters = */ listOf<TypeReference<*>>(object : TypeReference<Bool?>() {})
         )
         return executeRemoteCallSingleValueReturn(function)
     }
 
     fun mintTo(_recipient: Address, tokenURI: Utf8String): RemoteFunctionCall<TransactionReceipt> {
         val function = Function(
-            FUNC_MINTTO,
-            Arrays.asList<Type<*>>(_recipient, tokenURI), emptyList()
+            /* name = */ FUNC_MINTTO,
+            /* inputParameters = */ listOf<Type<*>>(_recipient, tokenURI),
+            /* outputParameters = */ emptyList()
         )
         return executeRemoteCallTransaction(function)
     }
 
     fun name(): RemoteFunctionCall<Utf8String> {
         val function = Function(
-            FUNC_NAME,
-            Arrays.asList(),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Utf8String?>() {})
+            /* name = */ FUNC_NAME,
+            /* inputParameters = */ listOf(),
+            /* outputParameters = */ listOf<TypeReference<*>>(object : TypeReference<Utf8String?>() {})
         )
         return executeRemoteCallSingleValueReturn(function)
     }
 
     fun owner(): RemoteFunctionCall<Address> {
         val function = Function(
-            FUNC_OWNER,
-            Arrays.asList(),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Address?>() {})
+            /* name = */ FUNC_OWNER,
+            /* inputParameters = */ listOf(),
+            /* outputParameters = */ listOf<TypeReference<*>>(object : TypeReference<Address?>() {})
         )
         return executeRemoteCallSingleValueReturn(function)
     }
 
     fun ownerOf(tokenId: Uint256): RemoteFunctionCall<Address> {
         val function = Function(
-            FUNC_OWNEROF,
-            Arrays.asList<Type<*>>(tokenId),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Address?>() {})
+            /* name = */ FUNC_OWNEROF,
+            /* inputParameters = */ listOf<Type<*>>(tokenId),
+            /* outputParameters = */ listOf<TypeReference<*>>(object : TypeReference<Address?>() {})
         )
         return executeRemoteCallSingleValueReturn(function)
     }
 
     fun renounceOwnership(): RemoteFunctionCall<TransactionReceipt> {
         val function = Function(
-            FUNC_RENOUNCEOWNERSHIP,
-            Arrays.asList(), emptyList()
+            /* name = */ FUNC_RENOUNCEOWNERSHIP,
+            /* inputParameters = */ listOf(),
+            /* outputParameters = */ emptyList()
         )
         return executeRemoteCallTransaction(function)
     }
 
     fun safeTransferFrom(from: Address, to: Address, tokenId: Uint256): RemoteFunctionCall<TransactionReceipt> {
         val function = Function(
-            FUNC_safeTransferFrom,
-            Arrays.asList<Type<*>>(from, to, tokenId), emptyList()
+            /* name = */ FUNC_safeTransferFrom,
+            /* inputParameters = */ listOf<Type<*>>(from, to, tokenId),
+            /* outputParameters = */ emptyList()
         )
         return executeRemoteCallTransaction(function)
     }
@@ -320,59 +308,61 @@ class ERC721URIStorage : Contract {
         _data: DynamicBytes
     ): RemoteFunctionCall<TransactionReceipt> {
         val function = Function(
-            FUNC_safeTransferFrom,
-            Arrays.asList<Type<*>>(from, to, tokenId, _data), emptyList()
+            /* name = */ FUNC_safeTransferFrom,
+            /* inputParameters = */ listOf<Type<*>>(from, to, tokenId, _data), /* outputParameters = */ emptyList()
         )
         return executeRemoteCallTransaction(function)
     }
 
     fun setApprovalForAll(operator: Address, approved: Bool): RemoteFunctionCall<TransactionReceipt> {
         val function = Function(
-            FUNC_SETAPPROVALFORALL,
-            Arrays.asList<Type<*>>(operator, approved), emptyList()
+            /* name = */ FUNC_SETAPPROVALFORALL,
+            /* inputParameters = */ listOf<Type<*>>(operator, approved), /* outputParameters = */ emptyList()
         )
         return executeRemoteCallTransaction(function)
     }
 
     fun supportsInterface(interfaceId: Bytes4): RemoteFunctionCall<Bool> {
         val function = Function(
-            FUNC_SUPPORTSINTERFACE,
-            Arrays.asList<Type<*>>(interfaceId),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Bool?>() {})
+            /* name = */ FUNC_SUPPORTSINTERFACE,
+            /* inputParameters = */ listOf<Type<*>>(interfaceId),
+            /* outputParameters = */ listOf<TypeReference<*>>(object : TypeReference<Bool?>() {})
         )
         return executeRemoteCallSingleValueReturn(function)
     }
 
     fun symbol(): RemoteFunctionCall<Utf8String> {
         val function = Function(
-            FUNC_SYMBOL,
-            Arrays.asList(),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Utf8String?>() {})
+            /* name = */ FUNC_SYMBOL,
+            /* inputParameters = */ listOf(),
+            /* outputParameters = */ listOf<TypeReference<*>>(object : TypeReference<Utf8String?>() {})
         )
         return executeRemoteCallSingleValueReturn(function)
     }
 
     fun tokenURI(tokenId: Uint256): RemoteFunctionCall<Utf8String> {
         val function = Function(
-            FUNC_TOKENURI,
-            Arrays.asList<Type<*>>(tokenId),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Utf8String?>() {})
+            /* name = */ FUNC_TOKENURI,
+            /* inputParameters = */ listOf<Type<*>>(tokenId),
+            /* outputParameters = */ listOf<TypeReference<*>>(object : TypeReference<Utf8String?>() {})
         )
         return executeRemoteCallSingleValueReturn(function)
     }
 
     fun transferFrom(from: Address, to: Address, tokenId: Uint256): RemoteFunctionCall<TransactionReceipt> {
         val function = Function(
-            FUNC_TRANSFERFROM,
-            Arrays.asList<Type<*>>(from, to, tokenId), emptyList()
+            /* name = */ FUNC_TRANSFERFROM,
+            /* inputParameters = */ listOf<Type<*>>(from, to, tokenId),
+            /* outputParameters = */ emptyList()
         )
         return executeRemoteCallTransaction(function)
     }
 
     fun transferOwnership(newOwner: Address): RemoteFunctionCall<TransactionReceipt> {
         val function = Function(
-            FUNC_TRANSFEROWNERSHIP,
-            Arrays.asList<Type<*>>(newOwner), emptyList()
+            /* name = */ FUNC_TRANSFEROWNERSHIP,
+            /* inputParameters = */ listOf<Type<*>>(newOwner),
+            /* outputParameters = */ emptyList()
         )
         return executeRemoteCallTransaction(function)
     }
@@ -421,27 +411,27 @@ class ERC721URIStorage : Contract {
         const val FUNC_TRANSFEROWNERSHIP = "transferOwnership"
         val APPROVAL_EVENT = Event(
             "Approval",
-            Arrays.asList<TypeReference<*>>(
+            listOf<TypeReference<*>>(
                 object : TypeReference<Address?>(true) {},
                 object : TypeReference<Address?>(true) {},
                 object : TypeReference<Uint256?>(true) {})
         )
         val APPROVALFORALL_EVENT = Event(
             "ApprovalForAll",
-            Arrays.asList<TypeReference<*>>(
+            listOf<TypeReference<*>>(
                 object : TypeReference<Address?>(true) {},
                 object : TypeReference<Address?>(true) {},
                 object : TypeReference<Bool?>() {})
         )
         val OWNERSHIPTRANSFERRED_EVENT = Event(
             "OwnershipTransferred",
-            Arrays.asList<TypeReference<*>>(
+            listOf<TypeReference<*>>(
                 object : TypeReference<Address?>(true) {},
                 object : TypeReference<Address?>(true) {})
         )
         val TRANSFER_EVENT = Event(
             "Transfer",
-            Arrays.asList<TypeReference<*>>(
+            listOf<TypeReference<*>>(
                 object : TypeReference<Address?>(true) {},
                 object : TypeReference<Address?>(true) {},
                 object : TypeReference<Uint256?>(true) {})
@@ -454,9 +444,7 @@ class ERC721URIStorage : Contract {
             credentials: Credentials?,
             gasPrice: BigInteger?,
             gasLimit: BigInteger?
-        ): ERC721URIStorage {
-            return ERC721URIStorage(contractAddress, web3j, credentials, gasPrice, gasLimit)
-        }
+        ): ERC721URIStorage = ERC721URIStorage(contractAddress, web3j, credentials, gasPrice, gasLimit)
 
         @Deprecated("")
         fun load(
@@ -465,27 +453,21 @@ class ERC721URIStorage : Contract {
             transactionManager: TransactionManager?,
             gasPrice: BigInteger?,
             gasLimit: BigInteger?
-        ): ERC721URIStorage {
-            return ERC721URIStorage(contractAddress, web3j, transactionManager, gasPrice, gasLimit)
-        }
+        ): ERC721URIStorage = ERC721URIStorage(contractAddress, web3j, transactionManager, gasPrice, gasLimit)
 
         fun load(
             contractAddress: String?,
             web3j: Web3j?,
             credentials: Credentials?,
             contractGasProvider: ContractGasProvider?
-        ): ERC721URIStorage {
-            return ERC721URIStorage(contractAddress, web3j, credentials, contractGasProvider)
-        }
+        ): ERC721URIStorage = ERC721URIStorage(contractAddress, web3j, credentials, contractGasProvider)
 
         fun load(
             contractAddress: String?,
             web3j: Web3j?,
             transactionManager: TransactionManager?,
             contractGasProvider: ContractGasProvider?
-        ): ERC721URIStorage {
-            return ERC721URIStorage(contractAddress, web3j, transactionManager, contractGasProvider)
-        }
+        ): ERC721URIStorage = ERC721URIStorage(contractAddress, web3j, transactionManager, contractGasProvider)
 
         fun deploy(
             web3j: Web3j?,
@@ -494,14 +476,14 @@ class ERC721URIStorage : Contract {
             name: Utf8String,
             symbol: Utf8String
         ): RemoteCall<ERC721URIStorage> {
-            val encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.asList<Type<*>>(name, symbol))
+            val encodedConstructor = FunctionEncoder.encodeConstructor(listOf<Type<*>>(name, symbol))
             return deployRemoteCall(
-                ERC721URIStorage::class.java,
-                web3j,
-                credentials,
-                contractGasProvider,
-                BINARY,
-                encodedConstructor
+                /* type = */ ERC721URIStorage::class.java,
+                /* web3j = */ web3j,
+                /* credentials = */ credentials,
+                /* contractGasProvider = */ contractGasProvider,
+                /* binary = */ BINARY,
+                /* encodedConstructor = */ encodedConstructor
             )
         }
 
@@ -512,14 +494,14 @@ class ERC721URIStorage : Contract {
             name: Utf8String,
             symbol: Utf8String
         ): RemoteCall<ERC721URIStorage> {
-            val encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.asList<Type<*>>(name, symbol))
+            val encodedConstructor = FunctionEncoder.encodeConstructor(listOf<Type<*>>(name, symbol))
             return deployRemoteCall(
-                ERC721URIStorage::class.java,
-                web3j,
-                transactionManager,
-                contractGasProvider,
-                BINARY,
-                encodedConstructor
+                /* type = */ ERC721URIStorage::class.java,
+                /* web3j = */ web3j,
+                /* transactionManager = */ transactionManager,
+                /* contractGasProvider = */ contractGasProvider,
+                /* binary = */ BINARY,
+                /* encodedConstructor = */ encodedConstructor
             )
         }
 
@@ -532,15 +514,15 @@ class ERC721URIStorage : Contract {
             name: Utf8String,
             symbol: Utf8String
         ): RemoteCall<ERC721URIStorage> {
-            val encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.asList<Type<*>>(name, symbol))
+            val encodedConstructor = FunctionEncoder.encodeConstructor(listOf<Type<*>>(name, symbol))
             return deployRemoteCall(
-                ERC721URIStorage::class.java,
-                web3j,
-                credentials,
-                gasPrice,
-                gasLimit,
-                BINARY,
-                encodedConstructor
+                /* type = */ ERC721URIStorage::class.java,
+                /* web3j = */ web3j,
+                /* credentials = */ credentials,
+                /* gasPrice = */ gasPrice,
+                /* gasLimit = */ gasLimit,
+                /* binary = */ BINARY,
+                /* encodedConstructor = */ encodedConstructor
             )
         }
 
@@ -553,15 +535,15 @@ class ERC721URIStorage : Contract {
             name: Utf8String,
             symbol: Utf8String
         ): RemoteCall<ERC721URIStorage> {
-            val encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.asList<Type<*>>(name, symbol))
+            val encodedConstructor = FunctionEncoder.encodeConstructor(listOf<Type<*>>(name, symbol))
             return deployRemoteCall(
-                ERC721URIStorage::class.java,
-                web3j,
-                transactionManager,
-                gasPrice,
-                gasLimit,
-                BINARY,
-                encodedConstructor
+                /* type = */ ERC721URIStorage::class.java,
+                /* web3j = */ web3j,
+                /* transactionManager = */ transactionManager,
+                /* gasPrice = */ gasPrice,
+                /* gasLimit = */ gasLimit,
+                /* binary = */ BINARY,
+                /* encodedConstructor = */ encodedConstructor
             )
         }
     }

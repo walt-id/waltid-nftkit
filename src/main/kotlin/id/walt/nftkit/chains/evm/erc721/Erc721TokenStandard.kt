@@ -54,13 +54,19 @@ object Erc721TokenStandard : IErc721TokenStandard {
         }else{
             return deployRBACContract(chain, parameter, options)
         }*/
-        return when(options.accessControl){
+        return when (options.accessControl) {
             AccessControl.OWNABLE -> deployOwnableContract(chain, parameter, options)
-            AccessControl.ROLE_BASED_ACCESS_CONTROL ->deployRBACContract(chain, parameter, options)
+            AccessControl.ROLE_BASED_ACCESS_CONTROL -> deployRBACContract(chain, parameter, options)
         }
 
     }
-    override fun mintToken(chain: Chain, contractAddress: String, recipient: Address, tokenURI: Utf8String): TransactionReceipt? {
+
+    override fun mintToken(
+        chain: Chain,
+        contractAddress: String,
+        recipient: Address,
+        tokenURI: Utf8String
+    ): TransactionReceipt? {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress)
         return erc721URIStorageWrapper.mintTo(recipient, tokenURI).send()
     }
@@ -90,7 +96,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
         return erc721URIStorageWrapper.balanceOf(owner).send().value
     }
 
-    override fun supportsInterface(chain: Chain, contractAddress: String) : Boolean {
+    override fun supportsInterface(chain: Chain, contractAddress: String): Boolean {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress)
         val data = Numeric.hexStringToByteArray("0x5b5e139f") // ERC721 interface id
         val interfaceId = Bytes4(data)
@@ -101,26 +107,45 @@ object Erc721TokenStandard : IErc721TokenStandard {
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
         val gasProvider: ContractGasProvider = WaltIdGasProvider
-        val remotCall : RemoteCall<CustomOwnableERC721>
-        if(chain == Chain.POLYGON || chain == Chain.MUMBAI){
-            val chainId : Long
-            if(chain == Chain.POLYGON){
+        val remotCall: RemoteCall<CustomOwnableERC721>
+        if (chain == Chain.POLYGON || chain == Chain.MUMBAI) {
+            val chainId: Long
+            if (chain == Chain.POLYGON) {
                 chainId = Values.POLYGON_MAINNET_CHAIN_ID
-            }else{
+            } else {
                 chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
             }
             val transactionManager: TransactionManager = RawTransactionManager(
                 web3j, credentials, chainId
             )
-            remotCall = CustomOwnableERC721.deploy(web3j,transactionManager,gasProvider,Utf8String(parameter.name),Utf8String(parameter.symbol), Bool(parameter.options.burnable), Bool(parameter.options.transferable))
-        }else{
-            remotCall = CustomOwnableERC721.deploy(web3j,credentials,gasProvider,Utf8String(parameter.name),Utf8String(parameter.symbol), Bool(parameter.options.burnable), Bool(parameter.options.transferable))
+            remotCall = CustomOwnableERC721.deploy(
+                web3j,
+                transactionManager,
+                gasProvider,
+                Utf8String(parameter.name),
+                Utf8String(parameter.symbol),
+                Bool(parameter.options.burnable),
+                Bool(parameter.options.transferable)
+            )
+        } else {
+            remotCall = CustomOwnableERC721.deploy(
+                web3j,
+                credentials,
+                gasProvider,
+                Utf8String(parameter.name),
+                Utf8String(parameter.symbol),
+                Bool(parameter.options.burnable),
+                Bool(parameter.options.transferable)
+            )
         }
-        val contract= remotCall.send()
+        val contract = remotCall.send()
 
         val url = WaltIdServices.getBlockExplorerUrl(chain)
-        val ts = TransactionResponse(contract.transactionReceipt.get().transactionHash,  "$url/tx/${contract.transactionReceipt.get().transactionHash}" )
-        return DeploymentResponse(ts, contract.contractAddress, "$url/address/${contract.contractAddress}" )
+        val ts = TransactionResponse(
+            contract.transactionReceipt.get().transactionHash,
+            "$url/tx/${contract.transactionReceipt.get().transactionHash}"
+        )
+        return DeploymentResponse(ts, contract.contractAddress, "$url/address/${contract.contractAddress}")
 
     }
 
@@ -128,51 +153,69 @@ object Erc721TokenStandard : IErc721TokenStandard {
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
         val gasProvider: ContractGasProvider = WaltIdGasProvider
-        val remotCall : RemoteCall<CustomAccessControlERC721>
-        if(chain == Chain.POLYGON || chain == Chain.MUMBAI){
-            val chainId : Long
-            if(chain == Chain.POLYGON){
+        val remotCall: RemoteCall<CustomAccessControlERC721>
+        if (chain == Chain.POLYGON || chain == Chain.MUMBAI) {
+            val chainId: Long
+            if (chain == Chain.POLYGON) {
                 chainId = Values.POLYGON_MAINNET_CHAIN_ID
-            }else{
+            } else {
                 chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
             }
             val transactionManager: TransactionManager = RawTransactionManager(
                 web3j, credentials, chainId
             )
-            remotCall = CustomAccessControlERC721.deploy(web3j,transactionManager,gasProvider,Utf8String(parameter.name),Utf8String(parameter.symbol), Bool(parameter.options.burnable), Bool(parameter.options.transferable))
-        }else{
-            remotCall = CustomAccessControlERC721.deploy(web3j,credentials,gasProvider,Utf8String(parameter.name),Utf8String(parameter.symbol), Bool(parameter.options.burnable), Bool(parameter.options.transferable))
+            remotCall = CustomAccessControlERC721.deploy(
+                web3j,
+                transactionManager,
+                gasProvider,
+                Utf8String(parameter.name),
+                Utf8String(parameter.symbol),
+                Bool(parameter.options.burnable),
+                Bool(parameter.options.transferable)
+            )
+        } else {
+            remotCall = CustomAccessControlERC721.deploy(
+                web3j,
+                credentials,
+                gasProvider,
+                Utf8String(parameter.name),
+                Utf8String(parameter.symbol),
+                Bool(parameter.options.burnable),
+                Bool(parameter.options.transferable)
+            )
         }
-        val contract= remotCall.send()
+        val contract = remotCall.send()
 
         val url = WaltIdServices.getBlockExplorerUrl(chain)
-        val ts = TransactionResponse(contract.transactionReceipt.get().transactionHash,  "$url/tx/${contract.transactionReceipt.get().transactionHash}" )
-        return DeploymentResponse(ts, contract.contractAddress, "$url/address/${contract.contractAddress}" )
+        val ts = TransactionResponse(
+            contract.transactionReceipt.get().transactionHash,
+            "$url/tx/${contract.transactionReceipt.get().transactionHash}"
+        )
+        return DeploymentResponse(ts, contract.contractAddress, "$url/address/${contract.contractAddress}")
     }
 
-    private fun loadContract(chain: Chain, address: String) : ERC721URIStorage{
+    private fun loadContract(chain: Chain, address: String): ERC721URIStorage {
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
 
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
 
         val gasProvider: ContractGasProvider = WaltIdGasProvider
 
-        if(chain == Chain.POLYGON || chain == Chain.MUMBAI){
-            val chainId : Long
-            if(chain == Chain.POLYGON){
+        if (chain == Chain.POLYGON || chain == Chain.MUMBAI) {
+            val chainId: Long
+            if (chain == Chain.POLYGON) {
                 chainId = Values.POLYGON_MAINNET_CHAIN_ID
-            }else{
+            } else {
                 chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
             }
             val transactionManager: TransactionManager = RawTransactionManager(
                 web3j, credentials, chainId
             )
-             return  ERC721URIStorage.load(address, web3j,transactionManager,gasProvider)
-        }else{
-            return ERC721URIStorage.load(address, web3j,credentials,gasProvider)
+            return ERC721URIStorage.load(address, web3j, transactionManager, gasProvider)
+        } else {
+            return ERC721URIStorage.load(address, web3j, credentials, gasProvider)
         }
     }
-
 
 
 }
