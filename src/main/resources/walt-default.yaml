@@ -12,11 +12,11 @@ azureKeyVaultConfig:
   secret:
 
 providers:
-    ethereum: "ethereum"
-    rinkeby: "https://rinkeby.infura.io/v3/0184192d0f2942c3b0322d79eca162b2"
-    ropsten: "https://ropsten.infura.io/v3/0184192d0f2942c3b0322d79eca162b2"
-    polygon: "https://polygon-mumbai.g.alchemy.com/v2/yjbYhlaH3U_vfnTiRQ3miGQS0cKwQMkB"
-    mumbai: "https://polygon-mumbai.g.alchemy.com/v2/yjbYhlaH3U_vfnTiRQ3miGQS0cKwQMkB"
+  ethereum: "ethereum"
+  rinkeby: "https://rinkeby.infura.io/v3/0184192d0f2942c3b0322d79eca162b2"
+  ropsten: "https://ropsten.infura.io/v3/0184192d0f2942c3b0322d79eca162b2"
+  polygon: "https://polygon-mumbai.g.alchemy.com/v2/yjbYhlaH3U_vfnTiRQ3miGQS0cKwQMkB"
+  mumbai: "https://polygon-mumbai.g.alchemy.com/v2/yjbYhlaH3U_vfnTiRQ3miGQS0cKwQMkB"
 privateKey: "d720ef2cb49c6cbe94175ed413d27e635c5acaa1b7cf03d1faad3a0abc2f53f3"
 
 apiKeys:

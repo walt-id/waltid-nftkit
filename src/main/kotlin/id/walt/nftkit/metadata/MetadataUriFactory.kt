@@ -2,7 +2,7 @@ package id.walt.nftkit.metadata
 
 object MetadataUriFactory {
 
-    fun getMetadataUri() : MetadataUri{
+    fun getMetadataUri(): MetadataUri {
         return OnChainMetadata()
     }
 }

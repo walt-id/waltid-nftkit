@@ -53,9 +53,9 @@ object NftKitApi {
         bindAddress: String = DEFAULT_BIND_ADDRESS,
         apiTargetUrls: List<String> = listOf()
     ) {
-       log.info { "Starting NFT KIT API ...\n" }
+        log.info { "Starting NFT KIT API ...\n" }
 
-       api = Javalin.create {
+        api = Javalin.create {
             it.apply {
                 registerPlugin(RouteOverviewPlugin("/api-routes"))
 
@@ -129,41 +129,122 @@ object NftKitApi {
                     post("import", documented(KeyController.importDocs(), KeyController::import))
                     post("export", documented(KeyController.exportDocs(), KeyController::export))
                 }
-                path("nft"){
+                path("nft") {
                     post("chain/{chain}/contract/deploy", documented(NftController.deployDocs(), NftController::deploy))
-                    post("chain/{chain}/contract/{contractAddress}/token/mint", documented(NftController.mintDocs(), NftController::mint))
-                    get("chain/{chain}/contract/{contractAddress}/token/{tokenId}/metadataUri", documented(NftController.getNftMetadatUriDocs(), NftController::getNftMetadatUri))
-                    get("chain/{chain}/contract/{contractAddress}/token/{tokenId}/metadata", documented(NftController.getNftMetadataDocs(), NftController::getNftMetadata))
-                    get("chain/{chain}/contract/{contractAddress}/owner/{ownerAddress}/balance", documented(NftController.balanceDocs(), NftController::balance))
-                    get("chain/{chain}/contract/{contractAddress}/token/{tokenId}/owner", documented(NftController.ownerDocs(), NftController::owner))
-                    get("chain/{chain}/contract/{contractAddress}/info", documented(NftController.tokenCollectionInfoDocs(), NftController::tokenCollectionInfo))
-                    get("chain/{chain}/owner/{ownerAddress}", documented(NftController.getAccountNFTsDocs(), NftController::getAccountNFTs))
+                    post(
+                        "chain/{chain}/contract/{contractAddress}/token/mint",
+                        documented(NftController.mintDocs(), NftController::mint)
+                    )
+                    get(
+                        "chain/{chain}/contract/{contractAddress}/token/{tokenId}/metadataUri",
+                        documented(NftController.getNftMetadatUriDocs(), NftController::getNftMetadatUri)
+                    )
+                    get(
+                        "chain/{chain}/contract/{contractAddress}/token/{tokenId}/metadata",
+                        documented(NftController.getNftMetadataDocs(), NftController::getNftMetadata)
+                    )
+                    get(
+                        "chain/{chain}/contract/{contractAddress}/owner/{ownerAddress}/balance",
+                        documented(NftController.balanceDocs(), NftController::balance)
+                    )
+                    get(
+                        "chain/{chain}/contract/{contractAddress}/token/{tokenId}/owner",
+                        documented(NftController.ownerDocs(), NftController::owner)
+                    )
+                    get(
+                        "chain/{chain}/contract/{contractAddress}/info",
+                        documented(NftController.tokenCollectionInfoDocs(), NftController::tokenCollectionInfo)
+                    )
+                    get(
+                        "chain/{chain}/owner/{ownerAddress}",
+                        documented(NftController.getAccountNFTsDocs(), NftController::getAccountNFTs)
+                    )
                 }
                 path("nft") {
-                    post("chain/{chain}/contract/{contractAddress}/verifyCollection", documented(VerificationController.verifyCollectionDocs(), VerificationController::verifyCollection))
-                    post("chain/{chain}/contract/{contractAddress}/verifyTrait", documented(VerificationController.verifyCollectionWithTraitsDocs(), VerificationController::verifyCollectionWithTraits))
+                    post(
+                        "chain/{chain}/contract/{contractAddress}/verifyCollection",
+                        documented(VerificationController.verifyCollectionDocs(), VerificationController::verifyCollection)
+                    )
+                    post(
+                        "chain/{chain}/contract/{contractAddress}/verifyTrait",
+                        documented(
+                            VerificationController.verifyCollectionWithTraitsDocs(),
+                            VerificationController::verifyCollectionWithTraits
+                        )
+                    )
                 }
                 path("nft/extensions") {
-                    get("chain/{chain}/contract/{contractAddress}/paused", documented(ExtensionsController.pausedDocs(), ExtensionsController::paused))
-                    post("chain/{chain}/contract/{contractAddress}/pause", documented(ExtensionsController.pauseDocs(), ExtensionsController::pause))
-                    post("chain/{chain}/contract/{contractAddress}/unpause", documented(ExtensionsController.unpauseDocs(), ExtensionsController::unpause))
-                    put("chain/{chain}/contract/{contractAddress}/token/{tokenId}/tokenURI", documented(ExtensionsController.updateTokenURIDocs(), ExtensionsController::updateTokenURI))
-                    get("chain/{chain}/contract/{contractAddress}/transferable", documented(ExtensionsController.getTransferableDocs(), ExtensionsController::getTransferable))
-                    post("chain/{chain}/contract/{contractAddress}/transferable", documented(ExtensionsController.setTransferableDocs(), ExtensionsController::setTransferable))
-                    get("chain/{chain}/contract/{contractAddress}/burnable", documented(ExtensionsController.getBurnableDocs(), ExtensionsController::getBurnable))
-                    post("chain/{chain}/contract/{contractAddress}/burnable", documented(ExtensionsController.setBurnableDocs(), ExtensionsController::setBurnable))
-                    delete("chain/{chain}/contract/{contractAddress}/token/{tokenId}", documented(ExtensionsController.burnDocs(), ExtensionsController::burn))
+                    get(
+                        "chain/{chain}/contract/{contractAddress}/paused",
+                        documented(ExtensionsController.pausedDocs(), ExtensionsController::paused)
+                    )
+                    post(
+                        "chain/{chain}/contract/{contractAddress}/pause",
+                        documented(ExtensionsController.pauseDocs(), ExtensionsController::pause)
+                    )
+                    post(
+                        "chain/{chain}/contract/{contractAddress}/unpause",
+                        documented(ExtensionsController.unpauseDocs(), ExtensionsController::unpause)
+                    )
+                    put(
+                        "chain/{chain}/contract/{contractAddress}/token/{tokenId}/tokenURI",
+                        documented(ExtensionsController.updateTokenURIDocs(), ExtensionsController::updateTokenURI)
+                    )
+                    get(
+                        "chain/{chain}/contract/{contractAddress}/transferable",
+                        documented(ExtensionsController.getTransferableDocs(), ExtensionsController::getTransferable)
+                    )
+                    post(
+                        "chain/{chain}/contract/{contractAddress}/transferable",
+                        documented(ExtensionsController.setTransferableDocs(), ExtensionsController::setTransferable)
+                    )
+                    get(
+                        "chain/{chain}/contract/{contractAddress}/burnable",
+                        documented(ExtensionsController.getBurnableDocs(), ExtensionsController::getBurnable)
+                    )
+                    post(
+                        "chain/{chain}/contract/{contractAddress}/burnable",
+                        documented(ExtensionsController.setBurnableDocs(), ExtensionsController::setBurnable)
+                    )
+                    delete(
+                        "chain/{chain}/contract/{contractAddress}/token/{tokenId}",
+                        documented(ExtensionsController.burnDocs(), ExtensionsController::burn)
+                    )
 
                 }
                 path("nft/accessControl") {
-                    get("chain/{chain}/contract/{contractAddress}/owner", documented(AccessControlController.ownerDocs(), AccessControlController::owner))
-                    post("chain/{chain}/contract/{contractAddress}/ownershipTransfer", documented(AccessControlController.transferOwnershipDocs(), AccessControlController::transferOwnership))
-                    post("chain/{chain}/contract/{contractAddress}/ownershipRenounce", documented(AccessControlController.renounceOwnershipDocs(), AccessControlController::renounceOwnership))
-                    get("chain/{chain}/contract/{contractAddress}/account/{account}/role/{role}", documented(AccessControlController.hasRoleDocs(), AccessControlController::hasRole))
-                    get("chain/{chain}/contract/{contractAddress}/role/{role}/admin", documented(AccessControlController.roleAdminDocs(), AccessControlController::roleAdmin))
-                    post("chain/{chain}/contract/{contractAddress}/grantrole", documented(AccessControlController.grantRoleDocs(), AccessControlController::grantRole))
-                    post("chain/{chain}/contract/{contractAddress}/revokeRole", documented(AccessControlController.revokeRoleDocs(), AccessControlController::revokeRole))
-                    post("chain/{chain}/contract/{contractAddress}/renounceRole", documented(AccessControlController.renounceRoleDocs(), AccessControlController::renounceRole))
+                    get(
+                        "chain/{chain}/contract/{contractAddress}/owner",
+                        documented(AccessControlController.ownerDocs(), AccessControlController::owner)
+                    )
+                    post(
+                        "chain/{chain}/contract/{contractAddress}/ownershipTransfer",
+                        documented(AccessControlController.transferOwnershipDocs(), AccessControlController::transferOwnership)
+                    )
+                    post(
+                        "chain/{chain}/contract/{contractAddress}/ownershipRenounce",
+                        documented(AccessControlController.renounceOwnershipDocs(), AccessControlController::renounceOwnership)
+                    )
+                    get(
+                        "chain/{chain}/contract/{contractAddress}/account/{account}/role/{role}",
+                        documented(AccessControlController.hasRoleDocs(), AccessControlController::hasRole)
+                    )
+                    get(
+                        "chain/{chain}/contract/{contractAddress}/role/{role}/admin",
+                        documented(AccessControlController.roleAdminDocs(), AccessControlController::roleAdmin)
+                    )
+                    post(
+                        "chain/{chain}/contract/{contractAddress}/grantrole",
+                        documented(AccessControlController.grantRoleDocs(), AccessControlController::grantRole)
+                    )
+                    post(
+                        "chain/{chain}/contract/{contractAddress}/revokeRole",
+                        documented(AccessControlController.revokeRoleDocs(), AccessControlController::revokeRole)
+                    )
+                    post(
+                        "chain/{chain}/contract/{contractAddress}/renounceRole",
+                        documented(AccessControlController.renounceRoleDocs(), AccessControlController::renounceRole)
+                    )
 
                 }
             }

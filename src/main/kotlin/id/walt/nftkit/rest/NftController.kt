@@ -10,7 +10,7 @@ import java.math.BigInteger
 
 @Serializable
 data class MintRequest(
-    val metadataUri : String?,
+    val metadataUri: String?,
     val metadata: NftMetadata?,
     val recipientAddress: String,
     val metadataStorageType: MetadataStorageType,
@@ -20,7 +20,7 @@ data class MintRequest(
 @Serializable
 data class DeployRequest(
     val name: String,
-    val symbol : String,
+    val symbol: String,
     val tokenStandard: TokenStandard,
     val accessControl: AccessControl,
     val options: DeploymentParameter.Options
@@ -28,12 +28,13 @@ data class DeployRequest(
 
 object NftController {
 
-    fun deploy(ctx: Context){
+    fun deploy(ctx: Context) {
         val deployReq = ctx.bodyAsClass(DeployRequest::class.java)
         val chain = ctx.pathParam("chain")
         val deploymentOptions = DeploymentOptions(deployReq.accessControl, deployReq.tokenStandard)
         val deploymentParameter = DeploymentParameter(deployReq.name!!, deployReq.symbol!!, deployReq.options)
-        val result = NftService.deploySmartContractToken(Chain.valueOf(chain?.uppercase()!!), deploymentParameter, deploymentOptions)
+        val result =
+            NftService.deploySmartContractToken(Chain.valueOf(chain?.uppercase()!!), deploymentParameter, deploymentOptions)
         ctx.json(
             result
         )
@@ -43,7 +44,7 @@ object NftController {
         it.summary("Smart contract deployment")
             .operationId("deploySmartContract").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
     }.pathParam<String>("chain") {
-        it.schema<Chain> {  }
+        it.schema<Chain> { }
     }.body<DeployRequest> {
         it.description("")
     }.json<DeploymentResponse>("200") { it.description("Transaction ID and smart contract address") }
@@ -53,9 +54,10 @@ object NftController {
         val mintReq = ctx.bodyAsClass(MintRequest::class.java)
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val mintingParameter = MintingParameter(mintReq.metadataUri, mintReq.recipientAddress,mintReq.metadata)
+        val mintingParameter = MintingParameter(mintReq.metadataUri, mintReq.recipientAddress, mintReq.metadata)
         val mintingOptions = MintingOptions(mintReq.metadataStorageType)
-        val result = NftService.mintToken(Chain.valueOf(chain?.uppercase()!!),contractAddress, mintingParameter, mintingOptions)
+        val result =
+            NftService.mintToken(Chain.valueOf(chain?.uppercase()!!), contractAddress, mintingParameter, mintingOptions)
         ctx.json(
             result
         )
@@ -65,18 +67,19 @@ object NftController {
         it.summary("NFT minting")
             .operationId("mintNft").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
     }.pathParam<String>("chain") {
-        it.schema<Chain> {  }
+        it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
     }.body<MintRequest> {
         it.description("")
     }.json<MintingResponse>("200") { it.description("Transaction ID and token ID") }
 
 
-    fun getNftMetadatUri(ctx: Context){
+    fun getNftMetadatUri(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val tokenId = ctx.pathParam("tokenId").toLong()!!
-        val result = NftService.getNftMetadataUri(Chain.valueOf(chain?.uppercase()!!), contractAddress!!, BigInteger.valueOf(tokenId))
+        val result =
+            NftService.getNftMetadataUri(Chain.valueOf(chain?.uppercase()!!), contractAddress!!, BigInteger.valueOf(tokenId))
         ctx.json(
             result!!
         )
@@ -86,18 +89,19 @@ object NftController {
         it.summary("Get NFT Token Metadata URI")
             .operationId("MetadataUri").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
     }.pathParam<String>("chain") {
-        it.schema<Chain> {  }
+        it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
 
     }.pathParam<Int>("tokenId") {
     }.json<String>("200") { it.description("NFT Metadata URI") }
 
 
-    fun getNftMetadata(ctx: Context){
+    fun getNftMetadata(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val tokenId = ctx.pathParam("tokenId").toLong()!!
-        val result = NftService.getNftMetadata(Chain.valueOf(chain?.uppercase()!!), contractAddress!!, BigInteger.valueOf(tokenId))
+        val result =
+            NftService.getNftMetadata(Chain.valueOf(chain?.uppercase()!!), contractAddress!!, BigInteger.valueOf(tokenId))
         ctx.json(
             result!!
         )
@@ -107,13 +111,13 @@ object NftController {
         it.summary("Get NFT Token Metadata")
             .operationId("Metadata").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
     }.pathParam<String>("chain") {
-        it.schema<Chain> {  }
+        it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
     }.pathParam<Int>("tokenId") {
     }.json<NftMetadata>("200") { it.description("NFT Metadata") }
 
 
-    fun balance(ctx: Context){
+    fun balance(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val ownerAdress = ctx.pathParam("ownerAddress")
@@ -127,13 +131,13 @@ object NftController {
         it.summary("Get Account balance")
             .operationId("balance").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
     }.pathParam<String>("chain") {
-        it.schema<Chain> {  }
+        it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
     }.pathParam<String>("ownerAddress") {
     }.json<BigInteger>("200") { it.description("Account balance") }
 
 
-    fun owner(ctx: Context){
+    fun owner(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val tokenId = ctx.pathParam("tokenId").toLong()!!
@@ -147,13 +151,13 @@ object NftController {
         it.summary("Get Token owner")
             .operationId("owner").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
     }.pathParam<String>("chain") {
-        it.schema<Chain> {  }
+        it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
     }.pathParam<Int>("tokenId") {
     }.json<String>("200") { it.description("Owner address") }
 
 
-    fun tokenCollectionInfo(ctx: Context){
+    fun tokenCollectionInfo(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val result = NftService.getTokenCollectionInfo(Chain.valueOf(chain?.uppercase()!!), contractAddress!!)
@@ -166,11 +170,11 @@ object NftController {
         it.summary("Get Token info")
             .operationId("tokenInfo").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
     }.pathParam<String>("chain") {
-        it.schema<Chain> {  }
+        it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
     }.json<TokenCollectionInfo>("200") { it.description("Token info") }
 
-    fun getAccountNFTs(ctx: Context){
+    fun getAccountNFTs(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val ownerAdress = ctx.pathParam("ownerAddress")
         val result = NftService.getAccountNFTsByAlchemy(Chain.valueOf(chain?.uppercase()!!), ownerAdress)
@@ -183,7 +187,7 @@ object NftController {
         it.summary("Get NFTs")
             .operationId("GetNFTs").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
     }.pathParam<String>("chain") {
-        it.schema<Chain> {  }
+        it.schema<Chain> { }
     }.pathParam<String>("ownerAddress") {
     }.json<Array<NFTsAlchemyResult.NftTokenByAlchemy>>("200") { it.description("NFTs list") }
 

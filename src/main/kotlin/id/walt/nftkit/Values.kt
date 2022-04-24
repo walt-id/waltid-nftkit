@@ -24,6 +24,4 @@ object Values {
     const val POLYGON_TESTNET_MUMBAI_ALCHEMY_URL = "https://polygon-mumbai.g.alchemy.com/v2/"
 
 
-
-
 }

@@ -7,8 +7,8 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt
 
 object Common {
 
-     fun getTransactionResponse(chain: Chain, transactionReceipt: TransactionReceipt): TransactionResponse {
+    fun getTransactionResponse(chain: Chain, transactionReceipt: TransactionReceipt): TransactionResponse {
         val url = WaltIdServices.getBlockExplorerUrl(chain)
-        return TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt!!.transactionHash}" )
+        return TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt!!.transactionHash}")
     }
 }
