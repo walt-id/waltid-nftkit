@@ -2,6 +2,7 @@ package id.walt.nftkit
 
 import id.walt.nftkit.rest.UpdateTokenURIRequest
 import id.walt.nftkit.services.*
+import id.walt.nftkit.services.AccessControl.ROLE_BASED_ACCESS_CONTROL
 import id.walt.nftkit.utilis.providers.ProviderFactory
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -13,6 +14,7 @@ import org.web3j.crypto.Credentials
 import org.web3j.tx.RawTransactionManager
 import org.web3j.tx.TransactionManager
 import org.web3j.tx.gas.ContractGasProvider
+import smart_contract_wrapper.AccessControl
 import java.io.File
 
 suspend fun main() {
@@ -67,12 +69,9 @@ suspend fun nftStorageUploadFileTest(): String {
 suspend fun nftStorageAddMetadataTest(metadata: String): String {
 
     return runBlocking {
-        val res = NftService.client.submitForm(
-            url = "https://api.nft.storage/store",
-            formParameters = Parameters.build {
-                append("meta", metadata)
-            }
-        ).bodyAsText()
+        val res = NftService.client.submitForm(url = "https://api.nft.storage/store", formParameters = Parameters.build {
+            append("meta", metadata)
+        }).bodyAsText()
 
         return@runBlocking res
     }
@@ -90,8 +89,7 @@ suspend fun nftStorageReadMetadataTest(): String {
                     "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDYwNDNEYThENjU2RTU3NTg2ZDk3MkM1ZDM5RUNENzI1NTNCM2Q1NjAiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY1MDUzNzUzNjk2OSwibmFtZSI6Ik5GVHMifQ.MBK_rahk6e6fCTheE7qLJeZ_OIyKGkbP63aVLPas1sw"
                 )
             }
-        }
-            .body<String>()
+        }.body<String>()
         return@runBlocking result
     }
 }
@@ -100,7 +98,7 @@ suspend fun nftStorageReadMetadataTest(): String {
 fun updateMetadataUseCase() {
     //Deploy new RBAC smart contract
     val deploymentParameter = DeploymentParameter("Metaverse", "MTV", DeploymentParameter.Options(true, true))
-    val deploymentOptions = DeploymentOptions(AccessControl.ROLE_BASED_ACCESS_CONTROL, TokenStandard.ERC721)
+    val deploymentOptions = DeploymentOptions(ROLE_BASED_ACCESS_CONTROL, TokenStandard.ERC721)
     val sc = NftService.deploySmartContractToken(Chain.RINKEBY, deploymentParameter, deploymentOptions)
     println("Smart contrcat Address: ${sc.contractAddress}")
 
@@ -147,25 +145,24 @@ fun updateMetadataUseCase() {
 
 }
 
-private fun loadRbacContract(chain: Chain, address: String): smart_contract_wrapper.AccessControl {
+private fun loadRbacContract(chain: Chain, address: String): AccessControl {
     val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
 
     val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
 
     val gasProvider: ContractGasProvider = WaltIdGasProvider
 
-    if (chain == Chain.POLYGON || chain == Chain.MUMBAI) {
-        val chainId: Long
-        if (chain == Chain.POLYGON) {
-            chainId = Values.POLYGON_MAINNET_CHAIN_ID
-        } else {
-            chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
+    return when (chain) {
+        Chain.POLYGON, Chain.MUMBAI -> {
+            val chainId = when (chain) {
+                Chain.POLYGON -> Values.POLYGON_MAINNET_CHAIN_ID
+                else -> Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
+            }
+
+            val transactionManager: TransactionManager = RawTransactionManager(web3j, credentials, chainId)
+
+            AccessControl.load(address, web3j, transactionManager, gasProvider)
         }
-        val transactionManager: TransactionManager = RawTransactionManager(
-            web3j, credentials, chainId
-        )
-        return smart_contract_wrapper.AccessControl.load(address, web3j, transactionManager, gasProvider)
-    } else {
-        return smart_contract_wrapper.AccessControl.load(address, web3j, credentials, gasProvider)
+        else -> AccessControl.load(address, web3j, credentials, gasProvider)
     }
 }
