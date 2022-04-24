@@ -19,24 +19,30 @@ repositories {
 }
 
 dependencies {
+    // Kotlin
     implementation(kotlin("stdlib"))
+
+    // Ethereum: Web3j
     implementation ("org.web3j:core:5.0.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.2")
-    implementation("io.javalin:javalin-bundle:4.4.0")
+
+    // JSON
     implementation("com.beust:klaxon:5.6")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.2")
 
     // Logging
     implementation("org.slf4j:slf4j-api:2.0.0-alpha7")
     implementation("org.slf4j:slf4j-simple:2.0.0-alpha7")
     implementation("io.github.microutils:kotlin-logging:2.1.21")
 
-    // Config
+    // Config: Hoplite
     implementation("com.sksamuel.hoplite:hoplite-core:2.1.2")
     implementation("com.sksamuel.hoplite:hoplite-yaml:2.1.2")
     implementation("com.sksamuel.hoplite:hoplite-hikaricp:2.1.2")
 
-    // HTTP
-    // implementation("io.github.rybalkinsd", "kohttp", "0.12.0")
+    // HTTP / Server: Javalin
+    implementation("io.javalin:javalin-bundle:4.4.0")
+
+    // HTTP / Client: ktor
     implementation("io.ktor:ktor-client-core:2.0.0")
     implementation("io.ktor:ktor-client-content-negotiation:2.0.0")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.0")
