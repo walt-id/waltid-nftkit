@@ -75,7 +75,7 @@ publishing {
 
     repositories {
         maven {
-            url = uri("https://maven.walt.id/repository/waltid/")
+            url = uri("https://maven.pkg.github.com/walt-id/waltid-nftkit")
             val usernameFile = File("secret_maven_username.txt")
             val passwordFile = File("secret_maven_password.txt")
             val secretMavenUsername = System.getenv()["MAVEN_USERNAME"] ?: if (usernameFile.isFile) { usernameFile.readLines()[0] } else { "" }
