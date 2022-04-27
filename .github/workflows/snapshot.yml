@@ -33,7 +33,7 @@ jobs:
       - name: Running gradle build
         uses: eskatos/gradle-command-action@v1.3.3
         env:
-          MAVEN_USERNAME: ${{ GITHUB_ACTOR }}
+          MAVEN_USERNAME: ${{ env.GITHUB_ACTOR }}
           MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         with:
           arguments: build publish --no-daemon
