@@ -274,10 +274,10 @@ object NftService {
         return BigInteger.valueOf(0)
     }
 
-    fun ownerOf(chain: Chain,contractAddress: String, tokenId: Long): String?{
+    fun ownerOf(chain: Chain,contractAddress: String, tokenId: BigInteger): String?{
         //in the case of ERC721
         if(isErc721Standard(chain, contractAddress) == true){
-            return Erc721TokenStandard.ownerOf(chain, contractAddress,Uint256(BigInteger.valueOf(tokenId)))
+            return Erc721TokenStandard.ownerOf(chain, contractAddress,Uint256(tokenId))
         }
         return String()
     }

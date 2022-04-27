@@ -136,8 +136,8 @@ object NftController {
     fun owner(ctx: Context){
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val tokenId = ctx.pathParam("tokenId").toLong()!!
-        val result = NftService.ownerOf(Chain.valueOf(chain?.uppercase()!!), contractAddress!!, tokenId)
+        val tokenId = ctx.pathParam("tokenId")
+        val result = NftService.ownerOf(Chain.valueOf(chain?.uppercase()!!), contractAddress!!, BigInteger(tokenId))
         ctx.json(
             result!!
         )
