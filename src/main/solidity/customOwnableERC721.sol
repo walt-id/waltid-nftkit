@@ -7,8 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
 
-
-contract CustomOwnableERC721 is ERC721URIStorage, Ownable, Pausable  {
+contract CustomOwnableERC721 is ERC721URIStorage, Ownable, Pausable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
@@ -24,7 +23,7 @@ contract CustomOwnableERC721 is ERC721URIStorage, Ownable, Pausable  {
         tokensTransferable = _tokensTransferable;
     }
 
-     function mintTo(address _recipient, string memory tokenURI) public onlyOwner  returns (uint256) {
+    function mintTo(address _recipient, string memory tokenURI) public onlyOwner returns (uint256) {
         _tokenIds.increment();
 
         uint256 newItemId = _tokenIds.current();
@@ -34,11 +33,15 @@ contract CustomOwnableERC721 is ERC721URIStorage, Ownable, Pausable  {
         return newItemId;
     }
 
+     function setTokenURI(uint256 tokenId, string memory tokenURI) public onlyOwner {
+            _setTokenURI(tokenId, tokenURI);
+     }
+
     function setTransferableOption(bool _tokensTransferable) external onlyOwner {
         tokensTransferable = _tokensTransferable;
     }
 
-       /// @dev See {ERC721-_beforeTokenTransfer}.
+    /// @dev See {ERC721-_beforeTokenTransfer}.
     function _beforeTokenTransfer(
         address from,
         address to,
@@ -53,12 +56,12 @@ contract CustomOwnableERC721 is ERC721URIStorage, Ownable, Pausable  {
         }
     }
 
-    function setBurnableOption(bool _tokensBurnable) external onlyOwner{
+    function setBurnableOption(bool _tokensBurnable) external onlyOwner {
         tokensBurnable = _tokensBurnable;
     }
 
-       /**
-     * @dev Burns `tokenId`. See {ERC721-_burn}.
+    /**
+  * @dev Burns `tokenId`. See {ERC721-_burn}.
      *
      * Requirements:
      *
@@ -70,7 +73,7 @@ contract CustomOwnableERC721 is ERC721URIStorage, Ownable, Pausable  {
         _burn(tokenId);
     }
 
-       function pause() public onlyOwner {
+    function pause() public onlyOwner {
         _pause();
     }
 
