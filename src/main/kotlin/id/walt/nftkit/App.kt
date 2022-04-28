@@ -12,6 +12,7 @@ import org.web3j.crypto.Hash
 import org.web3j.tx.RawTransactionManager
 import org.web3j.tx.TransactionManager
 import org.web3j.tx.gas.ContractGasProvider
+import smart_contract_wrapper.CustomOwnableERC721
 import java.math.BigInteger
 import kotlin.text.toByteArray
 
@@ -45,6 +46,44 @@ fun main(){
     val mintingParameter: MintingParameter = MintingParameter(null, "0x2555e3a97c4ac9705D70b9e5B9b6cc6Fe2977A74",nftMetadata)
     val ms: MintingResponse = NftService.mintToken(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", mintingParameter, mintingOptions)
 */
+}
+
+fun updateOwnableScMetadataUseCase() {//0x856b30a1068659d29bc87d851b5df10bbf0137a8  mumbai
+    //Deploy new Ownable smart contract
+    //if you have already a deployed smart contract, you can skip this part
+    val deploymentParameter = DeploymentParameter("Metaverse", "MTV", DeploymentParameter.Options(true, true))
+    val deploymentOptions = DeploymentOptions(AccessControl.OWNABLE, TokenStandard.ERC721)
+    val sc = NftService.deploySmartContractToken(Chain.MUMBAI, deploymentParameter, deploymentOptions)
+    println("Smart contrcat Address: ${sc.contractAddress}")
+
+    val erc721Wrapper = loadOwnableContract(Chain.MUMBAI, sc.contractAddress)
+
+    //Mint new token
+    //if you have already a minted token, you can skip this part
+    val attribute1: NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "valid", value = "true")
+    val attributes = mutableListOf(attribute1)
+    val nftMetadata = NftMetadata(
+        name = "Bored apes",
+        description = "Bored apes#01",
+        image = "https://thumbor.forbes.com/thumbor/fit-in/900x510/https://www.forbes.com/advisor/in/wp-content/uploads/2022/03/monkey-g412399084_1280.jpg",
+        attributes = attributes
+    )
+    val mintingOptions = MintingOptions(MetadataStorageType.ON_CHAIN)
+    val mintingParameter = MintingParameter(null, "0x2555e3a97c4ac9705D70b9e5B9b6cc6Fe2977A74", nftMetadata)
+    val mintResponse = NftService.mintToken(Chain.MUMBAI, sc.contractAddress, mintingParameter, mintingOptions)
+    println("New Token Id: ${mintResponse.tokenId}")
+
+
+    //Update Metadata
+    //This is where actually we take an existing metadata to update it
+    nftMetadata.attributes?.get(0)!!.value = "False"
+    val updateTokenURIRequest = UpdateTokenURIRequest(null, nftMetadata, MetadataStorageType.ON_CHAIN)
+    ExtensionsService.setTokenURI(Chain.MUMBAI, sc.contractAddress, mintResponse.tokenId.toString(), updateTokenURIRequest)
+    val verifyUpdateMetadata = NftService.getNftMetadata(Chain.MUMBAI, sc.contractAddress, mintResponse.tokenId!!)
+    println("Fetch new Metadata: ")
+    println(verifyUpdateMetadata)
+
+
 }
 
 fun updateMetadataUseCase(){
@@ -111,5 +150,27 @@ private fun loadRbacContract(chain: Chain, address: String) : smart_contract_wra
         return  smart_contract_wrapper.AccessControl.load(address, web3j,transactionManager,gasProvider)
     }else{
         return smart_contract_wrapper.AccessControl.load(address, web3j,credentials,gasProvider)
+    }
+}
+
+private fun loadOwnableContract(chain: Chain, address: String): CustomOwnableERC721? {
+    val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
+
+    val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
+
+    val gasProvider: ContractGasProvider = WaltIdGasProvider
+
+    return when (chain) {
+        Chain.POLYGON, Chain.MUMBAI -> {
+            val chainId = when (chain) {
+                Chain.POLYGON -> Values.POLYGON_MAINNET_CHAIN_ID
+                else -> Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
+            }
+
+            val transactionManager: TransactionManager = RawTransactionManager(web3j, credentials, chainId)
+
+            CustomOwnableERC721.load(address, web3j, transactionManager, gasProvider)
+        }
+        else -> CustomOwnableERC721.load(address, web3j, credentials, gasProvider)
     }
 }
