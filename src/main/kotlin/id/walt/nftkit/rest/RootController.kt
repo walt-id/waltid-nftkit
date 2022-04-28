@@ -13,8 +13,8 @@ object RootController {
                     "\n" +
                     "<h1>walt.id NFT Kit API</h1>\n" +
                     "<p><a href='/api-routes'>API Routes</a></p>\n" +
-                    "<p><a href='/v1/swagger'>Swagger</a></p>\n" +
-                    "<p><a href='/v1/redoc'>Redoc</a></p>\n" +
+                    "<p><a href='/nftkit/swagger'>Swagger</a></p>\n" +
+                    "<p><a href='/nftkit/redoc'>Redoc</a></p>\n" +
                     "\n" +
                     "</body>\n" +
                     "</html> "
