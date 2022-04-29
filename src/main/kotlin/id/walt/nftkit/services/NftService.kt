@@ -378,7 +378,7 @@ object NftService {
                 it.trait_type.equals(key, true)
             }?.map { it.value= value }
         }
-        val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri()
+        val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(MetadataStorageType.ON_CHAIN)
         val tokenUri = metadataUri.getTokenUri(metadata)
         val transactionReceipt = Erc721TokenStandard.updateTokenUri(chain, contractAddress, BigInteger(tokenId), Utf8String(tokenUri))
         val url = WaltIdServices.getBlockExplorerUrl(chain)

@@ -17,6 +17,7 @@ import org.web3j.crypto.Credentials
 import org.web3j.tx.RawTransactionManager
 import org.web3j.tx.TransactionManager
 import org.web3j.tx.gas.ContractGasProvider
+import smart_contract_wrapper.CustomAccessControlERC721
 import java.io.File
 import smart_contract_wrapper.CustomOwnableERC721
 import java.math.BigInteger
@@ -161,7 +162,7 @@ fun updateMetadataUseCase(){
 
 }
 
-private fun loadRbacContract(chain: Chain, address: String): AccessControl {
+private fun loadRbacContract(chain: Chain, address: String): CustomAccessControlERC721? {
     val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
 
     val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
@@ -177,9 +178,9 @@ private fun loadRbacContract(chain: Chain, address: String): AccessControl {
 
             val transactionManager: TransactionManager = RawTransactionManager(web3j, credentials, chainId)
 
-            AccessControl.load(address, web3j, transactionManager, gasProvider)
+            CustomAccessControlERC721.load(address, web3j, transactionManager, gasProvider)
         }
-        else -> AccessControl.load(address, web3j, credentials, gasProvider)
+        else -> CustomAccessControlERC721.load(address, web3j, credentials, gasProvider)
     }
 }
 
