@@ -103,7 +103,7 @@ fun updateOwnableScMetadataUseCase() {//0x856b30a1068659d29bc87d851b5df10bbf0137
     //Update Metadata
     //This is where actually we take an existing metadata to update it
     nftMetadata.attributes?.get(0)!!.value = "False"
-    val updateTokenURIRequest = UpdateTokenURIRequest(null, nftMetadata, MetadataStorageType.ON_CHAIN)
+    val updateTokenURIRequest = UpdateTokenURIRequest(null, nftMetadata)
     ExtensionsService.setTokenURI(Chain.MUMBAI, sc.contractAddress, mintResponse.tokenId.toString(), updateTokenURIRequest)
     val verifyUpdateMetadata = NftService.getNftMetadata(Chain.MUMBAI, sc.contractAddress, mintResponse.tokenId!!)
     println("Fetch new Metadata: ")
@@ -153,7 +153,7 @@ fun updateMetadataUseCase(){
 
     //Update Metadata
     nftMetadata.attributes?.get(0)!!.value = "False"
-    val updateTokenURIRequest = UpdateTokenURIRequest(null, nftMetadata, MetadataStorageType.ON_CHAIN)
+    val updateTokenURIRequest = UpdateTokenURIRequest(null, nftMetadata)
     ExtensionsService.setTokenURI(Chain.RINKEBY, sc.contractAddress, mintResponse.tokenId.toString(), updateTokenURIRequest)
     val verifyUpdateMetadata = NftService.getNftMetadata(Chain.RINKEBY, sc.contractAddress, mintResponse.tokenId)
     println("Fetch new Metadata: ")
