@@ -47,7 +47,7 @@ object ExtensionsService {
         if (parameter.metadataUri != null && parameter.metadataUri != "") {
             tokenUri = parameter.metadataUri
         } else {
-            val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri()
+            val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(parameter.metadataStorageType)
             tokenUri = metadataUri.getTokenUri(parameter.metadata)
         }
         val transactionReceipt =

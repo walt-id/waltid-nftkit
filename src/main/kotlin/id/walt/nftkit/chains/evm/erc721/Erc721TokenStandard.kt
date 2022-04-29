@@ -86,7 +86,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
         return erc721URIStorageWrapper.symbol().send().value
     }
 
-    override fun tokenURI(chain: Chain, contractAddress: String, tokenId: Uint256): String? {
+    override fun tokenURI(chain: Chain, contractAddress: String, tokenId: Uint256): String {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress)
         return erc721URIStorageWrapper.tokenURI(tokenId).send().value
     }

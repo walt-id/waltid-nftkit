@@ -1,5 +1,6 @@
 package id.walt.nftkit
 
+import id.walt.nftkit.rest.NftKitApi
 import id.walt.nftkit.rest.UpdateTokenURIRequest
 import id.walt.nftkit.services.*
 import id.walt.nftkit.services.AccessControl.ROLE_BASED_ACCESS_CONTROL
@@ -10,6 +11,8 @@ import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.web3j.crypto.Credentials
 import org.web3j.tx.RawTransactionManager
 import org.web3j.tx.TransactionManager
@@ -20,23 +23,25 @@ import java.io.File
 suspend fun main() {
 
     // Store metadata API
-    println("Store metadata result is: " + nftStorageAddMetadataTest("{\"description\":\"string\",\"name\":\"string\",\"image\":\"string\",\"attributes\":[{\"trait_type\":\"string\",\"value\":\"string\"}]}"))
+    //println("Store metadata result is: " + nftStorageAddMetadataTest("{\"description\":\"string\",\"name\":\"string\",\"image\":\"string\",\"attributes\":[{\"trait_type\":\"string\",\"value\":\"string\"}]}"))
 
     println("\n\n\n")
 
     // Upload file API
-    println("Upload file result is: " + nftStorageUploadFileTest())
+    //println("Upload file result is: " + nftStorageUploadFileTest())
 
     /* /////////// */
     /* /////////// */
     /* /////////// */
-    //NftKitApi.start()
+    NftKitApi.start()
     //updateMetadataUseCase()
-
-    //val attribute1 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "valid", value = "true")
-    //val attributes = mutableListOf(attribute1)
-    //val nftMetadata = NftMetadata(name = "Bored apes", description = "Bored apes#01", image = "https://thumbor.forbes.com/thumbor/fit-in/900x510/https://www.forbes.com/advisor/in/wp-content/uploads/2022/03/monkey-g412399084_1280.jpg", attributes = attributes)
-
+    //println(getNftMetadataTest())
+    /*val attribute1 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "valid", value = "true")
+    val attributes = mutableListOf(attribute1)
+    val nftMetadata = NftMetadata(name = "Bored apes", description = "Bored apes#01", image = "https://thumbor.forbes.com/thumbor/fit-in/900x510/https://www.forbes.com/advisor/in/wp-content/uploads/2022/03/monkey-g412399084_1280.jpg", attributes = attributes)
+    val metadata= Json.encodeToString(nftMetadata)
+    println(metadata)
+    println("Store metadata result is: " + nftStorageAddMetadataTest(metadata))*/
 
 /*    val attribute1 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a6", value = "v6"*//*, display_type = null*//*)
     val attribute2 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "a6", value = "v6"*//*, display_type = null*//*)
@@ -50,6 +55,23 @@ suspend fun main() {
     val mintingParameter: MintingParameter = MintingParameter(null, "0x2555e3a97c4ac9705D70b9e5B9b6cc6Fe2977A74",nftMetadata)
     val ms: MintingResponse = NftService.mintToken(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", mintingParameter, mintingOptions)
 */
+}
+
+
+suspend fun getNftMetadataTest(): NftMetadata {
+    return runBlocking {
+
+        val result = NftService.client.get("https://nftstorage.link/ipfs/bafyreicgrs3qejwcfevrhpffokwfsjqz5r3brnctsefyneojuynom7vk2i/metadata.json") {
+            /* headers {
+                 append(
+                     "Authorization",
+                     "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDYwNDNEYThENjU2RTU3NTg2ZDk3MkM1ZDM5RUNENzI1NTNCM2Q1NjAiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY1MDUzNzUzNjk2OSwibmFtZSI6Ik5GVHMifQ.MBK_rahk6e6fCTheE7qLJeZ_OIyKGkbP63aVLPas1sw"
+                 )
+             }*/
+        }.body<NftMetadata>()
+
+        return@runBlocking result
+    }
 }
 
 suspend fun nftStorageUploadFileTest(): String {
