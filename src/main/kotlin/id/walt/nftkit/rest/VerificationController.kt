@@ -6,16 +6,19 @@ import id.walt.nftkit.services.VerificationService
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
 import kotlinx.serialization.Serializable
+import java.math.BigInteger
 
 
 @Serializable
 data class VerifyCollectionRequest(
-    val accountAddress: String,
+    val account: String,
+    val tokenId: String
 )
 
 @Serializable
 data class VerifyTraitRequest(
-    val accountAddress: String,
+    val account: String,
+    val tokenId: String,
     val traitType: String,
     val traitValue: String? = null,
 )
@@ -33,7 +36,7 @@ object VerificationController {
 
         val contractAddress = ctx.pathParam("contractAddress")
 
-        val result = VerificationService.verifyCollection(chain, contractAddress, req.accountAddress)
+        val result = VerificationService.verifyCollection(chain, contractAddress, req.account, req.tokenId)
         ctx.json(result)
     }
 
@@ -58,7 +61,8 @@ object VerificationController {
 
         val contractAddress = ctx.pathParam("contractAddress")
 
-        val result = VerificationService.verifyTrait(chain, contractAddress, req.accountAddress, req.traitType, req.traitValue)
+
+        val result = VerificationService.verifyTrait(chain, contractAddress, req.account, req.tokenId, req.traitType,req.traitValue)
         ctx.json(result)
     }
 

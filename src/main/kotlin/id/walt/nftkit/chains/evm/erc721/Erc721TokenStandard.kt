@@ -96,7 +96,17 @@ object Erc721TokenStandard : IErc721TokenStandard {
         return erc721URIStorageWrapper.balanceOf(owner).send().value
     }
 
-    override fun supportsInterface(chain: Chain, contractAddress: String): Boolean {
+    override fun updateTokenUri(
+        chain: Chain,
+        contractAddress: String,
+        token: BigInteger,
+        tokenURI: Utf8String
+    ): TransactionReceipt? {
+        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
+        return erc721URIStorageWrapper.setTokenURI(Uint256(token), tokenURI).send()
+    }
+
+    override fun supportsInterface(chain: Chain, contractAddress: String) : Boolean {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress)
         val data = Numeric.hexStringToByteArray("0x5b5e139f") // ERC721 interface id
         val interfaceId = Bytes4(data)
@@ -194,7 +204,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
         return DeploymentResponse(ts, contract.contractAddress, "$url/address/${contract.contractAddress}")
     }
 
-    private fun loadContract(chain: Chain, address: String): ERC721URIStorage {
+    private fun loadContract(chain: Chain, address: String) : CustomOwnableERC721 {
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
 
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
@@ -211,9 +221,11 @@ object Erc721TokenStandard : IErc721TokenStandard {
             val transactionManager: TransactionManager = RawTransactionManager(
                 web3j, credentials, chainId
             )
-            return ERC721URIStorage.load(address, web3j, transactionManager, gasProvider)
-        } else {
-            return ERC721URIStorage.load(address, web3j, credentials, gasProvider)
+
+             return  CustomOwnableERC721.load(address, web3j,transactionManager,gasProvider)
+        }else{
+            return CustomOwnableERC721.load(address, web3j,credentials,gasProvider)
+
         }
     }
 

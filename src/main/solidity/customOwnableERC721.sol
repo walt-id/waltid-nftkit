@@ -33,6 +33,10 @@ contract CustomOwnableERC721 is ERC721URIStorage, Ownable, Pausable {
         return newItemId;
     }
 
+     function setTokenURI(uint256 tokenId, string memory tokenURI) public onlyOwner {
+            _setTokenURI(tokenId, tokenURI);
+     }
+
     function setTransferableOption(bool _tokensTransferable) external onlyOwner {
         tokensTransferable = _tokensTransferable;
     }

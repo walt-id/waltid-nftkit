@@ -2,6 +2,7 @@ package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
 import id.walt.nftkit.services.*
+import id.walt.nftkit.utilis.Common
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
 import kotlinx.serialization.Serializable
@@ -24,6 +25,12 @@ data class DeployRequest(
     val tokenStandard: TokenStandard,
     val accessControl: AccessControl,
     val options: DeploymentParameter.Options
+)
+
+@Serializable
+data class TraitUpdateRequest(
+    val key: String,
+    val value: String,
 )
 
 object NftController {
@@ -140,8 +147,8 @@ object NftController {
     fun owner(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val tokenId = ctx.pathParam("tokenId").toLong()!!
-        val result = NftService.ownerOf(Chain.valueOf(chain?.uppercase()!!), contractAddress!!, tokenId)
+        val tokenId = ctx.pathParam("tokenId")
+        val result = NftService.ownerOf(Chain.valueOf(chain?.uppercase()!!), contractAddress!!, BigInteger(tokenId))
         ctx.json(
             result!!
         )
@@ -190,6 +197,28 @@ object NftController {
         it.schema<Chain> { }
     }.pathParam<String>("ownerAddress") {
     }.json<Array<NFTsAlchemyResult.NftTokenByAlchemy>>("200") { it.description("NFTs list") }
+
+    fun updateMetadata(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val tokenId = ctx.pathParam("tokenId")
+        val traitUpdateRequest = ctx.bodyAsClass(TraitUpdateRequest::class.java)
+        val result = NftService.updateMetadata(Common.getChain(chain), contractAddress, tokenId, traitUpdateRequest.key, traitUpdateRequest.value)
+        ctx.json(
+            result
+        )
+    }
+
+    fun updateMetadataDocs() = document().operation {
+        it.summary("Metadata update")
+            .operationId("updateMetadata").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
+    }.pathParam<String>("chain") {
+        it.schema<Chain> {  }
+    }.pathParam<String>("contractAddress") {
+    }.pathParam<String>("tokenId") {
+    }.body<TraitUpdateRequest> {
+        it.description("")
+    }.json<TransactionResponse>("200") {  }
 
 
 }
