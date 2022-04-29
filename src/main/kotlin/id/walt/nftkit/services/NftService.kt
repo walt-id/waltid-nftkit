@@ -6,6 +6,7 @@ import id.walt.nftkit.metadata.MetadataUri
 import id.walt.nftkit.metadata.MetadataUriFactory
 import id.walt.nftkit.services.WaltIdServices.decBase64Str
 import id.walt.nftkit.smart_contract_wrapper.Erc721OnchainCredentialWrapper
+import id.walt.nftkit.utilis.Common
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -279,15 +280,15 @@ object NftService {
 
      fun getNftMetadata(chain: Chain, contractAddress: String, tokenId: BigInteger): NftMetadata {
         var uri = getMetadatUri(chain, contractAddress, tokenId)
-        if(uri!!.contains("data:application/json;base64", true)){
-            val decodedUri = decBase64Str(uri!!.substring(29))
+        if(Common.getMetadataType(uri).equals(MetadataStorageType.ON_CHAIN)){
+            val decodedUri = decBase64Str(uri.substring(29))
             return Json.decodeFromString(decodedUri)
         }else{
             return getIPFSMetadataUsingNFTStorage(uri)
         }
     }
 
-    fun getNftMetadataUri(chain: Chain, contractAddress: String, tokenId: BigInteger): String? {
+    fun getNftMetadataUri(chain: Chain, contractAddress: String, tokenId: BigInteger): String {
         return getMetadatUri(chain, contractAddress, tokenId)
     }
 
@@ -378,7 +379,8 @@ object NftService {
                 it.trait_type.equals(key, true)
             }?.map { it.value= value }
         }
-        val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(MetadataStorageType.ON_CHAIN)
+        val oldUri= getMetadatUri(chain, contractAddress, BigInteger(tokenId))
+        val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(Common.getMetadataType(oldUri))
         val tokenUri = metadataUri.getTokenUri(metadata)
         val transactionReceipt = Erc721TokenStandard.updateTokenUri(chain, contractAddress, BigInteger(tokenId), Utf8String(tokenUri))
         val url = WaltIdServices.getBlockExplorerUrl(chain)
@@ -461,7 +463,7 @@ object NftService {
         return MintingResponse(null, null)
     }
 
-    private fun getMetadatUri(chain: Chain, contractAddress: String, tokenId: BigInteger): String? {
+    private fun getMetadatUri(chain: Chain, contractAddress: String, tokenId: BigInteger): String {
         if (isErc721Standard(chain, contractAddress) == true) {
             return Erc721TokenStandard.tokenURI(chain, contractAddress, Uint256(tokenId))
         }

@@ -11,7 +11,6 @@ import java.math.BigInteger
 data class UpdateTokenURIRequest(
     val metadataUri: String?,
     val metadata: NftMetadata?,
-    val metadataStorageType: MetadataStorageType,
 )
 
 data class TransferableRequest(val transferable: Boolean)

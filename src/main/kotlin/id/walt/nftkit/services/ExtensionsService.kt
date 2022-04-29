@@ -43,11 +43,12 @@ object ExtensionsService {
         parameter: UpdateTokenURIRequest
     ): TransactionResponse {
         val customAccessControlERC721Wrapper = loadOwnableContract(chain, contractAddress)
-        var tokenUri: String?;
+        var tokenUri: String?
+        val oldUri= NftService.getNftMetadataUri(chain, contractAddress, BigInteger(tokenId))
         if (parameter.metadataUri != null && parameter.metadataUri != "") {
             tokenUri = parameter.metadataUri
         } else {
-            val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(parameter.metadataStorageType)
+            val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(Common.getMetadataType(oldUri))
             tokenUri = metadataUri.getTokenUri(parameter.metadata)
         }
         val transactionReceipt =
