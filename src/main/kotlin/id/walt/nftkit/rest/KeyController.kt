@@ -46,7 +46,7 @@ object KeyController {
 
     fun delete(ctx: Context) {
         println(ctx.body())
-       // ctx.json(keyService.delete(ctx.body()))
+        // ctx.json(keyService.delete(ctx.body()))
         ctx.json("")
     }
 
@@ -87,7 +87,7 @@ object KeyController {
 
     fun import(ctx: Context) {
         // val req = ctx.bodyAsClass(ImportKeyRequest::class.java)
-       // ctx.json(keyService.importKey(ctx.body()))
+        // ctx.json(keyService.importKey(ctx.body()))
         ctx.json("")
     }
 

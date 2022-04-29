@@ -31,7 +31,7 @@ interface IErc721TokenStandard {
 
     fun balanceOf(chain: Chain, contractAddress: String, owner: Address): BigInteger?
 
-    fun supportsInterface(chain: Chain, contractAddress: String) : Boolean
+    fun supportsInterface(chain: Chain, contractAddress: String): Boolean
 
     fun updateTokenUri(chain: Chain, contractAddress: String, token: BigInteger, tokenURI: Utf8String) : TransactionReceipt?
 
@@ -84,7 +84,6 @@ interface IErc721TokenStandard {
    ): RemoteFunctionCall<TransactionReceipt>?*/
 
     //fun Burn(ContractAddress: string?, CallerId: string?, TokenId: Long): Task<TransactionReciept?>?
-
 
 
 }

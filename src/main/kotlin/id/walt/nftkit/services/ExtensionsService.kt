@@ -7,7 +7,6 @@ import id.walt.nftkit.metadata.MetadataUriFactory
 import id.walt.nftkit.rest.UpdateTokenURIRequest
 import id.walt.nftkit.utilis.Common
 import id.walt.nftkit.utilis.providers.ProviderFactory
-import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.Bool
 import org.web3j.abi.datatypes.Utf8String
 import org.web3j.abi.datatypes.generated.Uint256
@@ -37,16 +36,22 @@ object ExtensionsService {
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun setTokenURI(chain: Chain, contractAddress: String, tokenId: String, parameter: UpdateTokenURIRequest): TransactionResponse {
+    fun setTokenURI(
+        chain: Chain,
+        contractAddress: String,
+        tokenId: String,
+        parameter: UpdateTokenURIRequest
+    ): TransactionResponse {
         val customAccessControlERC721Wrapper = loadOwnableContract(chain, contractAddress)
         var tokenUri: String?;
-        if(parameter.metadataUri != null && parameter.metadataUri != ""){
+        if (parameter.metadataUri != null && parameter.metadataUri != "") {
             tokenUri = parameter.metadataUri
-        }else{
-            val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri()
+        } else {
+            val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(parameter.metadataStorageType)
             tokenUri = metadataUri.getTokenUri(parameter.metadata)
         }
-        val transactionReceipt = customAccessControlERC721Wrapper.setTokenURI(Uint256(BigInteger(tokenId)), Utf8String(tokenUri)).send()
+        val transactionReceipt =
+            customAccessControlERC721Wrapper.setTokenURI(Uint256(BigInteger(tokenId)), Utf8String(tokenUri)).send()
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
@@ -79,26 +84,26 @@ object ExtensionsService {
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
-    private fun loadOwnableContract(chain: Chain, address: String) : CustomAccessControlERC721 {
+    private fun loadOwnableContract(chain: Chain, address: String): CustomAccessControlERC721 {
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
 
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
 
         val gasProvider: ContractGasProvider = WaltIdGasProvider
 
-        if(chain == Chain.POLYGON || chain == Chain.MUMBAI){
-            val chainId : Long
-            if(chain == Chain.POLYGON){
+        if (chain == Chain.POLYGON || chain == Chain.MUMBAI) {
+            val chainId: Long
+            if (chain == Chain.POLYGON) {
                 chainId = Values.POLYGON_MAINNET_CHAIN_ID
-            }else{
+            } else {
                 chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
             }
             val transactionManager: TransactionManager = RawTransactionManager(
                 web3j, credentials, chainId
             )
-            return  CustomAccessControlERC721.load(address, web3j,transactionManager,gasProvider)
-        }else{
-            return CustomAccessControlERC721.load(address, web3j,credentials,gasProvider)
+            return CustomAccessControlERC721.load(address, web3j, transactionManager, gasProvider)
+        } else {
+            return CustomAccessControlERC721.load(address, web3j, credentials, gasProvider)
         }
     }
 }
