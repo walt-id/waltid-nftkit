@@ -72,7 +72,7 @@ enum class TokenStandard {
 
 enum class MetadataStorageType {
     ON_CHAIN,
-    //OFF_CHAIN
+    OFF_CHAIN
 }
 
 enum class OffChainMetadataStorageType {
@@ -268,18 +268,21 @@ object NftService {
         if (parameter.metadataUri != null && parameter.metadataUri != "") {
             tokenUri = parameter.metadataUri
         } else {
-            val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri()
+            val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(options.metadataStorageType)
             tokenUri = metadataUri.getTokenUri(parameter.metadata)
         }
 
         return mintNewToken(parameter.recipientAddress, tokenUri, chain, contractAddress)
     }
 
-    fun getNftMetadata(chain: Chain, contractAddress: String, tokenId: BigInteger): NftMetadata {
-        //Work just for on-chain metadata
+     fun getNftMetadata(chain: Chain, contractAddress: String, tokenId: BigInteger): NftMetadata {
         var uri = getMetadatUri(chain, contractAddress, tokenId)
-        val decodedUri = decBase64Str(uri!!.substring(29))
-        return Json.decodeFromString(decodedUri)
+        if(uri!!.contains("data:application/json;base64", true)){
+            val decodedUri = decBase64Str(uri!!.substring(29))
+            return Json.decodeFromString(decodedUri)
+        }else{
+            return getIPFSMetadataUsingNFTStorage(uri)
+        }
     }
 
     fun getNftMetadataUri(chain: Chain, contractAddress: String, tokenId: BigInteger): String? {
@@ -393,6 +396,17 @@ object NftService {
             return nfts.ownedNfts.plus(fetchAccountNFTsTokensByAlchemy(account, url, nfts.pageKey))
         } else {
             return nfts.ownedNfts
+        }
+    }
+
+     fun getIPFSMetadataUsingNFTStorage(uri: String): NftMetadata {
+        return runBlocking {
+            var uriFormat= uri
+            if(uri.contains("ipfs://", true)){}
+            uriFormat= uri.replace("ipfs://","", true)
+            val result = NftService.client.get("https://nftstorage.link/ipfs/$uriFormat") {
+            }.body<NftMetadata>()
+            return@runBlocking result
         }
     }
 
