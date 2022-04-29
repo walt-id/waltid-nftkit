@@ -39,10 +39,12 @@ import java.math.BigInteger
 
 @Serializable
 data class NftMetadata(
-    val description: String? = null,
-    val name: String? = null,
-    val image: String? = null,
-    val attributes: List<Attributes>? = null
+
+    var description: String?= null,
+    var name: String?=null,
+    var image: String?=null,
+    val attributes: List<Attributes>?=null
+
 ) {
     @Serializable
     data class Attributes(
@@ -296,10 +298,11 @@ object NftService {
         return BigInteger.valueOf(0)
     }
 
-    fun ownerOf(chain: Chain, contractAddress: String, tokenId: Long): String? {
+    fun ownerOf(chain: Chain,contractAddress: String, tokenId: BigInteger): String?{
         //in the case of ERC721
-        if (isErc721Standard(chain, contractAddress) == true) {
-            return Erc721TokenStandard.ownerOf(chain, contractAddress, Uint256(BigInteger.valueOf(tokenId)))
+        if(isErc721Standard(chain, contractAddress) == true){
+            return Erc721TokenStandard.ownerOf(chain, contractAddress,Uint256(tokenId))
+
         }
         return String()
     }
@@ -360,6 +363,27 @@ object NftService {
             }
             return@runBlocking result
         }
+    }
+
+    fun updateMetadata(chain: Chain, contractAddress: String, tokenId: String, key: String,value: String): TransactionResponse {
+        val metadata= getNftMetadata(chain, contractAddress, BigInteger(tokenId))
+        if("name".equals(key, true)){
+            metadata.name= value
+        }else if("description".equals(key, true)){
+            metadata.description= value
+        }else if("image".equals(key, true)){
+            metadata.image= value
+        }else{
+            metadata.attributes?.filter {
+                it.trait_type.equals(key, true)
+            }?.map { it.value= value }
+        }
+        val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri()
+        val tokenUri = metadataUri.getTokenUri(metadata)
+        val transactionReceipt = Erc721TokenStandard.updateTokenUri(chain, contractAddress, BigInteger(tokenId), Utf8String(tokenUri))
+        val url = WaltIdServices.getBlockExplorerUrl(chain)
+        return TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt.transactionHash}")
+
     }
 
 

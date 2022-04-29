@@ -92,9 +92,9 @@ object NftKitApi {
                         }
                     }
                 }).apply {
-                    path("/v1/api-documentation")
-                    swagger(SwaggerOptions("/v1/swagger").title("walt.id NFT Kit API"))
-                    reDoc(ReDocOptions("/v1/redoc").title("walt.id NFT Kit API"))
+                    path("/nftkit/api-documentation")
+                    swagger(SwaggerOptions("/nftkit/swagger").title("walt.id NFT Kit API"))
+                    reDoc(ReDocOptions("/nftkit/redoc").title("walt.id NFT Kit API"))
                 }))
 
                 val mapper: ObjectMapper = com.fasterxml.jackson.databind.json.JsonMapper.builder()
@@ -120,7 +120,7 @@ object NftKitApi {
         }.routes {
             get("", documented(documentedIgnored(), RootController::root))
             get("health", documented(healthDocs(), RootController::health))
-            path("v1") {
+            path("nftkit") {
                 path("key") {
                     get("", documented(KeyController.listDocs(), KeyController::list))
                     get("{id}", documented(KeyController.loadDocs(), KeyController::load))
@@ -131,6 +131,7 @@ object NftKitApi {
                 }
                 path("nft") {
                     post("chain/{chain}/contract/deploy", documented(NftController.deployDocs(), NftController::deploy))
+                    
                     post(
                         "chain/{chain}/contract/{contractAddress}/token/mint",
                         documented(NftController.mintDocs(), NftController::mint)
@@ -160,7 +161,7 @@ object NftKitApi {
                         documented(NftController.getAccountNFTsDocs(), NftController::getAccountNFTs)
                     )
                 }
-                path("nft") {
+                path("nft/verifier") {
                     post(
                         "chain/{chain}/contract/{contractAddress}/verifyCollection",
                         documented(VerificationController.verifyCollectionDocs(), VerificationController::verifyCollection)
@@ -172,6 +173,7 @@ object NftKitApi {
                             VerificationController::verifyCollectionWithTraits
                         )
                     )
+
                 }
                 path("nft/extensions") {
                     get(
