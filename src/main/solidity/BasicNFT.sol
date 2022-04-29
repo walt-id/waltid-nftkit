@@ -12,8 +12,8 @@ contract BasicNFTs is ERC721 {
     constructor() ERC721("Metaverse Tokens", "METT") {}
 
     function mintTo(address recipient)
-        public
-        returns (uint256)
+    public
+    returns (uint256)
     {
         currentTokenId.increment();
         uint256 newItemId = currentTokenId.current();

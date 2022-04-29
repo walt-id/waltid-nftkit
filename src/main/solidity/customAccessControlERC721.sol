@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract CustomAccessControlERC721 is ERC721URIStorage, Pausable, AccessControl  {
+contract CustomAccessControlERC721 is ERC721URIStorage, Pausable, AccessControl {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
@@ -27,7 +27,7 @@ contract CustomAccessControlERC721 is ERC721URIStorage, Pausable, AccessControl 
         _setRoleAdmin(METADATA_UPDATER_ROLE, DEFAULT_ADMIN_ROLE);
     }
 
-     function mintTo(address _recipient, string memory tokenURI) public onlyRole(MINTER_ROLE) returns (uint256) {
+    function mintTo(address _recipient, string memory tokenURI) public onlyRole(MINTER_ROLE) returns (uint256) {
         _tokenIds.increment();
 
         uint256 newItemId = _tokenIds.current();
@@ -37,15 +37,15 @@ contract CustomAccessControlERC721 is ERC721URIStorage, Pausable, AccessControl 
         return newItemId;
     }
 
-    function setTokenURI(uint256 tokenId, string memory tokenURI) public onlyRole(METADATA_UPDATER_ROLE){
-            _setTokenURI(tokenId, tokenURI);
+    function setTokenURI(uint256 tokenId, string memory tokenURI) public onlyRole(METADATA_UPDATER_ROLE) {
+        _setTokenURI(tokenId, tokenURI);
     }
 
     function setTransferableOption(bool _tokensTransferable) external onlyRole(DEFAULT_ADMIN_ROLE) {
         tokensTransferable = _tokensTransferable;
     }
 
-       /// @dev See {ERC721-_beforeTokenTransfer}.
+    /// @dev See {ERC721-_beforeTokenTransfer}.
     function _beforeTokenTransfer(
         address from,
         address to,
@@ -70,7 +70,7 @@ contract CustomAccessControlERC721 is ERC721URIStorage, Pausable, AccessControl 
         _burn(tokenId);
     }
 
-       function pause() public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function pause() public onlyRole(DEFAULT_ADMIN_ROLE) {
         _pause();
     }
 

@@ -4,7 +4,7 @@ import id.walt.nftkit.services.Chain
 
 object ProviderFactory {
 
-    fun getProvider(chain: Chain): Web3jInstance? = when(chain){
+    fun getProvider(chain: Chain): Web3jInstance? = when (chain) {
         Chain.ETHEREUM -> EthereumWeb3()
         Chain.ROPSTEN -> RopstenWeb3()
         Chain.RINKEBY -> RinkebyWeb3()

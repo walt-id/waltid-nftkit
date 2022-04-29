@@ -28,7 +28,7 @@ object VerificationController {
     fun verifyCollection(ctx: Context) {
         val req = ctx.bodyAsClass(VerifyCollectionRequest::class.java)
         val chain = ctx.pathParam("chain").let {
-            if (it.isEmpty()){
+            if (it.isEmpty()) {
                 throw Exception("No chain defined")
             }
             Chain.valueOf(it.uppercase())
@@ -44,22 +44,23 @@ object VerificationController {
         it.summary("Owner NFT verification")
             .operationId("NftVerification").addTagsItem("NFT verification")
     }.pathParam<String>("chain") {
-        it.schema<Chain> {  }
+        it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
     }.body<VerifyCollectionRequest> {
         it.description("")
-    }.json<Boolean>("200") {  }
+    }.json<Boolean>("200") { }
 
     fun verifyCollectionWithTraits(ctx: Context) {
         val req = ctx.bodyAsClass(VerifyTraitRequest::class.java)
         val chain = ctx.pathParam("chain").let {
-            if (it.isEmpty()){
+            if (it.isEmpty()) {
                 throw Exception("No chain defined")
             }
             Chain.valueOf(it.uppercase())
         }
 
         val contractAddress = ctx.pathParam("contractAddress")
+
 
         val result = VerificationService.verifyTrait(chain, contractAddress, req.account, req.tokenId, req.traitType,req.traitValue)
         ctx.json(result)
@@ -70,10 +71,10 @@ object VerificationController {
         it.summary("Owner NFT verification with Traits")
             .operationId("NftAndTraitsVerification").addTagsItem("NFT verification")
     }.pathParam<String>("chain") {
-        it.schema<Chain> {  }
+        it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
     }.body<VerifyTraitRequest> {
         it.description("")
-    }.json<Boolean>("200") {  }
+    }.json<Boolean>("200") { }
 
 }

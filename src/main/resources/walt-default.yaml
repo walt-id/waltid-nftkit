@@ -17,10 +17,12 @@ providers:
     ropsten: "https://ropsten.infura.io/v3/0184192d0f2942c3b0322d79eca162b2"
     polygon: "https://polygon-mumbai.g.alchemy.com/v2/yjbYhlaH3U_vfnTiRQ3miGQS0cKwQMkB"
     mumbai: "https://polygon-mumbai.g.alchemy.com/v2/yjbYhlaH3U_vfnTiRQ3miGQS0cKwQMkB"
+
 privateKey: "bd4cb3e507f342ee3a710370cef39dda48f17b0a158b0b8dd3f000fbd5b2c2d9"
 
 apiKeys:
   ethereumBlockExplorer: "JGD5ZUUBHE8CUXPNKZASVQPHRGBMB7A5XV"
   polygonBlockExplorer: "DZ3PFVWGJE5B8DMDQPRZ5JFBR6U484B82G"
   alchemy: "yjbYhlaH3U_vfnTiRQ3miGQS0cKwQMkB"
+  nft.storage: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDYwNDNEYThENjU2RTU3NTg2ZDk3MkM1ZDM5RUNENzI1NTNCM2Q1NjAiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY1MDUzNzUzNjk2OSwibmFtZSI6Ik5GVHMifQ.MBK_rahk6e6fCTheE7qLJeZ_OIyKGkbP63aVLPas1sw"
 
