@@ -160,6 +160,11 @@ object NftKitApi {
                         "chain/{chain}/owner/{ownerAddress}",
                         documented(NftController.getAccountNFTsDocs(), NftController::getAccountNFTs)
                     )
+                    post(
+                        "chain/{chain}/contract/{contractAddress}/token/{tokenId}/metadata",
+                        documented(NftController.updateMetadataDocs(), NftController::updateMetadata)
+                    )
+
                 }
                 path("nft/verifier") {
                     post(
