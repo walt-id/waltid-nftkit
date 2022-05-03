@@ -203,7 +203,7 @@ object NftController {
         val contractAddress = ctx.pathParam("contractAddress")
         val tokenId = ctx.pathParam("tokenId")
         val traitUpdateRequest = ctx.bodyAsClass(TraitUpdateRequest::class.java)
-        val result = NftService.updateMetadata(Common.getChain(chain), contractAddress, tokenId, traitUpdateRequest.key, traitUpdateRequest.value)
+        val result = NftService.updateMetadata(Common.getEnumValue(chain), contractAddress, tokenId, traitUpdateRequest.key, traitUpdateRequest.value)
         ctx.json(
             result
         )
