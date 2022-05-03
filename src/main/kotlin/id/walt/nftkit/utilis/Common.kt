@@ -13,22 +13,19 @@ object Common {
         return TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt!!.transactionHash}")
     }
 
-
-    fun getChain(chain: String): Chain{
-        return chain.let {
-            if (it.isEmpty()){
-                throw Exception("No chain defined")
-            }
-            Chain.valueOf(it.uppercase())
-        }
-    }
-
     fun getMetadataType(uri: String): MetadataStorageType {
         if(uri.contains("data:application/json;base64", true)){
             return MetadataStorageType.ON_CHAIN
         }else{
             return MetadataStorageType.OFF_CHAIN
         }
+    }
+
+    inline fun <reified T : Enum<T>> getEnumValue(strVal: String) = strVal.let {
+        if (it.isEmpty()) {
+            throw Exception("No ${T::class.java.name} defined")
+        }
+        enumValueOf<T>(it.uppercase())
     }
 }
 
