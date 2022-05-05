@@ -164,6 +164,10 @@ object NftKitApi {
                         "chain/{chain}/contract/{contractAddress}/token/{tokenId}/metadata",
                         documented(NftController.updateMetadataDocs(), NftController::updateMetadata)
                     )
+                    post(
+                        "ipfs/file/Upload",
+                        documented(NftController.uploadFileToIpfsDocs(), NftController::uploadFileToIpfs)
+                    )
 
                 }
                 path("nft/verifier") {

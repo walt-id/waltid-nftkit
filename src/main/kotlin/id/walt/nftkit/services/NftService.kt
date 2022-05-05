@@ -4,6 +4,7 @@ import id.walt.nftkit.Values
 import id.walt.nftkit.chains.evm.erc721.Erc721TokenStandard
 import id.walt.nftkit.metadata.MetadataUri
 import id.walt.nftkit.metadata.MetadataUriFactory
+import id.walt.nftkit.metadata.NFTStorageAddFileResult
 import id.walt.nftkit.services.WaltIdServices.decBase64Str
 import id.walt.nftkit.smart_contract_wrapper.Erc721OnchainCredentialWrapper
 import id.walt.nftkit.utilis.Common
@@ -15,11 +16,8 @@ import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
-import io.ktor.client.request.forms.*
 import io.ktor.http.*
-import io.ktor.http.cio.*
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.utils.io.core.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -201,7 +199,8 @@ data class NFTsAlchemyResult(
         val description: String? = null,
         val tokenUri: TokenUriByAlchemy,
         //val media: MediaByAlchemy,
-        val metadata: NftMetadata?
+        val metadata: NftMetadata?,
+        val timeLastUpdated: String
     ) {
         @Serializable
         data class ContractAddressByAlchemy(
@@ -436,6 +435,16 @@ object NftService {
         }
     }
 
+    fun addFileToIpfsUsingNFTStorage(file: ByteArray): NFTStorageAddFileResult {
+        return runBlocking {
+            val res = client.post("https://api.nft.storage/upload") {
+                contentType(ContentType.Image.Any)
+                setBody(file)
+            }.body<NFTStorageAddFileResult>()
+            return@runBlocking res
+        }
+    }
+
 
     private fun mintNewToken(
         recipientAddress: String,
@@ -496,5 +505,7 @@ object NftService {
         }
         return EventValues(indexedValues, nonIndexedValues)
     }
+
+
 
 }

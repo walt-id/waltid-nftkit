@@ -25,6 +25,16 @@ data class NFTStorageResult(
         val url: String,
     )
 }
+@Serializable
+data class NFTStorageAddFileResult(
+    val ok: Boolean,
+    val value: NFTStorageValue,
+) {
+    @Serializable
+    data class NFTStorageValue(
+        val cid: String,
+    )
+}
 
 object IPFSMetadata: MetadataUri {
     override fun getTokenUri(nftMetadata: NftMetadata?): String {

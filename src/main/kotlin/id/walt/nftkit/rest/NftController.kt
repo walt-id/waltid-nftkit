@@ -1,6 +1,7 @@
 package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
+import id.walt.nftkit.metadata.NFTStorageAddFileResult
 import id.walt.nftkit.services.*
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.Context
@@ -219,6 +220,27 @@ object NftController {
     }.body<TraitUpdateRequest> {
         it.description("")
     }.json<TransactionResponse>("200") {  }
+
+
+    fun uploadFileToIpfs(ctx: Context) {
+         ctx.uploadedFiles().forEach { (contentType, content, name, extension) ->
+            //FileUtils.copyInputStreamToFile(content, File("upload/" + name))
+            val fileData = contentType.readAllBytes()
+            val result= NftService.addFileToIpfsUsingNFTStorage(fileData)
+             ctx.json(
+                 result
+             )
+        }
+    }
+
+    fun uploadFileToIpfsDocs() = document().operation {
+        it.summary("Upload file to IPFS")
+            .operationId("Upload file to IPFS").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
+    }.uploadedFile("file") {
+        // RequestBody, e.g.
+        it.description = "File"
+        it.required = true
+    }.json<NFTStorageAddFileResult>("200") { }
 
 
 }
