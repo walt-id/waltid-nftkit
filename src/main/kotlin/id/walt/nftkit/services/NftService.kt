@@ -365,7 +365,10 @@ object NftService {
         }
     }
 
-    fun updateMetadata(chain: Chain, contractAddress: String, tokenId: String, key: String,value: String): TransactionResponse {
+    fun updateMetadata(
+        chain: Chain, contractAddress: String, tokenId: String, signedAccount: String?,
+        key: String,
+        value: String): TransactionResponse {
         val metadata= getNftMetadata(chain, contractAddress, BigInteger(tokenId))
         if("name".equals(key, true)){
             metadata.name= value
@@ -381,10 +384,8 @@ object NftService {
         val oldUri= getMetadatUri(chain, contractAddress, BigInteger(tokenId))
         val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(Common.getMetadataType(oldUri))
         val tokenUri = metadataUri.getTokenUri(metadata)
-        val transactionReceipt = Erc721TokenStandard.updateTokenUri(chain, contractAddress, BigInteger(tokenId), Utf8String(tokenUri))
-        val url = WaltIdServices.getBlockExplorerUrl(chain)
-        return TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt.transactionHash}")
-
+        val transactionReceipt = Erc721TokenStandard.updateTokenUri(chain, contractAddress, BigInteger(tokenId), Utf8String(tokenUri), signedAccount)
+        return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
 

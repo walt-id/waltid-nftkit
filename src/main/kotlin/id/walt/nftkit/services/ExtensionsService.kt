@@ -2,6 +2,7 @@ package id.walt.nftkit.services
 
 import id.walt.nftkit.Values
 import id.walt.nftkit.WaltIdGasProvider
+import id.walt.nftkit.chains.evm.erc721.Erc721TokenStandard
 import id.walt.nftkit.metadata.MetadataUri
 import id.walt.nftkit.metadata.MetadataUriFactory
 import id.walt.nftkit.rest.UpdateTokenURIRequest
@@ -40,9 +41,9 @@ object ExtensionsService {
         chain: Chain,
         contractAddress: String,
         tokenId: String,
+        signedAccount: String?,
         parameter: UpdateTokenURIRequest
     ): TransactionResponse {
-        val customAccessControlERC721Wrapper = loadOwnableContract(chain, contractAddress)
         var tokenUri: String?
         val oldUri= NftService.getNftMetadataUri(chain, contractAddress, BigInteger(tokenId))
         if (parameter.metadataUri != null && parameter.metadataUri != "") {
@@ -51,8 +52,7 @@ object ExtensionsService {
             val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(Common.getMetadataType(oldUri))
             tokenUri = metadataUri.getTokenUri(parameter.metadata)
         }
-        val transactionReceipt =
-            customAccessControlERC721Wrapper.setTokenURI(Uint256(BigInteger(tokenId)), Utf8String(tokenUri)).send()
+        val transactionReceipt = Erc721TokenStandard.updateTokenUri(chain, contractAddress, BigInteger(tokenId), Utf8String(tokenUri), signedAccount)
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 

@@ -203,8 +203,10 @@ object NftController {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val tokenId = ctx.pathParam("tokenId")
+        val signedAccount = ctx.queryParam("signedAccount")
         val traitUpdateRequest = ctx.bodyAsClass(TraitUpdateRequest::class.java)
-        val result = NftService.updateMetadata(Common.getChain(chain), contractAddress, tokenId, traitUpdateRequest.key, traitUpdateRequest.value)
+        val result = NftService.updateMetadata(Common.getChain(chain), contractAddress, tokenId,
+            signedAccount,traitUpdateRequest.key, traitUpdateRequest.value)
         ctx.json(
             result
         )
@@ -217,6 +219,8 @@ object NftController {
         it.schema<Chain> {  }
     }.pathParam<String>("contractAddress") {
     }.pathParam<String>("tokenId") {
+    }.queryParam<String>("signedAccount") {
+        it.required(false)
     }.body<TraitUpdateRequest> {
         it.description("")
     }.json<TransactionResponse>("200") {  }

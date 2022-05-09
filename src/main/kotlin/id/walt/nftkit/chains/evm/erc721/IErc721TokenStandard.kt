@@ -33,7 +33,7 @@ interface IErc721TokenStandard {
 
     fun supportsInterface(chain: Chain, contractAddress: String): Boolean
 
-    fun updateTokenUri(chain: Chain, contractAddress: String, token: BigInteger, tokenURI: Utf8String) : TransactionReceipt?
+    fun updateTokenUri(chain: Chain, contractAddress: String, token: BigInteger, tokenURI: Utf8String, signedAccount: String?) : TransactionReceipt?
 
     /*fun transfer(
         contractAddress: String?,
