@@ -200,7 +200,7 @@ data class NFTsAlchemyResult(
         val tokenUri: TokenUriByAlchemy,
         //val media: MediaByAlchemy,
         val metadata: NftMetadata?,
-        val timeLastUpdated: String
+       // val timeLastUpdated: String
     ) {
         @Serializable
         data class ContractAddressByAlchemy(
