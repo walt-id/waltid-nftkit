@@ -75,8 +75,9 @@ object ExtensionsController {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val tokenId = ctx.pathParam("tokenId")
+        val signedAccount = ctx.queryParam("signedAccount")
         val result =
-            ExtensionsService.setTokenURI(Chain.valueOf(chain?.uppercase()!!), contractAddress, tokenId, updateTokenURIReq)
+            ExtensionsService.setTokenURI(Chain.valueOf(chain?.uppercase()!!), contractAddress, tokenId, signedAccount,updateTokenURIReq)
         ctx.json(
             result
         )
@@ -90,6 +91,8 @@ object ExtensionsController {
     }.pathParam<String>("contractAddress") {
     }.body<UpdateTokenURIRequest> {
         it.description("")
+    }.queryParam<String>("signedAccount") {
+        it.required(false)
     }.json<TransactionResponse>("200") { }
 
     fun getTransferable(ctx: Context) {
