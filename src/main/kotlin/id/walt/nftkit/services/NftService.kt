@@ -234,7 +234,7 @@ data class NFTsAlchemyResult(
 
 
 object NftService {
-    val client = HttpClient(CIO) {
+    val client = HttpClient(CIO.create{requestTimeout = 0}) {
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
