@@ -16,6 +16,8 @@ data class KeysConfig(val keys: Map<String, String>)
 data class ApiKeys(val ethereumBlockExplorer: String, val polygonBlockExplorer: String, val alchemy: String)
 data class BlockExplorerScanApiKeyConfig(val apiKeys: ApiKeys)
 
+val WALTID_CONFIG_PATH = System.getenv("WALTID_CONFIG_PATH") ?: "."
+
 object WaltIdServices {
 
     fun encBase64Str(data: String): String = String(Base64.getEncoder().encode(data.toByteArray()))
@@ -24,14 +26,14 @@ object WaltIdServices {
 
     fun loadChainConfig() = ConfigLoader.builder()
         .addFileExtensionMapping("yaml", YamlParser())
-        .addSource(PropertySource.file(File("walt.yaml"), optional = true))
+        .addSource(PropertySource.file(File("$WALTID_CONFIG_PATH/walt.yaml"), optional = true))
         .addSource(PropertySource.resource("/walt-default.yaml"))
         .build()
         .loadConfigOrThrow<ChainConfig>()
 
     fun loadApiKeys() = ConfigLoader.builder()
         .addFileExtensionMapping("yaml", YamlParser())
-        .addSource(PropertySource.file(File("walt.yaml"), optional = true))
+        .addSource(PropertySource.file(File("$WALTID_CONFIG_PATH/walt.yaml"), optional = true))
         .addSource(PropertySource.resource("/walt-default.yaml"))
         .build()
         .loadConfigOrThrow<BlockExplorerScanApiKeyConfig>()
