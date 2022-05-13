@@ -1,6 +1,7 @@
 package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
+import id.walt.nftkit.metadata.NFTStorageAddFileResult
 import id.walt.nftkit.services.*
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.Context
@@ -202,8 +203,10 @@ object NftController {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val tokenId = ctx.pathParam("tokenId")
+        val signedAccount = ctx.queryParam("signedAccount")
         val traitUpdateRequest = ctx.bodyAsClass(TraitUpdateRequest::class.java)
-        val result = NftService.updateMetadata(Common.getChain(chain), contractAddress, tokenId, traitUpdateRequest.key, traitUpdateRequest.value)
+        val result = NftService.updateMetadata(Common.getChain(chain), contractAddress, tokenId,
+            signedAccount,traitUpdateRequest.key, traitUpdateRequest.value)
         ctx.json(
             result
         )
@@ -216,9 +219,32 @@ object NftController {
         it.schema<Chain> {  }
     }.pathParam<String>("contractAddress") {
     }.pathParam<String>("tokenId") {
+    }.queryParam<String>("signedAccount") {
+        it.required(false)
     }.body<TraitUpdateRequest> {
         it.description("")
     }.json<TransactionResponse>("200") {  }
+
+
+    fun uploadFileToIpfs(ctx: Context) {
+         ctx.uploadedFiles().forEach { (contentType, content, name, extension) ->
+            //FileUtils.copyInputStreamToFile(content, File("upload/" + name))
+            val fileData = contentType.readAllBytes()
+            val result= NftService.addFileToIpfsUsingNFTStorage(fileData)
+             ctx.json(
+                 result
+             )
+        }
+    }
+
+    fun uploadFileToIpfsDocs() = document().operation {
+        it.summary("Upload file to IPFS")
+            .operationId("Upload file to IPFS").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
+    }.uploadedFile("file") {
+        // RequestBody, e.g.
+        it.description = "File"
+        it.required = true
+    }.json<NFTStorageAddFileResult>("200") { }
 
 
 }
