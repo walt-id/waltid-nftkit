@@ -15,7 +15,7 @@ providers:
     ethereum: "ethereum"
     rinkeby: "https://rinkeby.infura.io/v3/0184192d0f2942c3b0322d79eca162b2"
     ropsten: "https://ropsten.infura.io/v3/0184192d0f2942c3b0322d79eca162b2"
-    polygon: "https://polygon-mumbai.g.alchemy.com/v2/yjbYhlaH3U_vfnTiRQ3miGQS0cKwQMkB"
+    polygon: "https://polygon-mainnet.g.alchemy.com/v2/yjbYhlaH3U_vfnTiRQ3miGQS0cKwQMkB"
     mumbai: "https://polygon-mumbai.g.alchemy.com/v2/yjbYhlaH3U_vfnTiRQ3miGQS0cKwQMkB"
 
 privateKey: "bd4cb3e507f342ee3a710370cef39dda48f17b0a158b0b8dd3f000fbd5b2c2d9"
