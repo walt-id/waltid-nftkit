@@ -117,6 +117,8 @@ object NftKitApi {
             it.enableCorsForAllOrigins()
 
             it.enableDevLogging()
+
+            it.maxRequestSize = 30_000_000L;
         }.routes {
             get("", documented(documentedIgnored(), RootController::root))
             get("health", documented(healthDocs(), RootController::health))
@@ -163,6 +165,10 @@ object NftKitApi {
                     post(
                         "chain/{chain}/contract/{contractAddress}/token/{tokenId}/metadata",
                         documented(NftController.updateMetadataDocs(), NftController::updateMetadata)
+                    )
+                    post(
+                        "ipfs/file/Upload",
+                        documented(NftController.uploadFileToIpfsDocs(), NftController::uploadFileToIpfs)
                     )
 
                 }

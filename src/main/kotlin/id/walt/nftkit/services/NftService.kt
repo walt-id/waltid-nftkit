@@ -4,6 +4,7 @@ import id.walt.nftkit.Values
 import id.walt.nftkit.chains.evm.erc721.Erc721TokenStandard
 import id.walt.nftkit.metadata.MetadataUri
 import id.walt.nftkit.metadata.MetadataUriFactory
+import id.walt.nftkit.metadata.NFTStorageAddFileResult
 import id.walt.nftkit.services.WaltIdServices.decBase64Str
 import id.walt.nftkit.smart_contract_wrapper.Erc721OnchainCredentialWrapper
 import id.walt.nftkit.utilis.Common
@@ -15,11 +16,8 @@ import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
-import io.ktor.client.request.forms.*
 import io.ktor.http.*
-import io.ktor.http.cio.*
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.utils.io.core.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -201,7 +199,8 @@ data class NFTsAlchemyResult(
         val description: String? = null,
         val tokenUri: TokenUriByAlchemy,
         //val media: MediaByAlchemy,
-        val metadata: NftMetadata?
+        val metadata: NftMetadata?,
+       // val timeLastUpdated: String
     ) {
         @Serializable
         data class ContractAddressByAlchemy(
@@ -235,7 +234,7 @@ data class NFTsAlchemyResult(
 
 
 object NftService {
-    val client = HttpClient(CIO) {
+    val client = HttpClient(CIO.create{requestTimeout = 0}) {
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
@@ -366,7 +365,10 @@ object NftService {
         }
     }
 
-    fun updateMetadata(chain: Chain, contractAddress: String, tokenId: String, key: String,value: String): TransactionResponse {
+    fun updateMetadata(
+        chain: Chain, contractAddress: String, tokenId: String, signedAccount: String?,
+        key: String,
+        value: String): TransactionResponse {
         val metadata= getNftMetadata(chain, contractAddress, BigInteger(tokenId))
         if("name".equals(key, true)){
             metadata.name= value
@@ -382,10 +384,8 @@ object NftService {
         val oldUri= getMetadatUri(chain, contractAddress, BigInteger(tokenId))
         val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(Common.getMetadataType(oldUri))
         val tokenUri = metadataUri.getTokenUri(metadata)
-        val transactionReceipt = Erc721TokenStandard.updateTokenUri(chain, contractAddress, BigInteger(tokenId), Utf8String(tokenUri))
-        val url = WaltIdServices.getBlockExplorerUrl(chain)
-        return TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt.transactionHash}")
-
+        val transactionReceipt = Erc721TokenStandard.updateTokenUri(chain, contractAddress, BigInteger(tokenId), Utf8String(tokenUri), signedAccount)
+        return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
 
@@ -433,6 +433,16 @@ object NftService {
             val result = NftService.client.get("https://nftstorage.link/ipfs/$uriFormat") {
             }.body<NftMetadata>()
             return@runBlocking result
+        }
+    }
+
+    fun addFileToIpfsUsingNFTStorage(file: ByteArray): NFTStorageAddFileResult {
+        return runBlocking {
+            val res = client.post("https://api.nft.storage/upload") {
+                contentType(ContentType.Image.Any)
+                setBody(file)
+            }.body<NFTStorageAddFileResult>()
+            return@runBlocking res
         }
     }
 
@@ -496,5 +506,7 @@ object NftService {
         }
         return EventValues(indexedValues, nonIndexedValues)
     }
+
+
 
 }

@@ -23,7 +23,7 @@ import smart_contract_wrapper.CustomOwnableERC721
 import java.math.BigInteger
 import kotlin.text.toByteArray
 
-suspend fun main() {
+fun main() {
     println("\n\n\n")
 
 
@@ -32,6 +32,7 @@ suspend fun main() {
     /* /////////// */
     NftKitApi.start()
 
+    val keysConfig = WaltIdServices.loadAccountKeysConfig()
 
     /*val attribute1 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "valid", value = "true")
     val attributes = mutableListOf(attribute1)
@@ -53,24 +54,6 @@ suspend fun main() {
     val ms: MintingResponse = NftService.mintToken(Chain.RINKEBY, "0xc831de165bD2356230e60DF549324034dB5A3BD5", mintingParameter, mintingOptions)
 */
 }
-
-
-
-
-
-suspend fun nftStorageUploadFileTest(): String {
-    return runBlocking {
-        val file = File("metadata.json") // WARNING -> metadata.json is not an image
-
-        val res = NftService.client.post("https://api.nft.storage/upload") {
-            contentType(ContentType.Image.Any)
-            setBody(file.readBytes())
-        }.bodyAsText()
-
-        return@runBlocking res
-    }
-}
-
 
 
 
@@ -104,7 +87,7 @@ fun updateOwnableScMetadataUseCase() {//0x856b30a1068659d29bc87d851b5df10bbf0137
     //This is where actually we take an existing metadata to update it
     nftMetadata.attributes?.get(0)!!.value = "False"
     val updateTokenURIRequest = UpdateTokenURIRequest(null, nftMetadata)
-    ExtensionsService.setTokenURI(Chain.MUMBAI, sc.contractAddress, mintResponse.tokenId.toString(), updateTokenURIRequest)
+    ExtensionsService.setTokenURI(Chain.MUMBAI, sc.contractAddress, mintResponse.tokenId.toString(), "0xaf87c5Ce7a1fb6BD5aaDB6dd9C0b8EF51EF1BC31",updateTokenURIRequest)
     val verifyUpdateMetadata = NftService.getNftMetadata(Chain.MUMBAI, sc.contractAddress, mintResponse.tokenId!!)
     println("Fetch new Metadata: ")
     println(verifyUpdateMetadata)
@@ -154,7 +137,7 @@ fun updateMetadataUseCase(){
     //Update Metadata
     nftMetadata.attributes?.get(0)!!.value = "False"
     val updateTokenURIRequest = UpdateTokenURIRequest(null, nftMetadata)
-    ExtensionsService.setTokenURI(Chain.RINKEBY, sc.contractAddress, mintResponse.tokenId.toString(), updateTokenURIRequest)
+    ExtensionsService.setTokenURI(Chain.RINKEBY, sc.contractAddress, mintResponse.tokenId.toString(), "0xaf87c5Ce7a1fb6BD5aaDB6dd9C0b8EF51EF1BC31",updateTokenURIRequest)
     val verifyUpdateMetadata = NftService.getNftMetadata(Chain.RINKEBY, sc.contractAddress, mintResponse.tokenId)
     println("Fetch new Metadata: ")
     println(verifyUpdateMetadata)

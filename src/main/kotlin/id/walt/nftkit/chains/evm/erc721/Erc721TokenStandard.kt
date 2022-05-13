@@ -3,7 +3,6 @@ package id.walt.nftkit.chains.evm.erc721
 import id.walt.nftkit.Values
 import id.walt.nftkit.WaltIdGasProvider
 import id.walt.nftkit.services.*
-import id.walt.nftkit.smart_contract_wrapper.ERC721URIStorage
 import id.walt.nftkit.utilis.providers.ProviderFactory
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.Bool
@@ -100,9 +99,10 @@ object Erc721TokenStandard : IErc721TokenStandard {
         chain: Chain,
         contractAddress: String,
         token: BigInteger,
-        tokenURI: Utf8String
-    ): TransactionReceipt? {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
+        tokenURI: Utf8String,
+        signedAccount: String?
+    ): TransactionReceipt {
+        val erc721URIStorageWrapper = loadContract(chain, contractAddress, signedAccount)
         return erc721URIStorageWrapper.setTokenURI(Uint256(token), tokenURI).send()
     }
 
@@ -204,10 +204,20 @@ object Erc721TokenStandard : IErc721TokenStandard {
         return DeploymentResponse(ts, contract.contractAddress, "$url/address/${contract.contractAddress}")
     }
 
-    private fun loadContract(chain: Chain, address: String) : CustomOwnableERC721 {
+    private fun loadContract(chain: Chain, address: String, signedAccount: String? ="") : CustomOwnableERC721 {
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
 
-        val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
+        val privateKey: String
+        if(signedAccount == null || "".equals(signedAccount)){
+            privateKey= WaltIdServices.loadChainConfig().privateKey
+        }else{
+            privateKey= WaltIdServices.loadAccountKeysConfig().keys.get(signedAccount)!!
+            if(privateKey == null){
+                throw Exception("Account not found")
+            }
+        }
+
+        val credentials: Credentials = Credentials.create(privateKey)
 
         val gasProvider: ContractGasProvider = WaltIdGasProvider
 
