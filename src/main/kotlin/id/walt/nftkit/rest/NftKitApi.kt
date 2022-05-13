@@ -117,6 +117,8 @@ object NftKitApi {
             it.enableCorsForAllOrigins()
 
             it.enableDevLogging()
+
+            it.maxRequestSize = 30_000_000L;
         }.routes {
             get("", documented(documentedIgnored(), RootController::root))
             get("health", documented(healthDocs(), RootController::health))
