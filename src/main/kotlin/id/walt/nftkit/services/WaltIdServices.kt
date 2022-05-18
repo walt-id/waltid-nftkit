@@ -40,7 +40,7 @@ object WaltIdServices {
 
     fun loadAccountKeysConfig() = ConfigLoader.builder()
         .addFileExtensionMapping("yaml", YamlParser())
-        .addSource(PropertySource.file(File("walt.yaml"), optional = true))
+        .addSource(PropertySource.file(File("$WALTID_CONFIG_PATH/walt.yaml"), optional = true))
         .addSource(PropertySource.resource("/walt-default.yaml"))
         .build()
         .loadConfigOrThrow<KeysConfig>()
