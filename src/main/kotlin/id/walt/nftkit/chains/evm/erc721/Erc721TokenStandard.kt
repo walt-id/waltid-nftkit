@@ -211,7 +211,8 @@ object Erc721TokenStandard : IErc721TokenStandard {
         if(signedAccount == null || "".equals(signedAccount)){
             privateKey= WaltIdServices.loadChainConfig().privateKey
         }else{
-            privateKey= WaltIdServices.loadAccountKeysConfig().keys.get(signedAccount)!!
+            val lowercaseAddress= WaltIdServices.loadAccountKeysConfig().keys.mapKeys { it.key.lowercase() }
+            privateKey= lowercaseAddress.get(signedAccount.lowercase())!!
             if(privateKey == null){
                 throw Exception("Account not found")
             }
