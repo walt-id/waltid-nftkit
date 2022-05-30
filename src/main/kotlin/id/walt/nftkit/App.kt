@@ -32,7 +32,7 @@ fun main() {
     /* /////////// */
     NftKitApi.start()
 
-    val keysConfig = WaltIdServices.loadAccountKeysConfig()
+  //  ownershipVerification(Chain.MUMBAI, "0x6A2E25BebFdab76cdD8F61B4385672ba7C7F834A", "1", "0x2555e3a97c4ac9705d70b9e5b9b6cc6fe2977a74")
 
     /*val attribute1 : NftMetadata.Attributes = NftMetadata.Attributes(trait_type = "valid", value = "true")
     val attributes = mutableListOf(attribute1)
@@ -55,6 +55,10 @@ fun main() {
 */
 }
 
+fun ownershipVerification(chain: Chain, contractAddress: String, tokenID: String, account: String){
+    val result = VerificationService.verifyCollection(chain, contractAddress, account, tokenID)
+    println(result)
+}
 
 
 fun updateOwnableScMetadataUseCase() {//0x856b30a1068659d29bc87d851b5df10bbf0137a8  mumbai
