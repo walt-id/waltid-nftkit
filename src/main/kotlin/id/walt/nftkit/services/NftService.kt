@@ -42,6 +42,8 @@ data class NftMetadata(
     var description: String?= null,
     var name: String?=null,
     var image: String?=null,
+    var image_data: String?=null,
+    var external_url: String?=null,
     val attributes: List<Attributes>?=null
 
 ) {
@@ -281,7 +283,7 @@ object NftService {
         var uri = getMetadatUri(chain, contractAddress, tokenId)
         if(Common.getMetadataType(uri).equals(MetadataStorageType.ON_CHAIN)){
             val decodedUri = decBase64Str(uri.substring(29))
-            return Json.decodeFromString(decodedUri)
+            return Json{ ignoreUnknownKeys = true }.decodeFromString(decodedUri)
         }else{
             return getIPFSMetadataUsingNFTStorage(uri)
         }
