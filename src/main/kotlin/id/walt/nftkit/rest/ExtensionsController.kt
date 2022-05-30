@@ -138,10 +138,9 @@ object ExtensionsController {
     }.json<TransactionResponse>("200") { }
 
     fun getBurnable(ctx: Context) {
-        val burnableReq = ctx.bodyAsClass(BurnableRequest::class.java)
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = ExtensionsService.setBurnable(Chain.valueOf(chain?.uppercase()!!), contractAddress, burnableReq.burnable)
+        val result = ExtensionsService.getBurnable(Chain.valueOf(chain?.uppercase()!!), contractAddress)
         ctx.json(
             result
         )

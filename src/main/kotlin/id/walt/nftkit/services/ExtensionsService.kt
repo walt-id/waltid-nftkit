@@ -67,7 +67,7 @@ object ExtensionsService {
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun getBurnable(chain: Chain, contractAddress: String): Boolean? {
+    fun getBurnable(chain: Chain, contractAddress: String): Boolean {
         val customAccessControlERC721Wrapper = loadOwnableContract(chain, contractAddress)
         return customAccessControlERC721Wrapper.tokensBurnable().send().value
     }
