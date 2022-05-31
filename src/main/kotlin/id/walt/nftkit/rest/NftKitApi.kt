@@ -184,7 +184,13 @@ object NftKitApi {
                             VerificationController::verifyCollectionWithTraits
                         )
                     )
-
+                    post(
+                        "oceanDao/chain/{chain}/contract/{contractAddress}/verification",
+                        documented(
+                            VerificationController.oceanDaoVerificationDocs(),
+                            VerificationController::oceanDaoVerification
+                        )
+                    )
                 }
                 path("nft/extensions") {
                     get(
