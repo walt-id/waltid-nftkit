@@ -23,6 +23,14 @@ data class VerifyTraitRequest(
     val traitValue: String? = null,
 )
 
+@Serializable
+data class OceanDaoVerificationRequest(
+    val account: String,
+    val factoryContractAddress: String,
+    val propertyKey: String?= null,
+    val propertyValue: String?= null,
+)
+
 object VerificationController {
 
     fun verifyCollection(ctx: Context) {
@@ -74,6 +82,30 @@ object VerificationController {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
     }.body<VerifyTraitRequest> {
+        it.description("")
+    }.json<Boolean>("200") { }
+
+    fun oceanDaoVerification(ctx: Context) {
+        val req = ctx.bodyAsClass(OceanDaoVerificationRequest::class.java)
+        val chain = ctx.pathParam("chain").let {
+            if (it.isEmpty()) {
+                throw Exception("No chain defined")
+            }
+            Chain.valueOf(it.uppercase())
+        }
+        println(req)
+        val contractAddress = ctx.pathParam("contractAddress")
+        val result = VerificationService.oceanDaoVerification(chain, req.factoryContractAddress,contractAddress, req.account, req.propertyKey, req.propertyValue)
+        ctx.json(result)
+    }
+
+    fun oceanDaoVerificationDocs() = document().operation {
+        it.summary("OceanDao Verification")
+            .operationId("OceanDaoVerification").addTagsItem("NFT verification")
+    }.pathParam<String>("chain") {
+        it.schema<Chain> { }
+    }.pathParam<String>("contractAddress") {
+    }.body<OceanDaoVerificationRequest> {
         it.description("")
     }.json<Boolean>("200") { }
 

@@ -322,21 +322,8 @@ object NftService {
 
     fun getAccountNFTsByChainScan(chain: Chain, address: String): List<Token?> {
         return runBlocking {
-            val url = when (chain) {
-                Chain.ETHEREUM -> Values.ETHEREUM_MAINNET_BLOCK_EXPLORER_URL
-                Chain.RINKEBY -> Values.ETHEREUM_TESTNET_RINKEBY_SCAN_API_URL
-                Chain.ROPSTEN -> Values.ETHEREUM_TESTNET_ROPSTEN_BLOCK_EXPLORER_URL
-                Chain.POLYGON -> Values.POLYGON_MAINNET_SCAN_API_URL
-                Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_SCAN_API_URL
-            }
-
-            val apiKey = when (chain) {
-                Chain.ETHEREUM -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
-                Chain.RINKEBY -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
-                Chain.ROPSTEN -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
-                Chain.POLYGON -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
-                Chain.MUMBAI -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
-            }
+            val url = Common.getNetworkBlockExplorerApiUrl(chain)
+            val apiKey = Common.getNetworkBlockExplorerApiKey(chain)
 
             val events = fetchAccountNFTsTokens(address, 1, url, apiKey)
             val result = events.groupBy { Pair(it.contractAddress, it.tokenID) }
