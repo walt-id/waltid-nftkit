@@ -1,5 +1,5 @@
-# waltid-nftkit
-The NFT Kit is a Kotlin library for minting & managing NFTs
+# NFT Kit
+The **NFT Kit** by **walt.id** is a Kotlin library for minting & managing NFTs.
 
 The core services are in the scope of:
 - Deploy NFTs smart contract to multiple chains.
@@ -11,9 +11,9 @@ Set properties in the configuration file.
 
 For the providers: you can get them either from [Infura](https://infura.io/) or [Alchemy](https://www.alchemy.com/)
 
-You can find your `privateKey` from your ethereum wallet like [metamask](https://metamask.io/).
+You can find your `privateKey` from your ethereum wallet like [MetaMask](https://metamask.io/).
 
-For the block explorer api keys: you can get them from from [Ethereum](https://etherscan.io/) and [Polygon](https://polygonscan.com/)  
+For the block explorer api keys: you can get them from [Ethereum](https://etherscan.io/) and [Polygon](https://polygonscan.com/)  
 
     Providers:
         ethereum: 
@@ -37,6 +37,8 @@ For the block explorer api keys: you can get them from from [Ethereum](https://e
      docker run -p 7000:7000 -it nftkit
 
 ### Use as JVM Depenceny
+
+The required Maven repo is: https://maven.walt.id/repository/waltid/
 
 Using Gradle:
 
@@ -75,10 +77,17 @@ Following code snipped gives a first impression how to use the NFT Kit for deplo
 
         // Fetch NFT Metadata
         val result = NftService.getNftMetadata(Chain.POLYGON, "0xFd9426f82Ae1edBC6b5eC2B0Ea5416D34Ca6E9b6", BigInteger.valueOf(26))
-
-    
-        
     }
+
+## Documentation
+
+The documentation is hosted at: https://docs.walt.id/v/nft-kit/
+
+Direct links for using the NFT Kit are:
+
+- Quick Start (Build & run the NFT Kit with Docker or natively): https://docs.walt.id/v/nft-kit/getting-started/quick-start
+- Intro: https://docs.walt.id/v/nft-kit/what-is-the-nft-kit/readme
+- APIs: https://docs.walt.id/v/nft-kit/getting-started/rest-apis
 
 ## License
 
