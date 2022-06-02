@@ -46,7 +46,7 @@ object AccessControlController {
 
     fun transferOwnershipDocs() = document().operation {
         it.summary("Ownable: Transfer ownership")
-            .operationId("hasRole").addTagsItem("NFTs smart contract access control")
+            .operationId("TransferOwnership").addTagsItem("NFTs smart contract access control")
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
