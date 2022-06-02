@@ -54,7 +54,7 @@ object VerificationService {
         return false
     }
 
-    fun  oceanDaoVerification(chain: Chain, erc721FactorycontractAddress: String,erc721contractAddress: String,account: String, propertyKey: String?, propertyValue: String?): Boolean{
+    fun  dataNftVerification(chain: Chain, erc721FactorycontractAddress: String,erc721contractAddress: String,account: String, propertyKey: String?, propertyValue: String?): Boolean{
         val tx =
             runBlocking {
                 val url = Common.getNetworkBlockExplorerApiUrl(chain)
