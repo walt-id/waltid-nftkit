@@ -64,8 +64,8 @@ object AccessControlController {
     }
 
     fun renounceOwnershipDocs() = document().operation {
-        it.summary("Ownable: Has Role")
-            .operationId("hasRole").addTagsItem("NFTs smart contract access control")
+        it.summary("Ownable: Renounce ownership")
+            .operationId("RenounceOwnership").addTagsItem("NFTs smart contract access control")
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
