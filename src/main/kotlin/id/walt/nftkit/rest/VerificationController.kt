@@ -95,12 +95,12 @@ object VerificationController {
         }
         println(req)
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = VerificationService.oceanDaoVerification(chain, req.factoryContractAddress,contractAddress, req.account, req.propertyKey, req.propertyValue)
+        val result = VerificationService.dataNftVerification(chain, req.factoryContractAddress,contractAddress, req.account, req.propertyKey, req.propertyValue)
         ctx.json(result)
     }
 
     fun oceanDaoVerificationDocs() = document().operation {
-        it.summary("OceanDao Verification")
+        it.summary("Data NFT Verification")
             .operationId("OceanDaoVerification").addTagsItem("NFT verification")
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
