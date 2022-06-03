@@ -52,7 +52,7 @@ jobs:
           version: ${{ github.event.inputs.versionName }}
 
       - name: Commit & Push changes
-        uses: actions-js/push@main
+        uses: actions-js/push@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           message: Automatic release commits for ${{ github.event.inputs.versionName }}
