@@ -123,14 +123,6 @@ object NftKitApi {
             get("", documented(documentedIgnored(), RootController::root))
             get("health", documented(healthDocs(), RootController::health))
             path("nftkit") {
-                path("key") {
-                    get("", documented(KeyController.listDocs(), KeyController::list))
-                    get("{id}", documented(KeyController.loadDocs(), KeyController::load))
-                    delete("{id}", documented(KeyController.deleteDocs(), KeyController::delete))
-                    post("gen", documented(KeyController.genDocs(), KeyController::gen))
-                    post("import", documented(KeyController.importDocs(), KeyController::import))
-                    post("export", documented(KeyController.exportDocs(), KeyController::export))
-                }
                 path("nft") {
                     post("chain/{chain}/contract/deploy", documented(NftController.deployDocs(), NftController::deploy))
                     
