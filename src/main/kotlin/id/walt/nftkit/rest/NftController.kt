@@ -40,9 +40,9 @@ object NftController {
         val deployReq = ctx.bodyAsClass(DeployRequest::class.java)
         val chain = ctx.pathParam("chain")
         val deploymentOptions = DeploymentOptions(deployReq.accessControl, deployReq.tokenStandard)
-        val deploymentParameter = DeploymentParameter(deployReq.name!!, deployReq.symbol!!, deployReq.options)
+        val deploymentParameter = DeploymentParameter(deployReq.name, deployReq.symbol, deployReq.options)
         val result =
-            NftService.deploySmartContractToken(Chain.valueOf(chain?.uppercase()!!), deploymentParameter, deploymentOptions)
+            NftService.deploySmartContractToken(Chain.valueOf(chain.uppercase()), deploymentParameter, deploymentOptions)
         ctx.json(
             result
         )
@@ -65,7 +65,7 @@ object NftController {
         val mintingParameter = MintingParameter(mintReq.metadataUri, mintReq.recipientAddress, mintReq.metadata)
         val mintingOptions = MintingOptions(mintReq.metadataStorageType)
         val result =
-            NftService.mintToken(Chain.valueOf(chain?.uppercase()!!), contractAddress, mintingParameter, mintingOptions)
+            NftService.mintToken(Chain.valueOf(chain.uppercase()), contractAddress, mintingParameter, mintingOptions)
         ctx.json(
             result
         )
@@ -85,11 +85,11 @@ object NftController {
     fun getNftMetadatUri(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val tokenId = ctx.pathParam("tokenId").toLong()!!
+        val tokenId = ctx.pathParam("tokenId").toLong()
         val result =
-            NftService.getNftMetadataUri(Chain.valueOf(chain?.uppercase()!!), contractAddress!!, BigInteger.valueOf(tokenId))
+            NftService.getNftMetadataUri(Chain.valueOf(chain.uppercase()), contractAddress, BigInteger.valueOf(tokenId))
         ctx.json(
-            result!!
+            result
         )
     }
 
@@ -107,11 +107,11 @@ object NftController {
     fun getNftMetadata(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val tokenId = ctx.pathParam("tokenId").toLong()!!
+        val tokenId = ctx.pathParam("tokenId").toLong()
         val result =
-            NftService.getNftMetadata(Chain.valueOf(chain?.uppercase()!!), contractAddress!!, BigInteger.valueOf(tokenId))
+            NftService.getNftMetadata(Chain.valueOf(chain.uppercase()), contractAddress, BigInteger.valueOf(tokenId))
         ctx.json(
-            result!!
+            result
         )
     }
 
@@ -129,7 +129,7 @@ object NftController {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val ownerAdress = ctx.pathParam("ownerAddress")
-        val result = NftService.balanceOf(Chain.valueOf(chain?.uppercase()!!), contractAddress!!, ownerAdress)
+        val result = NftService.balanceOf(Chain.valueOf(chain.uppercase()), contractAddress, ownerAdress)
         ctx.json(
             result!!
         )
@@ -149,7 +149,7 @@ object NftController {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val tokenId = ctx.pathParam("tokenId")
-        val result = NftService.ownerOf(Chain.valueOf(chain?.uppercase()!!), contractAddress!!, BigInteger(tokenId))
+        val result = NftService.ownerOf(Chain.valueOf(chain.uppercase()), contractAddress, BigInteger(tokenId))
         ctx.json(
             result!!
         )
@@ -168,9 +168,9 @@ object NftController {
     fun tokenCollectionInfo(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = NftService.getTokenCollectionInfo(Chain.valueOf(chain?.uppercase()!!), contractAddress!!)
+        val result = NftService.getTokenCollectionInfo(Chain.valueOf(chain.uppercase()), contractAddress)
         ctx.json(
-            result!!
+            result
         )
     }
 
@@ -185,9 +185,9 @@ object NftController {
     fun getAccountNFTs(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val ownerAdress = ctx.pathParam("ownerAddress")
-        val result = NftService.getAccountNFTsByAlchemy(Chain.valueOf(chain?.uppercase()!!), ownerAdress)
+        val result = NftService.getAccountNFTsByAlchemy(Chain.valueOf(chain.uppercase()), ownerAdress)
         ctx.json(
-            result!!
+            result
         )
     }
 

@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import id.walt.nftkit.Values
 import id.walt.nftkit.rest.RootController.healthDocs
-import id.walt.rest.ErrorResponse
 import id.walt.rest.OpenAPIUtils.documentedIgnored
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.*
@@ -118,7 +117,7 @@ object NftKitApi {
 
             it.enableDevLogging()
 
-            it.maxRequestSize = 30_000_000L;
+            it.maxRequestSize = 30_000_000L
         }.routes {
             get("", documented(documentedIgnored(), RootController::root))
             get("health", documented(healthDocs(), RootController::health))

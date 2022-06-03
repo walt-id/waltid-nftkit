@@ -44,8 +44,7 @@ class Erc721OnchainCredentialWrapper : Contract {
         gasLimit: BigInteger?
     ) : super(
         BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit
-    ) {
-    }
+    )
 
     protected constructor(
         contractAddress: String?,
@@ -54,8 +53,7 @@ class Erc721OnchainCredentialWrapper : Contract {
         contractGasProvider: ContractGasProvider?
     ) : super(
         BINARY, contractAddress, web3j, credentials, contractGasProvider
-    ) {
-    }
+    )
 
     @Deprecated("")
     protected constructor(
@@ -66,8 +64,7 @@ class Erc721OnchainCredentialWrapper : Contract {
         gasLimit: BigInteger?
     ) : super(
         BINARY, contractAddress, web3j, transactionManager, gasPrice, gasLimit
-    ) {
-    }
+    )
 
     protected constructor(
         contractAddress: String?,
@@ -76,8 +73,7 @@ class Erc721OnchainCredentialWrapper : Contract {
         contractGasProvider: ContractGasProvider?
     ) : super(
         BINARY, contractAddress, web3j, transactionManager, contractGasProvider
-    ) {
-    }
+    )
 
     fun getApprovalEvents(transactionReceipt: TransactionReceipt?): List<ApprovalEventResponse> {
         val valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt)

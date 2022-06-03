@@ -6,7 +6,6 @@ import org.web3j.abi.EventEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Event;
-import org.web3j.abi.datatypes.Type;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
@@ -46,10 +45,9 @@ public class Ownable extends Contract {
     public static final String FUNC_TRANSFEROWNERSHIP = "transferOwnership";
 
     public static final Event OWNERSHIPTRANSFERRED_EVENT = new Event("OwnershipTransferred",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {
+            Arrays.asList(new TypeReference<Address>(true) {
             }, new TypeReference<Address>(true) {
             }));
-    ;
 
     @Deprecated
     protected Ownable(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
@@ -104,8 +102,8 @@ public class Ownable extends Contract {
 
     public RemoteFunctionCall<Address> owner() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_OWNER,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                Arrays.asList(),
+                Arrays.asList(new TypeReference<Address>() {
                 }));
         return executeRemoteCallSingleValueReturn(function);
     }
@@ -113,16 +111,16 @@ public class Ownable extends Contract {
     public RemoteFunctionCall<TransactionReceipt> renounceOwnership() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_RENOUNCEOWNERSHIP,
-                Arrays.<Type>asList(),
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> transferOwnership(Address newOwner) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_TRANSFEROWNERSHIP,
-                Arrays.<Type>asList(newOwner),
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(newOwner),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 

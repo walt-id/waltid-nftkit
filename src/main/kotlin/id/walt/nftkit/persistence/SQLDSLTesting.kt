@@ -3,9 +3,8 @@ package id.walt.nftkit.persistence
 import id.walt.nftkit.persistence.tables.CityTable
 import id.walt.nftkit.persistence.tables.UserTable
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.TransactionManager
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.Connection
 
 // SQL DSL

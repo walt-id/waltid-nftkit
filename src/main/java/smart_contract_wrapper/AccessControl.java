@@ -7,7 +7,6 @@ import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Bool;
 import org.web3j.abi.datatypes.Event;
-import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.generated.Bytes32;
 import org.web3j.abi.datatypes.generated.Bytes4;
 import org.web3j.crypto.Credentials;
@@ -57,25 +56,22 @@ public class AccessControl extends Contract {
     public static final String FUNC_SUPPORTSINTERFACE = "supportsInterface";
 
     public static final Event ROLEADMINCHANGED_EVENT = new Event("RoleAdminChanged",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>(true) {
+            Arrays.asList(new TypeReference<Bytes32>(true) {
             }, new TypeReference<Bytes32>(true) {
             }, new TypeReference<Bytes32>(true) {
             }));
-    ;
 
     public static final Event ROLEGRANTED_EVENT = new Event("RoleGranted",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>(true) {
+            Arrays.asList(new TypeReference<Bytes32>(true) {
             }, new TypeReference<Address>(true) {
             }, new TypeReference<Address>(true) {
             }));
-    ;
 
     public static final Event ROLEREVOKED_EVENT = new Event("RoleRevoked",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>(true) {
+            Arrays.asList(new TypeReference<Bytes32>(true) {
             }, new TypeReference<Address>(true) {
             }, new TypeReference<Address>(true) {
             }));
-    ;
 
     @Deprecated
     protected AccessControl(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
@@ -202,16 +198,16 @@ public class AccessControl extends Contract {
 
     public RemoteFunctionCall<Bytes32> DEFAULT_ADMIN_ROLE() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_DEFAULT_ADMIN_ROLE,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {
+                Arrays.asList(),
+                Arrays.asList(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function);
     }
 
     public RemoteFunctionCall<Bytes32> getRoleAdmin(Bytes32 role) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETROLEADMIN,
-                Arrays.<Type>asList(role),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {
+                Arrays.asList(role),
+                Arrays.asList(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function);
     }
@@ -219,15 +215,15 @@ public class AccessControl extends Contract {
     public RemoteFunctionCall<TransactionReceipt> grantRole(Bytes32 role, Address account) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_GRANTROLE,
-                Arrays.<Type>asList(role, account),
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(role, account),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<Bool> hasRole(Bytes32 role, Address account) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_HASROLE,
-                Arrays.<Type>asList(role, account),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {
+                Arrays.asList(role, account),
+                Arrays.asList(new TypeReference<Bool>() {
                 }));
         return executeRemoteCallSingleValueReturn(function);
     }
@@ -235,23 +231,23 @@ public class AccessControl extends Contract {
     public RemoteFunctionCall<TransactionReceipt> renounceRole(Bytes32 role, Address account) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_RENOUNCEROLE,
-                Arrays.<Type>asList(role, account),
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(role, account),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> revokeRole(Bytes32 role, Address account) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_REVOKEROLE,
-                Arrays.<Type>asList(role, account),
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(role, account),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<Bool> supportsInterface(Bytes4 interfaceId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_SUPPORTSINTERFACE,
-                Arrays.<Type>asList(interfaceId),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {
+                Arrays.asList(interfaceId),
+                Arrays.asList(new TypeReference<Bool>() {
                 }));
         return executeRemoteCallSingleValueReturn(function);
     }

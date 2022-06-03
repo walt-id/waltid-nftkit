@@ -1,7 +1,10 @@
 package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
-import id.walt.nftkit.services.*
+import id.walt.nftkit.services.Chain
+import id.walt.nftkit.services.ExtensionsService
+import id.walt.nftkit.services.NftMetadata
+import id.walt.nftkit.services.TransactionResponse
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
 import kotlinx.serialization.Serializable
@@ -22,7 +25,7 @@ object ExtensionsController {
     fun paused(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = ExtensionsService.paused(Chain.valueOf(chain?.uppercase()!!), contractAddress)
+        val result = ExtensionsService.paused(Chain.valueOf(chain.uppercase()), contractAddress)
         ctx.json(
             result
         )
@@ -39,7 +42,7 @@ object ExtensionsController {
     fun pause(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = ExtensionsService.pause(Chain.valueOf(chain?.uppercase()!!), contractAddress)
+        val result = ExtensionsService.pause(Chain.valueOf(chain.uppercase()), contractAddress)
         ctx.json(
             result
         )
@@ -56,7 +59,7 @@ object ExtensionsController {
     fun unpause(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = ExtensionsService.unpause(Chain.valueOf(chain?.uppercase()!!), contractAddress)
+        val result = ExtensionsService.unpause(Chain.valueOf(chain.uppercase()), contractAddress)
         ctx.json(
             result
         )
@@ -77,7 +80,7 @@ object ExtensionsController {
         val tokenId = ctx.pathParam("tokenId")
         val signedAccount = ctx.queryParam("signedAccount")
         val result =
-            ExtensionsService.setTokenURI(Chain.valueOf(chain?.uppercase()!!), contractAddress, tokenId, signedAccount,updateTokenURIReq)
+            ExtensionsService.setTokenURI(Chain.valueOf(chain.uppercase()), contractAddress, tokenId, signedAccount,updateTokenURIReq)
         ctx.json(
             result
         )
@@ -98,7 +101,7 @@ object ExtensionsController {
     fun getTransferable(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = ExtensionsService.getTransferable(Chain.valueOf(chain?.uppercase()!!), contractAddress)
+        val result = ExtensionsService.getTransferable(Chain.valueOf(chain.uppercase()), contractAddress)
         ctx.json(
             result
         )
@@ -118,7 +121,7 @@ object ExtensionsController {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val result = ExtensionsService.setTransferable(
-            Chain.valueOf(chain?.uppercase()!!),
+            Chain.valueOf(chain.uppercase()),
             contractAddress,
             transferableReq.transferable
         )
@@ -140,7 +143,7 @@ object ExtensionsController {
     fun getBurnable(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = ExtensionsService.getBurnable(Chain.valueOf(chain?.uppercase()!!), contractAddress)
+        val result = ExtensionsService.getBurnable(Chain.valueOf(chain.uppercase()), contractAddress)
         ctx.json(
             result
         )
@@ -159,7 +162,7 @@ object ExtensionsController {
         val burnableReq = ctx.bodyAsClass(BurnableRequest::class.java)
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = ExtensionsService.setBurnable(Chain.valueOf(chain?.uppercase()!!), contractAddress, burnableReq.burnable)
+        val result = ExtensionsService.setBurnable(Chain.valueOf(chain.uppercase()), contractAddress, burnableReq.burnable)
         ctx.json(
             result
         )
@@ -180,7 +183,7 @@ object ExtensionsController {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val tokenId = ctx.pathParam("tokenId")
-        val result = ExtensionsService.burn(Chain.valueOf(chain?.uppercase()!!), contractAddress, BigInteger(tokenId))
+        val result = ExtensionsService.burn(Chain.valueOf(chain.uppercase()), contractAddress, BigInteger(tokenId))
         ctx.json(
             result
         )
