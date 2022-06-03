@@ -5,12 +5,7 @@ import io.reactivex.functions.Function;
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.Address;
-import org.web3j.abi.datatypes.Bool;
-import org.web3j.abi.datatypes.DynamicBytes;
-import org.web3j.abi.datatypes.Event;
-import org.web3j.abi.datatypes.Type;
-import org.web3j.abi.datatypes.Utf8String;
+import org.web3j.abi.datatypes.*;
 import org.web3j.abi.datatypes.generated.Bytes4;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
@@ -96,41 +91,35 @@ public class CustomOwnableERC721 extends Contract {
     public static final String FUNC_UNPAUSE = "unpause";
 
     public static final Event APPROVAL_EVENT = new Event("Approval",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {
+            Arrays.asList(new TypeReference<Address>(true) {
             }, new TypeReference<Address>(true) {
             }, new TypeReference<Uint256>(true) {
             }));
-    ;
 
     public static final Event APPROVALFORALL_EVENT = new Event("ApprovalForAll",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {
+            Arrays.asList(new TypeReference<Address>(true) {
             }, new TypeReference<Address>(true) {
             }, new TypeReference<Bool>() {
             }));
-    ;
 
     public static final Event OWNERSHIPTRANSFERRED_EVENT = new Event("OwnershipTransferred",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {
+            Arrays.asList(new TypeReference<Address>(true) {
             }, new TypeReference<Address>(true) {
             }));
-    ;
 
     public static final Event PAUSED_EVENT = new Event("Paused",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+            Arrays.asList(new TypeReference<Address>() {
             }));
-    ;
 
     public static final Event TRANSFER_EVENT = new Event("Transfer",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {
+            Arrays.asList(new TypeReference<Address>(true) {
             }, new TypeReference<Address>(true) {
             }, new TypeReference<Uint256>(true) {
             }));
-    ;
 
     public static final Event UNPAUSED_EVENT = new Event("Unpaused",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+            Arrays.asList(new TypeReference<Address>() {
             }));
-    ;
 
     @Deprecated
     protected CustomOwnableERC721(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
@@ -353,15 +342,15 @@ public class CustomOwnableERC721 extends Contract {
     public RemoteFunctionCall<TransactionReceipt> approve(Address to, Uint256 tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_APPROVE,
-                Arrays.<Type>asList(to, tokenId),
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(to, tokenId),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<Uint256> balanceOf(Address owner) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_BALANCEOF,
-                Arrays.<Type>asList(owner),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {
+                Arrays.asList(owner),
+                Arrays.asList(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function);
     }
@@ -369,23 +358,23 @@ public class CustomOwnableERC721 extends Contract {
     public RemoteFunctionCall<TransactionReceipt> burn(Uint256 tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_BURN,
-                Arrays.<Type>asList(tokenId),
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(tokenId),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<Address> getApproved(Uint256 tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETAPPROVED,
-                Arrays.<Type>asList(tokenId),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                Arrays.asList(tokenId),
+                Arrays.asList(new TypeReference<Address>() {
                 }));
         return executeRemoteCallSingleValueReturn(function);
     }
 
     public RemoteFunctionCall<Bool> isApprovedForAll(Address owner, Address operator) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_ISAPPROVEDFORALL,
-                Arrays.<Type>asList(owner, operator),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {
+                Arrays.asList(owner, operator),
+                Arrays.asList(new TypeReference<Bool>() {
                 }));
         return executeRemoteCallSingleValueReturn(function);
     }
@@ -393,31 +382,31 @@ public class CustomOwnableERC721 extends Contract {
     public RemoteFunctionCall<TransactionReceipt> mintTo(Address _recipient, Utf8String tokenURI) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_MINTTO,
-                Arrays.<Type>asList(_recipient, tokenURI),
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(_recipient, tokenURI),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<Utf8String> name() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_NAME,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                Arrays.asList(),
+                Arrays.asList(new TypeReference<Utf8String>() {
                 }));
         return executeRemoteCallSingleValueReturn(function);
     }
 
     public RemoteFunctionCall<Address> owner() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_OWNER,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                Arrays.asList(),
+                Arrays.asList(new TypeReference<Address>() {
                 }));
         return executeRemoteCallSingleValueReturn(function);
     }
 
     public RemoteFunctionCall<Address> ownerOf(Uint256 tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_OWNEROF,
-                Arrays.<Type>asList(tokenId),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                Arrays.asList(tokenId),
+                Arrays.asList(new TypeReference<Address>() {
                 }));
         return executeRemoteCallSingleValueReturn(function);
     }
@@ -425,15 +414,15 @@ public class CustomOwnableERC721 extends Contract {
     public RemoteFunctionCall<TransactionReceipt> pause() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_PAUSE,
-                Arrays.<Type>asList(),
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<Bool> paused() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_PAUSED,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {
+                Arrays.asList(),
+                Arrays.asList(new TypeReference<Bool>() {
                 }));
         return executeRemoteCallSingleValueReturn(function);
     }
@@ -441,95 +430,95 @@ public class CustomOwnableERC721 extends Contract {
     public RemoteFunctionCall<TransactionReceipt> renounceOwnership() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_RENOUNCEOWNERSHIP,
-                Arrays.<Type>asList(),
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> safeTransferFrom(Address from, Address to, Uint256 tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_safeTransferFrom,
-                Arrays.<Type>asList(from, to, tokenId),
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(from, to, tokenId),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> safeTransferFrom(Address from, Address to, Uint256 tokenId, DynamicBytes _data) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_safeTransferFrom,
-                Arrays.<Type>asList(from, to, tokenId, _data),
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(from, to, tokenId, _data),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> setApprovalForAll(Address operator, Bool approved) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_SETAPPROVALFORALL,
-                Arrays.<Type>asList(operator, approved),
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(operator, approved),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> setBurnableOption(Bool _tokensBurnable) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_SETBURNABLEOPTION,
-                Arrays.<Type>asList(_tokensBurnable),
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(_tokensBurnable),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> setTokenURI(Uint256 tokenId, Utf8String tokenURI) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_SETTOKENURI, 
-                Arrays.<Type>asList(tokenId, tokenURI), 
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(tokenId, tokenURI),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> setTransferableOption(Bool _tokensTransferable) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_SETTRANSFERABLEOPTION,
-                Arrays.<Type>asList(_tokensTransferable),
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(_tokensTransferable),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<Bool> supportsInterface(Bytes4 interfaceId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_SUPPORTSINTERFACE,
-                Arrays.<Type>asList(interfaceId),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {
+                Arrays.asList(interfaceId),
+                Arrays.asList(new TypeReference<Bool>() {
                 }));
         return executeRemoteCallSingleValueReturn(function);
     }
 
     public RemoteFunctionCall<Utf8String> symbol() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_SYMBOL,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                Arrays.asList(),
+                Arrays.asList(new TypeReference<Utf8String>() {
                 }));
         return executeRemoteCallSingleValueReturn(function);
     }
 
     public RemoteFunctionCall<Utf8String> tokenURI(Uint256 tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_TOKENURI,
-                Arrays.<Type>asList(tokenId),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                Arrays.asList(tokenId),
+                Arrays.asList(new TypeReference<Utf8String>() {
                 }));
         return executeRemoteCallSingleValueReturn(function);
     }
 
     public RemoteFunctionCall<Bool> tokensBurnable() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_TOKENSBURNABLE,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {
+                Arrays.asList(),
+                Arrays.asList(new TypeReference<Bool>() {
                 }));
         return executeRemoteCallSingleValueReturn(function);
     }
 
     public RemoteFunctionCall<Bool> tokensTransferable() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_TOKENSTRANSFERABLE,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {
+                Arrays.asList(),
+                Arrays.asList(new TypeReference<Bool>() {
                 }));
         return executeRemoteCallSingleValueReturn(function);
     }
@@ -537,24 +526,24 @@ public class CustomOwnableERC721 extends Contract {
     public RemoteFunctionCall<TransactionReceipt> transferFrom(Address from, Address to, Uint256 tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_TRANSFERFROM,
-                Arrays.<Type>asList(from, to, tokenId),
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(from, to, tokenId),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> transferOwnership(Address newOwner) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_TRANSFEROWNERSHIP,
-                Arrays.<Type>asList(newOwner),
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(newOwner),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> unpause() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_UNPAUSE,
-                Arrays.<Type>asList(),
-                Collections.<TypeReference<?>>emptyList());
+                Arrays.asList(),
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
@@ -577,24 +566,24 @@ public class CustomOwnableERC721 extends Contract {
     }
 
     public static RemoteCall<CustomOwnableERC721> deploy(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider, Utf8String name, Utf8String symbol, Bool _tokensBurnable, Bool _tokensTransferable) {
-        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(name, symbol, _tokensBurnable, _tokensTransferable));
+        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.asList(name, symbol, _tokensBurnable, _tokensTransferable));
         return deployRemoteCall(CustomOwnableERC721.class, web3j, credentials, contractGasProvider, BINARY, encodedConstructor);
     }
 
     public static RemoteCall<CustomOwnableERC721> deploy(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider, Utf8String name, Utf8String symbol, Bool _tokensBurnable, Bool _tokensTransferable) {
-        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(name, symbol, _tokensBurnable, _tokensTransferable));
+        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.asList(name, symbol, _tokensBurnable, _tokensTransferable));
         return deployRemoteCall(CustomOwnableERC721.class, web3j, transactionManager, contractGasProvider, BINARY, encodedConstructor);
     }
 
     @Deprecated
     public static RemoteCall<CustomOwnableERC721> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit, Utf8String name, Utf8String symbol, Bool _tokensBurnable, Bool _tokensTransferable) {
-        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(name, symbol, _tokensBurnable, _tokensTransferable));
+        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.asList(name, symbol, _tokensBurnable, _tokensTransferable));
         return deployRemoteCall(CustomOwnableERC721.class, web3j, credentials, gasPrice, gasLimit, BINARY, encodedConstructor);
     }
 
     @Deprecated
     public static RemoteCall<CustomOwnableERC721> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit, Utf8String name, Utf8String symbol, Bool _tokensBurnable, Bool _tokensTransferable) {
-        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(name, symbol, _tokensBurnable, _tokensTransferable));
+        String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.asList(name, symbol, _tokensBurnable, _tokensTransferable));
         return deployRemoteCall(CustomOwnableERC721.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, encodedConstructor);
     }
 

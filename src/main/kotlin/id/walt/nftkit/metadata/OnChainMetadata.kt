@@ -10,6 +10,6 @@ object OnChainMetadata : MetadataUri {
         val str = Json.encodeToString(serializer(), nftMetadata)
         val encodedStr = encBase64Str(str)
 
-        return "data:application/json;base64,$encodedStr";
+        return "data:application/json;base64,$encodedStr"
     }
 }

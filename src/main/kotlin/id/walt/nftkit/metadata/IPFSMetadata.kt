@@ -1,8 +1,5 @@
 package id.walt.nftkit.metadata
 
-import com.fasterxml.jackson.core.JsonGenerator
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import id.walt.nftkit.services.NFTsAlchemyResult
 import id.walt.nftkit.services.NftMetadata
 import id.walt.nftkit.services.NftService
 import io.ktor.client.call.*
@@ -12,7 +9,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.encodeToStream
 
 @Serializable
 data class NFTStorageResult(

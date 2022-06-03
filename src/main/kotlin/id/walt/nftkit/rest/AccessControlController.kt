@@ -16,7 +16,7 @@ object AccessControlController {
     fun owner(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = AccessControlService.owner(Chain.valueOf(chain?.uppercase()!!), contractAddress)
+        val result = AccessControlService.owner(Chain.valueOf(chain.uppercase()), contractAddress)
         ctx.json(
             result
         )
@@ -35,7 +35,7 @@ object AccessControlController {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val result = AccessControlService.transferOwnership(
-            Chain.valueOf(chain?.uppercase()!!),
+            Chain.valueOf(chain.uppercase()),
             contractAddress,
             transferOwnerReq.account
         )
@@ -57,7 +57,7 @@ object AccessControlController {
     fun renounceOwnership(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = AccessControlService.renounceOwnership(Chain.valueOf(chain?.uppercase()!!), contractAddress)
+        val result = AccessControlService.renounceOwnership(Chain.valueOf(chain.uppercase()), contractAddress)
         ctx.json(
             result
         )
@@ -77,7 +77,7 @@ object AccessControlController {
         val contractAddress = ctx.pathParam("contractAddress")
         val account = ctx.pathParam("account")
         val role = ctx.pathParam("role")
-        val result = AccessControlService.hasRole(Chain.valueOf(chain?.uppercase()!!), contractAddress, role, account)
+        val result = AccessControlService.hasRole(Chain.valueOf(chain.uppercase()), contractAddress, role, account)
         ctx.json(
             result
         )
@@ -95,7 +95,7 @@ object AccessControlController {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val role = ctx.pathParam("role")
-        val result = AccessControlService.getRoleAdmin(Chain.valueOf(chain?.uppercase()!!), contractAddress, role)
+        val result = AccessControlService.getRoleAdmin(Chain.valueOf(chain.uppercase()), contractAddress, role)
         ctx.json(
             result
         )
@@ -115,7 +115,7 @@ object AccessControlController {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val result = AccessControlService.grantRole(
-            Chain.valueOf(chain?.uppercase()!!),
+            Chain.valueOf(chain.uppercase()),
             contractAddress,
             grantRevokeRoleReq.role,
             grantRevokeRoleReq.account
@@ -141,7 +141,7 @@ object AccessControlController {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val result = AccessControlService.revokeRole(
-            Chain.valueOf(chain?.uppercase()!!),
+            Chain.valueOf(chain.uppercase()),
             contractAddress,
             grantRevokeRoleReq.role,
             grantRevokeRoleReq.account
@@ -166,7 +166,7 @@ object AccessControlController {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val result = AccessControlService.renounceRole(
-            Chain.valueOf(chain?.uppercase()!!),
+            Chain.valueOf(chain.uppercase()),
             contractAddress,
             grantRevokeRoleReq.role,
             grantRevokeRoleReq.account

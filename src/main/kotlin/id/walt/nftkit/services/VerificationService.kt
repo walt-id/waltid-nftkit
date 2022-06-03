@@ -109,12 +109,12 @@ object VerificationService {
         }else if(compareStrings(propertyKey,"external_url")){
             return compareStrings(propertyValue, metadata.external_url)
         }else {
-            if (metadata.attributes != null && metadata.attributes?.filter {
+            if (metadata.attributes != null && metadata.attributes.filter {
                     (it.trait_type.equals(propertyKey) && it.value.equals(
                         propertyValue,
                         true
                     )) || (propertyValue == null && propertyKey.equals(it.trait_type))
-                }!!.size > 0) {
+                }.size > 0) {
                 return true
             }
         }
