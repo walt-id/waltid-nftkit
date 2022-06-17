@@ -45,10 +45,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - nftkit.walt-test.cloud
+        - nftkit.walt.id
       secretName: nftkit-tls-secret
   rules:
-    - host: nftkit.walt-test.cloud
+    - host: nftkit.walt.id
       http:
         paths:
           - path: /
