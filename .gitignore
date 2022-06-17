@@ -141,6 +141,7 @@ $RECYCLE.BIN/
 *.msp
 *.lnk
 .idea
+src/main/resources/walt-default.yaml
 
 secret_maven_username.txt
 secret_maven_password.txt
