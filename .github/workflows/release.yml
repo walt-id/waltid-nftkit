@@ -66,7 +66,7 @@ jobs:
           DOCKER_FILE: Dockerfile
           CONTAINER_TAG: waltid/nftkit:${{ github.event.inputs.versionName }}
       - name: Prepare CD
-        run: sed "s/_DEFAULT_DEPLOYMENT_/$GITHUB_SHA/g; s/_VERSION_TAG_/$GITHUB_REF_NAME/g" k8s/deployment-prod.yaml > k8s/deployment-prod_mod.yaml
+        run: sed "s/_DEFAULT_DEPLOYMENT_/$GITHUB_SHA/g; s/_VERSION_TAG_/${{ github.event.inputs.versionName }}/g" k8s/deployment-prod.yaml > k8s/deployment-prod_mod.yaml
       - name: Continuous deployment
         uses: actions-hub/kubectl@master
         env:
