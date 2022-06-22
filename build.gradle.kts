@@ -55,6 +55,18 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:0.38.2")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.38.2")
     implementation("org.xerial:sqlite-jdbc:3.36.0.3")
+
+    // Testing
+    //testImplementation(kotlin("test-junit"))
+    //testImplementation("io.mockk:mockk:1.12.4")
+
+    testImplementation("io.kotest:kotest-runner-junit5:5.3.1")
+    testImplementation("io.kotest:kotest-assertions-core:5.3.1")
+    testImplementation("io.kotest:kotest-assertions-json:5.3.1")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 tasks.withType<KotlinCompile> {
