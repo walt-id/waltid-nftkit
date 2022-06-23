@@ -69,7 +69,7 @@ Following code snipped gives a first impression how to use the NFT Kit for deplo
         val attributes = mutableListOf(attribute1, attribute2)
         val nftMetadata : NftMetadata = NftMetadata(name = "name", description = "description", image = "", attributes = attributes)
         val mintingParameter = MintingParameter("", "0xaf87c5Ce7a1fb6BD5aaDB6dd9C0b8EF51EF1BC31",nftMetadata)
-        val mintingOptions = MintingOptions(MetadataStorageType.ON_CHAIN, null)
+        val mintingOptions = MintingOptions(MetadataStorageType.ON_CHAIN)
         val result = NftService.mintToken(Chain.POLYGON,"0xFd9426f82Ae1edBC6b5eC2B0Ea5416D34Ca6E9b6", mintingParameter, mintingOptions)       
 
         // Fetch NFT Metadata URI 
