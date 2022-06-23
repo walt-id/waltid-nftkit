@@ -59,8 +59,8 @@ Following code snipped gives a first impression how to use the NFT Kit for deplo
     fun main() {
     
         // Deploy new ERC721 smart contract instance on polygon network
-        val deploymentOptions = DeploymentOptions(tokenStandard = TokenStandard.ERC721)
-        val deploymentParameter = DeploymentParameter("Metaverse", "MTV","","")
+        val deploymentOptions = DeploymentOptions(AccessControl.OWNABLE, TokenStandard.ERC721)
+        val deploymentParameter = DeploymentParameter("Metaverse", "MTV",DeploymentParameter.Options(true, true))
         val result = NftService.deploySmartContractToken(Chain.POLYGON, deploymentParameter, deploymentOptions)
     
         // Mint new NFT
