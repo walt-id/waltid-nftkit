@@ -2,6 +2,7 @@ package id.walt.nftkit.services
 
 import id.walt.nftkit.Values
 import id.walt.nftkit.chains.evm.erc721.Erc721TokenStandard
+import id.walt.nftkit.metadata.IPFSMetadata
 import id.walt.nftkit.metadata.MetadataUri
 import id.walt.nftkit.metadata.MetadataUriFactory
 import id.walt.nftkit.metadata.NFTStorageAddFileResult
@@ -242,14 +243,6 @@ object NftService {
                 ignoreUnknownKeys = true
             })
         }
-        install(Auth) {
-            bearer {
-                loadTokens {
-                    val token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDYwNDNEYThENjU2RTU3NTg2ZDk3MkM1ZDM5RUNENzI1NTNCM2Q1NjAiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY1MDUzNzUzNjk2OSwibmFtZSI6Ik5GVHMifQ.MBK_rahk6e6fCTheE7qLJeZ_OIyKGkbP63aVLPas1sw"
-                    BearerTokens(token, token)
-                }
-            }
-        }
         install(Logging) {
             logger = Logger.SIMPLE
             level = LogLevel.ALL
@@ -419,7 +412,7 @@ object NftService {
             var uriFormat= uri
             if(uri.contains("ipfs://", true)){}
             uriFormat= uri.replace("ipfs://","", true)
-            val result = NftService.client.get("https://nftstorage.link/ipfs/$uriFormat") {
+            val result = IPFSMetadata.client.get("https://nftstorage.link/ipfs/$uriFormat") {
             }.body<NftMetadata>()
             return@runBlocking result
         }
@@ -427,7 +420,7 @@ object NftService {
 
     fun addFileToIpfsUsingNFTStorage(file: ByteArray): NFTStorageAddFileResult {
         return runBlocking {
-            val res = client.post("https://api.nft.storage/upload") {
+            val res = IPFSMetadata.client.post("https://api.nft.storage/upload") {
                 contentType(ContentType.Image.Any)
                 setBody(file)
             }.body<NFTStorageAddFileResult>()
