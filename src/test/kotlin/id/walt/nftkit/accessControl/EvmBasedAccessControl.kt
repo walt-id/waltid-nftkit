@@ -10,12 +10,12 @@ class EvmBasedAccessControl : StringSpec({
 
     val enableTest = false
 
-    "Verify smart contract ownership".config(enabled=false) {
+    "Verify smart contract ownership".config(enabled=enableTest) {
         val result= AccessControlService.owner(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
         result shouldBe  "0xaf87c5ce7a1fb6bd5aadb6dd9c0b8ef51ef1bc31"
     }
 
-    "transfer ownership".config(enabled=false){
+    "transfer ownership".config(enabled=enableTest){
         val result = AccessControlService.transferOwnership(Chain.MUMBAI,
             "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517",
             "0xaf87c5ce7a1fb6bd5aadb6dd9c0b8ef51ef1bc31"
@@ -25,27 +25,31 @@ class EvmBasedAccessControl : StringSpec({
         result.transactionId shouldNotBe null
     }
 
-    " grant role ".config(enabled=false){
+    " grant role ".config(enabled=enableTest){
         val result = AccessControlService.grantRole(Chain.MUMBAI,"0xa5a0914988bAB4e773109969A9176855eA77FcfB", role="MINTER_ROLE" , "0xaf87c5ce7a1fb6bd5aadb6dd9c0b8ef51ef1bc31" )
         val has = AccessControlService.hasRole(Chain.MUMBAI, "0xa5a0914988bAB4e773109969A9176855eA77FcfB", "MINTER_ROLE" , "0xaf87c5ce7a1fb6bd5aadb6dd9c0b8ef51ef1bc31")
         result.transactionId shouldNotBe null
         has shouldBe true;
     }
 
-    "has role test".config(enabled=false) {
+    "has role test".config(enabled=enableTest) {
         val result = AccessControlService.hasRole(Chain.MUMBAI,"0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", "MINTER_ROLE", "0xaf87c5ce7a1fb6bd5aadb6dd9c0b8ef51ef1bc31")
         result shouldBe true
     }
 
-    "revoke role".config(enabled=false){
+    "revoke role".config(enabled=enableTest){
         val result = AccessControlService.revokeRole(Chain.MUMBAI,"0xa5a0914988bAB4e773109969A9176855eA77FcfB","MINTER_ROLE" , "0xaf87c5ce7a1fb6bd5aadb6dd9c0b8ef51ef1bc31" )
         result.transactionId shouldNotBe null
     }
 
-    "get role admin test".config(enabled=false){
-        val result = AccessControlService.getRoleAdmin(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517","DEFAULT_ADMIN_ROLE")
+
+  "get role admin test".config(enabled=true){
+        val result = AccessControlService.getRoleAdmin(Chain.MUMBAI, "0xa5a0914988bAB4e773109969A9176855eA77FcfB","MINTER_ROLE")
+        result shouldBe "00000000000000000000000000000000"
 
     }
+
+
 
 
 
