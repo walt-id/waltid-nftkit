@@ -1,5 +1,5 @@
 package id.walt.nftkit
-
+/*
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 
@@ -24,3 +24,5 @@ class DummyTest : StringSpec({
 
     }
 }
+
+ */

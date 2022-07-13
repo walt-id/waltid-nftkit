@@ -20,7 +20,8 @@ RUN apt-get update && apt-get upgrade --yes
 
 FROM openjdk-gradle AS walt-build
 COPY ./ /opt
-RUN ./gradlew clean build
+RUN chmod +x gradle
+RUN ./gradle clean build
 RUN tar xf /opt/build/distributions/waltid-nftkit-*.tar -C /opt
 
 FROM openjdk:17-slim-buster
