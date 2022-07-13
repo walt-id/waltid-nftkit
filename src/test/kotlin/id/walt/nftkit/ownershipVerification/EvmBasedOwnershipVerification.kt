@@ -21,7 +21,8 @@ class EvmBasedOwnershipVerification : StringSpec({
     result shouldBe true
     }
 
-    "data nft verification".config(enabled=enableTest){
+   /*
+   "data nft verification".config(enabled=enableTest){
         val result = VerificationService.dataNftVerification(Chain.MUMBAI,
             erc721FactorycontractAddress= "",
             erc721contractAddress= "",
@@ -30,6 +31,6 @@ class EvmBasedOwnershipVerification : StringSpec({
             propertyValue="")
         result shouldBe true
     }
-
+*/
 
 })

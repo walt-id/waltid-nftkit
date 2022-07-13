@@ -34,11 +34,7 @@ class Erc721StandardTest : StringSpec({
 
         val result = NftService.getNftMetadata(Chain.MUMBAI,
             "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", tokenid )
-        println(result.description)
-        println(result.external_url)
-        println(result.image)
-        println(result.name)
-        println(result.image_data)
+
         result shouldNotBe null
     }
 
@@ -91,11 +87,21 @@ class Erc721StandardTest : StringSpec({
         result.transactionId shouldNotBe null
     }
 
-    "get IPFS meta data sing NFTs storage".config(enabled=enableTest){
-    val result =
+    "get IPFS meta data sing NFTs storage".config(enabled=true){
+        val tokenid = BigInteger.valueOf(10)
+        var uri = NftService.getNftMetadataUri(Chain.MUMBAI,"0xf277BE034881eE38A9b270E5b6C5c6f333Af2517" ,tokenid)
+        val result = NftService.getIPFSMetadataUsingNFTStorage(uri)
+
+        result.description shouldBe "string"
+        result.name shouldBe "string"
+        result.image shouldBe "string"
+        result.external_url shouldBe "string"
+        result.attributes?.get(0)!!.trait_type shouldBe "string"
+        result.attributes?.get(0)!!.value shouldBe "string"
+
     }
 
-    "add file to ipfs nft storage".config(enabled=true){
+    "add file to ipfs nft storage".config(enabled=enableTest){
         val byteArray = Files.readAllBytes(Paths.get("C:\\Users\\ahmed\\Desktop\\sa7eHXGY_400x400.jpg"))
         val result = NftService.addFileToIpfsUsingNFTStorage(byteArray)
         result.ok shouldBe true
