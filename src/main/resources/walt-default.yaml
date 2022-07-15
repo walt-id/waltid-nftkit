@@ -18,8 +18,9 @@ providers:
     polygon: "https://polygon-mainnet.g.alchemy.com/v2/yjbYhlaH3U_vfnTiRQ3miGQS0cKwQMkB"
     mumbai: "https://polygon-mumbai.g.alchemy.com/v2/yjbYhlaH3U_vfnTiRQ3miGQS0cKwQMkB"
 
-#privateKey : "a1fcab9b58015f452c9a89d4cde4807a80111ab27142730bfb96be936e576be1"
 privateKey: "bd4cb3e507f342ee3a710370cef39dda48f17b0a158b0b8dd3f000fbd5b2c2d9"
+
+#privateKey: "a1fcab9b58015f452c9a89d4cde4807a80111ab27142730bfb96be936e576be1"
 
 keys:
   0xaf87c5Ce7a1fb6BD5aaDB6dd9C0b8EF51EF1BC31: "bd4cb3e507f342ee3a710370cef39dda48f17b0a158b0b8dd3f000fbd5b2c2d9"
