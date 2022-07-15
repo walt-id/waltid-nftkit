@@ -17,10 +17,10 @@ class EvmBasedAccessControl : StringSpec({
 
     "transfer ownership".config(enabled=enableTest){
         val result = AccessControlService.transferOwnership(Chain.MUMBAI,
-            "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517",
+            "0x41ffba64969ab4d8a4ac7fae765e4fc1dd30290b",
             "0xaf87c5ce7a1fb6bd5aadb6dd9c0b8ef51ef1bc31"
         )
-        val nOwner= AccessControlService.owner(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
+        val nOwner= AccessControlService.owner(Chain.MUMBAI, "0x41ffba64969ab4d8a4ac7fae765e4fc1dd30290b")
         nOwner shouldBe "0xaf87c5ce7a1fb6bd5aadb6dd9c0b8ef51ef1bc31"
         result.transactionId shouldNotBe null
     }
@@ -29,11 +29,11 @@ class EvmBasedAccessControl : StringSpec({
         val result = AccessControlService.grantRole(Chain.MUMBAI,"0xa5a0914988bAB4e773109969A9176855eA77FcfB", role="MINTER_ROLE" , "0xaf87c5ce7a1fb6bd5aadb6dd9c0b8ef51ef1bc31" )
         val has = AccessControlService.hasRole(Chain.MUMBAI, "0xa5a0914988bAB4e773109969A9176855eA77FcfB", "MINTER_ROLE" , "0xaf87c5ce7a1fb6bd5aadb6dd9c0b8ef51ef1bc31")
         result.transactionId shouldNotBe null
-        has shouldBe true;
+        has shouldBe true
     }
 
     "has role test".config(enabled=enableTest) {
-        val result = AccessControlService.hasRole(Chain.MUMBAI,"0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", "MINTER_ROLE", "0xaf87c5ce7a1fb6bd5aadb6dd9c0b8ef51ef1bc31")
+        val result = AccessControlService.hasRole(Chain.MUMBAI,"0xa5a0914988bAB4e773109969A9176855eA77FcfB", "MINTER_ROLE", "0xaf87c5ce7a1fb6bd5aadb6dd9c0b8ef51ef1bc31")
         result shouldBe true
     }
 
@@ -43,7 +43,7 @@ class EvmBasedAccessControl : StringSpec({
     }
 
 
-  "get role admin test".config(enabled=true){
+  "get role admin test".config(enabled=enableTest){
         val result = AccessControlService.getRoleAdmin(Chain.MUMBAI, "0xa5a0914988bAB4e773109969A9176855eA77FcfB","MINTER_ROLE")
         result shouldBe "00000000000000000000000000000000"
 
