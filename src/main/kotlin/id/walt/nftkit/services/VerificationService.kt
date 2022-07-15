@@ -41,6 +41,11 @@ object VerificationService {
         return ownershipVerification(chain, contractAddress, account, BigInteger(tokenId))
     }
 
+    fun verifyNftAccountOwnershipInCollection(chain: Chain, contractAddress: String, account: String): Boolean{
+        val balance= NftService.balanceOf(chain, contractAddress, account)
+        return if (balance!!.compareTo(BigInteger("0")) == 1) true else false
+    }
+
     //  simply check if a certain trait type and trait value is in the metadata
     fun verifyTrait(chain: Chain, contractAddress: String, account: String, tokenId: String, traitType: String, traitValue: String? = null): Boolean {
         val ownership= ownershipVerification(chain, contractAddress, account, BigInteger(tokenId))
