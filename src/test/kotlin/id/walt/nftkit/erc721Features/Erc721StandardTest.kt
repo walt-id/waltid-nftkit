@@ -4,6 +4,7 @@ import id.walt.nftkit.services.*
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import org.web3j.crypto.Credentials
 import java.math.BigInteger
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -16,12 +17,18 @@ class Erc721StandardTest : StringSpec({
 
 
 
-    "Smart contract deployment".config(enabled = enableTest) {
+    "Smart contract deployment".config(enabled = true) {
         val deploymentOptions = DeploymentOptions(AccessControl.OWNABLE, TokenStandard.ERC721)
         val deploymentParameter = DeploymentParameter("Metaverse", "MTV", DeploymentParameter.Options(true, true))
         val result = NftService.deploySmartContractToken(Chain.MUMBAI, deploymentParameter, deploymentOptions)
+        val privateKey= WaltIdServices.loadChainConfig().privateKey
+        val credentials: Credentials = Credentials.create(privateKey)
+
         result.contractAddress shouldNotBe  ""
         result.contractAddress shouldNotBe null
+
+        val owner = AccessControlService.owner(Chain.MUMBAI, result.contractAddress)
+        owner shouldBe credentials.address
     }
 
     "minting token".config(enabled=enableTest){
