@@ -17,7 +17,7 @@ class Erc721StandardTest : StringSpec({
 
 
 
-    "Smart contract deployment".config(enabled = true) {
+    "Smart contract deployment".config(enabled = enableTest) {
         val deploymentOptions = DeploymentOptions(AccessControl.OWNABLE, TokenStandard.ERC721)
         val deploymentParameter = DeploymentParameter("Metaverse", "MTV", DeploymentParameter.Options(true, true))
         val result = NftService.deploySmartContractToken(Chain.MUMBAI, deploymentParameter, deploymentOptions)

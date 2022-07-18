@@ -2,6 +2,7 @@ package id.walt.nftkit.extensions
 
 import id.walt.nftkit.rest.UpdateTokenURIRequest
 import id.walt.nftkit.services.*
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -92,6 +93,7 @@ class EvmBasedSCExtensions : StringSpec({
             }
 
         if (result != null) {
+            shouldThrow<Exception> { NftService.getNftMetadataUri(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", newNftId) }
             result.transactionId shouldNotBe null
         }
         }
