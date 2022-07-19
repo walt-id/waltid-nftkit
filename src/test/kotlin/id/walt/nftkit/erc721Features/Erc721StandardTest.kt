@@ -15,88 +15,80 @@ class Erc721StandardTest : StringSpec({
 
     val enableTest = false
 
-
-
     "Smart contract deployment".config(enabled = enableTest) {
         val deploymentOptions = DeploymentOptions(AccessControl.OWNABLE, TokenStandard.ERC721)
         val deploymentParameter = DeploymentParameter("Metaverse", "MTV", DeploymentParameter.Options(true, true))
         val result = NftService.deploySmartContractToken(Chain.MUMBAI, deploymentParameter, deploymentOptions)
         val privateKey= WaltIdServices.loadChainConfig().privateKey
         val credentials: Credentials = Credentials.create(privateKey)
-
         result.contractAddress shouldNotBe  ""
         result.contractAddress shouldNotBe null
-
         val owner = AccessControlService.owner(Chain.MUMBAI, result.contractAddress)
         owner shouldBe credentials.address
+        val checkInfo = NftService.getTokenCollectionInfo(Chain.MUMBAI, result.contractAddress )
+        checkInfo.name shouldBe "Metaverse"
+        checkInfo.symbol shouldBe "MTV"
     }
 
-    "minting token".config(enabled=enableTest){
+    "Minting token".config(enabled=enableTest){
         val nftMetaData = NftMetadata("Ticket 2 description", "Ticket 2", "string", "string","string")
         val mintingParametre = MintingParameter(metadataUri = "", recipientAddress="0xaf87c5ce7a1fb6bd5aadb6dd9c0b8ef51ef1bc31", metadata = nftMetaData )
         val mintingOption = MintingOptions(MetadataStorageType.ON_CHAIN)
         val result = NftService.mintToken(Chain.MUMBAI, contractAddress = "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517",mintingParametre, mintingOption)
-
         val newNFT = NftService.getNftMetadata(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", result.tokenId!!)
-
         result.tokenId shouldNotBe null
         newNFT shouldBe nftMetaData
     }
 
 
-    "get nft metadata test".config(enabled=enableTest){
+    "Verifying nft metadata".config(enabled=enableTest){
         val tokenid = BigInteger.valueOf(3)
-        val result = NftService.getNftMetadata(Chain.MUMBAI,
-            "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", tokenid )
-
-      result.name shouldBe "Ticket #1"
+        val result = NftService.getNftMetadata(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", tokenid )
+        result.name shouldBe "Ticket #1"
         result.description shouldBe "Ticket #1 Description"
 
     }
 
-    "get metadata uri".config(enabled=enableTest){
-        val tokenid = BigInteger.valueOf(4)
-        val result = NftService.getNftMetadataUri(Chain.MUMBAI,
-            "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", tokenid )
-        result shouldNotBe null
-        result shouldNotBe ""
+    "Verifying Metadata URI".config(enabled=enableTest){
+        val tokenid = BigInteger.valueOf(10)
+        val result = NftService.getNftMetadataUri(Chain.MUMBAI,"0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", tokenid )
+        result shouldBe "ipfs://bafyreiebsxbmwmgrzlrhlpwj2mmz5j64vsfojfy7lviu22unkkmjdhfqt4/metadata.json"
     }
 
-    "get balance of address".config(enabled=enableTest){
+    "Verifying balance of address".config(enabled=enableTest){
         val result = NftService.balanceOf(Chain.MUMBAI,
             "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517",
-            "0x59Fbfc9ad3E3b99ae8C480590908f09019667181")
-        result shouldNotBe null
+            "0xe895D59e84d0E77a8DaEaA55547528406C5a1314")
+        result shouldBe BigInteger.valueOf(2)
     }
 
-    "get owner of a token test".config(enabled=enableTest){
-        val tokenid = BigInteger.valueOf(4)
-
+    "Verifying owner of a token".config(enabled=enableTest){
+        val tokenid = BigInteger.valueOf(35)
         val result = NftService.ownerOf(Chain.MUMBAI,
             "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517",
         tokenid)
+      //  result shouldBe "0xe895D59e84d0E77a8DaEaA55547528406C5a1314"
         result shouldNotBe null
         result shouldNotBe ""
     }
 
-    "get token collection info".config(enabled=enableTest){
+    "Verifying token collection info".config(enabled=enableTest){
         val result = NftService.getTokenCollectionInfo(Chain.MUMBAI,
             "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517" )
-        result.name shouldNotBe null
-        result.name shouldNotBe ""
+        result.name shouldBe "Ticket"
+        result.symbol shouldBe "TK"
     }
 
-    "get account nfts by alchmy".config(enabled=enableTest){
+    "Verifying account NFTs by Alchmy".config(enabled=enableTest){
         val result = NftService.getAccountNFTsByAlchemy(Chain.MUMBAI,
-            "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517" )
-        result.size shouldNotBe null
+            "0xe895D59e84d0E77a8DaEaA55547528406C5a1314" )
+        result[0].id.tokenId shouldBe "35"
+        result[1].id.tokenId shouldBe "36"
     }
 
-    "update metadata".config(enabled=enableTest){
-
+    "Setting metadata".config(enabled=enableTest){
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
         val currentDate = sdf.format(Date())
-
         val result = NftService.updateMetadata(chain=Chain.MUMBAI,
             contractAddress = "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517",
             tokenId="5",
@@ -104,17 +96,15 @@ class Erc721StandardTest : StringSpec({
             value= currentDate,
             signedAccount = null
             )
-
         val check = NftService.getNftMetadata(chain=Chain.MUMBAI, contractAddress = "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", tokenId=BigInteger.valueOf(5))
         check.attributes!![0].value shouldBe currentDate
         result.transactionId shouldNotBe null
     }
 
-    "get IPFS meta data using NFTs storage".config(enabled=true){
+    "Verifying IPFS metadata using NFTs storage".config(enabled=enableTest){
         val tokenid = BigInteger.valueOf(10)
         var uri = NftService.getNftMetadataUri(Chain.MUMBAI,"0xf277BE034881eE38A9b270E5b6C5c6f333Af2517" ,tokenid)
         val result = NftService.getIPFSMetadataUsingNFTStorage(uri)
-
         result.description shouldBe "string"
         result.name shouldBe "string"
         result.image shouldBe "string"
@@ -123,7 +113,7 @@ class Erc721StandardTest : StringSpec({
         result.attributes?.get(0)!!.value shouldBe "15/7/2022 10:30:07"
     }
 
-    "add file to ipfs nft storage".config(enabled=true){
+    "Adding file to ipfs nft storage".config(enabled=enableTest){
         val byteArray = Files.readAllBytes(Paths.get("src/test/resources/nft-sample/image.jpg"))
         val result = NftService.addFileToIpfsUsingNFTStorage(byteArray)
         println(result.value.cid)
