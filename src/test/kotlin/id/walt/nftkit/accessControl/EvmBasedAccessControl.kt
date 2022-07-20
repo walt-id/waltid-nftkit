@@ -28,15 +28,14 @@ class EvmBasedAccessControl : StringSpec({
         val deploymentOptions = DeploymentOptions(AccessControl.OWNABLE, TokenStandard.ERC721)
         val deploymentParameter = DeploymentParameter("Metaverse", "MTV", DeploymentParameter.Options(true, true))
         val SC = NftService.deploySmartContractToken(Chain.MUMBAI, deploymentParameter, deploymentOptions)
-        val owner = AccessControlService.owner(Chain.MUMBAI, SC.contractAddress)
         val result = AccessControlService.renounceOwnership(Chain.MUMBAI, SC.contractAddress)
         val checkOwnership = AccessControlService.owner(Chain.MUMBAI, SC.contractAddress)
 
         result.transactionId shouldNotBe null
-        owner shouldNotBe checkOwnership
+        checkOwnership shouldBe "0x0000000000000000000000000000000000000000"
     }
 
-    "Granting role".config(enabled=true){
+    "Granting role".config(enabled=enableTest){
 
         var hadRole = AccessControlService.hasRole(Chain.MUMBAI, "0xa5a0914988bAB4e773109969A9176855eA77FcfB", "MINTER_ROLE" , "0xaf87c5ce7a1fb6bd5aadb6dd9c0b8ef51ef1bc31")
         if (hadRole){

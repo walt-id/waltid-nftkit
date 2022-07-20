@@ -67,9 +67,7 @@ class Erc721StandardTest : StringSpec({
         val result = NftService.ownerOf(Chain.MUMBAI,
             "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517",
         tokenid)
-      //  result shouldBe "0xe895D59e84d0E77a8DaEaA55547528406C5a1314"
-        result shouldNotBe null
-        result shouldNotBe ""
+        result shouldBe "0xe895d59e84d0e77a8daeaa55547528406c5a1314"
     }
 
     "Verifying token collection info".config(enabled=enableTest){
