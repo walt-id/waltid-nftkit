@@ -12,8 +12,6 @@ import id.walt.nftkit.utilis.Common
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.auth.*
-import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
@@ -293,7 +291,7 @@ object NftService {
         return BigInteger.valueOf(0)
     }
 
-    fun ownerOf(chain: Chain,contractAddress: String, tokenId: BigInteger): String?{
+    fun ownerOf(chain: Chain,contractAddress: String, tokenId: BigInteger): String{
         //in the case of ERC721
         if(isErc721Standard(chain, contractAddress) == true){
             return Erc721TokenStandard.ownerOf(chain, contractAddress,Uint256(tokenId))

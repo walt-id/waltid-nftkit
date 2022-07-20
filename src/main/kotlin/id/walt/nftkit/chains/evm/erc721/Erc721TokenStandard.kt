@@ -70,7 +70,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
         return erc721URIStorageWrapper.mintTo(recipient, tokenURI).send()
     }
 
-    override fun ownerOf(chain: Chain, contractAddress: String, tokenId: Uint256): String? {
+    override fun ownerOf(chain: Chain, contractAddress: String, tokenId: Uint256): String {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress)
         return erc721URIStorageWrapper.ownerOf(tokenId).send().value
     }
