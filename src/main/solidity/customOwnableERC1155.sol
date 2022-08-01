@@ -12,6 +12,8 @@ import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Burnable.sol";
 contract CustomOwnable is ERC1155, Ownable, Pausable, ERC1155Burnable {
 
     mapping (uint256 => string) private _tokenURIs;
+    string private _baseURI = "";
+
 
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
@@ -20,27 +22,34 @@ contract CustomOwnable is ERC1155, Ownable, Pausable, ERC1155Burnable {
     bool private tokensTransferable;
 
 
-    constructor (string memory uri, bool _tokensBurnable, bool _tokensTransferable) ERC1155 (uri) {
+    constructor (bool _tokensBurnable, bool _tokensTransferable) ERC1155 ("") {
         tokensBurnable = _tokensBurnable;
         tokensTransferable = _tokensTransferable;
 
     }
 
-   function uris(uint256 id)  public view returns (string memory) {
-        return(_tokenURIs[id]);
+   function uri(uint256 tokenId) public override view returns (string memory) {
+        string memory tokenURI = _tokenURIs[tokenId];
+
+        // If token URI is set, concatenate base URI and tokenURI (via abi.encodePacked).
+        return bytes(tokenURI).length > 0 ? string(abi.encodePacked(_baseURI, tokenURI)) : super.uri(tokenId);
     }
 
-    function _setTokenUri(uint256 id, string memory uri) private {
-         _tokenURIs[id] = uri;
+    function setURI(uint256 tokenId, string memory tokenURI) public onlyOwner {
+        _setURI(tokenId,tokenURI);
     }
 
+    function _setURI(uint256 tokenId, string memory tokenURI) internal virtual {
+        _tokenURIs[tokenId] = tokenURI;
+        emit URI(uri(tokenId), tokenId);
+    }
 
-    function mint(address account, uint256 amount, string memory uri, bytes memory data) public onlyOwner
+    function mint(address account, uint256 amount, string memory tokenURI, bytes memory data) public onlyOwner
         {
             _tokenIds.increment();
             uint256 newItemId = _tokenIds.current();
             _mint(account, newItemId, amount, data);
-            _setTokenUri(newItemId,uri);
+            _setURI(newItemId,tokenURI);
         }
 
     function mintBatch(address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)
@@ -67,8 +76,7 @@ contract CustomOwnable is ERC1155, Ownable, Pausable, ERC1155Burnable {
         uint256[] memory amounts,
         bytes memory data
     ) internal virtual override
-     //whenNotPaused
-        //override
+
     {
             super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
             require(!paused(), "ERC1155Pausable: token transfer while paused");
@@ -84,7 +92,9 @@ contract CustomOwnable is ERC1155, Ownable, Pausable, ERC1155Burnable {
         return  tokensBurnable;
     }
 
-
+    function _setBaseURI(string memory baseURI) internal virtual {
+        _baseURI = baseURI;
+    }
 
     function pause() public onlyOwner {
         _pause();
