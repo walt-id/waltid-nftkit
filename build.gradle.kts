@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    id("org.web3j") version "4.9.0"
     kotlin("jvm") version "1.6.10"
     // id("org.web3j") version "4.9.0"
     kotlin("plugin.serialization") version "1.6.10"
