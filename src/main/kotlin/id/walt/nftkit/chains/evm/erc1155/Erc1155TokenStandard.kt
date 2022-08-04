@@ -56,8 +56,8 @@ object Erc1155TokenStandard {
 
 
     override fun balanceOf(chain: Chain, contractAddress: String, account: Address, id: Uint256): BigInteger? {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
-        return erc721URIStorageWrapper.balanceOf(account,id).send().value
+        val erc1155URIStorageWrapper = loadContract(chain, contractAddress)
+        return erc1155URIStorageWrapper.balanceOf(account,id).send().value
     }
 
     override fun balanceOfBtach(chain: Chain, contractAddress: String, accounts: Address, ids: Uint256 ): BigInteger? {
@@ -92,6 +92,8 @@ object Erc1155TokenStandard {
 
     }
 
+
+
     override fun safeBatchTransferFrom (
         chain: Chain,
         contractAddress: String,
@@ -107,12 +109,21 @@ object Erc1155TokenStandard {
     }
 
 
-
     override fun uri(chain: Chain, contractAddress: String, tokenId: Uint256): String {
         val erc1155URIStorageWrapper = loadContract(chain, contractAddress)
         return erc1155URIStorageWrapper.tokenURI(tokenId).send().value
     }
 
+    override fun updateUri(
+        chain: Chain,
+        contractAddress: String,
+        token: BigInteger,
+        tokenURI: Utf8String,
+        signedAccount: String?
+    ): TransactionReceipt {
+        val erc1155URIStorageWrapper = loadContract(chain, contractAddress, signedAccount)
+        return erc1155URIStorageWrapper.setTokenURI(Uint256(token), tokenURI).send()
+    }
     override fun supportsInterface(chain: Chain, contractAddress: String) : Boolean {
         val erc1155URIStorageWrapper = loadContract(chain, contractAddress)
         val data = Numeric.hexStringToByteArray("0xd9b67a26") // ERC1155 interface id
@@ -161,5 +172,82 @@ object Erc1155TokenStandard {
         )
         return DeploymentResponse(ts, contract.contractAddress, "$url/address/${contract.contractAddress}")
 
+    }
+
+    fun deployRBACContract(chain: Chain, parameter: DeploymentParameter, options: DeploymentOptions): DeploymentResponse {
+        val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
+        val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
+        val gasProvider: ContractGasProvider = WaltIdGasProvider
+        val remotCall: RemoteCall<CustomAccessControlERC1155>
+        if (chain == Chain.POLYGON || chain == Chain.MUMBAI) {
+            val chainId: Long
+            if (chain == Chain.POLYGON) {
+                chainId = Values.POLYGON_MAINNET_CHAIN_ID
+            } else {
+                chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
+            }
+            val transactionManager: TransactionManager = RawTransactionManager(
+                web3j, credentials, chainId
+            )
+            remotCall = CustomAccessControlERC1155.deploy(
+                web3j,
+                transactionManager,
+                gasProvider,
+                Bool(parameter.options.burnable),
+                Bool(parameter.options.transferable)
+            )
+        } else {
+            remotCall = CustomAccessControlERC1155.deploy(
+                web3j,
+                credentials,
+                gasProvider,
+                Bool(parameter.options.burnable),
+                Bool(parameter.options.transferable)
+            )
+        }
+        val contract = remotCall.send()
+
+        val url = WaltIdServices.getBlockExplorerUrl(chain)
+        val ts = TransactionResponse(
+            contract.transactionReceipt.get().transactionHash,
+            "$url/tx/${contract.transactionReceipt.get().transactionHash}"
+        )
+        return DeploymentResponse(ts, contract.contractAddress, "$url/address/${contract.contractAddress}")
+    }
+
+    private fun loadContract(chain: Chain, address: String, signedAccount: String? ="") : CustomOwnableERC1155 {
+        val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
+
+        val privateKey: String
+        if(signedAccount == null || "".equals(signedAccount)){
+            privateKey= WaltIdServices.loadChainConfig().privateKey
+        }else{
+            val lowercaseAddress= WaltIdServices.loadAccountKeysConfig().keys.mapKeys { it.key.lowercase() }
+            privateKey= lowercaseAddress.get(signedAccount.lowercase())!!
+            if(privateKey == null){
+                throw Exception("Account not found")
+            }
+        }
+
+        val credentials: Credentials = Credentials.create(privateKey)
+
+        val gasProvider: ContractGasProvider = WaltIdGasProvider
+
+        if (chain == Chain.POLYGON || chain == Chain.MUMBAI) {
+            val chainId: Long
+            if (chain == Chain.POLYGON) {
+                chainId = Values.POLYGON_MAINNET_CHAIN_ID
+            } else {
+                chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
+            }
+            val transactionManager: TransactionManager = RawTransactionManager(
+                web3j, credentials, chainId
+            )
+
+            return  CustomOwnableERC1155.load(address, web3j,transactionManager,gasProvider)
+        }else{
+            return CustomOwnableERC1155.load(address, web3j,credentials,gasProvider)
+
+        }
     }
 }

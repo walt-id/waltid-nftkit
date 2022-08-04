@@ -10,15 +10,14 @@ import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Burnable.sol";
 
 
 contract CustomOwnable is ERC1155, Ownable, Pausable, ERC1155Burnable {
-
     mapping (uint256 => string) private _tokenURIs;
     string private _baseURI = "";
-
 
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
     bool private tokensBurnable;
+    //bool public metadataUpdatable;
     bool private tokensTransferable;
 
 
@@ -45,12 +44,12 @@ contract CustomOwnable is ERC1155, Ownable, Pausable, ERC1155Burnable {
     }
 
     function mint(address account, uint256 amount, string memory tokenURI, bytes memory data) public onlyOwner
-        {
-            _tokenIds.increment();
-            uint256 newItemId = _tokenIds.current();
-            _mint(account, newItemId, amount, data);
-            _setURI(newItemId,tokenURI);
-        }
+     {
+         _tokenIds.increment();
+         uint256 newItemId = _tokenIds.current();
+         _mint(account, newItemId, amount, data);
+         _setURI(newItemId,tokenURI);
+     }
 
     function mintBatch(address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)
         public
