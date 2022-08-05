@@ -1,9 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.web3j") version "4.9.0"
     kotlin("jvm") version "1.6.10"
-    // id("org.web3j") version "4.9.0"
+    id("org.web3j") version "4.9.0"
     kotlin("plugin.serialization") version "1.6.10"
     application
     `maven-publish`
@@ -77,7 +76,7 @@ tasks.withType<KotlinCompile> {
 application {
     mainClass.set("id.walt.nftkit.AppKt")
 }
-/*
+
 solidity {
     optimizeRuns = 500
 }
@@ -87,7 +86,7 @@ web3j {
     generatedFilesBaseDir = "$buildDir/custom/destination"
     useNativeJavaTypes = false
 }
-*/
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {

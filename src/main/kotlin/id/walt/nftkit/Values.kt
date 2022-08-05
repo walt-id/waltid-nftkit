@@ -6,6 +6,9 @@ object Values {
 
     const val POLYGON_MAINNET_CHAIN_ID: Long = 137
     const val POLYGON_TESTNET_MUMBAI_CHAIN_ID: Long = 80001
+    const val ETHEREUM_MAINNET_CHAIN_ID : Long = 1
+    const val ETHEREUM_TESTNET_ROPSTEN_CHAIN_ID : Long = 3
+    const val ETHEREUM_TESTNET_RINKEBY_CHAIN_ID : Long = 4
 
     const val ETHEREUM_MAINNET_SCAN_API_URL= "api.etherscan.io"
     const val ETHEREUM_TESTNET_RINKEBY_SCAN_API_URL = "api-rinkeby.etherscan.io"

@@ -69,7 +69,7 @@ enum class Chain {
 
 enum class TokenStandard {
     ERC721,
-    //ERC1155
+    ERC1155
 }
 
 enum class MetadataStorageType {

@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Burnable.sol";
 
 
-contract CustomOwnable is ERC1155, Ownable, Pausable, ERC1155Burnable {
+contract CustomOwnableERC1155 is ERC1155, Ownable, Pausable, ERC1155Burnable {
     mapping (uint256 => string) private _tokenURIs;
     string private _baseURI = "";
 
