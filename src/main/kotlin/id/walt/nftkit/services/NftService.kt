@@ -1,6 +1,9 @@
 package id.walt.nftkit.services
 
+import com.mycompany.erc1155.ERC1155
+import com.mycompany.erc721.ERC721
 import id.walt.nftkit.Values
+import id.walt.nftkit.chains.evm.erc1155.Erc1155TokenStandard
 import id.walt.nftkit.chains.evm.erc721.Erc721TokenStandard
 import id.walt.nftkit.metadata.IPFSMetadata
 import id.walt.nftkit.metadata.MetadataUri
@@ -9,6 +12,7 @@ import id.walt.nftkit.metadata.NFTStorageAddFileResult
 import id.walt.nftkit.services.WaltIdServices.decBase64Str
 import id.walt.nftkit.smart_contract_wrapper.Erc721OnchainCredentialWrapper
 import id.walt.nftkit.utilis.Common
+import io.javalin.http.BadRequestResponse
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -25,13 +29,11 @@ import org.web3j.abi.EventEncoder
 import org.web3j.abi.EventValues
 import org.web3j.abi.FunctionReturnDecoder
 import org.web3j.abi.TypeReference
-import org.web3j.abi.datatypes.Address
-import org.web3j.abi.datatypes.Event
-import org.web3j.abi.datatypes.Type
-import org.web3j.abi.datatypes.Utf8String
+import org.web3j.abi.datatypes.*
 import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.protocol.core.methods.response.Log
 import org.web3j.protocol.core.methods.response.TransactionReceipt
+import smart_contract_wrapper.CustomOwnableERC1155
 import java.math.BigInteger
 
 
@@ -117,6 +119,8 @@ data class MintingParameter(
     val metadataUri: String?,
     val recipientAddress: String,
     val metadata: NftMetadata?,
+    val amount : BigInteger?,
+
 )
 
 data class MintingOptions(
@@ -250,7 +254,11 @@ object NftService {
     }
 
     fun deploySmartContractToken(chain: Chain, parameter: DeploymentParameter, options: DeploymentOptions): DeploymentResponse {
-        return Erc721TokenStandard.deployContract(chain, parameter, options)
+        if (options.tokenStandard.equals(TokenStandard.ERC721)) {
+            return Erc721TokenStandard.deployContract(chain, parameter, options)
+        } else {
+            return Erc1155TokenStandard.deployContract(chain, parameter, options)
+        }
     }
 
     fun mintToken(
@@ -267,7 +275,7 @@ object NftService {
             tokenUri = metadataUri.getTokenUri(parameter.metadata)
         }
 
-        return mintNewToken(parameter.recipientAddress, tokenUri, chain, contractAddress)
+        return mintNewToken(parameter.recipientAddress, tokenUri, chain, contractAddress, parameter.amount)
     }
 
      fun getNftMetadata(chain: Chain, contractAddress: String, tokenId: BigInteger): NftMetadata {
@@ -284,11 +292,64 @@ object NftService {
         return getMetadatUri(chain, contractAddress, tokenId)
     }
 
-    fun balanceOf(chain: Chain, contractAddress: String, owner: String): BigInteger? {
+    fun balanceOf(chain: Chain, contractAddress: String, owner: String, account: Address, ids : Uint256): BigInteger? {
         if (isErc721Standard(chain, contractAddress)) {
             return Erc721TokenStandard.balanceOf(chain, contractAddress, Address(owner))
+        } else if (isErc1155Standard(chain, contractAddress)) {
+            return Erc1155TokenStandard.balanceOf(chain, contractAddress, account, ids)
+
         }
         return BigInteger.valueOf(0)
+    }
+
+
+    fun balanceOfBatch(chain: Chain, contractAddress: String, accounts: DynamicArray<Address>, ids: DynamicArray<Uint256>): MutableList<Uint256>? {
+        if (isErc1155Standard(chain, contractAddress)) {
+            return Erc1155TokenStandard.balanceOfBatch(chain, contractAddress, accounts,ids)
+        }
+        throw  BadRequestResponse("Invalid request.")
+
+
+    }
+
+    fun setApprovalForAll(chain: Chain, contractAddress: String, operator : Address, approved :Bool): TransactionReceipt? {
+        if (isErc1155Standard(chain, contractAddress)) {
+            return Erc1155TokenStandard.setApprovalForAll(chain, contractAddress, operator,approved)
+        }
+        throw  BadRequestResponse("Invalid request.")
+
+    }
+
+    fun isApprovalForAll(chain: Chain, contractAddress: String, account : Address, operator : Address): Boolean  {
+        if (isErc1155Standard(chain, contractAddress)) {
+            return Erc1155TokenStandard.isApprovalForAll(chain, contractAddress, account, operator)
+        }
+        throw  BadRequestResponse("Invalid request.")
+
+    }
+
+    fun safeTransferFrom(chain: Chain, contractAddress: String, from : Address, to : Address, id : Uint256, amount : Uint256, data : DynamicBytes): TransactionReceipt?  {
+        if (isErc1155Standard(chain, contractAddress)) {
+            return Erc1155TokenStandard.safeTransferFrom(chain, contractAddress, from, to, id, amount, data)
+        }
+        throw  BadRequestResponse("Invalid request.")
+
+    }
+
+    fun safeBatchTransferFrom(chain: Chain, contractAddress: String, from : Address, to : Address, ids : DynamicArray<Uint256>, amounts : DynamicArray<Uint256>, data : DynamicBytes): TransactionReceipt?  {
+        if (isErc1155Standard(chain, contractAddress)) {
+            return Erc1155TokenStandard.safeBatchTransferFrom(chain, contractAddress, from, to, ids, amounts, data)
+        }
+        throw  BadRequestResponse("Invalid request.")
+
+    }
+
+    fun mintBatch ( chain: Chain, contractAddress: String, to : Address, ids : DynamicArray<Uint256>, amounts : DynamicArray<Uint256>, data : DynamicBytes) :TransactionReceipt? {
+        if (isErc1155Standard(chain, contractAddress)) {
+            return Erc1155TokenStandard.mintBatch(chain, contractAddress, to, ids, amounts, data)
+        }
+        throw  BadRequestResponse("Invalid request.")
+
     }
 
     fun ownerOf(chain: Chain,contractAddress: String, tokenId: BigInteger): String{
@@ -431,12 +492,15 @@ object NftService {
         recipientAddress: String,
         metadataUri: String,
         chain: Chain,
-        contractAddress: String
+        contractAddress: String,
+        amounttokens : BigInteger? = null,
+        data : ByteArray? = null
     ): MintingResponse {
+        val recipient = Address(recipientAddress)
+        val tokenUri = Utf8String(metadataUri)
         if (isErc721Standard(chain, contractAddress) == true) {
             //val erc721TokenStandard = Erc721TokenStandard()
-            val recipient = Address(recipientAddress)
-            val tokenUri = Utf8String(metadataUri)
+
             val transactionReceipt: TransactionReceipt? =
                 Erc721TokenStandard.mintToken(chain, contractAddress, recipient, tokenUri)
             val eventValues: EventValues? =
@@ -447,8 +511,21 @@ object NftService {
                 TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt.transactionHash}")
             val mr = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
             return mr
-        } else {
+        } else  {
+            val amount = Uint256(amounttokens)
+            val data = DynamicBytes(data)
 
+            val transactionReceipt: TransactionReceipt? =
+            Erc1155TokenStandard.mint(chain,contractAddress,recipient,amount, tokenUri, data)
+
+            val eventValues: EventValues? =
+                staticExtractEventParameters(CustomOwnableERC1155.TRANSFERSINGLE_EVENT, transactionReceipt?.logs?.get(0))
+
+            val url = WaltIdServices.getBlockExplorerUrl(chain)
+            val ts =
+            TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt.transactionHash}")
+            val mr = MintingResponse(ts, eventValues?.indexedValues?.get(3)?.value as BigInteger)
+            return mr
         }
         return MintingResponse(null, null)
     }
@@ -462,6 +539,11 @@ object NftService {
 
 
     private fun isErc721Standard(chain: Chain, contractAddress: String): Boolean {
+        return Erc721TokenStandard.supportsInterface(chain, contractAddress)
+    }
+
+
+    private fun isErc1155Standard(chain: Chain, contractAddress: String): Boolean {
         return Erc721TokenStandard.supportsInterface(chain, contractAddress)
     }
 
