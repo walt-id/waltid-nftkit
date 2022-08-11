@@ -1,6 +1,6 @@
-package id.walt.common
+package id.walt.nftkit.common
 
-import id.walt.auditor.dynamic.OPAPolicyEngine
+import id.walt.nftkit.opa.OPAPolicyEngine
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*

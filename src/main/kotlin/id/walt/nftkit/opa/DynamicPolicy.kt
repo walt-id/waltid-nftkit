@@ -1,4 +1,4 @@
-package id.walt.auditor.dynamic
+package id.walt.nftkit.opa
 
 import id.walt.nftkit.services.NftMetadata
 
