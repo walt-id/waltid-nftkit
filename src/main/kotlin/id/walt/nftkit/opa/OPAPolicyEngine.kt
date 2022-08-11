@@ -1,9 +1,9 @@
-package id.walt.auditor.dynamic
+package id.walt.nftkit.opa
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
 import com.beust.klaxon.Parser
-import id.walt.common.resolveContentToFile
+import id.walt.nftkit.common.resolveContentToFile
 import mu.KotlinLogging
 import java.io.File
 
