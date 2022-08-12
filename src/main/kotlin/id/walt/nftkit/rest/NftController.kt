@@ -7,7 +7,15 @@ import id.walt.nftkit.utilis.Common
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import org.web3j.abi.datatypes.Address
+import org.web3j.abi.datatypes.Bool
+import org.web3j.abi.datatypes.DynamicArray
+import org.web3j.abi.datatypes.DynamicBytes
+import org.web3j.abi.datatypes.generated.Uint256
 import java.math.BigInteger
+import java.util.*
+import kotlin.random.Random
 
 
 @Serializable
@@ -16,6 +24,9 @@ data class MintRequest(
     val metadata: NftMetadata?,
     val recipientAddress: String,
     val metadataStorageType: MetadataStorageType,
+    val amount : String,
+    val account : String,
+    val id : String,
     //val offChainMetadataStorageType: OffChainMetadataStorageType?,
 )
 
@@ -62,7 +73,7 @@ object NftController {
         val mintReq = ctx.bodyAsClass(MintRequest::class.java)
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val mintingParameter = MintingParameter(mintReq.metadataUri, mintReq.recipientAddress, mintReq.metadata)
+        val mintingParameter = MintingParameter(mintReq.metadataUri, mintReq.recipientAddress, mintReq.metadata, BigInteger(mintReq.amount))
         val mintingOptions = MintingOptions(mintReq.metadataStorageType)
         val result =
             NftService.mintToken(Chain.valueOf(chain.uppercase()), contractAddress, mintingParameter, mintingOptions)
@@ -70,6 +81,7 @@ object NftController {
             result
         )
     }
+
 
     fun mintDocs() = document().operation {
         it.summary("NFT minting")
@@ -81,7 +93,23 @@ object NftController {
         it.description("")
     }.json<MintingResponse>("200") { it.description("Transaction ID and token ID") }
 
-
+    fun mintBatch (ctx: Context){
+        val mintReq = ctx.bodyAsClass(Array<MintRequest>::class.java)
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val to = ctx.pathParam("recipientAddress")
+        val amountList = mintReq.map { Uint256(BigInteger(it.amount)) }
+        val mintReqsize = mintReq.size
+        val idTable : LongArray = longArrayOf()
+        for (i in 1..mintReqsize){
+            idTable[i] = Random.nextInt(100,100000).toLong()
+        }
+        val idList = idTable.map { Uint256(BigInteger.valueOf(it)) }
+        val data= ctx.pathParam("data").toByteArray()
+        val result = NftService.mintBatch(Chain.valueOf(chain.uppercase()), contractAddress, Address(to), DynamicArray(Uint256::class.java, idList) ,DynamicArray(Uint256::class.java, amountList),
+            DynamicBytes(data)
+        )
+    }
     fun getNftMetadatUri(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
@@ -128,11 +156,22 @@ object NftController {
     fun balance(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val ownerAdress = ctx.pathParam("ownerAddress")
-        val result = NftService.balanceOf(Chain.valueOf(chain.uppercase()), contractAddress, ownerAdress)
+        val account= ctx.pathParam("ownerAddress")
+        val id = ctx.pathParam("tokenid").toLong()
+        val result = NftService.balanceOf(Chain.valueOf(chain.uppercase()), contractAddress, account,BigInteger.valueOf(id) )
         ctx.json(
             result!!
         )
+    }
+
+    fun BalanceBatch(ctx: Context){
+        val mintReq = ctx.bodyAsClass(Array<MintRequest>::class.java)
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val accountList = mintReq.map { Address(it.account) }
+        val idList = mintReq.map { Uint256(BigInteger(it.id))}
+        val result = NftService.balanceOfBatch(Chain.valueOf(chain.uppercase()), contractAddress, DynamicArray(Address::class.java, accountList), DynamicArray(Uint256::class.java, idList))
+
     }
 
     fun balanceDocs() = document().operation {
@@ -144,6 +183,46 @@ object NftController {
     }.pathParam<String>("ownerAddress") {
     }.json<BigInteger>("200") { it.description("Account balance") }
 
+
+    fun setApprovalForAll(ctx: Context){
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val operator = ctx.pathParam("operatorAddress")
+        val approved = ctx.pathParam("approvedtoken").toBoolean()
+        val result = NftService.setApprovalForAll(Chain.valueOf(chain.uppercase()), contractAddress, Address(operator), Bool(approved))
+
+    }
+
+    fun isApprovalForAll(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val account = ctx.pathParam("ownerAddress")
+        val operator = ctx.pathParam("operatorAddress")
+        val result = NftService.isApprovalForAll(Chain.valueOf(chain.uppercase()), contractAddress, Address(account), Address(operator))
+    }
+
+    fun safeTransferFrom(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val from =  ctx.pathParam("senderAddress")
+        val to =  ctx.pathParam("recipientAddress")
+        val id =  ctx.pathParam("tokenid").toLong()
+        val amount =  ctx.pathParam("amount").toLong()
+        val data =  ctx.pathParam("data").toByteArray()
+        val result = NftService.safeTransferFrom(Chain.valueOf(chain.uppercase()), contractAddress, Address(from),  Address(to), BigInteger.valueOf(id), Uint256(amount), DynamicBytes(data))
+    }
+
+    fun safeBatchTransferFrom(ctx: Context) {
+        val mintReq = ctx.bodyAsClass(Array<MintRequest>::class.java)
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val from =  ctx.pathParam("senderAddress")
+        val to =  ctx.pathParam("recipientAddress")
+        val ammountList = mintReq.map { Uint256(BigInteger(it.amount)) }
+        val idList = mintReq.map { Uint256(BigInteger(it.id))}
+        val data =  ctx.pathParam("data").toByteArray()
+        val result = NftService.safeBatchTransferFrom(Chain.valueOf(chain.uppercase()), contractAddress, Address(from),  Address(to), DynamicArray(Uint256::class.java, idList), DynamicArray(Uint256::class.java, ammountList), DynamicBytes(data))
+    }
 
     fun owner(ctx: Context) {
         val chain = ctx.pathParam("chain")

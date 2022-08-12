@@ -292,11 +292,11 @@ object NftService {
         return getMetadatUri(chain, contractAddress, tokenId)
     }
 
-    fun balanceOf(chain: Chain, contractAddress: String, owner: String, account: Address, ids : Uint256): BigInteger? {
+    fun balanceOf(chain: Chain, contractAddress: String, account: String, id : BigInteger): BigInteger? {
         if (isErc721Standard(chain, contractAddress)) {
-            return Erc721TokenStandard.balanceOf(chain, contractAddress, Address(owner))
+            return Erc721TokenStandard.balanceOf(chain, contractAddress, Address(account))
         } else if (isErc1155Standard(chain, contractAddress)) {
-            return Erc1155TokenStandard.balanceOf(chain, contractAddress, account, ids)
+            return Erc1155TokenStandard.balanceOf(chain, contractAddress, Address(account), Uint256(id))
 
         }
         return BigInteger.valueOf(0)
@@ -328,9 +328,9 @@ object NftService {
 
     }
 
-    fun safeTransferFrom(chain: Chain, contractAddress: String, from : Address, to : Address, id : Uint256, amount : Uint256, data : DynamicBytes): TransactionReceipt?  {
+    fun safeTransferFrom(chain: Chain, contractAddress: String, from : Address, to : Address, id : BigInteger, amount : Uint256, data : DynamicBytes): TransactionReceipt?  {
         if (isErc1155Standard(chain, contractAddress)) {
-            return Erc1155TokenStandard.safeTransferFrom(chain, contractAddress, from, to, id, amount, data)
+            return Erc1155TokenStandard.safeTransferFrom(chain, contractAddress, from, to, Uint256(id), amount, data)
         }
         throw  BadRequestResponse("Invalid request.")
 
