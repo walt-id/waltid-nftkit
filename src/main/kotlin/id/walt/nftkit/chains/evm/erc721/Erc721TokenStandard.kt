@@ -6,6 +6,7 @@ import id.walt.nftkit.services.*
 import id.walt.nftkit.utilis.providers.ProviderFactory
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.Bool
+import org.web3j.abi.datatypes.DynamicBytes
 import org.web3j.abi.datatypes.Utf8String
 import org.web3j.abi.datatypes.generated.Bytes4
 import org.web3j.abi.datatypes.generated.Uint256
@@ -104,6 +105,65 @@ object Erc721TokenStandard : IErc721TokenStandard {
     ): TransactionReceipt {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress, signedAccount)
         return erc721URIStorageWrapper.setTokenURI(Uint256(token), tokenURI).send()
+    }
+
+    override fun transferFrom(
+        chain: Chain,
+        contractAddress: String,
+        from: Address,
+        to: Address,
+        tokenId: Uint256
+    ): TransactionReceipt {
+        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
+        return erc721URIStorageWrapper.transferFrom(from, to, tokenId).send()
+    }
+
+    override fun safeTransferFrom(
+        chain: Chain,
+        contractAddress: String,
+        from: Address,
+        to: Address,
+        tokenId: Uint256
+    ): TransactionReceipt {
+        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
+        return  erc721URIStorageWrapper.safeTransferFrom(from, to, tokenId).send()
+    }
+
+    override fun safeTransferFrom(
+        chain: Chain,
+        contractAddress: String,
+        from: Address,
+        to: Address,
+        tokenId: Uint256,
+        data: DynamicBytes
+    ): TransactionReceipt {
+        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
+        return erc721URIStorageWrapper.safeTransferFrom(from, to, tokenId, data).send()
+    }
+
+    override fun setApprovalForAll(
+        chain: Chain,
+        contractAddress: String,
+        operator: Address,
+        approved: Bool
+    ): TransactionReceipt {
+        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
+        return erc721URIStorageWrapper.setApprovalForAll(operator, approved).send()
+    }
+
+    override fun isApprovedForAll(chain: Chain, contractAddress: String, owner: Address, operator: Address): Bool {
+        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
+        return erc721URIStorageWrapper.isApprovedForAll(owner, operator).send()
+    }
+
+    override fun approve(chain: Chain, contractAddress: String, to: Address, tokenId: Uint256): TransactionReceipt {
+        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
+        return erc721URIStorageWrapper.approve(to, tokenId).send()
+    }
+
+    override fun getApproved(chain: Chain, contractAddress: String, tokenId: Uint256): Address {
+        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
+        return erc721URIStorageWrapper.getApproved(tokenId).send()
     }
 
     override fun supportsInterface(chain: Chain, contractAddress: String) : Boolean {
