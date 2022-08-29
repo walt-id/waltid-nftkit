@@ -1,62 +1,41 @@
-# NFT Kit
-The **NFT Kit** by **walt.id** is a Kotlin library for minting & managing NFTs.
+<div align="center">
+ <h1>NFT Kit</h1>
+ <span>by </span><a href="https://walt.id">walt.id</a>
+ <p>Use digital assets like non-fungible tokens (NFTs)<p>
 
-The core services are in the scope of:
-- Deploy NFTs smart contract to multiple chains.
-- Mint new NFTs.
-- Manage Non-fungible tokens(NFTs).
+<a href="https://walt.id/community">
+<img src="https://img.shields.io/badge/Join-The Community-blue.svg?style=flat" alt="Join community!" />
+</a>
+<a href="https://twitter.com/intent/follow?screen_name=walt_id">
+<img src="https://img.shields.io/twitter/follow/walt_id.svg?label=Follow%20@walt_id" alt="Follow @walt_id" />
+</a>
 
-## Installation
-Set properties in the configuration file.
+</div>
 
-For the providers: you can get them either from [Infura](https://infura.io/) or [Alchemy](https://www.alchemy.com/)
+## Getting Started
 
-You can find your `privateKey` from your ethereum wallet like [MetaMask](https://metamask.io/).
+- [REST Api](https://docs.walt.id/v/nft-kit/getting-started/rest-apis) - Use the functionality of the NFT Kit via an REST api.
+- [Maven/Gradle Dependency](https://docs.walt.id/v/nft-kit/getting-started/dependency-jvm) - Use the functions of the NFT Kit in a Kotlin/Java project.
 
-For the block explorer api keys: you can get them from [Ethereum](https://etherscan.io/) and [Polygon](https://polygonscan.com/)  
+Checkout the [Official Documentation](https://docs.walt.id/v/nft-kit/nft-kit/readme), to find out more.
 
-    Providers:
-        ethereum: 
-        rinkeby: "https://rinkeby.infura.io/v3/<api-key>"
-        ropsten:  
-        polygon: 
-        mumbai: "https://polygon-mumbai.g.alchemy.com/v2/<api-key>"
-    privateKey:"prv-key"
-    blockExplorerScanApiKeys:
-        ethereum: "<api-key>"
-        polygon:  "<api-key>"
+## What is the NFT Kit?
+A Kotlin library for managing NFTs 
 
-
-## Build
-
-    docker build -t nftkit .
+### Features
+- Deployment and Access Management of NFT smart contracts on multiple chains
+- Base functionalities like minting NFTs, managing NFT metadata and much more
+- Verification of NFT ownership and token traits
+- Smart Contract extensions to add for example token transfer control
 
 
-## RUN
+## Example
+- Deployment of ERC721 smart contract
+- Minting of a new token
+- Fetching of NFT metadata
 
-     docker run -p 7000:7000 -it nftkit
-
-### Use as JVM Depenceny
-
-The required Maven repo is: https://maven.walt.id/repository/waltid/
-
-Using Gradle:
-
-    implementation("id.walt:waltid-nftkit:1.0.0")
-
-or Maven:
-
-    <dependency>
-        <groupId>id.walt</groupId>
-        <artifactId>waltid-nftkit</artifactId>
-        <version>1.0.0</version>
-    </dependency>
-
-
-## Examples
-Following code snipped gives a first impression how to use the NFT Kit for deploying **ERC721 smart contract**, for minting **new token** and for fetching **NFT metadata**.
-
-    fun main() {
+```kotlin
+fun main() {
     
         // Deploy new ERC721 smart contract instance on polygon network
         val deploymentOptions = DeploymentOptions(AccessControl.OWNABLE, TokenStandard.ERC721)
@@ -78,32 +57,14 @@ Following code snipped gives a first impression how to use the NFT Kit for deplo
         // Fetch NFT Metadata
         val result = NftService.getNftMetadata(Chain.POLYGON, "0xFd9426f82Ae1edBC6b5eC2B0Ea5416D34Ca6E9b6", BigInteger.valueOf(26))
     }
+```
 
-## Documentation
+## Join the community
 
-The documentation is hosted at: https://docs.walt.id/v/nft-kit/
-
-Direct links for using the NFT Kit are:
-
-- Quick Start (Build & run the NFT Kit with Docker or natively): https://docs.walt.id/v/nft-kit/getting-started/quick-start
-- Intro: https://docs.walt.id/v/nft-kit/what-is-the-nft-kit/readme
-- APIs: https://docs.walt.id/v/nft-kit/getting-started/rest-apis
+* Connect and get the latest updates: [Discord](https://discord.com/invite/zUnxncExF5) | [Newsletter](https://walt.id/newsletter) | [YouTube](https://www.youtube.com/channel/UCXfOzrv3PIvmur_CmwwmdLA) | [Twitter](https://mobile.twitter.com/walt_id)
+* Get help, request features and report bugs: [GitHub Discussions](https://github.com/walt-id/.github/discussions)
 
 ## License
 
-```
-Copyright ((C)) 2022 walt.id GmbH
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   https://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
+Licensed under the [Apache License, Version 2.0](https://github.com/walt-id/waltid-nftkit/blob/main/LICENSE)
 
