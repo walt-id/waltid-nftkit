@@ -4,6 +4,7 @@ import cc.vileda.openapi.dsl.schema
 import id.walt.nftkit.metadata.NFTStorageAddFileResult
 import id.walt.nftkit.services.*
 import id.walt.nftkit.utilis.Common
+import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
 import kotlinx.serialization.Serializable
@@ -32,6 +33,26 @@ data class DeployRequest(
 data class TraitUpdateRequest(
     val key: String,
     val value: String,
+)
+@Serializable
+data class NFTTokenTransferRequest(
+    val from: String,
+    val to: String
+)
+@Serializable
+data class NFTTokenTransferRequestWithData(
+    val from: String,
+    val to: String,
+    val data: String?= null
+)
+@Serializable
+data class SetApprovalForAllRequest(
+    val operator: String,
+    val approved: Boolean
+)
+@Serializable
+data class ApproveRequest(
+    val to: String
 )
 
 object NftController {
@@ -245,6 +266,145 @@ object NftController {
         it.description = "File"
         it.required = true
     }.json<NFTStorageAddFileResult>("200") { }
+
+    fun transferFrom(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val tokenId = ctx.pathParam("tokenId")
+        val signedAccount = ctx.queryParam("signedAccount")
+        val tokenTransferRequest = ctx.bodyAsClass(NFTTokenTransferRequest::class.java)
+        val result= NftService.transferFrom(Chain.valueOf(chain.uppercase()), contractAddress, tokenTransferRequest.from, tokenTransferRequest.to, BigInteger.valueOf(tokenId.toLong()), signedAccount)
+        ctx.json(result)
+    }
+
+    fun transferFromDocs() = document().operation {
+        it.summary("Transfer From")
+            .operationId("Transfer From").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
+    }.pathParam<String>("chain") {
+        it.schema<Chain> { }
+    }.pathParam<String>("contractAddress") {
+    }.pathParam<String>("tokenId") {
+    }.queryParam<String>("signedAccount") {
+    }.body<NFTTokenTransferRequest> {
+    }.json<TransactionResponse>("200") {  }
+
+    fun safeTransferFrom(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val tokenId = ctx.pathParam("tokenId")
+        val signedAccount = ctx.queryParam("signedAccount")
+        val tokenTransferRequest = ctx.bodyAsClass(NFTTokenTransferRequest::class.java)
+        val result= NftService.safeTransferFrom(Chain.valueOf(chain.uppercase()), contractAddress, tokenTransferRequest.from, tokenTransferRequest.to, BigInteger.valueOf(tokenId.toLong()), signedAccount)
+        ctx.json(result)
+    }
+
+    fun safeTransferFromDocs() = document().operation {
+        it.summary("Safe Transfer From")
+            .operationId("Safe Transfer From").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
+    }.pathParam<String>("chain") {
+        it.schema<Chain> { }
+    }.pathParam<String>("contractAddress") {
+    }.pathParam<String>("tokenId") {
+    }.queryParam<String>("signedAccount") {
+    }.body<NFTTokenTransferRequest> {
+    }.json<TransactionResponse>("200") {  }
+
+    fun safeTransferFromWithData(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val tokenId = ctx.pathParam("tokenId")
+        val signedAccount = ctx.queryParam("signedAccount")
+        val tokenTransferRequest = ctx.bodyAsClass(NFTTokenTransferRequestWithData::class.java)
+        val result= NftService.safeTransferFrom(Chain.valueOf(chain.uppercase()), contractAddress, tokenTransferRequest.from, tokenTransferRequest.to, BigInteger.valueOf(tokenId.toLong()), tokenTransferRequest.data, signedAccount)
+        ctx.json(result)
+    }
+
+    fun safeTransferFromWithDataDocs() = document().operation {
+        it.summary("Safe Transfer From With Data")
+            .operationId("Safe Transfer From With Data").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
+    }.pathParam<String>("chain") {
+        it.schema<Chain> { }
+    }.pathParam<String>("contractAddress") {
+    }.pathParam<String>("tokenId") {
+    }.queryParam<String>("signedAccount") {
+    }.body<NFTTokenTransferRequestWithData> {
+    }.json<TransactionResponse>("200") {  }
+
+    fun setApprovalForAll(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val signedAccount = ctx.queryParam("signedAccount")
+        val setApprovalForAllRequest = ctx.bodyAsClass(SetApprovalForAllRequest::class.java)
+        val result= NftService.setApprovalForAll(Chain.valueOf(chain.uppercase()), contractAddress, setApprovalForAllRequest.operator, setApprovalForAllRequest.approved, signedAccount)
+        ctx.json(result)
+    }
+
+    fun setApprovalForAllDocs() = document().operation {
+        it.summary("Set Approval For All")
+            .operationId("Set Approval For All").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
+    }.pathParam<String>("chain") {
+        it.schema<Chain> { }
+    }.pathParam<String>("contractAddress") {
+    }.queryParam<String>("signedAccount") {
+    }.body<SetApprovalForAllRequest> {
+    }.json<TransactionResponse>("200") {  }
+
+    fun isApprovedForAll(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val owner = ctx.queryParam("owner") ?: throw  BadRequestResponse("Owner not specified")
+        val operator = ctx.queryParam("operator") ?: throw  BadRequestResponse("Operator not specified")
+        val result= NftService.isApprovedForAll(Chain.valueOf(chain.uppercase()), contractAddress, owner, operator)
+        ctx.json(result)
+    }
+
+    fun isApprovedForAllDocs() = document().operation {
+        it.summary("Is Approved For All")
+            .operationId("Is Approved For All").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
+    }.pathParam<String>("chain") {
+        it.schema<Chain> { }
+    }.pathParam<String>("contractAddress") {
+    }.queryParam<String>("owner") {
+    }.queryParam<String>("operator") {
+    }.json<Boolean>("200") {  }
+
+    fun approve(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val tokenId = ctx.pathParam("tokenId")
+        val signedAccount = ctx.queryParam("signedAccount")
+        val approveRequest = ctx.bodyAsClass(ApproveRequest::class.java)
+        val result= NftService.approve(Chain.valueOf(chain.uppercase()), contractAddress, approveRequest.to, BigInteger.valueOf(tokenId.toLong()), signedAccount)
+        ctx.json(result)
+    }
+
+    fun approveDocs() = document().operation {
+        it.summary("Approve")
+            .operationId("Approve").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
+    }.pathParam<String>("chain") {
+        it.schema<Chain> { }
+    }.pathParam<String>("contractAddress") {
+    }.pathParam<String>("tokenId") {
+    }.queryParam<String>("signedAccount") {
+    }.body<ApproveRequest> {
+    }.json<TransactionResponse>("200") {  }
+
+    fun getApproved(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val tokenId = ctx.pathParam("tokenId")
+        val result= NftService.getApproved(Chain.valueOf(chain.uppercase()), contractAddress, BigInteger.valueOf(tokenId.toLong()))
+        ctx.json(result)
+    }
+
+    fun getApprovedDocs() = document().operation {
+        it.summary("Get Approved")
+            .operationId("Get Approved").addTagsItem("Blockchain: Non-fungible tokens(NFTs)")
+    }.pathParam<String>("chain") {
+        it.schema<Chain> { }
+    }.pathParam<String>("contractAddress") {
+    }.pathParam<String>("tokenId") {
+    }.json<String>("200") {  }
 
 
 }
