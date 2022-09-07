@@ -25,10 +25,7 @@ import org.web3j.abi.EventEncoder
 import org.web3j.abi.EventValues
 import org.web3j.abi.FunctionReturnDecoder
 import org.web3j.abi.TypeReference
-import org.web3j.abi.datatypes.Address
-import org.web3j.abi.datatypes.Event
-import org.web3j.abi.datatypes.Type
-import org.web3j.abi.datatypes.Utf8String
+import org.web3j.abi.datatypes.*
 import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.protocol.core.methods.response.Log
 import org.web3j.protocol.core.methods.response.TransactionReceipt
@@ -300,6 +297,40 @@ object NftService {
         return String()
     }
 
+    fun transferFrom(chain: Chain, contractAddress: String, from: String, to: String, tokenId: BigInteger, signedAccount: String?): TransactionResponse {
+        val transactionReceipt = Erc721TokenStandard.transferFrom(chain, contractAddress, Address(from), Address(to), Uint256(tokenId), signedAccount)
+        return Common.getTransactionResponse(chain, transactionReceipt)
+    }
+
+    fun safeTransferFrom(chain: Chain, contractAddress: String, from: String, to: String, tokenId: BigInteger, signedAccount: String?): TransactionResponse {
+        val transactionReceipt = Erc721TokenStandard.safeTransferFrom(chain, contractAddress, Address(from), Address(to), Uint256(tokenId), signedAccount)
+        return Common.getTransactionResponse(chain, transactionReceipt)
+    }
+
+    fun safeTransferFrom(chain: Chain, contractAddress: String, from: String, to: String, tokenId: BigInteger, data: String?, signedAccount: String?): TransactionResponse {
+        val transactionReceipt = Erc721TokenStandard.safeTransferFrom(chain, contractAddress, Address(from), Address(to), Uint256(tokenId), DynamicBytes(
+            data?.toByteArray() ?: null
+        ), signedAccount)
+        return Common.getTransactionResponse(chain, transactionReceipt)
+    }
+
+    fun setApprovalForAll(chain: Chain, contractAddress: String, operator: String, approved: Boolean, signedAccount: String?): TransactionResponse {
+        val transactionReceipt = Erc721TokenStandard.setApprovalForAll(chain, contractAddress, Address(operator), Bool(approved), signedAccount)
+        return Common.getTransactionResponse(chain, transactionReceipt)
+    }
+
+    fun isApprovedForAll(chain: Chain, contractAddress: String, owner: String, operator: String): Boolean {
+        return Erc721TokenStandard.isApprovedForAll(chain, contractAddress, Address(owner), Address(operator)).value
+    }
+
+    fun approve(chain: Chain, contractAddress: String, to: String, tokenId: BigInteger, signedAccount: String?): TransactionResponse {
+        val transactionReceipt = Erc721TokenStandard.approve(chain, contractAddress, Address(to), Uint256(tokenId), signedAccount)
+        return Common.getTransactionResponse(chain, transactionReceipt)
+    }
+
+    fun getApproved(chain: Chain, contractAddress: String, tokenId: BigInteger): String {
+        return Erc721TokenStandard.getApproved(chain, contractAddress, Uint256(tokenId)).value
+    }
     fun getTokenCollectionInfo(chain: Chain, contractAddress: String): TokenCollectionInfo {
         //in the case of ERC721
         if (isErc721Standard(chain, contractAddress)) {

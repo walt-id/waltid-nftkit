@@ -112,9 +112,10 @@ object Erc721TokenStandard : IErc721TokenStandard {
         contractAddress: String,
         from: Address,
         to: Address,
-        tokenId: Uint256
+        tokenId: Uint256,
+        signedAccount: String?
     ): TransactionReceipt {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
+        val erc721URIStorageWrapper = loadContract(chain, contractAddress, signedAccount)
         return erc721URIStorageWrapper.transferFrom(from, to, tokenId).send()
     }
 
@@ -123,9 +124,10 @@ object Erc721TokenStandard : IErc721TokenStandard {
         contractAddress: String,
         from: Address,
         to: Address,
-        tokenId: Uint256
+        tokenId: Uint256,
+        signedAccount: String?
     ): TransactionReceipt {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
+        val erc721URIStorageWrapper = loadContract(chain, contractAddress, signedAccount)
         return  erc721URIStorageWrapper.safeTransferFrom(from, to, tokenId).send()
     }
 
@@ -135,9 +137,10 @@ object Erc721TokenStandard : IErc721TokenStandard {
         from: Address,
         to: Address,
         tokenId: Uint256,
-        data: DynamicBytes
+        data: DynamicBytes,
+        signedAccount: String?
     ): TransactionReceipt {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
+        val erc721URIStorageWrapper = loadContract(chain, contractAddress, signedAccount)
         return erc721URIStorageWrapper.safeTransferFrom(from, to, tokenId, data).send()
     }
 
@@ -145,9 +148,10 @@ object Erc721TokenStandard : IErc721TokenStandard {
         chain: Chain,
         contractAddress: String,
         operator: Address,
-        approved: Bool
+        approved: Bool,
+        signedAccount: String?
     ): TransactionReceipt {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
+        val erc721URIStorageWrapper = loadContract(chain, contractAddress, signedAccount)
         return erc721URIStorageWrapper.setApprovalForAll(operator, approved).send()
     }
 
@@ -156,8 +160,8 @@ object Erc721TokenStandard : IErc721TokenStandard {
         return erc721URIStorageWrapper.isApprovedForAll(owner, operator).send()
     }
 
-    override fun approve(chain: Chain, contractAddress: String, to: Address, tokenId: Uint256): TransactionReceipt {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
+    override fun approve(chain: Chain, contractAddress: String, to: Address, tokenId: Uint256, signedAccount: String?): TransactionReceipt {
+        val erc721URIStorageWrapper = loadContract(chain, contractAddress, signedAccount)
         return erc721URIStorageWrapper.approve(to, tokenId).send()
     }
 
