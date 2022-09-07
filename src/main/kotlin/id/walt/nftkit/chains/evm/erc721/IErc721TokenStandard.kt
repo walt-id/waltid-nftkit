@@ -2,6 +2,8 @@ package id.walt.nftkit.chains.evm.erc721
 
 import id.walt.nftkit.services.Chain
 import org.web3j.abi.datatypes.Address
+import org.web3j.abi.datatypes.Bool
+import org.web3j.abi.datatypes.DynamicBytes
 import org.web3j.abi.datatypes.Utf8String
 import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.protocol.core.methods.response.TransactionReceipt
@@ -35,55 +37,13 @@ interface IErc721TokenStandard {
 
     fun updateTokenUri(chain: Chain, contractAddress: String, token: BigInteger, tokenURI: Utf8String, signedAccount: String?) : TransactionReceipt?
 
-    /*fun transfer(
-        contractAddress: String?,
-        SenderId: string?,
-        RecipientId: string?,
-        TokenId: Long
-    ): Task<TransactionReciept?>?*/
-
-    /*fun transferFrom(
-        contractAddress: String?,
-        from: Address?,
-        to: Address?,
-        tokenId: Uint256
-    ): RemoteFunctionCall<TransactionReceipt>?
-
-    fun transferFrom(
-        contractAddress: String?,
-        from: Address?,
-        to: Address?,
-        tokenId: Uint256,
-        data : DynamicBytes
-    ): RemoteFunctionCall<TransactionReceipt>?*/
-
-    //fun getApproved(contractAddress: String?, tokenId: Uint256): Address
-
-    /*fun isApprovedForAll(
-        contractAddress: String?,
-        owner: Address?,
-        operator: Address
-    ): Bool?*/
-    /*fun safeTransferFrom(
-      contractAddress: String?,
-      from: Address?,
-      to: Address?,
-      RecipientId: Uint256?,
-      tokenId: Long
-  ): RemoteFunctionCall<TransactionReceipt>?
-
-  fun setApprovalForAll(
-      contractAddress: String?,
-      operator: Address?,
-      approved: Bool?
-  ): RemoteFunctionCall<TransactionReceipt>?*/
-
-    /*fun approve(contractAddress: String?,
-               to: Address,
-               tokenId: Uint256
-   ): RemoteFunctionCall<TransactionReceipt>?*/
-
-    //fun Burn(ContractAddress: string?, CallerId: string?, TokenId: Long): Task<TransactionReciept?>?
+    fun transferFrom(chain: Chain, contractAddress: String, from: Address, to: Address, tokenId: Uint256, signedAccount: String?): TransactionReceipt
+    fun safeTransferFrom(chain: Chain, contractAddress: String, from: Address, to: Address, tokenId: Uint256, signedAccount: String?): TransactionReceipt
+    fun safeTransferFrom(chain: Chain, contractAddress: String, from: Address, to: Address, tokenId: Uint256, data: DynamicBytes, signedAccount: String?): TransactionReceipt
+    fun setApprovalForAll(chain: Chain, contractAddress: String, operator: Address, approved: Bool, signedAccount: String?): TransactionReceipt
+    fun isApprovedForAll(chain: Chain, contractAddress: String, owner: Address, operator: Address): Bool
+    fun approve(chain: Chain, contractAddress: String, to: Address, tokenId: Uint256, signedAccount: String?):TransactionReceipt
+    fun getApproved(chain: Chain, contractAddress: String, tokenId: Uint256): Address
 
 
 }

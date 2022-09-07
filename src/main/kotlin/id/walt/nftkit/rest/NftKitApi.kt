@@ -161,7 +161,34 @@ object NftKitApi {
                         "ipfs/file/Upload",
                         documented(NftController.uploadFileToIpfsDocs(), NftController::uploadFileToIpfs)
                     )
-
+                    post(
+                        "chain/{chain}/contract/{contractAddress}/token/{tokenId}/transferfrom",
+                        documented(NftController.transferFromDocs(), NftController::transferFrom)
+                    )
+                    post(
+                        "chain/{chain}/contract/{contractAddress}/token/{tokenId}/safetransferfrom",
+                        documented(NftController.safeTransferFromDocs(), NftController::safeTransferFrom)
+                    )
+                    post(
+                        "chain/{chain}/contract/{contractAddress}/token/{tokenId}/safefransferFromwithdata",
+                        documented(NftController.safeTransferFromWithDataDocs(), NftController::safeTransferFromWithData)
+                    )
+                    post(
+                        "chain/{chain}/contract/{contractAddress}/setapprovalforall",
+                        documented(NftController.setApprovalForAllDocs(), NftController::setApprovalForAll)
+                    )
+                    get(
+                        "chain/{chain}/contract/{contractAddress}/isapprovedforall",
+                        documented(NftController.isApprovedForAllDocs(), NftController::isApprovedForAll)
+                    )
+                    post(
+                        "chain/{chain}/contract/{contractAddress}/token/{tokenId}/approve",
+                        documented(NftController.approveDocs(), NftController::approve)
+                    )
+                    get(
+                        "chain/{chain}/contract/{contractAddress}/token/{tokenId}/getapproved",
+                        documented(NftController.getApprovedDocs(), NftController::getApproved)
+                    )
                 }
                 path("nft/verifier") {
                     post(
