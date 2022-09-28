@@ -61,7 +61,9 @@ enum class Chain {
     POLYGON,
     RINKEBY,
     ROPSTEN,
-    MUMBAI
+    MUMBAI,
+    TEZOS,
+    GHOSTNET
 }
 
 enum class TokenStandard {
@@ -364,6 +366,8 @@ object NftService {
                 Chain.ROPSTEN -> Values.ETHEREUM_TESTNET_ROPSTEN_ALCHEMY_URL
                 Chain.POLYGON -> Values.POLYGON_MAINNET_ALCHEMY_URL
                 Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_ALCHEMY_URL
+                Chain.TEZOS -> throw Exception("Tezos is not supported")
+                Chain.GHOSTNET -> throw Exception("Ghostnet is not supported")
             }
 
             val result = fetchAccountNFTsTokensByAlchemy(account = account, url = url)

@@ -53,6 +53,8 @@ object WaltIdServices {
             Chain.ROPSTEN -> Values.ETHEREUM_TESTNET_ROPSTEN_BLOCK_EXPLORER_URL
             Chain.POLYGON -> Values.POLYGON_MAINNET_BLOCK_EXPLORER_URL
             Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_BLOCK_EXPLORER_URL
+            Chain.TEZOS -> throw Exception("Tezos is not supported")
+            Chain.GHOSTNET -> throw Exception("Ghostnet is not supported")
         }
     }
 }
