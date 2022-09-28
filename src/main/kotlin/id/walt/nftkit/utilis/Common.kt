@@ -39,6 +39,8 @@ object Common {
             Chain.ROPSTEN -> Values.ETHEREUM_TESTNET_ROPSTEN_SCAN_API_URL
             Chain.POLYGON -> Values.POLYGON_MAINNET_SCAN_API_URL
             Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_SCAN_API_URL
+            Chain.TEZOS -> throw Exception("Tezos is not supported")
+            Chain.GHOSTNET -> throw Exception("Ghostnet is not supported")
         }
     }
 
@@ -49,7 +51,21 @@ object Common {
             Chain.ROPSTEN -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
             Chain.POLYGON -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
             Chain.MUMBAI -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
+            Chain.TEZOS -> throw Exception("Tezos is not supported")
+            Chain.GHOSTNET -> throw Exception("Ghostnet is not supported")
         }
+    }
+
+    fun isEVMChain(chain: Chain): Boolean{
+        val EVMChains= listOf(Chain.ETHEREUM, Chain.POLYGON, Chain.RINKEBY, Chain.ROPSTEN, Chain.MUMBAI)
+        if(chain in EVMChains) return true
+        return false
+    }
+
+    fun isTezosChain(chain: Chain): Boolean{
+        val TezosChains= listOf(Chain.TEZOS, Chain.GHOSTNET)
+        if(chain in TezosChains) return true
+        return false
     }
 }
 
