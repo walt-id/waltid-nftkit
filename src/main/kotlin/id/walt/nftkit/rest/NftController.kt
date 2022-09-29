@@ -2,6 +2,7 @@ package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
 import id.walt.nftkit.metadata.NFTStorageAddFileResult
+import id.walt.nftkit.models.NFTsInfos
 import id.walt.nftkit.services.*
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.BadRequestResponse
@@ -206,7 +207,7 @@ object NftController {
     fun getAccountNFTs(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val ownerAdress = ctx.pathParam("ownerAddress")
-        val result = NftService.getAccountNFTsByAlchemy(Chain.valueOf(chain.uppercase()), ownerAdress)
+        val result = NftService.getAccountNFTs(Chain.valueOf(chain.uppercase()), ownerAdress)
         ctx.json(
             result
         )
@@ -218,7 +219,7 @@ object NftController {
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("ownerAddress") {
-    }.json<Array<NFTsAlchemyResult.NftTokenByAlchemy>>("200") { it.description("NFTs list") }
+    }.json<NFTsInfos>("200") { it.description("NFTs list") }
 
     fun updateMetadata(ctx: Context) {
         val chain = ctx.pathParam("chain")
