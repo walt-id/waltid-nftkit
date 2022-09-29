@@ -6,6 +6,7 @@ import id.walt.nftkit.metadata.IPFSMetadata
 import id.walt.nftkit.metadata.MetadataUri
 import id.walt.nftkit.metadata.MetadataUriFactory
 import id.walt.nftkit.metadata.NFTStorageAddFileResult
+import id.walt.nftkit.models.NFTsInfos
 import id.walt.nftkit.services.WaltIdServices.decBase64Str
 import id.walt.nftkit.smart_contract_wrapper.Erc721OnchainCredentialWrapper
 import id.walt.nftkit.utilis.Common
@@ -342,6 +343,20 @@ object NftService {
             return tokenCollectionInfo
         }
         return TokenCollectionInfo("", "")
+    }
+
+    fun getAccountNFTs(chain: Chain, account: String): NFTsInfos {
+        return when{
+            Common.isEVMChain(chain) -> {
+                val result = getAccountNFTsByAlchemy(chain, account)
+                return (NFTsInfos(evmNfts = result))
+            }
+            Common.isTezosChain(chain) -> {
+                val result= TezosNftService.fetchAccountNFTsByTzkt(chain, account)
+                return (NFTsInfos(tezosNfts = result))
+            }
+            else -> {throw Exception("Chain  is not supported")}
+        }
     }
 
     fun getAccountNFTsByChainScan(chain: Chain, address: String): List<Token?> {
