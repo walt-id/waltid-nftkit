@@ -10,28 +10,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 
 
-@Serializable
-data class VerifyCollectionRequest(
-    val account: String,
-    val tokenId: String
-)
-
-@Serializable
-data class VerifyTraitRequest(
-    val account: String,
-    val tokenId: String,
-    val traitType: String,
-    val traitValue: String? = null,
-)
-
-@Serializable
-data class OceanDaoVerificationRequest(
-    val account: String,
-    val factoryContractAddress: String,
-    val propertyKey: String?= null,
-    val propertyValue: String?= null,
-)
-
 object VerificationController {
 
 
@@ -44,7 +22,7 @@ object VerificationController {
         }
 
         val contractAddress = ctx.pathParam("contractAddress")
-        val account = ctx.queryParam("account") ?: throw  BadRequestResponse("account not specified")
+        val account = ctx.queryParam("account") ?: throw  BadRequestResponse("Account not specified")
         val result = VerificationService.verifyNftOwnershipWithinCollection(chain, contractAddress, account!!)
         ctx.json(result)
     }
@@ -56,10 +34,10 @@ object VerificationController {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
     }.queryParam<String>("account") {
+        it.required(true)
     }.json<Boolean>("200") { }
 
      fun verifyNftOwnership(ctx: Context) {
-        val req = ctx.bodyAsClass(VerifyCollectionRequest::class.java)
         val chain = ctx.pathParam("chain").let {
             if (it.isEmpty()) {
                 throw Exception("No chain defined")
@@ -68,8 +46,10 @@ object VerificationController {
         }
 
         val contractAddress = ctx.pathParam("contractAddress")
+         val account = ctx.queryParam("account") ?: throw  BadRequestResponse("Account not specified")
+         val tokenId = ctx.queryParam("tokenId") ?: throw  BadRequestResponse("Token Id not specified")
          runBlocking {
-             val result = VerificationService.verifyNftOwnership(chain, contractAddress, req.account, req.tokenId)
+             val result = VerificationService.verifyNftOwnership(chain, contractAddress, account, tokenId)
              ctx.json(result)
          }
     }
@@ -80,12 +60,13 @@ object VerificationController {
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
-    }.body<VerifyCollectionRequest> {
-        it.description("")
+    }.queryParam<String>("account") {
+        it.required(true)
+    }.queryParam<String>("tokenId") {
+        it.required(true)
     }.json<Boolean>("200") { }
 
     fun verifyNftOwnershipWithTraits(ctx: Context) {
-        val req = ctx.bodyAsClass(VerifyTraitRequest::class.java)
         val chain = ctx.pathParam("chain").let {
             if (it.isEmpty()) {
                 throw Exception("No chain defined")
@@ -94,9 +75,12 @@ object VerificationController {
         }
 
         val contractAddress = ctx.pathParam("contractAddress")
+        val account = ctx.queryParam("account") ?: throw  BadRequestResponse("Account not specified")
+        val tokenId = ctx.queryParam("tokenId") ?: throw  BadRequestResponse("Token Id not specified")
+        val traitType = ctx.queryParam("traitType") ?: throw  BadRequestResponse("Trait type  not specified")
+        val traitValue = ctx.queryParam("traitValue") ?: null
 
-
-        val result = VerificationService.verifyNftOwnershipWithTraits(chain, contractAddress, req.account, req.tokenId, req.traitType,req.traitValue)
+        val result = VerificationService.verifyNftOwnershipWithTraits(chain, contractAddress, account, tokenId, traitType,traitValue)
         ctx.json(result)
     }
 
@@ -107,21 +91,29 @@ object VerificationController {
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
-    }.body<VerifyTraitRequest> {
-        it.description("")
+    }.queryParam<String>("account") {
+        it.required(true)
+    }.queryParam<String>("tokenId") {
+        it.required(true)
+    }.queryParam<String>("traitType") {
+        it.required(true)
+    }.queryParam<String>("traitValue") {
     }.json<Boolean>("200") { }
 
     fun oceanDaoVerification(ctx: Context) {
-        val req = ctx.bodyAsClass(OceanDaoVerificationRequest::class.java)
         val chain = ctx.pathParam("chain").let {
             if (it.isEmpty()) {
                 throw Exception("No chain defined")
             }
             Chain.valueOf(it.uppercase())
         }
-        println(req)
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = VerificationService.dataNftVerification(chain, req.factoryContractAddress,contractAddress, req.account, req.propertyKey, req.propertyValue)
+        val account = ctx.queryParam("account") ?: throw  BadRequestResponse("Account not specified")
+        val factoryContractAddress = ctx.queryParam("factoryContractAddress") ?: throw  BadRequestResponse("Factory contract address not specified")
+        val propertyKey = ctx.queryParam("propertyKey") ?: throw  BadRequestResponse("Property key not specified")
+        val propertyValue = ctx.queryParam("propertyValue") ?: null
+
+        val result = VerificationService.dataNftVerification(chain, factoryContractAddress,contractAddress, account, propertyKey, propertyValue)
         ctx.json(result)
     }
 
@@ -131,8 +123,13 @@ object VerificationController {
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
-    }.body<OceanDaoVerificationRequest> {
-        it.description("")
+    }.queryParam<String>("account") {
+        it.required(true)
+    }.queryParam<String>("factoryContractAddress") {
+        it.required(true)
+    }.queryParam<String>("propertyKey") {
+        it.required(true)
+    }.queryParam<String>("propertyValue") {
     }.json<Boolean>("200") { }
 
 }
