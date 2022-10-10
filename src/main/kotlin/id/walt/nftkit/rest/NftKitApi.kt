@@ -121,7 +121,7 @@ object NftKitApi {
         }.routes {
             get("", documented(documentedIgnored(), RootController::root))
             get("health", documented(healthDocs(), RootController::health))
-            path("v1") {
+            path("v2") {
                 path("nftkit") {
                     path("nft") {
                         post("chain/{chain}/contract/deploy", documented(NftController.deployDocs(), NftController::deploy))
