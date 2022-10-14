@@ -6,6 +6,7 @@ import id.walt.nftkit.metadata.IPFSMetadata
 import id.walt.nftkit.metadata.MetadataUri
 import id.walt.nftkit.metadata.MetadataUriFactory
 import id.walt.nftkit.metadata.NFTStorageAddFileResult
+import id.walt.nftkit.models.NFTsInfos
 import id.walt.nftkit.services.WaltIdServices.decBase64Str
 import id.walt.nftkit.smart_contract_wrapper.Erc721OnchainCredentialWrapper
 import id.walt.nftkit.utilis.Common
@@ -61,7 +62,9 @@ enum class Chain {
     POLYGON,
     RINKEBY,
     ROPSTEN,
-    MUMBAI
+    MUMBAI,
+    TEZOS,
+    GHOSTNET
 }
 
 enum class TokenStandard {
@@ -342,6 +345,20 @@ object NftService {
         return TokenCollectionInfo("", "")
     }
 
+    fun getAccountNFTs(chain: Chain, account: String): NFTsInfos {
+        return when{
+            Common.isEVMChain(chain) -> {
+                val result = getAccountNFTsByAlchemy(chain, account)
+                return (NFTsInfos(evmNfts = result))
+            }
+            Common.isTezosChain(chain) -> {
+                val result= TezosNftService.fetchAccountNFTsByTzkt(chain, account)
+                return (NFTsInfos(tezosNfts = result))
+            }
+            else -> {throw Exception("Chain  is not supported")}
+        }
+    }
+
     fun getAccountNFTsByChainScan(chain: Chain, address: String): List<Token?> {
         return runBlocking {
             val url = Common.getNetworkBlockExplorerApiUrl(chain)
@@ -364,6 +381,8 @@ object NftService {
                 Chain.ROPSTEN -> Values.ETHEREUM_TESTNET_ROPSTEN_ALCHEMY_URL
                 Chain.POLYGON -> Values.POLYGON_MAINNET_ALCHEMY_URL
                 Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_ALCHEMY_URL
+                Chain.TEZOS -> throw Exception("Tezos is not supported")
+                Chain.GHOSTNET -> throw Exception("Ghostnet is not supported")
             }
 
             val result = fetchAccountNFTsTokensByAlchemy(account = account, url = url)
