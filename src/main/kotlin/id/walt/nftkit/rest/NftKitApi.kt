@@ -121,7 +121,7 @@ object NftKitApi {
         }.routes {
             get("", documented(documentedIgnored(), RootController::root))
             get("health", documented(healthDocs(), RootController::health))
-            path("v1") {
+            path("v2") {
                 path("nftkit") {
                     path("nft") {
                         post("chain/{chain}/contract/deploy", documented(NftController.deployDocs(), NftController::deploy))
@@ -192,18 +192,22 @@ object NftKitApi {
                         )
                     }
                     path("nft/verifier") {
-                        post(
-                            "chain/{chain}/contract/{contractAddress}/verifyCollection",
-                            documented(VerificationController.verifyCollectionDocs(), VerificationController::verifyCollection)
+                        get(
+                            "chain/{chain}/contract/{contractAddress}/verifyNftOwnership",
+                            documented(VerificationController.verifyNftOwnershipDocs(), VerificationController::verifyNftOwnership)
                         )
-                        post(
-                            "chain/{chain}/contract/{contractAddress}/verifyTrait",
+                        get(
+                            "chain/{chain}/contract/{contractAddress}/verifyNftOwnershipWithinCollection",
+                            documented(VerificationController.verifyNftOwnershipWithinCollectionDocs(), VerificationController::verifyNftOwnershipWithinCollection)
+                        )
+                        get(
+                            "chain/{chain}/contract/{contractAddress}/verifyNftOwnershipWithTraits",
                             documented(
-                                VerificationController.verifyCollectionWithTraitsDocs(),
-                                VerificationController::verifyCollectionWithTraits
+                                VerificationController.verifyNftOwnershipWithTraitsDocs(),
+                                VerificationController::verifyNftOwnershipWithTraits
                             )
                         )
-                        post(
+                        get(
                             "oceanDao/chain/{chain}/contract/{contractAddress}/verification",
                             documented(
                                 VerificationController.oceanDaoVerificationDocs(),

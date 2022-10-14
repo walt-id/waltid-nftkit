@@ -37,18 +37,34 @@ object VerificationService {
     }*/
 
     // Verify if NFT is part of a collection (contract address)
-    fun  verifyCollection(chain: Chain, contractAddress: String, account: String, tokenId: String): Boolean{
-        return ownershipVerification(chain, contractAddress, account, BigInteger(tokenId))
+    fun  verifyNftOwnership(chain: Chain, contractAddress: String, account: String, tokenId: String): Boolean{
+        return when{
+            Common.isEVMChain(chain) -> {
+                return NFTsEvmOwnershipVerification(chain, contractAddress, account, BigInteger(tokenId))
+            }
+            Common.isTezosChain(chain) -> {
+                return NFTsTezosOwnershipVerification(chain, contractAddress, account, tokenId)
+            }
+            else -> {throw Exception("Chain  is not supported")}
+        }
     }
 
-    fun verifyNftAccountOwnershipInCollection(chain: Chain, contractAddress: String, account: String): Boolean{
-        val balance= NftService.balanceOf(chain, contractAddress, account)
-        return if (balance!!.compareTo(BigInteger("0")) == 1) true else false
+     fun verifyNftOwnershipWithinCollection(chain: Chain, contractAddress: String, account: String): Boolean {
+        return when{
+            Common.isEVMChain(chain) -> {
+                return verifyNftOwnershipWithinCollectionEvmChain(chain, contractAddress, account)
+            }
+            Common.isTezosChain(chain) -> {
+                return verifyNftOwnershipWithinCollectionTezosChain(chain, contractAddress, account)
+            }
+            else -> {throw Exception("Chain  is not supported")}
+        }
+
     }
 
     //  simply check if a certain trait type and trait value is in the metadata
-    fun verifyTrait(chain: Chain, contractAddress: String, account: String, tokenId: String, traitType: String, traitValue: String? = null): Boolean {
-        val ownership= ownershipVerification(chain, contractAddress, account, BigInteger(tokenId))
+    fun verifyNftOwnershipWithTraits(chain: Chain, contractAddress: String, account: String, tokenId: String, traitType: String, traitValue: String? = null): Boolean {
+        val ownership= NFTsEvmOwnershipVerification(chain, contractAddress, account, BigInteger(tokenId))
         if(ownership == true){
             val metadata= NftService.getNftMetadata(chain, contractAddress, BigInteger( tokenId))
             if(metadata.attributes?.filter { (it.trait_type.equals(traitType) && it.value.equals(traitValue, true)) || (traitValue == null && traitType.equals(it.trait_type) ) }!!.size > 0){
@@ -70,7 +86,7 @@ object VerificationService {
         if(!tx.result?.get(0)?.from.equals(erc721FactorycontractAddress, ignoreCase = true)){
             return false
         }
-        val ownership= ownershipVerification(chain, erc721contractAddress, account, BigInteger("1"))
+        val ownership= NFTsEvmOwnershipVerification(chain, erc721contractAddress, account, BigInteger("1"))
         if(ownership == true ){
             if( propertyKey != null && propertyKey != "" && propertyValue != null) {
                 return propertyVerification(chain, erc721contractAddress, "1", propertyKey, propertyValue)
@@ -82,13 +98,23 @@ object VerificationService {
 
 
 
+
+    private fun verifyNftOwnershipWithinCollectionTezosChain(chain: Chain, contractAddress: String, owner: String): Boolean {
+        val result= TezosNftService.fetchAccountNFTsByTzkt(chain, owner, contractAddress).filter { "1".equals(it.token.totalSupply) }
+        return if (result.size >= 1) true else false
+    }
+
+    private fun verifyNftOwnershipWithinCollectionEvmChain(chain: Chain, contractAddress: String, owner: String): Boolean {
+        val balance= NftService.balanceOf(chain, contractAddress, owner)
+        return if (balance!!.compareTo(BigInteger("0")) == 1) true else false
+    }
     private suspend fun getOceanDaoContractCreationTransaction(chain: Chain, erc721contractAddress: String,url: String, apiKey: String): InternalTransactionsResponse{
             return NftService.client.get("https://$url/api?module=account&action=txlistinternal&address=$erc721contractAddress&page=1&offset=1&startblock=0&sort=asc&apikey=$apiKey") {
                 contentType(ContentType.Application.Json)
             }.body()
 
     }
-    private fun ownershipVerification(chain: Chain, contractAddress: String, account: String, tokenId: BigInteger): Boolean{
+    private fun NFTsEvmOwnershipVerification(chain: Chain, contractAddress: String, account: String, tokenId: BigInteger): Boolean{
         try {
             val owner= NftService.ownerOf(chain, contractAddress, tokenId)
             if(account.equals(owner, true)){
@@ -99,6 +125,11 @@ object VerificationService {
             return false
         }
         return false
+    }
+
+    private fun NFTsTezosOwnershipVerification(chain: Chain, contractAddress: String, account: String, tokenId: String): Boolean{
+        val result= TezosNftService.fetchAccountNFTsByTzkt(chain, account, contractAddress).filter { "1".equals(it.token.totalSupply) && tokenId.equals(it.token.tokenId) }
+        return if (result.size>= 1) true else false
     }
 
     private fun propertyVerification(chain: Chain, contractAddress: String, tokenId: String, propertyKey: String, propertyValue: String): Boolean {
