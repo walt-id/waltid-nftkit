@@ -4,6 +4,8 @@ Notable changes since the last release of the [NFT Kit](https://github.com/walt-
 
 ## [Unreleased]
 
+## [1.1.0] - 2022-10-14
+
 ## [1.0.0] - 2022-06-20
 
 ## [1.0.0] - 2022-06-20
@@ -12,7 +14,9 @@ Notable changes since the last release of the [NFT Kit](https://github.com/walt-
 
 -   Initial release
 
-[Unreleased]: https://github.com/walt-id/waltid-nftkit/compare/1.0.0...HEAD
+[Unreleased]: https://github.com/walt-id/waltid-nftkit/compare/1.1.0...HEAD
+
+[1.1.0]: https://github.com/walt-id/waltid-nftkit/compare/1.0.0...1.1.0
 
 [1.0.0]: https://github.com/walt-id/waltid-nftkit/compare/1.0.0...1.0.0
 
