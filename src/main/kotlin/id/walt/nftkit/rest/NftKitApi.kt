@@ -124,8 +124,10 @@ object NftKitApi {
             path("v2") {
                 path("nftkit") {
                     path("nft") {
-                        post("chain/{chain}/contract/deploy", documented(NftController.deployDocs(), NftController::deploy))
-
+                        post(
+                            "chain/{chain}/contract/deploy",
+                            documented(NftController.deployDocs(), NftController::deploy)
+                        )
                         post(
                             "chain/{chain}/contract/{contractAddress}/token/mint",
                             documented(NftController.mintDocs(), NftController::mint)
@@ -190,6 +192,12 @@ object NftKitApi {
                             "chain/{chain}/contract/{contractAddress}/token/{tokenId}/getapproved",
                             documented(NftController.getApprovedDocs(), NftController::getApproved)
                         )
+                        path("tezos"){
+                            post(
+                                "chain/{chain}/contract/deploy",
+                                documented(TezosNftController.deployDocs(), TezosNftController::deploy)
+                            )
+                        }
                     }
                     path("nft/verifier") {
                         get(
