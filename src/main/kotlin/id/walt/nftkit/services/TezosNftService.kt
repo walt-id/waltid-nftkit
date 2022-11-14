@@ -1,5 +1,6 @@
 package id.walt.nftkit.services
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -13,6 +14,10 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 
+enum class TezosChain {
+    TEZOS,
+    GHOSTNET
+}
 
 @Serializable
 data class TezosNftMetadata(
@@ -66,6 +71,15 @@ data class TezosNFTsTzktResult(
     }
 }
 
+@Serializable
+data class TezosNftsSCDeploymentResponse(
+    val contractAddress: String
+)
+
+enum class Fa2SmartContractType {
+    SINGLE,
+    MULTIPLE
+}
 
 object TezosNftService {
 
@@ -83,7 +97,18 @@ object TezosNftService {
         expectSuccess = false
     }
 
-
+    fun deploySmartContract(chain: TezosChain, owner: String, type: Fa2SmartContractType): TezosNftsSCDeploymentResponse {
+        return runBlocking {
+            val values = mapOf("chain" to chain.toString(), "owner" to owner, "type" to type.toString())
+            val deployment =
+                NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/tezos/contract/deployment") {
+                    contentType(ContentType.Application.Json)
+                    setBody(values)
+                }
+                    .body<TezosNftsSCDeploymentResponse>()
+            return@runBlocking deployment
+        }
+    }
      fun fetchAccountNFTsByTzkt(
         chain: Chain,
         account: String,

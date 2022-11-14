@@ -15,6 +15,7 @@ data class KeysConfig(val keys: Map<String, String>)
 
 data class ApiKeys(val ethereumBlockExplorer: String, val polygonBlockExplorer: String, val alchemy: String, val nftstorage: String)
 data class BlockExplorerScanApiKeyConfig(val apiKeys: ApiKeys)
+data class TezosConfig(val tezosBackendServer: String)
 
 val WALTID_CONFIG_PATH = System.getenv("WALTID_CONFIG_PATH") ?: "."
 
@@ -44,6 +45,13 @@ object WaltIdServices {
         .addSource(PropertySource.resource("/walt-default.yaml"))
         .build()
         .loadConfigOrThrow<KeysConfig>()
+
+    fun loadTezosConfig() = ConfigLoader.builder()
+        .addFileExtensionMapping("yaml", YamlParser())
+        .addSource(PropertySource.file(File("$WALTID_CONFIG_PATH/walt.yaml"), optional = true))
+        .addSource(PropertySource.resource("/walt-default.yaml"))
+        .build()
+        .loadConfigOrThrow<TezosConfig>()
 
 
     fun getBlockExplorerUrl(chain: Chain): String {
