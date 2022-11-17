@@ -1,8 +1,8 @@
 package id.walt.nftkit.metadata
 
-import id.walt.nftkit.services.NftMetadata
+import id.walt.nftkit.services.NftMetadataWrapper
 
 interface MetadataUri {
 
-    fun getTokenUri(nftMetadata: NftMetadata?): String
+    fun getTokenUri(nftMetadataWrapper: NftMetadataWrapper): String
 }

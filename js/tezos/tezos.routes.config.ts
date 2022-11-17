@@ -13,6 +13,16 @@ export class TezosRoutes extends CommonRoutesConfig {
         .post(
             TezosController.deployContract
         );
+        this.app
+        .route(`/tezos/contract/token/mint`)
+        .post(
+            TezosController.mintToken
+        );
+        this.app
+        .route(`/tezos/contract/minter`)
+        .post(
+            TezosController.addMinter
+        );
         return this.app;
     }
 }
