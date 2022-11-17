@@ -197,6 +197,14 @@ object NftKitApi {
                                 "chain/{chain}/contract/deploy",
                                 documented(TezosNftController.deployDocs(), TezosNftController::deploy)
                             )
+                            post(
+                                "chain/{chain}/contract/{contractAddress}/mint",
+                                documented(TezosNftController.mintDocs(), TezosNftController::mint)
+                            )
+                            post(
+                                "chain/{chain}/contract/{contractAddress}/minter",
+                                documented(TezosNftController.addMinterDocs(), TezosNftController::addMinter)
+                            )
                         }
                     }
                     path("nft/verifier") {

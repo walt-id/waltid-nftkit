@@ -1,6 +1,11 @@
 package id.walt.nftkit.services
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import id.walt.nftkit.Values
+import id.walt.nftkit.metadata.MetadataUri
+import id.walt.nftkit.metadata.MetadataUriFactory
+import id.walt.nftkit.rest.TezosSCDeploymentResponse
+import id.walt.nftkit.utilis.Common
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -26,15 +31,29 @@ data class TezosNftMetadata(
     val description: String?= null,
     var symbol: String,
     var image: String?= null,
-    var creators: List<String>?= null,
+    var creators: List<String>?= null, //["tz1ZLRT3xiBgGRdNrTYXr8Stz4TppT3hukRi"],
     var decimals: String?= null,
     val displayUri: String?= null,
     val artifactUri: String?= null,
     val thumbnailUri: String?= null,
     val isTransferable:Boolean?= null,
     val isBooleanAmount:Boolean?= null,
-    val shouldPreferSymbol:Boolean?= null
+    val shouldPreferSymbol:Boolean?= null,
+    val attributes: List<NftMetadata.Attributes>?=null,
+    val tags: List<String>?= null,//["pxlshrd","Pâtisserie","fxhashturnsone"]
+    val category: String?= null,
+    val collectionName: String?= null,
+    val creatorName: String?= null,
+    val keywords: String?= null,//"gaming,collectible,rocket,monster,bear,battalion",
     )
+
+data class TezosMintingParameter(
+    val metadataUri: String?,
+    val recipientAddress: String,
+    val tokenId: String,
+    val amount: String?,
+    val metadata: TezosNftMetadata?,
+)
 
 @Serializable
 data class TezosNFTsTzktResult(
@@ -76,6 +95,17 @@ data class TezosNftsSCDeploymentResponse(
     val contractAddress: String
 )
 
+@Serializable
+data class TezosOperationResponse(
+    val opHash: String
+)
+
+@Serializable
+data class OperationResponse(
+    val operationHash: String,
+    val operationExternalUrl: String
+)
+
 enum class Fa2SmartContractType {
     SINGLE,
     MULTIPLE
@@ -97,7 +127,7 @@ object TezosNftService {
         expectSuccess = false
     }
 
-    fun deploySmartContract(chain: TezosChain, owner: String, type: Fa2SmartContractType): TezosNftsSCDeploymentResponse {
+    fun deploySmartContract(chain: TezosChain, owner: String, type: Fa2SmartContractType): TezosSCDeploymentResponse {
         return runBlocking {
             val values = mapOf("chain" to chain.toString(), "owner" to owner, "type" to type.toString())
             val deployment =
@@ -106,7 +136,57 @@ object TezosNftService {
                     setBody(values)
                 }
                     .body<TezosNftsSCDeploymentResponse>()
-            return@runBlocking deployment
+            val contractExternalUrl= when(chain){
+                TezosChain.TEZOS -> Values.TEZOS_MAINNET_BETTER_CALL_DEV
+                TezosChain.GHOSTNET -> Values.TEZOS_GHOSTNET_BETTER_CALL_DEV
+            }
+            val tezosSCDeploymentResponse= TezosSCDeploymentResponse(deployment.contractAddress, "$contractExternalUrl/${deployment.contractAddress}")
+            return@runBlocking tezosSCDeploymentResponse
+        }
+    }
+
+    fun mintNftToken(chain: TezosChain, contractAddress: String, parameter: TezosMintingParameter): OperationResponse {
+        var tokenUri: String?
+        if (parameter.metadataUri != null && parameter.metadataUri != "") {
+            tokenUri = parameter.metadataUri
+        } else {
+            val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(MetadataStorageType.OFF_CHAIN)
+            val nftMetadataWrapper= NftMetadataWrapper(tezosNftMetadata = parameter.metadata)
+            tokenUri = metadataUri.getTokenUri(nftMetadataWrapper)
+        }
+        return runBlocking {
+            val amount= if(parameter.amount != null && parameter.amount != "") parameter.amount else null
+            val values = mapOf("chain" to chain.toString(), "owner" to parameter.recipientAddress, "fa2ContractAddress" to contractAddress, "metadata" to tokenUri , "tokenId" to parameter.tokenId, "amount" to amount )
+            val tezosOperationResponse =
+                NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/tezos/contract/token/mint") {
+                    contentType(ContentType.Application.Json)
+                    setBody(values)
+                }
+                    .body<TezosOperationResponse>()
+            val contractExternalUrl= when(Common.getTezosChain(chain.toString())){
+                TezosChain.TEZOS -> Values.TEZOS_MAINNET_BETTER_CALL_DEV
+                TezosChain.GHOSTNET -> Values.TEZOS_GHOSTNET_BETTER_CALL_DEV
+            }
+            val operationResponse= OperationResponse(tezosOperationResponse.opHash, "$contractExternalUrl/opg/${tezosOperationResponse.opHash}")
+            return@runBlocking operationResponse
+        }
+    }
+
+    fun addMinter(chain: TezosChain, contractAddress: String, minter: String): OperationResponse {
+        return runBlocking {
+            val values = mapOf("chain" to chain.toString(), "minter" to minter, "fa2ContractAddress" to contractAddress)
+            val tezosOperationResponse =
+                NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/tezos/contract/minter") {
+                    contentType(ContentType.Application.Json)
+                    setBody(values)
+                }
+                    .body<TezosOperationResponse>()
+            val contractExternalUrl= when(Common.getTezosChain(chain.toString())){
+                TezosChain.TEZOS -> Values.TEZOS_MAINNET_BETTER_CALL_DEV
+                TezosChain.GHOSTNET -> Values.TEZOS_GHOSTNET_BETTER_CALL_DEV
+            }
+            val operationResponse= OperationResponse(tezosOperationResponse.opHash, "$contractExternalUrl/opg/${tezosOperationResponse.opHash}")
+            return@runBlocking operationResponse
         }
     }
      fun fetchAccountNFTsByTzkt(
