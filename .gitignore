@@ -142,6 +142,8 @@ $RECYCLE.BIN/
 *.lnk
 .idea
 src/main/resources/walt-default.yaml
+js/node_modules
+js/dist
 
 secret_maven_username.txt
 secret_maven_password.txt

@@ -1,10 +1,7 @@
 package id.walt.nftkit.utilis
 
 import id.walt.nftkit.Values
-import id.walt.nftkit.services.Chain
-import id.walt.nftkit.services.MetadataStorageType
-import id.walt.nftkit.services.TransactionResponse
-import id.walt.nftkit.services.WaltIdServices
+import id.walt.nftkit.services.*
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 
 object Common {
@@ -21,6 +18,24 @@ object Common {
                 throw Exception("No chain defined")
             }
             Chain.valueOf(it.uppercase())
+        }
+    }
+
+    fun getTezosChain(chain: String): TezosChain{
+        return chain.let {
+            if (it.isEmpty()){
+                throw Exception("No chain defined")
+            }
+            TezosChain.valueOf(it.uppercase())
+        }
+    }
+
+    fun getFa2SmartContractType(type: String): Fa2SmartContractType{
+        return type.let {
+            if (it.isEmpty()){
+                throw Exception("No type defined")
+            }
+            Fa2SmartContractType.valueOf(it.uppercase())
         }
     }
 
