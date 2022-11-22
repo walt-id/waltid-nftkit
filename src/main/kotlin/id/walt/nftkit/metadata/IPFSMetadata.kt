@@ -2,6 +2,7 @@ package id.walt.nftkit.metadata
 
 import com.beust.klaxon.Klaxon
 import id.walt.nftkit.services.NftMetadata
+import id.walt.nftkit.services.NftMetadataWrapper
 import id.walt.nftkit.services.WaltIdServices
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -69,10 +70,10 @@ object IPFSMetadata: MetadataUri {
         }
         expectSuccess = false
     }
-    override fun getTokenUri(nftMetadata: NftMetadata?): String {
+    override fun getTokenUri(nftMetadataWrapper: NftMetadataWrapper): String {
 
         val data: MutableMap<String, Any> = LinkedHashMap()
-        val metadata= Json.encodeToString(nftMetadata)
+        val metadata= if (nftMetadataWrapper.evmNftMetadata != null) Json.encodeToString(nftMetadataWrapper.evmNftMetadata) else Json.encodeToString(nftMetadataWrapper.tezosNftMetadata)
         data["meta"] = metadata
         val boundary: String = BigInteger(35, Random()).toString()
 

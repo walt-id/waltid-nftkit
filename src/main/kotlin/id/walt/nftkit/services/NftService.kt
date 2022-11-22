@@ -52,6 +52,11 @@ data class NftMetadata(
     )
 }
 
+data class NftMetadataWrapper(
+    val evmNftMetadata: NftMetadata?= null,
+    val tezosNftMetadata: TezosNftMetadata?= null
+)
+
 data class TokenCollectionInfo(
     val name: String,
     val symbol: String
@@ -264,7 +269,8 @@ object NftService {
             tokenUri = parameter.metadataUri
         } else {
             val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(options.metadataStorageType)
-            tokenUri = metadataUri.getTokenUri(parameter.metadata)
+            val nftMetadataWrapper= NftMetadataWrapper(evmNftMetadata = parameter.metadata)
+            tokenUri = metadataUri.getTokenUri(nftMetadataWrapper)
         }
 
         return mintNewToken(parameter.recipientAddress, tokenUri, chain, contractAddress)
@@ -413,7 +419,8 @@ object NftService {
         }
         val oldUri= getMetadatUri(chain, contractAddress, BigInteger(tokenId))
         val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(Common.getMetadataType(oldUri))
-        val tokenUri = metadataUri.getTokenUri(metadata)
+        val nftMetadataWrapper= NftMetadataWrapper(evmNftMetadata = metadata)
+        val tokenUri = metadataUri.getTokenUri(nftMetadataWrapper)
         val transactionReceipt = Erc721TokenStandard.updateTokenUri(chain, contractAddress, BigInteger(tokenId), Utf8String(tokenUri), signedAccount)
         return Common.getTransactionResponse(chain, transactionReceipt)
     }

@@ -50,7 +50,8 @@ object ExtensionsService {
             tokenUri = parameter.metadataUri
         } else {
             val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(Common.getMetadataType(oldUri))
-            tokenUri = metadataUri.getTokenUri(parameter.metadata)
+            val nftMetadataWrapper= NftMetadataWrapper(evmNftMetadata = parameter.metadata)
+            tokenUri = metadataUri.getTokenUri(nftMetadataWrapper)
         }
         val transactionReceipt = Erc721TokenStandard.updateTokenUri(chain, contractAddress, BigInteger(tokenId), Utf8String(tokenUri), signedAccount)
         return Common.getTransactionResponse(chain, transactionReceipt)
