@@ -50,8 +50,7 @@ object Common {
     fun getNetworkBlockExplorerApiUrl(chain: Chain): String{
         return when (chain) {
             Chain.ETHEREUM -> Values.ETHEREUM_MAINNET_SCAN_API_URL
-            Chain.RINKEBY -> Values.ETHEREUM_TESTNET_RINKEBY_SCAN_API_URL
-            Chain.ROPSTEN -> Values.ETHEREUM_TESTNET_ROPSTEN_SCAN_API_URL
+            Chain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_SCAN_API_URL
             Chain.POLYGON -> Values.POLYGON_MAINNET_SCAN_API_URL
             Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_SCAN_API_URL
             Chain.TEZOS -> throw Exception("Tezos is not supported")
@@ -62,8 +61,7 @@ object Common {
     fun getNetworkBlockExplorerApiKey(chain: Chain): String{
         return when (chain) {
             Chain.ETHEREUM -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
-            Chain.RINKEBY -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
-            Chain.ROPSTEN -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
+            Chain.GOERLI -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
             Chain.POLYGON -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
             Chain.MUMBAI -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
             Chain.TEZOS -> throw Exception("Tezos is not supported")
@@ -72,7 +70,7 @@ object Common {
     }
 
     fun isEVMChain(chain: Chain): Boolean{
-        val EVMChains= listOf(Chain.ETHEREUM, Chain.POLYGON, Chain.RINKEBY, Chain.ROPSTEN, Chain.MUMBAI)
+        val EVMChains= listOf(Chain.ETHEREUM, Chain.POLYGON, Chain.GOERLI, Chain.MUMBAI)
         if(chain in EVMChains) return true
         return false
     }
