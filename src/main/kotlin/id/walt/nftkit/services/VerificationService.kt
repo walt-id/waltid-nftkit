@@ -64,15 +64,32 @@ object VerificationService {
 
     //  simply check if a certain trait type and trait value is in the metadata
     fun verifyNftOwnershipWithTraits(chain: Chain, contractAddress: String, account: String, tokenId: String, traitType: String, traitValue: String? = null): Boolean {
-        val ownership= NFTsEvmOwnershipVerification(chain, contractAddress, account, BigInteger(tokenId))
-        if(ownership == true){
-            val metadata= NftService.getNftMetadata(chain, contractAddress, BigInteger( tokenId))
-            if(metadata.attributes?.filter { (it.trait_type.equals(traitType) && it.value.equals(traitValue, true)) || (traitValue == null && traitType.equals(it.trait_type) ) }!!.size > 0){
-                return true
 
+        return when{
+            Common.isEVMChain(chain) -> {
+                val ownership= NFTsEvmOwnershipVerification(chain, contractAddress, account, BigInteger(tokenId))
+                if(ownership == true){
+                    val metadata= NftService.getNftMetadata(chain, contractAddress, BigInteger( tokenId))
+                    if(metadata.attributes?.filter { (it.trait_type.equals(traitType) && it.value.equals(traitValue, true)) || (traitValue == null && traitType.equals(it.trait_type) ) }!!.size > 0){
+                        return true
+                    }
+                }
+                return false;
             }
+            Common.isTezosChain(chain) -> {
+                val ownership= NFTsTezosOwnershipVerification(chain, contractAddress, account, tokenId)
+                if(ownership == true){
+                    val metadata= TezosNftService.getNftTezosMetadata(chain, contractAddress, tokenId)
+                    if(metadata!!.attributes?.filter { (it.trait_type.equals(traitType) && it.value.equals(traitValue, true)) || (traitValue == null && traitType.equals(it.trait_type) ) }!!.size > 0){
+                        return true
+                    }
+                }
+                return false;
+            }
+            else -> {throw Exception("Chain  is not supported")}
         }
-        return false
+
+
     }
 
     fun  dataNftVerification(chain: Chain, erc721FactorycontractAddress: String,erc721contractAddress: String,account: String, propertyKey: String?, propertyValue: String?): Boolean{
