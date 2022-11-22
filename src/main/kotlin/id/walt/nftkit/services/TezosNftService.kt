@@ -91,6 +91,14 @@ data class TezosNFTsTzktResult(
 }
 
 @Serializable
+data class TezosNFTMetadataTzktResult(
+    val id: Long,
+    val contract: TezosNFTsTzktResult.Token.Contract,
+    val tokenId: String,
+    val standard: String,
+    val metadata: TezosNftMetadata?= null,
+    )
+@Serializable
 data class TezosNftsSCDeploymentResponse(
     val contractAddress: String
 )
@@ -187,6 +195,22 @@ object TezosNftService {
             }
             val operationResponse= OperationResponse(tezosOperationResponse.opHash, "$contractExternalUrl/opg/${tezosOperationResponse.opHash}")
             return@runBlocking operationResponse
+        }
+    }
+
+    fun getNftTezosMetadata(chain: Chain, contractAddress: String, tokenId: String): TezosNftMetadata? {
+        return runBlocking {
+            var contractAddressExp= ""
+            var chainAPI= ""
+            if(contractAddress != null)  contractAddressExp= "token.contract=$contractAddress&"
+            if(Chain.GHOSTNET.equals(chain)) chainAPI= ".ghostnet"
+            val nfts =
+                NftService.client.get("https://api$chainAPI.tzkt.io/v1/tokens?contract=$contractAddress&tokenId=$tokenId&type=fa2&token.totalSupply=1") {
+                    contentType(ContentType.Application.Json)
+                }
+                    .body<List<TezosNFTMetadataTzktResult>>()
+
+            return@runBlocking nfts.get(0).metadata
         }
     }
      fun fetchAccountNFTsByTzkt(
