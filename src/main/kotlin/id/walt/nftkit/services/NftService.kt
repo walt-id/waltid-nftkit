@@ -65,8 +65,7 @@ data class TokenCollectionInfo(
 enum class Chain {
     ETHEREUM,
     POLYGON,
-    RINKEBY,
-    ROPSTEN,
+    GOERLI,
     MUMBAI,
     TEZOS,
     GHOSTNET
@@ -383,8 +382,7 @@ object NftService {
         return runBlocking {
             val url = when (chain) {
                 Chain.ETHEREUM -> Values.ETHEREUM_MAINNET_ALCHEMY_URL
-                Chain.RINKEBY -> Values.ETHEREUM_TESTNET_RINKEBY_ALCHEMY_URL
-                Chain.ROPSTEN -> Values.ETHEREUM_TESTNET_ROPSTEN_ALCHEMY_URL
+                Chain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_ALCHEMY_URL
                 Chain.POLYGON -> Values.POLYGON_MAINNET_ALCHEMY_URL
                 Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_ALCHEMY_URL
                 Chain.TEZOS -> throw Exception("Tezos is not supported")
