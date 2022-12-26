@@ -1,7 +1,7 @@
 package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
-import id.walt.nftkit.Values
+import id.walt.nftkit.models.NFTsInfos
 import id.walt.nftkit.services.*
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.Context
@@ -94,5 +94,29 @@ object TezosNftController {
     }.body<TezosAddMinterRequest> {
         it.description("")
     }.json<OperationResponse>("200") { it.description("Transaction ID and token ID") }
+
+
+    fun getNftMetadata(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val tokenId = ctx.pathParam("tokenId")
+        val result =
+            TezosNftService.getNftTezosMetadata(Chain.valueOf(chain.uppercase()), contractAddress, tokenId)
+        result?.let {
+            ctx.json(
+                it
+            )
+        }
+    }
+
+    fun getNftMetadataDocs() = document().operation {
+        it.summary("Get NFT Token Metadata")
+            .operationId("Get NFT Token Tezos Metadata").addTagsItem("Tezos Blockchain: Non-fungible tokens(NFTs)")
+    }.pathParam<String>("chain") {
+        it.schema<Chain> { }
+    }.pathParam<String>("contractAddress") {
+    }.pathParam<Int>("tokenId") {
+    }.json<NftMetadata>("200") { it.description("NFT Metadata") }
+
 
 }
