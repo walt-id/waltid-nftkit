@@ -205,6 +205,10 @@ object NftKitApi {
                                 "chain/{chain}/contract/{contractAddress}/minter",
                                 documented(TezosNftController.addMinterDocs(), TezosNftController::addMinter)
                             )
+                            get(
+                                "chain/{chain}/contract/{contractAddress}/token/{tokenId}/metadata",
+                                documented(TezosNftController.getNftMetadataDocs(), TezosNftController::getNftMetadata)
+                            )
                         }
                     }
                     path("nft/verifier") {
