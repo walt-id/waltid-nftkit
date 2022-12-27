@@ -7,6 +7,8 @@ import { InMemorySigner } from '@taquito/signer';
 import {code as multipleNftFa2Code, getStorage as multipleNftFa2GetStorage} from '../smart contract/multiple-nft-fa2-private-collection'
 import {code as singleNftFa2Code, getStorage as singleNftFa2GetStorage} from '../smart contract/single-nft-fa2-private-collection'
 import * as dotenv from 'dotenv'
+import {verifySignature} from "@taquito/utils";
+
 
 class TezosService {
 
@@ -95,6 +97,18 @@ class TezosService {
             await op.confirmation();
             return op.opHash
         } catch (error) {
+            console.log(`Error: ${JSON.stringify(error, null, 2)}`);
+        }
+    }
+
+    async verifySignature(payloadBytes: any, publicKey: any, signature: any) {
+        dotenv.config()
+        try{
+        const isVerified = verifySignature(payloadBytes!, publicKey!, signature!)
+        console.log(isVerified)
+        return isVerified;
+        } catch (error) {
+            return false
             console.log(`Error: ${JSON.stringify(error, null, 2)}`);
         }
     }

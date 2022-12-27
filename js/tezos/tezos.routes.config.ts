@@ -23,6 +23,11 @@ export class TezosRoutes extends CommonRoutesConfig {
         .post(
             TezosController.addMinter
         );
+        this.app
+        .route(`/tezos/signature/verification`)
+        .get(
+            TezosController.verifySignature
+        );
         return this.app;
     }
 }
