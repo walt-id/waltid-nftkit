@@ -51,7 +51,7 @@ object TezosNftController {
 
     fun deployDocs() = document().operation {
         it.summary("Smart contract deployment")
-            .operationId("deploySmartContract").addTagsItem("Tezos Blockchain: Non-fungible tokens(NFTs)")
+            .operationId("deployTezosSmartContract").addTagsItem("Tezos Blockchain: Non-fungible tokens(NFTs)")
     }.pathParam<String>("chain") {
         it.schema<TezosChain> { }
     }.body<TezosDeployRequest> {
@@ -69,7 +69,7 @@ object TezosNftController {
 
     fun mintDocs() = document().operation {
         it.summary("NFT minting")
-            .operationId("mintNft").addTagsItem("Tezos Blockchain: Non-fungible tokens(NFTs)")
+            .operationId("mintTezosNft").addTagsItem("Tezos Blockchain: Non-fungible tokens(NFTs)")
     }.pathParam<String>("chain") {
         it.schema<TezosChain> { }
     }.pathParam<String>("contractAddress") {
@@ -111,7 +111,7 @@ object TezosNftController {
 
     fun getNftMetadataDocs() = document().operation {
         it.summary("Get NFT Token Metadata")
-            .operationId("Get NFT Token Tezos Metadata").addTagsItem("Tezos Blockchain: Non-fungible tokens(NFTs)")
+            .operationId("GetNFTTokenTezosMetadata").addTagsItem("Tezos Blockchain: Non-fungible tokens(NFTs)")
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
