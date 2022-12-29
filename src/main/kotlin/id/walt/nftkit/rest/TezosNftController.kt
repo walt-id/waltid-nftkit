@@ -116,7 +116,7 @@ object TezosNftController {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
     }.pathParam<Int>("tokenId") {
-    }.json<NftMetadata>("200") { it.description("NFT Metadata") }
+    }.json<TezosNftMetadata>("200") { it.description("NFT Metadata") }
 
 
 }
