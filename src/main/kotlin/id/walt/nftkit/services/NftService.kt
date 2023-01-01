@@ -52,6 +52,11 @@ data class NftMetadata(
     )
 }
 
+data class NftMetadataWrapper(
+    val evmNftMetadata: NftMetadata?= null,
+    val tezosNftMetadata: TezosNftMetadata?= null
+)
+
 data class TokenCollectionInfo(
     val name: String,
     val symbol: String
@@ -60,8 +65,7 @@ data class TokenCollectionInfo(
 enum class Chain {
     ETHEREUM,
     POLYGON,
-    RINKEBY,
-    ROPSTEN,
+    GOERLI,
     MUMBAI,
     TEZOS,
     GHOSTNET
@@ -264,7 +268,8 @@ object NftService {
             tokenUri = parameter.metadataUri
         } else {
             val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(options.metadataStorageType)
-            tokenUri = metadataUri.getTokenUri(parameter.metadata)
+            val nftMetadataWrapper= NftMetadataWrapper(evmNftMetadata = parameter.metadata)
+            tokenUri = metadataUri.getTokenUri(nftMetadataWrapper)
         }
 
         return mintNewToken(parameter.recipientAddress, tokenUri, chain, contractAddress)
@@ -377,8 +382,7 @@ object NftService {
         return runBlocking {
             val url = when (chain) {
                 Chain.ETHEREUM -> Values.ETHEREUM_MAINNET_ALCHEMY_URL
-                Chain.RINKEBY -> Values.ETHEREUM_TESTNET_RINKEBY_ALCHEMY_URL
-                Chain.ROPSTEN -> Values.ETHEREUM_TESTNET_ROPSTEN_ALCHEMY_URL
+                Chain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_ALCHEMY_URL
                 Chain.POLYGON -> Values.POLYGON_MAINNET_ALCHEMY_URL
                 Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_ALCHEMY_URL
                 Chain.TEZOS -> throw Exception("Tezos is not supported")
@@ -413,7 +417,8 @@ object NftService {
         }
         val oldUri= getMetadatUri(chain, contractAddress, BigInteger(tokenId))
         val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(Common.getMetadataType(oldUri))
-        val tokenUri = metadataUri.getTokenUri(metadata)
+        val nftMetadataWrapper= NftMetadataWrapper(evmNftMetadata = metadata)
+        val tokenUri = metadataUri.getTokenUri(nftMetadataWrapper)
         val transactionReceipt = Erc721TokenStandard.updateTokenUri(chain, contractAddress, BigInteger(tokenId), Utf8String(tokenUri), signedAccount)
         return Common.getTransactionResponse(chain, transactionReceipt)
     }

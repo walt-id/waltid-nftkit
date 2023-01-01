@@ -6,8 +6,7 @@ object ProviderFactory {
 
     fun getProvider(chain: Chain): Web3jInstance? = when (chain) {
         Chain.ETHEREUM -> EthereumWeb3()
-        Chain.ROPSTEN -> RopstenWeb3()
-        Chain.RINKEBY -> RinkebyWeb3()
+        Chain.GOERLI -> GoerliWeb3()
         Chain.POLYGON -> PolygonWeb3()
         Chain.MUMBAI -> MumbaiWeb3()
         else -> null
