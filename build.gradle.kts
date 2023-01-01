@@ -35,9 +35,9 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging:2.1.21")
 
     // Config: Hoplite
-    implementation("com.sksamuel.hoplite:hoplite-core:2.6.3")
-    implementation("com.sksamuel.hoplite:hoplite-yaml:2.6.3")
-    implementation("com.sksamuel.hoplite:hoplite-hikaricp:2.6.3")
+    implementation("com.sksamuel.hoplite:hoplite-core:2.6.5")
+    implementation("com.sksamuel.hoplite:hoplite-yaml:2.6.5")
+    implementation("com.sksamuel.hoplite:hoplite-hikaricp:2.6.5")
 
     // HTTP / Server: Javalin
     implementation("io.javalin:javalin-bundle:4.4.0")

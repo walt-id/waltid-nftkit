@@ -125,8 +125,10 @@ object NftKitApi {
             path("v2") {
                 path("nftkit") {
                     path("nft") {
-                        post("chain/{chain}/contract/deploy", documented(NftController.deployDocs(), NftController::deploy))
-
+                        post(
+                            "chain/{chain}/contract/deploy",
+                            documented(NftController.deployDocs(), NftController::deploy)
+                        )
                         post(
                             "chain/{chain}/contract/{contractAddress}/token/mint",
                             documented(NftController.mintDocs(), NftController::mint)
@@ -191,6 +193,24 @@ object NftKitApi {
                             "chain/{chain}/contract/{contractAddress}/token/{tokenId}/getapproved",
                             documented(NftController.getApprovedDocs(), NftController::getApproved)
                         )
+                        path("tezos"){
+                            post(
+                                "chain/{chain}/contract/deploy",
+                                documented(TezosNftController.deployDocs(), TezosNftController::deploy)
+                            )
+                            post(
+                                "chain/{chain}/contract/{contractAddress}/mint",
+                                documented(TezosNftController.mintDocs(), TezosNftController::mint)
+                            )
+                            post(
+                                "chain/{chain}/contract/{contractAddress}/minter",
+                                documented(TezosNftController.addMinterDocs(), TezosNftController::addMinter)
+                            )
+                            get(
+                                "chain/{chain}/contract/{contractAddress}/token/{tokenId}/metadata",
+                                documented(TezosNftController.getNftMetadataDocs(), TezosNftController::getNftMetadata)
+                            )
+                        }
                     }
                     path("nft/verifier") {
                         get(
