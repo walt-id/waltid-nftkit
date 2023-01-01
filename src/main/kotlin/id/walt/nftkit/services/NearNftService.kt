@@ -1,6 +1,7 @@
 package id.walt.nftkit.services
 
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
@@ -45,12 +46,14 @@ data class OperationResult(
     val operationHash: String,
     val operationExternalUrl: String
 )
-
+@Serializable
+data class NearOperationResponse(
+    val opHash: String
+)
 data class NearMintingParameter(
-
     val recipientAddress: String,
     val tokenId: String,
-    val accountId: String?,
+    val accountId: String,
     val metadata: NearTokenMetadata?,
 )
 
@@ -71,8 +74,15 @@ object NearNftService {
         expectSuccess = false
     }
 
-    fun MintToken(parameter: NearMintingParameter) {
+    fun mintNftToken(contractAddress : String ,parameter: NearMintingParameter) {
         // TODO: implement
-
+        return runBlocking {
+            val values = mapOf("contractAddress" to contractAddress, "parameter" to parameter)
+            val nearOperationResponse = NftService.client.post("http://localhost:8080/near/mintNftToken") {
+                setBody(values)
+            }
+                .body<NearOperationResponse>()
+            println(nearOperationResponse)
+        }
     }
 }
