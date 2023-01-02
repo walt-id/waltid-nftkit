@@ -20,7 +20,7 @@ data class TezosConfig(val tezosBackendServer: String)
 val WALTID_CONFIG_PATH = System.getenv("WALTID_CONFIG_PATH") ?: "."
 
 object WaltIdServices {
-
+    const val default_yaml_path= "/walt-default.yaml"
     fun encBase64Str(data: String): String = String(Base64.getEncoder().encode(data.toByteArray()))
 
     fun decBase64Str(base64: String): String = String(Base64.getDecoder().decode(base64))
@@ -28,28 +28,28 @@ object WaltIdServices {
     fun loadChainConfig() = ConfigLoader.builder()
         .addFileExtensionMapping("yaml", YamlParser())
         .addSource(PropertySource.file(File("$WALTID_CONFIG_PATH/walt.yaml"), optional = true))
-        .addSource(PropertySource.resource("/walt-default.yaml"))
+        .addSource(PropertySource.resource(default_yaml_path))
         .build()
         .loadConfigOrThrow<ChainConfig>()
 
     fun loadApiKeys() = ConfigLoader.builder()
         .addFileExtensionMapping("yaml", YamlParser())
         .addSource(PropertySource.file(File("$WALTID_CONFIG_PATH/walt.yaml"), optional = true))
-        .addSource(PropertySource.resource("/walt-default.yaml"))
+        .addSource(PropertySource.resource(default_yaml_path))
         .build()
         .loadConfigOrThrow<BlockExplorerScanApiKeyConfig>()
 
     fun loadAccountKeysConfig() = ConfigLoader.builder()
         .addFileExtensionMapping("yaml", YamlParser())
         .addSource(PropertySource.file(File("$WALTID_CONFIG_PATH/walt.yaml"), optional = true))
-        .addSource(PropertySource.resource("/walt-default.yaml"))
+        .addSource(PropertySource.resource(default_yaml_path))
         .build()
         .loadConfigOrThrow<KeysConfig>()
 
     fun loadTezosConfig() = ConfigLoader.builder()
         .addFileExtensionMapping("yaml", YamlParser())
         .addSource(PropertySource.file(File("$WALTID_CONFIG_PATH/walt.yaml"), optional = true))
-        .addSource(PropertySource.resource("/walt-default.yaml"))
+        .addSource(PropertySource.resource(default_yaml_path))
         .build()
         .loadConfigOrThrow<TezosConfig>()
 

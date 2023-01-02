@@ -36,6 +36,7 @@ object NftKitApi {
 
     internal const val DEFAULT_BIND_ADDRESS = "0.0.0.0"
 
+    const val apiTitle = "walt.id NFT Kit API"
     /**
      * Currently used instance of the NFT Kit API server
      */
@@ -61,7 +62,7 @@ object NftKitApi {
                 registerPlugin(OpenApiPlugin(OpenApiOptions(InitialConfigurationCreator {
                     OpenAPI().apply {
                         info {
-                            title = "walt.id NFT Kit API"
+                            title = apiTitle
                             description = "The walt.id public API documentation"
                             contact = Contact().apply {
                                 name = "walt.id"
@@ -92,8 +93,8 @@ object NftKitApi {
                     }
                 }).apply {
                     path("/v1/nftkit/api-documentation")
-                    swagger(SwaggerOptions("/v1/nftkit/swagger").title("walt.id NFT Kit API"))
-                    reDoc(ReDocOptions("/v1/nftkit/redoc").title("walt.id NFT Kit API"))
+                    swagger(SwaggerOptions("/v1/nftkit/swagger").title(apiTitle))
+                    reDoc(ReDocOptions("/v1/nftkit/redoc").title(apiTitle))
                 }))
 
                 val mapper: ObjectMapper = com.fasterxml.jackson.databind.json.JsonMapper.builder()

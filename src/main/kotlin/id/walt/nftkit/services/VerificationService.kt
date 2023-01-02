@@ -68,9 +68,14 @@ object VerificationService {
         return when{
             Common.isEVMChain(chain) -> {
                 val ownership= NFTsEvmOwnershipVerification(chain, contractAddress, account, BigInteger(tokenId))
-                if(ownership == true){
+                if(ownership){
                     val metadata= NftService.getNftMetadata(chain, contractAddress, BigInteger( tokenId))
-                    if(metadata.attributes?.filter { (it.trait_type.equals(traitType) && it.value.equals(traitValue, true)) || (traitValue == null && traitType.equals(it.trait_type) ) }!!.size > 0){
+                    if(metadata!!.attributes?.filter {
+                            (it.trait_type.equals(traitType) && it.value.equals(
+                                traitValue,
+                                true
+                            )) || (traitValue == null && traitType.equals(it.trait_type))
+                        }!!.isNotEmpty()){
                         return true
                     }
                 }
@@ -78,9 +83,14 @@ object VerificationService {
             }
             Common.isTezosChain(chain) -> {
                 val ownership= NFTsTezosOwnershipVerification(chain, contractAddress, account, tokenId)
-                if(ownership == true){
+                if(ownership){
                     val metadata= TezosNftService.getNftTezosMetadata(chain, contractAddress, tokenId)
-                    if(metadata!!.attributes?.filter { (it.trait_type.equals(traitType) && it.value.equals(traitValue, true)) || (traitValue == null && traitType.equals(it.trait_type) ) }!!.size > 0){
+                    if(metadata!!.attributes?.filter {
+                            (it.trait_type.equals(traitType) && it.value.equals(
+                                traitValue,
+                                true
+                            )) || (traitValue == null && traitType.equals(it.trait_type))
+                        }!!.isNotEmpty()){
                         return true
                     }
                 }
