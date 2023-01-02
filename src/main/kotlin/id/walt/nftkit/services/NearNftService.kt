@@ -6,6 +6,7 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
+import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
@@ -50,11 +51,16 @@ data class OperationResult(
 data class NearOperationResponse(
     val opHash: String
 )
+
 data class NearMintingParameter(
-    val recipientAddress: String,
-    val tokenId: String,
-    val accountId: String,
-    val metadata: NearTokenMetadata?,
+    val receiver_id: String,
+    val token_id: String,
+    val title: String,
+    val description: String?= null,
+    val media: String,
+    val media_hash: String?= null,
+    val reference: String?= null,
+    val reference_hash: String?= null,
 )
 
 
@@ -74,15 +80,29 @@ object NearNftService {
         expectSuccess = false
     }
 
-    fun mintNftToken(contractAddress : String ,parameter: NearMintingParameter) {
-        // TODO: implement
+    fun mintNftToken(account_id :String,contract_id : String  ,token_id: String , title: String , description: String , media: String , media_hash: String,reference: String , reference_hash: String , receiver_id: String): NearOperationResponse {
         return runBlocking {
-            val values = mapOf("contractAddress" to contractAddress, "parameter" to parameter)
-            val nearOperationResponse = NftService.client.post("http://localhost:8080/near/mintNftToken") {
-                setBody(values)
+            val values = mapOf(
+                "account_id" to account_id,
+                "contract_id" to contract_id,
+                "token_id" to token_id,
+                "title" to title,
+                "description" to description,
+                "media" to media,
+                "media_hash" to media_hash,
+                "reference" to reference,
+                "reference_hash" to reference_hash,
+                "receiver_id" to receiver_id
+            )
+            val nearOperationResponse = NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/contract/mintToken") {
+                contentType(ContentType.Application.Json)
+
+                setBody(
+                    values
+                )
             }
                 .body<NearOperationResponse>()
-            println(nearOperationResponse)
+            return@runBlocking nearOperationResponse
         }
     }
 }
