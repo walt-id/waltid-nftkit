@@ -206,6 +206,14 @@ object NftKitApi {
                                 documented(TezosNftController.addMinterDocs(), TezosNftController::addMinter)
                             )
                         }
+                        path("near"){
+
+                            post(
+                                "/contract/{contractAddress}/mint",
+                                documented(NearNftController.mintDocs(), NearNftController::mint)
+                            )
+
+                        }
                     }
                     path("nft/verifier") {
                         get(
