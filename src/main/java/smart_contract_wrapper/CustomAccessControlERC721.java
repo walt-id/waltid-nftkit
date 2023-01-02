@@ -77,7 +77,7 @@ public class CustomAccessControlERC721 extends Contract {
 
     public static final String FUNC_REVOKEROLE = "revokeRole";
 
-    public static final String FUNC_safeTransferFrom = "safeTransferFrom";
+    public static final String FUNC_SAFETRANSFERFROM = "safeTransferFrom";
 
     public static final String FUNC_SETAPPROVALFORALL = "setApprovalForAll";
 
@@ -581,7 +581,7 @@ public class CustomAccessControlERC721 extends Contract {
 
     public RemoteFunctionCall<TransactionReceipt> safeTransferFrom(Address from, Address to, Uint256 tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
-                FUNC_safeTransferFrom,
+                FUNC_SAFETRANSFERFROM,
                 Arrays.asList(from, to, tokenId),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
@@ -589,7 +589,7 @@ public class CustomAccessControlERC721 extends Contract {
 
     public RemoteFunctionCall<TransactionReceipt> safeTransferFrom(Address from, Address to, Uint256 tokenId, DynamicBytes _data) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
-                FUNC_safeTransferFrom,
+                FUNC_SAFETRANSFERFROM,
                 Arrays.asList(from, to, tokenId, _data),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
