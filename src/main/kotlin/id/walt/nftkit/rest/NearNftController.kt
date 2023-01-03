@@ -22,7 +22,6 @@ data class NearMintRequest(
 object NearNftController {
 
     fun mint(ctx: Context) {
-        val mintReq = ctx.bodyAsClass(NearMintRequest::class.java)
 
         val contract_id = ctx.pathParam("contract_id")
         val account_id = ctx.pathParam("account_id")
@@ -47,5 +46,19 @@ object NearNftController {
     }.body<NearMintRequest> {
         it.description("")
     }.json<OperationResponse>("200") { it.description("Transaction ID and token ID") }
+
+    fun deployDefaultContract(ctx: Context) {
+        val result = NearNftService.deployContractDefault(
+            ctx.pathParam("account_id")
+        )
+        ctx.json(result)
+    }
+
+    fun deployDefaultContractDocs() = document().operation {
+        it.summary("Deploy default contract")
+            .operationId("deployDefaultContract").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
+    }
+    .pathParam<String>("account_id") {
+    }.json<OperationResponse>("200") { it.description("Transaction ID") }
 
 }
