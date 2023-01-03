@@ -105,4 +105,22 @@ object NearNftService {
             return@runBlocking nearOperationResponse
         }
     }
+
+    fun deployContractDefault(account_id :String): NearOperationResponse {
+        return runBlocking {
+            val values = mapOf(
+                "account_id" to account_id,
+
+            )
+            val nearOperationResponse = NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/contract/deploywithdefaultmetadata") {
+                contentType(ContentType.Application.Json)
+
+                setBody(
+                    values
+                )
+            }
+                .body<NearOperationResponse>()
+            return@runBlocking nearOperationResponse
+        }
+    }
 }
