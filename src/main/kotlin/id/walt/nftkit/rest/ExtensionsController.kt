@@ -21,7 +21,7 @@ data class BurnableRequest(val burnable: Boolean)
 
 
 object ExtensionsController {
-
+val tag = "NFTs smart contract Extensions"
     fun paused(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
@@ -33,7 +33,7 @@ object ExtensionsController {
 
     fun pausedDocs() = document().operation {
         it.summary("Paused")
-            .operationId("paused").addTagsItem("NFTs smart contract Extensions")
+            .operationId("paused").addTagsItem(tag)
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
@@ -50,7 +50,7 @@ object ExtensionsController {
 
     fun pauseDocs() = document().operation {
         it.summary("Pause")
-            .operationId("pause").addTagsItem("NFTs smart contract Extensions")
+            .operationId("pause").addTagsItem(tag)
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
@@ -67,7 +67,7 @@ object ExtensionsController {
 
     fun unpauseDocs() = document().operation {
         it.summary("Unpause")
-            .operationId("unpause").addTagsItem("NFTs smart contract Extensions")
+            .operationId("unpause").addTagsItem(tag)
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
@@ -88,7 +88,7 @@ object ExtensionsController {
 
     fun updateTokenURIDocs() = document().operation {
         it.summary("Update Token URI")
-            .operationId("setTokenURI").addTagsItem("NFTs smart contract Extensions")
+            .operationId("setTokenURI").addTagsItem(tag)
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
@@ -109,7 +109,7 @@ object ExtensionsController {
 
     fun getTransferableDocs() = document().operation {
         it.summary("Transferable option")
-            .operationId("Transferable option").addTagsItem("NFTs smart contract Extensions")
+            .operationId("Transferable option").addTagsItem(tag)
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
@@ -132,7 +132,7 @@ object ExtensionsController {
 
     fun setTransferableDocs() = document().operation {
         it.summary("Activate/Deactivate transferable option")
-            .operationId("Activate/Deactivate transferable option").addTagsItem("NFTs smart contract Extensions")
+            .operationId("Activate/Deactivate transferable option").addTagsItem(tag)
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
@@ -151,7 +151,7 @@ object ExtensionsController {
 
     fun getBurnableDocs() = document().operation {
         it.summary("Burnable option")
-            .operationId("Burnable option").addTagsItem("NFTs smart contract Extensions")
+            .operationId("Burnable option").addTagsItem(tag)
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
@@ -170,7 +170,7 @@ object ExtensionsController {
 
     fun setBurnableDocs() = document().operation {
         it.summary("Activate/Deactivate burnable option")
-            .operationId("Activate/Deactivate burnable option").addTagsItem("NFTs smart contract Extensions")
+            .operationId("Activate/Deactivate burnable option").addTagsItem(tag)
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
@@ -191,7 +191,7 @@ object ExtensionsController {
 
     fun burnDocs() = document().operation {
         it.summary("Burn token")
-            .operationId("Burn token").addTagsItem("NFTs smart contract Extensions")
+            .operationId("Burn token").addTagsItem(tag)
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
