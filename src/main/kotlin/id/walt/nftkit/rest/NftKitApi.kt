@@ -213,7 +213,11 @@ object NftKitApi {
                                 documented(NearNftController.mintDocs(), NearNftController::mint)
                             )
                             post("/contract/account/{account_id}/deploy/default",
-                                documented(NearNftController.deployDefaultContractDocs(), NearNftController::deployDefaultContract))
+                                documented(NearNftController.deployDefaultContractDocs(), NearNftController::deployDefaultContract)
+                            )
+                            post("/contract/account/{account_id}/deploy",
+                                documented(NearNftController.deployCustomContractDocs(), NearNftController::deployCustomContract)
+                            )
 
                         }
                     }

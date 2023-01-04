@@ -61,4 +61,33 @@ object NearNftController {
     .pathParam<String>("account_id") {
     }.json<OperationResponse>("200") { it.description("Transaction ID") }
 
+    fun deployCustomContract(ctx: Context) {
+        val result = NearNftService.deployContractWithCustomMetadata(
+            ctx.pathParam("account_id"),
+            ctx.pathParam("owner_id"),
+            ctx.pathParam("spec"),
+            ctx.pathParam("name"),
+            ctx.pathParam("symbol"),
+            ctx.pathParam("icon"),
+            ctx.pathParam("base_uri"),
+            ctx.pathParam("reference"),
+            ctx.pathParam("reference_hash")
+        )
+        ctx.json(result)
+    }
+
+    fun deployCustomContractDocs() = document().operation {
+        it.summary("Deploy custom contract")
+            .operationId("deployCustomContract").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
+    }
+    .pathParam<String>("account_id") {
+    }.pathParam<String>("owner_id") {
+    }.pathParam<String>("spec") {
+    }.pathParam<String>("name") {
+    }.pathParam<String>("symbol") {
+    }.pathParam<String>("icon") {
+    }.pathParam<String>("base_uri") {
+    }.pathParam<String>("reference") {
+    }.pathParam<String>("reference_hash") {
+    }.json<OperationResponse>("200") { it.description("Transaction ID") }
 }
