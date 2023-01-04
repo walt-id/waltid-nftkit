@@ -11,8 +11,10 @@ data class GrantRevokeRoleRequest(val role: String, val account: String)
 data class OwneTransferrRequest(val account: String)
 
 
-object AccessControlController {
 
+
+object AccessControlController {
+var tag = "NFTs smart contract access control"
     fun owner(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
@@ -24,7 +26,7 @@ object AccessControlController {
 
     fun ownerDocs() = document().operation {
         it.summary("Ownable: Owner")
-            .operationId("owner").addTagsItem("NFTs smart contract access control")
+            .operationId("owner").addTagsItem(tag)
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
@@ -46,7 +48,7 @@ object AccessControlController {
 
     fun transferOwnershipDocs() = document().operation {
         it.summary("Ownable: Transfer ownership")
-            .operationId("TransferOwnership").addTagsItem("NFTs smart contract access control")
+            .operationId("TransferOwnership").addTagsItem(tag)
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
@@ -65,7 +67,7 @@ object AccessControlController {
 
     fun renounceOwnershipDocs() = document().operation {
         it.summary("Ownable: Renounce ownership")
-            .operationId("RenounceOwnership").addTagsItem("NFTs smart contract access control")
+            .operationId("RenounceOwnership").addTagsItem(tag)
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
@@ -85,7 +87,7 @@ object AccessControlController {
 
     fun hasRoleDocs() = document().operation {
         it.summary("Role based access control: Has Role")
-            .operationId("hasRole").addTagsItem("NFTs smart contract access control")
+            .operationId("hasRole").addTagsItem(tag)
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
@@ -103,7 +105,7 @@ object AccessControlController {
 
     fun roleAdminDocs() = document().operation {
         it.summary("Role based access control: Role admin")
-            .operationId("roleAdmin").addTagsItem("NFTs smart contract access control")
+            .operationId("roleAdmin").addTagsItem(tag)
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
@@ -127,7 +129,7 @@ object AccessControlController {
 
     fun grantRoleDocs() = document().operation {
         it.summary("Role based access control: Grant role")
-            .operationId("grantRole").addTagsItem("NFTs smart contract access control")
+            .operationId("grantRole").addTagsItem(tag)
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
@@ -153,7 +155,7 @@ object AccessControlController {
 
     fun revokeRoleDocs() = document().operation {
         it.summary("Role based access control: Revoke role")
-            .operationId("revokeRole").addTagsItem("NFTs smart contract access control")
+            .operationId("revokeRole").addTagsItem(tag)
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
@@ -178,7 +180,7 @@ object AccessControlController {
 
     fun renounceRoleDocs() = document().operation {
         it.summary("Role based access control: Renounce role")
-            .operationId("renounceRole").addTagsItem("NFTs smart contract access control")
+            .operationId("renounceRole").addTagsItem(tag)
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
