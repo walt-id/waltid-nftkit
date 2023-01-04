@@ -123,4 +123,30 @@ object NearNftService {
             return@runBlocking nearOperationResponse
         }
     }
+
+    fun deployContractWithCustomMetadata(account_id : String , owner_id: String , spec: String , name: String , symbol: String , icon: String , base_uri: String , reference: String , reference_hash: String): NearOperationResponse {
+        return runBlocking {
+            val values = mapOf(
+                "account_id" to account_id,
+                "owner_id" to owner_id,
+                "spec" to spec,
+                "name" to name,
+                "symbol" to symbol,
+                "icon" to icon,
+                "base_uri" to base_uri,
+                "reference" to reference,
+                "reference_hash" to reference_hash,
+
+            )
+            val nearOperationResponse = NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/contract/deploywithcustommetadata") {
+                contentType(ContentType.Application.Json)
+
+                setBody(
+                    values
+                )
+            }
+                .body<NearOperationResponse>()
+            return@runBlocking nearOperationResponse
+        }
+    }
 }
