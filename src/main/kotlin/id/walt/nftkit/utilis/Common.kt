@@ -30,6 +30,15 @@ object Common {
         }
     }
 
+    fun getEVMChain(chain: String): EVMChain{
+        return chain.let {
+            if (it.isEmpty()){
+                throw Exception("No chain defined")
+            }
+            EVMChain.valueOf(it.uppercase())
+        }
+    }
+
     fun getFa2SmartContractType(type: String): Fa2SmartContractType{
         return type.let {
             if (it.isEmpty()){

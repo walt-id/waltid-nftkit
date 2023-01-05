@@ -64,7 +64,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
         val deploymentOptions = DeploymentOptions(deployReq.accessControl, deployReq.tokenStandard)
         val deploymentParameter = DeploymentParameter(deployReq.name, deployReq.symbol, deployReq.options)
         val result =
-            NftService.deploySmartContractToken(EVMChain.valueOf(chain.uppercase()), deploymentParameter, deploymentOptions)
+            NftService.deploySmartContractToken(Common.getEVMChain(chain.uppercase()), deploymentParameter, deploymentOptions)
         ctx.json(
             result
         )
@@ -87,7 +87,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
         val mintingParameter = MintingParameter(mintReq.metadataUri, mintReq.recipientAddress, mintReq.metadata)
         val mintingOptions = MintingOptions(mintReq.metadataStorageType)
         val result =
-            NftService.mintToken(EVMChain.valueOf(chain.uppercase()), contractAddress, mintingParameter, mintingOptions)
+            NftService.mintToken(Common.getEVMChain(chain.uppercase()), contractAddress, mintingParameter, mintingOptions)
         ctx.json(
             result
         )
@@ -109,7 +109,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
         val contractAddress = ctx.pathParam("contractAddress")
         val tokenId = ctx.pathParam("tokenId").toLong()
         val result =
-            NftService.getNftMetadataUri(EVMChain.valueOf(chain.uppercase()), contractAddress, BigInteger.valueOf(tokenId))
+            NftService.getNftMetadataUri(Common.getEVMChain(chain.uppercase()), contractAddress, BigInteger.valueOf(tokenId))
         ctx.json(
             result
         )
@@ -131,7 +131,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
         val contractAddress = ctx.pathParam("contractAddress")
         val tokenId = ctx.pathParam("tokenId").toLong()
         val result =
-            NftService.getNftMetadata(EVMChain.valueOf(chain.uppercase()), contractAddress, BigInteger.valueOf(tokenId))
+            NftService.getNftMetadata(Common.getEVMChain(chain.uppercase()), contractAddress, BigInteger.valueOf(tokenId))
         ctx.json(
             result
         )
@@ -151,7 +151,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val ownerAdress = ctx.pathParam("ownerAddress")
-        val result = NftService.balanceOf(EVMChain.valueOf(chain.uppercase()), contractAddress, ownerAdress)
+        val result = NftService.balanceOf(Common.getEVMChain(chain.uppercase()), contractAddress, ownerAdress)
         ctx.json(
             result!!
         )
@@ -171,7 +171,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val tokenId = ctx.pathParam("tokenId")
-        val result = NftService.ownerOf(EVMChain.valueOf(chain.uppercase()), contractAddress, BigInteger(tokenId))
+        val result = NftService.ownerOf(Common.getEVMChain(chain.uppercase()), contractAddress, BigInteger(tokenId))
         ctx.json(
             result!!
         )
@@ -190,7 +190,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
     fun tokenCollectionInfo(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = NftService.getTokenCollectionInfo(EVMChain.valueOf(chain.uppercase()), contractAddress)
+        val result = NftService.getTokenCollectionInfo(Common.getEVMChain(chain.uppercase()), contractAddress)
         ctx.json(
             result
         )
@@ -207,7 +207,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
     fun getAccountNFTs(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val ownerAdress = ctx.pathParam("ownerAddress")
-        val result = NftService.getAccountNFTs(Chain.valueOf(chain.uppercase()), ownerAdress)
+        val result = NftService.getAccountNFTs(Common.getChain(chain.uppercase()), ownerAdress)
         ctx.json(
             result
         )
@@ -227,7 +227,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
         val tokenId = ctx.pathParam("tokenId")
         val signedAccount = ctx.queryParam("signedAccount")
         val traitUpdateRequest = ctx.bodyAsClass(TraitUpdateRequest::class.java)
-        val result = NftService.updateMetadata(EVMChain.valueOf(chain.uppercase()), contractAddress, tokenId,
+        val result = NftService.updateMetadata(Common.getEVMChain(chain.uppercase()), contractAddress, tokenId,
             signedAccount,traitUpdateRequest.key, traitUpdateRequest.value)
         ctx.json(
             result
@@ -274,7 +274,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
         val tokenId = ctx.pathParam("tokenId")
         val signedAccount = ctx.queryParam("signedAccount")
         val tokenTransferRequest = ctx.bodyAsClass(NFTTokenTransferRequest::class.java)
-        val result= NftService.transferFrom(EVMChain.valueOf(chain.uppercase()), contractAddress, tokenTransferRequest.from, tokenTransferRequest.to, BigInteger.valueOf(tokenId.toLong()), signedAccount)
+        val result= NftService.transferFrom(Common.getEVMChain(chain.uppercase()), contractAddress, tokenTransferRequest.from, tokenTransferRequest.to, BigInteger.valueOf(tokenId.toLong()), signedAccount)
         ctx.json(result)
     }
 
@@ -295,7 +295,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
         val tokenId = ctx.pathParam("tokenId")
         val signedAccount = ctx.queryParam("signedAccount")
         val tokenTransferRequest = ctx.bodyAsClass(NFTTokenTransferRequest::class.java)
-        val result= NftService.safeTransferFrom(EVMChain.valueOf(chain.uppercase()), contractAddress, tokenTransferRequest.from, tokenTransferRequest.to, BigInteger.valueOf(tokenId.toLong()), signedAccount)
+        val result= NftService.safeTransferFrom(Common.getEVMChain(chain.uppercase()), contractAddress, tokenTransferRequest.from, tokenTransferRequest.to, BigInteger.valueOf(tokenId.toLong()), signedAccount)
         ctx.json(result)
     }
 
@@ -316,7 +316,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
         val tokenId = ctx.pathParam("tokenId")
         val signedAccount = ctx.queryParam("signedAccount")
         val tokenTransferRequest = ctx.bodyAsClass(NFTTokenTransferRequestWithData::class.java)
-        val result= NftService.safeTransferFrom(EVMChain.valueOf(chain.uppercase()), contractAddress, tokenTransferRequest.from, tokenTransferRequest.to, BigInteger.valueOf(tokenId.toLong()), tokenTransferRequest.data, signedAccount)
+        val result= NftService.safeTransferFrom(Common.getEVMChain(chain.uppercase()), contractAddress, tokenTransferRequest.from, tokenTransferRequest.to, BigInteger.valueOf(tokenId.toLong()), tokenTransferRequest.data, signedAccount)
         ctx.json(result)
     }
 
@@ -336,7 +336,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
         val contractAddress = ctx.pathParam("contractAddress")
         val signedAccount = ctx.queryParam("signedAccount")
         val setApprovalForAllRequest = ctx.bodyAsClass(SetApprovalForAllRequest::class.java)
-        val result= NftService.setApprovalForAll(EVMChain.valueOf(chain.uppercase()), contractAddress, setApprovalForAllRequest.operator, setApprovalForAllRequest.approved, signedAccount)
+        val result= NftService.setApprovalForAll(Common.getEVMChain(chain.uppercase()), contractAddress, setApprovalForAllRequest.operator, setApprovalForAllRequest.approved, signedAccount)
         ctx.json(result)
     }
 
@@ -355,7 +355,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
         val contractAddress = ctx.pathParam("contractAddress")
         val owner = ctx.queryParam("owner") ?: throw  BadRequestResponse("Owner not specified")
         val operator = ctx.queryParam("operator") ?: throw  BadRequestResponse("Operator not specified")
-        val result= NftService.isApprovedForAll(EVMChain.valueOf(chain.uppercase()), contractAddress, owner, operator)
+        val result= NftService.isApprovedForAll(Common.getEVMChain(chain.uppercase()), contractAddress, owner, operator)
         ctx.json(result)
     }
 
@@ -375,7 +375,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
         val tokenId = ctx.pathParam("tokenId")
         val signedAccount = ctx.queryParam("signedAccount")
         val approveRequest = ctx.bodyAsClass(ApproveRequest::class.java)
-        val result= NftService.approve(EVMChain.valueOf(chain.uppercase()), contractAddress, approveRequest.to, BigInteger.valueOf(tokenId.toLong()), signedAccount)
+        val result= NftService.approve(Common.getEVMChain(chain.uppercase()), contractAddress, approveRequest.to, BigInteger.valueOf(tokenId.toLong()), signedAccount)
         ctx.json(result)
     }
 
@@ -394,7 +394,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val tokenId = ctx.pathParam("tokenId")
-        val result= NftService.getApproved(EVMChain.valueOf(chain.uppercase()), contractAddress, BigInteger.valueOf(tokenId.toLong()))
+        val result= NftService.getApproved(Common.getEVMChain(chain.uppercase()), contractAddress, BigInteger.valueOf(tokenId.toLong()))
         ctx.json(result)
     }
 
