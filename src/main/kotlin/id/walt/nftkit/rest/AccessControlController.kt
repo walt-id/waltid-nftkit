@@ -3,6 +3,7 @@ package id.walt.nftkit.rest
 import cc.vileda.openapi.dsl.schema
 import id.walt.nftkit.services.AccessControlService
 import id.walt.nftkit.services.Chain
+import id.walt.nftkit.services.EVMChain
 import id.walt.nftkit.services.TransactionResponse
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
@@ -18,7 +19,7 @@ var tag = "NFTs smart contract access control"
     fun owner(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = AccessControlService.owner(Chain.valueOf(chain.uppercase()), contractAddress)
+        val result = AccessControlService.owner(EVMChain.valueOf(chain.uppercase()), contractAddress)
         ctx.json(
             result
         )
@@ -28,7 +29,7 @@ var tag = "NFTs smart contract access control"
         it.summary("Ownable: Owner")
             .operationId("owner").addTagsItem(tag)
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.json<Boolean>("200") { }
 
@@ -37,7 +38,7 @@ var tag = "NFTs smart contract access control"
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val result = AccessControlService.transferOwnership(
-            Chain.valueOf(chain.uppercase()),
+            EVMChain.valueOf(chain.uppercase()),
             contractAddress,
             transferOwnerReq.account
         )
@@ -50,7 +51,7 @@ var tag = "NFTs smart contract access control"
         it.summary("Ownable: Transfer ownership")
             .operationId("TransferOwnership").addTagsItem(tag)
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.body<OwneTransferrRequest> {
         it.description("")
@@ -59,7 +60,7 @@ var tag = "NFTs smart contract access control"
     fun renounceOwnership(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = AccessControlService.renounceOwnership(Chain.valueOf(chain.uppercase()), contractAddress)
+        val result = AccessControlService.renounceOwnership(EVMChain.valueOf(chain.uppercase()), contractAddress)
         ctx.json(
             result
         )
@@ -69,7 +70,7 @@ var tag = "NFTs smart contract access control"
         it.summary("Ownable: Renounce ownership")
             .operationId("RenounceOwnership").addTagsItem(tag)
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.json<Boolean>("200") { }
 
@@ -79,7 +80,7 @@ var tag = "NFTs smart contract access control"
         val contractAddress = ctx.pathParam("contractAddress")
         val account = ctx.pathParam("account")
         val role = ctx.pathParam("role")
-        val result = AccessControlService.hasRole(Chain.valueOf(chain.uppercase()), contractAddress, role, account)
+        val result = AccessControlService.hasRole(EVMChain.valueOf(chain.uppercase()), contractAddress, role, account)
         ctx.json(
             result
         )
@@ -89,7 +90,7 @@ var tag = "NFTs smart contract access control"
         it.summary("Role based access control: Has Role")
             .operationId("hasRole").addTagsItem(tag)
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.json<Boolean>("200") { }
 
@@ -97,7 +98,7 @@ var tag = "NFTs smart contract access control"
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val role = ctx.pathParam("role")
-        val result = AccessControlService.getRoleAdmin(Chain.valueOf(chain.uppercase()), contractAddress, role)
+        val result = AccessControlService.getRoleAdmin(EVMChain.valueOf(chain.uppercase()), contractAddress, role)
         ctx.json(
             result
         )
@@ -107,7 +108,7 @@ var tag = "NFTs smart contract access control"
         it.summary("Role based access control: Role admin")
             .operationId("roleAdmin").addTagsItem(tag)
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.pathParam<String>("role") {
     }.json<TransactionResponse>("200") { }
@@ -117,7 +118,7 @@ var tag = "NFTs smart contract access control"
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val result = AccessControlService.grantRole(
-            Chain.valueOf(chain.uppercase()),
+            EVMChain.valueOf(chain.uppercase()),
             contractAddress,
             grantRevokeRoleReq.role,
             grantRevokeRoleReq.account
@@ -131,7 +132,7 @@ var tag = "NFTs smart contract access control"
         it.summary("Role based access control: Grant role")
             .operationId("grantRole").addTagsItem(tag)
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.body<GrantRevokeRoleRequest> {
         it.description("")
@@ -143,7 +144,7 @@ var tag = "NFTs smart contract access control"
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val result = AccessControlService.revokeRole(
-            Chain.valueOf(chain.uppercase()),
+            EVMChain.valueOf(chain.uppercase()),
             contractAddress,
             grantRevokeRoleReq.role,
             grantRevokeRoleReq.account
@@ -157,7 +158,7 @@ var tag = "NFTs smart contract access control"
         it.summary("Role based access control: Revoke role")
             .operationId("revokeRole").addTagsItem(tag)
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.body<GrantRevokeRoleRequest> {
         it.description("")
@@ -168,7 +169,7 @@ var tag = "NFTs smart contract access control"
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val result = AccessControlService.renounceRole(
-            Chain.valueOf(chain.uppercase()),
+            EVMChain.valueOf(chain.uppercase()),
             contractAddress,
             grantRevokeRoleReq.role,
             grantRevokeRoleReq.account
@@ -182,7 +183,7 @@ var tag = "NFTs smart contract access control"
         it.summary("Role based access control: Renounce role")
             .operationId("renounceRole").addTagsItem(tag)
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.body<GrantRevokeRoleRequest> {
         it.description("")

@@ -1,10 +1,7 @@
 package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
-import id.walt.nftkit.services.Chain
-import id.walt.nftkit.services.ExtensionsService
-import id.walt.nftkit.services.NftMetadata
-import id.walt.nftkit.services.TransactionResponse
+import id.walt.nftkit.services.*
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
 import kotlinx.serialization.Serializable
@@ -25,7 +22,7 @@ val tag = "NFTs smart contract Extensions"
     fun paused(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = ExtensionsService.paused(Chain.valueOf(chain.uppercase()), contractAddress)
+        val result = ExtensionsService.paused(EVMChain.valueOf(chain.uppercase()), contractAddress)
         ctx.json(
             result
         )
@@ -35,14 +32,14 @@ val tag = "NFTs smart contract Extensions"
         it.summary("Paused")
             .operationId("paused").addTagsItem(tag)
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.json<Boolean>("200") { }
 
     fun pause(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = ExtensionsService.pause(Chain.valueOf(chain.uppercase()), contractAddress)
+        val result = ExtensionsService.pause(EVMChain.valueOf(chain.uppercase()), contractAddress)
         ctx.json(
             result
         )
@@ -52,14 +49,14 @@ val tag = "NFTs smart contract Extensions"
         it.summary("Pause")
             .operationId("pause").addTagsItem(tag)
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.json<TransactionResponse>("200") { }
 
     fun unpause(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = ExtensionsService.unpause(Chain.valueOf(chain.uppercase()), contractAddress)
+        val result = ExtensionsService.unpause(EVMChain.valueOf(chain.uppercase()), contractAddress)
         ctx.json(
             result
         )
@@ -69,7 +66,7 @@ val tag = "NFTs smart contract Extensions"
         it.summary("Unpause")
             .operationId("unpause").addTagsItem(tag)
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.json<TransactionResponse>("200") { }
 
@@ -80,7 +77,7 @@ val tag = "NFTs smart contract Extensions"
         val tokenId = ctx.pathParam("tokenId")
         val signedAccount = ctx.queryParam("signedAccount")
         val result =
-            ExtensionsService.setTokenURI(Chain.valueOf(chain.uppercase()), contractAddress, tokenId, signedAccount,updateTokenURIReq)
+            ExtensionsService.setTokenURI(EVMChain.valueOf(chain.uppercase()), contractAddress, tokenId, signedAccount,updateTokenURIReq)
         ctx.json(
             result
         )
@@ -90,7 +87,7 @@ val tag = "NFTs smart contract Extensions"
         it.summary("Update Token URI")
             .operationId("setTokenURI").addTagsItem(tag)
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.body<UpdateTokenURIRequest> {
         it.description("")
@@ -101,7 +98,7 @@ val tag = "NFTs smart contract Extensions"
     fun getTransferable(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = ExtensionsService.getTransferable(Chain.valueOf(chain.uppercase()), contractAddress)
+        val result = ExtensionsService.getTransferable(EVMChain.valueOf(chain.uppercase()), contractAddress)
         ctx.json(
             result
         )
@@ -111,7 +108,7 @@ val tag = "NFTs smart contract Extensions"
         it.summary("Transferable option")
             .operationId("Transferable option").addTagsItem(tag)
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.json<Boolean>("200") { }
 
@@ -121,7 +118,7 @@ val tag = "NFTs smart contract Extensions"
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val result = ExtensionsService.setTransferable(
-            Chain.valueOf(chain.uppercase()),
+            EVMChain.valueOf(chain.uppercase()),
             contractAddress,
             transferableReq.transferable
         )
@@ -134,7 +131,7 @@ val tag = "NFTs smart contract Extensions"
         it.summary("Activate/Deactivate transferable option")
             .operationId("Activate/Deactivate transferable option").addTagsItem(tag)
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.body<TransferableRequest> {
         it.description("")
@@ -143,7 +140,7 @@ val tag = "NFTs smart contract Extensions"
     fun getBurnable(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = ExtensionsService.getBurnable(Chain.valueOf(chain.uppercase()), contractAddress)
+        val result = ExtensionsService.getBurnable(EVMChain.valueOf(chain.uppercase()), contractAddress)
         ctx.json(
             result
         )
@@ -153,7 +150,7 @@ val tag = "NFTs smart contract Extensions"
         it.summary("Burnable option")
             .operationId("Burnable option").addTagsItem(tag)
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.json<Boolean>("200") { }
 
@@ -162,7 +159,7 @@ val tag = "NFTs smart contract Extensions"
         val burnableReq = ctx.bodyAsClass(BurnableRequest::class.java)
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result = ExtensionsService.setBurnable(Chain.valueOf(chain.uppercase()), contractAddress, burnableReq.burnable)
+        val result = ExtensionsService.setBurnable(EVMChain.valueOf(chain.uppercase()), contractAddress, burnableReq.burnable)
         ctx.json(
             result
         )
@@ -172,7 +169,7 @@ val tag = "NFTs smart contract Extensions"
         it.summary("Activate/Deactivate burnable option")
             .operationId("Activate/Deactivate burnable option").addTagsItem(tag)
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.body<BurnableRequest> {
         it.description("")
@@ -183,7 +180,7 @@ val tag = "NFTs smart contract Extensions"
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val tokenId = ctx.pathParam("tokenId")
-        val result = ExtensionsService.burn(Chain.valueOf(chain.uppercase()), contractAddress, BigInteger(tokenId))
+        val result = ExtensionsService.burn(EVMChain.valueOf(chain.uppercase()), contractAddress, BigInteger(tokenId))
         ctx.json(
             result
         )
@@ -193,7 +190,7 @@ val tag = "NFTs smart contract Extensions"
         it.summary("Burn token")
             .operationId("Burn token").addTagsItem(tag)
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.json<TransactionResponse>("200") { }
 }

@@ -198,12 +198,12 @@ object TezosNftService {
         }
     }
 
-    fun getNftTezosMetadata(chain: Chain, contractAddress: String, tokenId: String): TezosNftMetadata? {
+    fun getNftTezosMetadata(chain: TezosChain, contractAddress: String, tokenId: String): TezosNftMetadata? {
         return runBlocking {
             var contractAddressExp= ""
             var chainAPI= ""
             if(contractAddress != null)  contractAddressExp= "token.contract=$contractAddress&"
-            if(Chain.GHOSTNET.equals(chain)) chainAPI= ".ghostnet"
+            if(TezosChain.GHOSTNET.equals(chain)) chainAPI= ".ghostnet"
             val nfts =
                 NftService.client.get("https://api$chainAPI.tzkt.io/v1/tokens?contract=$contractAddress&tokenId=$tokenId&type=fa2&token.totalSupply=1") {
                     contentType(ContentType.Application.Json)

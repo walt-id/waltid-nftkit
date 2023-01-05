@@ -1,15 +1,15 @@
 package id.walt.nftkit.utilis.providers
 
 import id.walt.nftkit.services.Chain
+import id.walt.nftkit.services.EVMChain
 
 object ProviderFactory {
 
-    fun getProvider(chain: Chain): Web3jInstance? = when (chain) {
-        Chain.ETHEREUM -> EthereumWeb3()
-        Chain.GOERLI -> GoerliWeb3()
-        Chain.POLYGON -> PolygonWeb3()
-        Chain.MUMBAI -> MumbaiWeb3()
-        else -> null
+    fun getProvider(chain: EVMChain): Web3jInstance? = when (chain) {
+        EVMChain.ETHEREUM -> EthereumWeb3()
+        EVMChain.GOERLI -> GoerliWeb3()
+        EVMChain.POLYGON -> PolygonWeb3()
+        EVMChain.MUMBAI -> MumbaiWeb3()
     }
 }
 

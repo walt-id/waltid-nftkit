@@ -25,7 +25,7 @@ import java.math.BigInteger
 object Erc721TokenStandard : IErc721TokenStandard {
 
 
-    fun deployContract(chain: Chain, parameter: DeploymentParameter, options: DeploymentOptions): DeploymentResponse {
+    fun deployContract(chain: EVMChain, parameter: DeploymentParameter, options: DeploymentOptions): DeploymentResponse {
         /*val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
         val gasProvider: ContractGasProvider = WaltIdGasProvider
@@ -62,7 +62,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
     }
 
     override fun mintToken(
-        chain: Chain,
+        chain: EVMChain,
         contractAddress: String,
         recipient: Address,
         tokenURI: Utf8String
@@ -71,33 +71,33 @@ object Erc721TokenStandard : IErc721TokenStandard {
         return erc721URIStorageWrapper.mintTo(recipient, tokenURI).send()
     }
 
-    override fun ownerOf(chain: Chain, contractAddress: String, tokenId: Uint256): String {
+    override fun ownerOf(chain: EVMChain, contractAddress: String, tokenId: Uint256): String {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress)
         return erc721URIStorageWrapper.ownerOf(tokenId).send().value
     }
 
-    override fun name(chain: Chain, contractAddress: String): String {
+    override fun name(chain: EVMChain, contractAddress: String): String {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress)
         return erc721URIStorageWrapper.name().send().value
     }
 
-    override fun symbol(chain: Chain, contractAddress: String): String {
+    override fun symbol(chain: EVMChain, contractAddress: String): String {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress)
         return erc721URIStorageWrapper.symbol().send().value
     }
 
-    override fun tokenURI(chain: Chain, contractAddress: String, tokenId: Uint256): String {
+    override fun tokenURI(chain: EVMChain, contractAddress: String, tokenId: Uint256): String {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress)
         return erc721URIStorageWrapper.tokenURI(tokenId).send().value
     }
 
-    override fun balanceOf(chain: Chain, contractAddress: String, owner: Address): BigInteger? {
+    override fun balanceOf(chain: EVMChain, contractAddress: String, owner: Address): BigInteger? {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress)
         return erc721URIStorageWrapper.balanceOf(owner).send().value
     }
 
     override fun updateTokenUri(
-        chain: Chain,
+        chain: EVMChain,
         contractAddress: String,
         token: BigInteger,
         tokenURI: Utf8String,
@@ -108,7 +108,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
     }
 
     override fun transferFrom(
-        chain: Chain,
+        chain: EVMChain,
         contractAddress: String,
         from: Address,
         to: Address,
@@ -120,7 +120,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
     }
 
     override fun safeTransferFrom(
-        chain: Chain,
+        chain: EVMChain,
         contractAddress: String,
         from: Address,
         to: Address,
@@ -132,7 +132,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
     }
 
     override fun safeTransferFrom(
-        chain: Chain,
+        chain: EVMChain,
         contractAddress: String,
         from: Address,
         to: Address,
@@ -145,7 +145,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
     }
 
     override fun setApprovalForAll(
-        chain: Chain,
+        chain: EVMChain,
         contractAddress: String,
         operator: Address,
         approved: Bool,
@@ -155,36 +155,36 @@ object Erc721TokenStandard : IErc721TokenStandard {
         return erc721URIStorageWrapper.setApprovalForAll(operator, approved).send()
     }
 
-    override fun isApprovedForAll(chain: Chain, contractAddress: String, owner: Address, operator: Address): Bool {
+    override fun isApprovedForAll(chain: EVMChain, contractAddress: String, owner: Address, operator: Address): Bool {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress)
         return erc721URIStorageWrapper.isApprovedForAll(owner, operator).send()
     }
 
-    override fun approve(chain: Chain, contractAddress: String, to: Address, tokenId: Uint256, signedAccount: String?): TransactionReceipt {
+    override fun approve(chain: EVMChain, contractAddress: String, to: Address, tokenId: Uint256, signedAccount: String?): TransactionReceipt {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress, signedAccount)
         return erc721URIStorageWrapper.approve(to, tokenId).send()
     }
 
-    override fun getApproved(chain: Chain, contractAddress: String, tokenId: Uint256): Address {
+    override fun getApproved(chain: EVMChain, contractAddress: String, tokenId: Uint256): Address {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress)
         return erc721URIStorageWrapper.getApproved(tokenId).send()
     }
 
-    override fun supportsInterface(chain: Chain, contractAddress: String) : Boolean {
+    override fun supportsInterface(chain: EVMChain, contractAddress: String) : Boolean {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress)
         val data = Numeric.hexStringToByteArray("0x5b5e139f") // ERC721 interface id
         val interfaceId = Bytes4(data)
         return erc721URIStorageWrapper.supportsInterface(interfaceId).send().value
     }
 
-    fun deployOwnableContract(chain: Chain, parameter: DeploymentParameter, options: DeploymentOptions): DeploymentResponse {
+    fun deployOwnableContract(chain: EVMChain, parameter: DeploymentParameter, options: DeploymentOptions): DeploymentResponse {
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
         val gasProvider: ContractGasProvider = WaltIdGasProvider
         val remotCall: RemoteCall<CustomOwnableERC721>
-        if (chain == Chain.POLYGON || chain == Chain.MUMBAI) {
+        if (chain == EVMChain.POLYGON || chain == EVMChain.MUMBAI) {
             val chainId: Long
-            if (chain == Chain.POLYGON) {
+            if (chain == EVMChain.POLYGON) {
                 chainId = Values.POLYGON_MAINNET_CHAIN_ID
             } else {
                 chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
@@ -223,14 +223,14 @@ object Erc721TokenStandard : IErc721TokenStandard {
 
     }
 
-    fun deployRBACContract(chain: Chain, parameter: DeploymentParameter, options: DeploymentOptions): DeploymentResponse {
+    fun deployRBACContract(chain: EVMChain, parameter: DeploymentParameter, options: DeploymentOptions): DeploymentResponse {
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
         val gasProvider: ContractGasProvider = WaltIdGasProvider
         val remotCall: RemoteCall<CustomAccessControlERC721>
-        if (chain == Chain.POLYGON || chain == Chain.MUMBAI) {
+        if (chain == EVMChain.POLYGON || chain == EVMChain.MUMBAI) {
             val chainId: Long
-            if (chain == Chain.POLYGON) {
+            if (chain == EVMChain.POLYGON) {
                 chainId = Values.POLYGON_MAINNET_CHAIN_ID
             } else {
                 chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
@@ -268,7 +268,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
         return DeploymentResponse(ts, contract.contractAddress, "$url/address/${contract.contractAddress}")
     }
 
-    private fun loadContract(chain: Chain, address: String, signedAccount: String? ="") : CustomOwnableERC721 {
+    private fun loadContract(chain: EVMChain, address: String, signedAccount: String? ="") : CustomOwnableERC721 {
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
 
         val privateKey: String
@@ -286,9 +286,9 @@ object Erc721TokenStandard : IErc721TokenStandard {
 
         val gasProvider: ContractGasProvider = WaltIdGasProvider
 
-        if (chain == Chain.POLYGON || chain == Chain.MUMBAI) {
+        if (chain == EVMChain.POLYGON || chain == EVMChain.MUMBAI) {
             val chainId: Long
-            if (chain == Chain.POLYGON) {
+            if (chain == EVMChain.POLYGON) {
                 chainId = Values.POLYGON_MAINNET_CHAIN_ID
             } else {
                 chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
