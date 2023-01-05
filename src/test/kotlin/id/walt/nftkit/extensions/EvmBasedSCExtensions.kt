@@ -17,26 +17,26 @@ class EvmBasedSCExtensions : StringSpec({
 
 
     "Smart contract pause function ".config(enabled=enableTest) {
-        val result= ExtensionsService.pause(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
-        val pausedValue= ExtensionsService.paused(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
+        val result= ExtensionsService.pause(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
+        val pausedValue= ExtensionsService.paused(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
         pausedValue shouldBe true
         result.transactionId shouldNotBe null
     }
 
     "Verifying Smart contract state ".config(enabled=enableTest) {
-        val result= ExtensionsService.paused(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
+        val result= ExtensionsService.paused(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
         result shouldBe true
     }
 
     "Smart contract unpause function ".config(enabled=enableTest) {
-        val result= ExtensionsService.unpause(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
-        val pausedValue= ExtensionsService.paused(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
+        val result= ExtensionsService.unpause(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
+        val pausedValue= ExtensionsService.paused(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
         pausedValue shouldBe false
         result.transactionId shouldNotBe null
     }
 
     "Setting token URI".config(enabled=enableTest){
-        val oldURI = NftService.getNftMetadataUri(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", BigInteger.valueOf(4) )
+        val oldURI = NftService.getNftMetadataUri(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", BigInteger.valueOf(4) )
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
         val currentDate = sdf.format(Date())
         val metadata = NftMetadata(
@@ -48,24 +48,24 @@ class EvmBasedSCExtensions : StringSpec({
             attributes = null
         )
         val param =  UpdateTokenURIRequest("",metadata)
-        val result = ExtensionsService.setTokenURI(Chain.MUMBAI,"0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", "4",signedAccount = null ,parameter = param )
-        val newURI = NftService.getNftMetadataUri(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", BigInteger.valueOf(4))
+        val result = ExtensionsService.setTokenURI(EVMChain.MUMBAI,"0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", "4",signedAccount = null ,parameter = param )
+        val newURI = NftService.getNftMetadataUri(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", BigInteger.valueOf(4))
         newURI shouldNotBe oldURI
         result.transactionId shouldNotBe null
     }
 
     "Changing transferable status".config(enabled=enableTest){
-        val oldT = ExtensionsService.getTransferable(Chain.MUMBAI,"0xf277BE034881eE38A9b270E5b6C5c6f333Af2517" )
-        val result = ExtensionsService.setTransferable(Chain.MUMBAI,"0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", !oldT )
-        val newT = ExtensionsService.getTransferable(Chain.MUMBAI,"0xf277BE034881eE38A9b270E5b6C5c6f333Af2517" )
+        val oldT = ExtensionsService.getTransferable(EVMChain.MUMBAI,"0xf277BE034881eE38A9b270E5b6C5c6f333Af2517" )
+        val result = ExtensionsService.setTransferable(EVMChain.MUMBAI,"0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", !oldT )
+        val newT = ExtensionsService.getTransferable(EVMChain.MUMBAI,"0xf277BE034881eE38A9b270E5b6C5c6f333Af2517" )
         result.transactionId shouldNotBe null
         newT shouldBe !oldT
     }
 
     "Changing burnable status".config(enabled=enableTest) {
-        val oldB = ExtensionsService.getBurnable(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
-        val result = ExtensionsService.setBurnable(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", !oldB)
-        val newB = ExtensionsService.getBurnable(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
+        val oldB = ExtensionsService.getBurnable(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
+        val result = ExtensionsService.setBurnable(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", !oldB)
+        val newB = ExtensionsService.getBurnable(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
         result.transactionId shouldNotBe null
         newB shouldBe !oldB
     }
@@ -74,18 +74,18 @@ class EvmBasedSCExtensions : StringSpec({
         val nftMetaData = NftMetadata("To burn", "To burn", "string", "string","string")
         val mintingParametre = MintingParameter(metadataUri = "", recipientAddress="0xaf87c5ce7a1fb6bd5aadb6dd9c0b8ef51ef1bc31", metadata = nftMetaData )
         val mintingOption = MintingOptions(MetadataStorageType.ON_CHAIN)
-        val newNftId = NftService.mintToken(Chain.MUMBAI, contractAddress = "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517",mintingParametre, mintingOption).tokenId
-        if (!(ExtensionsService.getBurnable(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")))
-        {ExtensionsService.setBurnable(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", true) }
+        val newNftId = NftService.mintToken(EVMChain.MUMBAI, contractAddress = "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517",mintingParametre, mintingOption).tokenId
+        if (!(ExtensionsService.getBurnable(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")))
+        {ExtensionsService.setBurnable(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", true) }
             val result = newNftId?.let {
                 ExtensionsService.burn(
-                    Chain.MUMBAI,
+                    EVMChain.MUMBAI,
                     "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517",
                     it
                 )
             }
         if (result != null) {
-            shouldThrow<Exception> { NftService.getNftMetadataUri(Chain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", newNftId) }
+            shouldThrow<Exception> { NftService.getNftMetadataUri(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", newNftId) }
             result.transactionId shouldNotBe null
         }
         }
