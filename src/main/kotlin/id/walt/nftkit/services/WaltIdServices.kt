@@ -54,14 +54,12 @@ object WaltIdServices {
         .loadConfigOrThrow<TezosConfig>()
 
 
-    fun getBlockExplorerUrl(chain: Chain): String {
+    fun getBlockExplorerUrl(chain: EVMChain): String {
         return when (chain) {
-            Chain.ETHEREUM -> Values.ETHEREUM_MAINNET_BLOCK_EXPLORER_URL
-            Chain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_BLOCK_EXPLORER_URL
-            Chain.POLYGON -> Values.POLYGON_MAINNET_BLOCK_EXPLORER_URL
-            Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_BLOCK_EXPLORER_URL
-            Chain.TEZOS -> throw Exception("Tezos is not supported")
-            Chain.GHOSTNET -> throw Exception("Ghostnet is not supported")
+            EVMChain.ETHEREUM -> Values.ETHEREUM_MAINNET_BLOCK_EXPLORER_URL
+            EVMChain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_BLOCK_EXPLORER_URL
+            EVMChain.POLYGON -> Values.POLYGON_MAINNET_BLOCK_EXPLORER_URL
+            EVMChain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_BLOCK_EXPLORER_URL
         }
     }
 }

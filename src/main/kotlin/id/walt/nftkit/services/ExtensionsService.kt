@@ -20,25 +20,25 @@ import java.math.BigInteger
 
 object ExtensionsService {
 
-    fun paused(chain: Chain, contractAddress: String): Boolean {
+    fun paused(chain: EVMChain, contractAddress: String): Boolean {
         val customAccessControlERC721Wrapper = loadOwnableContract(chain, contractAddress)
         return customAccessControlERC721Wrapper.paused().send().value
     }
 
-    fun pause(chain: Chain, contractAddress: String): TransactionResponse {
+    fun pause(chain: EVMChain, contractAddress: String): TransactionResponse {
         val customAccessControlERC721Wrapper = loadOwnableContract(chain, contractAddress)
         val transactionReceipt = customAccessControlERC721Wrapper.pause().send()
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun unpause(chain: Chain, contractAddress: String): TransactionResponse {
+    fun unpause(chain: EVMChain, contractAddress: String): TransactionResponse {
         val customAccessControlERC721Wrapper = loadOwnableContract(chain, contractAddress)
         val transactionReceipt = customAccessControlERC721Wrapper.unpause().send()
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
     fun setTokenURI(
-        chain: Chain,
+        chain: EVMChain,
         contractAddress: String,
         tokenId: String,
         signedAccount: String?,
@@ -57,45 +57,45 @@ object ExtensionsService {
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun getTransferable(chain: Chain, contractAddress: String): Boolean {
+    fun getTransferable(chain: EVMChain, contractAddress: String): Boolean {
         val customAccessControlERC721Wrapper = loadOwnableContract(chain, contractAddress)
         return customAccessControlERC721Wrapper.tokensTransferable().send().value
     }
 
-    fun setTransferable(chain: Chain, contractAddress: String, transferable: Boolean): TransactionResponse {
+    fun setTransferable(chain: EVMChain, contractAddress: String, transferable: Boolean): TransactionResponse {
         val customAccessControlERC721Wrapper = loadOwnableContract(chain, contractAddress)
         val transactionReceipt = customAccessControlERC721Wrapper.setTransferableOption(Bool(transferable)).send()
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun getBurnable(chain: Chain, contractAddress: String): Boolean {
+    fun getBurnable(chain: EVMChain, contractAddress: String): Boolean {
         val customAccessControlERC721Wrapper = loadOwnableContract(chain, contractAddress)
         return customAccessControlERC721Wrapper.tokensBurnable().send().value
     }
 
 
-    fun setBurnable(chain: Chain, contractAddress: String, Burnable: Boolean): TransactionResponse {
+    fun setBurnable(chain: EVMChain, contractAddress: String, Burnable: Boolean): TransactionResponse {
         val customAccessControlERC721Wrapper = loadOwnableContract(chain, contractAddress)
         val transactionReceipt = customAccessControlERC721Wrapper.setBurnableOption(Bool(Burnable)).send()
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun burn(chain: Chain, contractAddress: String, tokenId: BigInteger): TransactionResponse {
+    fun burn(chain: EVMChain, contractAddress: String, tokenId: BigInteger): TransactionResponse {
         val customAccessControlERC721Wrapper = loadOwnableContract(chain, contractAddress)
         val transactionReceipt = customAccessControlERC721Wrapper.burn(Uint256(tokenId)).send()
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
-    private fun loadOwnableContract(chain: Chain, address: String): CustomAccessControlERC721 {
+    private fun loadOwnableContract(chain: EVMChain, address: String): CustomAccessControlERC721 {
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
 
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
 
         val gasProvider: ContractGasProvider = WaltIdGasProvider
 
-        if (chain == Chain.POLYGON || chain == Chain.MUMBAI) {
+        if (chain == EVMChain.POLYGON || chain == EVMChain.MUMBAI) {
             val chainId: Long
-            if (chain == Chain.POLYGON) {
+            if (chain == EVMChain.POLYGON) {
                 chainId = Values.POLYGON_MAINNET_CHAIN_ID
             } else {
                 chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID

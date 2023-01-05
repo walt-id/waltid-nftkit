@@ -18,13 +18,13 @@ import smart_contract_wrapper.Ownable
 
 object AccessControlService {
 
-    fun transferOwnership(chain: Chain, contractAddress: String, account: String): TransactionResponse {
+    fun transferOwnership(chain: EVMChain, contractAddress: String, account: String): TransactionResponse {
         val ownableWrapper = loadOwnableContract(chain, contractAddress)
         val transactionReceipt = ownableWrapper.transferOwnership(Address(account)).send()
         return getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun renounceOwnership(chain: Chain, contractAddress: String): TransactionResponse {
+    fun renounceOwnership(chain: EVMChain, contractAddress: String): TransactionResponse {
         val ownableWrapper = loadOwnableContract(chain, contractAddress)
         val transactionReceipt = ownableWrapper.renounceOwnership().send()
         /*val url = WaltIdServices.getBlockExplorerUrl(chain)
@@ -32,13 +32,13 @@ object AccessControlService {
         return getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun owner(chain: Chain, contractAddress: String): String {
+    fun owner(chain: EVMChain, contractAddress: String): String {
         val ownableWrapper = loadOwnableContract(chain, contractAddress)
         val owner = ownableWrapper.owner().send().value
         return owner
     }
 
-    fun grantRole(chain: Chain, contractAddress: String, role: String, account: String): TransactionResponse {
+    fun grantRole(chain: EVMChain, contractAddress: String, role: String, account: String): TransactionResponse {
         val rabcWrapper = loadRbacContract(chain, contractAddress)
         val hash = getHashedRole(role)
         val transactionReceipt = rabcWrapper.grantRole(Bytes32(hash), Address(account)).send()
@@ -47,27 +47,27 @@ object AccessControlService {
         return getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun renounceRole(chain: Chain, contractAddress: String, role: String, account: String): TransactionResponse {
+    fun renounceRole(chain: EVMChain, contractAddress: String, role: String, account: String): TransactionResponse {
         val rabcWrapper = loadRbacContract(chain, contractAddress)
         val hash = getHashedRole(role)
         val transactionReceipt = rabcWrapper.renounceRole(Bytes32(hash), Address(account)).send()
         return getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun revokeRole(chain: Chain, contractAddress: String, role: String, account: String): TransactionResponse {
+    fun revokeRole(chain: EVMChain, contractAddress: String, role: String, account: String): TransactionResponse {
         val rabcWrapper = loadRbacContract(chain, contractAddress)
         val hash = getHashedRole(role)
         val transactionReceipt = rabcWrapper.revokeRole(Bytes32(hash), Address(account)).send()
         return getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun getRoleAdmin(chain: Chain, contractAddress: String, role: String): String {
+    fun getRoleAdmin(chain: EVMChain, contractAddress: String, role: String): String {
         val rabcWrapper = loadRbacContract(chain, contractAddress)
         val hash = getHashedRole(role)
         return rabcWrapper.getRoleAdmin(Bytes32(hash)).send().value.joinToString(separator = "")
     }
 
-    fun hasRole(chain: Chain, contractAddress: String, role: String, account: String): Boolean {
+    fun hasRole(chain: EVMChain, contractAddress: String, role: String, account: String): Boolean {
         val rabcWrapper = loadRbacContract(chain, contractAddress)
         val hash = getHashedRole(role)
         return rabcWrapper.hasRole(Bytes32(hash), Address(account)).send().value
@@ -81,16 +81,16 @@ object AccessControlService {
     }
 
 
-    private fun loadOwnableContract(chain: Chain, address: String): Ownable {
+    private fun loadOwnableContract(chain: EVMChain, address: String): Ownable {
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
 
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
 
         val gasProvider: ContractGasProvider = WaltIdGasProvider
 
-        if (chain == Chain.POLYGON || chain == Chain.MUMBAI) {
+        if (chain == EVMChain.POLYGON || chain == EVMChain.MUMBAI) {
             val chainId: Long
-            if (chain == Chain.POLYGON) {
+            if (chain == EVMChain.POLYGON) {
                 chainId = Values.POLYGON_MAINNET_CHAIN_ID
             } else {
                 chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
@@ -104,16 +104,16 @@ object AccessControlService {
         }
     }
 
-    private fun loadRbacContract(chain: Chain, address: String): AccessControl {
+    private fun loadRbacContract(chain: EVMChain, address: String): AccessControl {
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
 
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
 
         val gasProvider: ContractGasProvider = WaltIdGasProvider
 
-        if (chain == Chain.POLYGON || chain == Chain.MUMBAI) {
+        if (chain == EVMChain.POLYGON || chain == EVMChain.MUMBAI) {
             val chainId: Long
-            if (chain == Chain.POLYGON) {
+            if (chain == EVMChain.POLYGON) {
                 chainId = Values.POLYGON_MAINNET_CHAIN_ID
             } else {
                 chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID

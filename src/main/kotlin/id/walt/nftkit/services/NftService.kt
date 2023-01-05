@@ -71,6 +71,13 @@ enum class Chain {
     GHOSTNET
 }
 
+enum class EVMChain {
+    ETHEREUM,
+    POLYGON,
+    GOERLI,
+    MUMBAI,
+}
+
 enum class TokenStandard {
     ERC721,
     //ERC1155
@@ -253,12 +260,12 @@ object NftService {
         expectSuccess = false
     }
 
-    fun deploySmartContractToken(chain: Chain, parameter: DeploymentParameter, options: DeploymentOptions): DeploymentResponse {
+    fun deploySmartContractToken(chain: EVMChain, parameter: DeploymentParameter, options: DeploymentOptions): DeploymentResponse {
         return Erc721TokenStandard.deployContract(chain, parameter, options)
     }
 
     fun mintToken(
-        chain: Chain,
+        chain: EVMChain,
         contractAddress: String,
         parameter: MintingParameter,
         options: MintingOptions
@@ -275,7 +282,7 @@ object NftService {
         return mintNewToken(parameter.recipientAddress, tokenUri, chain, contractAddress)
     }
 
-     fun getNftMetadata(chain: Chain, contractAddress: String, tokenId: BigInteger): NftMetadata {
+     fun getNftMetadata(chain: EVMChain, contractAddress: String, tokenId: BigInteger): NftMetadata {
         var uri = getMetadatUri(chain, contractAddress, tokenId)
         if(Common.getMetadataType(uri).equals(MetadataStorageType.ON_CHAIN)){
             val decodedUri = decBase64Str(uri.substring(29))
@@ -285,18 +292,18 @@ object NftService {
         }
     }
 
-    fun getNftMetadataUri(chain: Chain, contractAddress: String, tokenId: BigInteger): String {
+    fun getNftMetadataUri(chain: EVMChain, contractAddress: String, tokenId: BigInteger): String {
         return getMetadatUri(chain, contractAddress, tokenId)
     }
 
-    fun balanceOf(chain: Chain, contractAddress: String, owner: String): BigInteger? {
+    fun balanceOf(chain: EVMChain, contractAddress: String, owner: String): BigInteger? {
         if (isErc721Standard(chain, contractAddress)) {
             return Erc721TokenStandard.balanceOf(chain, contractAddress, Address(owner))
         }
         return BigInteger.valueOf(0)
     }
 
-    fun ownerOf(chain: Chain,contractAddress: String, tokenId: BigInteger): String{
+    fun ownerOf(chain: EVMChain,contractAddress: String, tokenId: BigInteger): String{
         //in the case of ERC721
         if(isErc721Standard(chain, contractAddress) == true){
             return Erc721TokenStandard.ownerOf(chain, contractAddress,Uint256(tokenId))
@@ -305,41 +312,41 @@ object NftService {
         return String()
     }
 
-    fun transferFrom(chain: Chain, contractAddress: String, from: String, to: String, tokenId: BigInteger, signedAccount: String?): TransactionResponse {
+    fun transferFrom(chain: EVMChain, contractAddress: String, from: String, to: String, tokenId: BigInteger, signedAccount: String?): TransactionResponse {
         val transactionReceipt = Erc721TokenStandard.transferFrom(chain, contractAddress, Address(from), Address(to), Uint256(tokenId), signedAccount)
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun safeTransferFrom(chain: Chain, contractAddress: String, from: String, to: String, tokenId: BigInteger, signedAccount: String?): TransactionResponse {
+    fun safeTransferFrom(chain: EVMChain, contractAddress: String, from: String, to: String, tokenId: BigInteger, signedAccount: String?): TransactionResponse {
         val transactionReceipt = Erc721TokenStandard.safeTransferFrom(chain, contractAddress, Address(from), Address(to), Uint256(tokenId), signedAccount)
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun safeTransferFrom(chain: Chain, contractAddress: String, from: String, to: String, tokenId: BigInteger, data: String?, signedAccount: String?): TransactionResponse {
+    fun safeTransferFrom(chain: EVMChain, contractAddress: String, from: String, to: String, tokenId: BigInteger, data: String?, signedAccount: String?): TransactionResponse {
         val transactionReceipt = Erc721TokenStandard.safeTransferFrom(chain, contractAddress, Address(from), Address(to), Uint256(tokenId), DynamicBytes(
             data?.toByteArray() ?: null
         ), signedAccount)
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun setApprovalForAll(chain: Chain, contractAddress: String, operator: String, approved: Boolean, signedAccount: String?): TransactionResponse {
+    fun setApprovalForAll(chain: EVMChain, contractAddress: String, operator: String, approved: Boolean, signedAccount: String?): TransactionResponse {
         val transactionReceipt = Erc721TokenStandard.setApprovalForAll(chain, contractAddress, Address(operator), Bool(approved), signedAccount)
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun isApprovedForAll(chain: Chain, contractAddress: String, owner: String, operator: String): Boolean {
+    fun isApprovedForAll(chain: EVMChain, contractAddress: String, owner: String, operator: String): Boolean {
         return Erc721TokenStandard.isApprovedForAll(chain, contractAddress, Address(owner), Address(operator)).value
     }
 
-    fun approve(chain: Chain, contractAddress: String, to: String, tokenId: BigInteger, signedAccount: String?): TransactionResponse {
+    fun approve(chain: EVMChain, contractAddress: String, to: String, tokenId: BigInteger, signedAccount: String?): TransactionResponse {
         val transactionReceipt = Erc721TokenStandard.approve(chain, contractAddress, Address(to), Uint256(tokenId), signedAccount)
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun getApproved(chain: Chain, contractAddress: String, tokenId: BigInteger): String {
+    fun getApproved(chain: EVMChain, contractAddress: String, tokenId: BigInteger): String {
         return Erc721TokenStandard.getApproved(chain, contractAddress, Uint256(tokenId)).value
     }
-    fun getTokenCollectionInfo(chain: Chain, contractAddress: String): TokenCollectionInfo {
+    fun getTokenCollectionInfo(chain: EVMChain, contractAddress: String): TokenCollectionInfo {
         //in the case of ERC721
         if (isErc721Standard(chain, contractAddress)) {
             val name = Erc721TokenStandard.name(chain, contractAddress)
@@ -400,7 +407,7 @@ object NftService {
     }
 
     fun updateMetadata(
-        chain: Chain, contractAddress: String, tokenId: String, signedAccount: String?,
+        chain: EVMChain, contractAddress: String, tokenId: String, signedAccount: String?,
         key: String,
         value: String): TransactionResponse {
         val metadata= getNftMetadata(chain, contractAddress, BigInteger(tokenId))
@@ -485,7 +492,7 @@ object NftService {
     private fun mintNewToken(
         recipientAddress: String,
         metadataUri: String,
-        chain: Chain,
+        chain: EVMChain,
         contractAddress: String
     ): MintingResponse {
         if (isErc721Standard(chain, contractAddress) == true) {
@@ -508,7 +515,7 @@ object NftService {
         return MintingResponse(null, null)
     }
 
-    private fun getMetadatUri(chain: Chain, contractAddress: String, tokenId: BigInteger): String {
+    private fun getMetadatUri(chain: EVMChain, contractAddress: String, tokenId: BigInteger): String {
         if (isErc721Standard(chain, contractAddress) == true) {
             return Erc721TokenStandard.tokenURI(chain, contractAddress, Uint256(tokenId))
         }
@@ -516,7 +523,7 @@ object NftService {
     }
 
 
-    private fun isErc721Standard(chain: Chain, contractAddress: String): Boolean {
+    private fun isErc721Standard(chain: EVMChain, contractAddress: String): Boolean {
         return Erc721TokenStandard.supportsInterface(chain, contractAddress)
     }
 

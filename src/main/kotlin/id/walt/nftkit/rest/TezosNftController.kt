@@ -102,7 +102,7 @@ object TezosNftController {
         val contractAddress = ctx.pathParam("contractAddress")
         val tokenId = ctx.pathParam("tokenId")
         val result =
-            TezosNftService.getNftTezosMetadata(Chain.valueOf(chain.uppercase()), contractAddress, tokenId)
+            TezosNftService.getNftTezosMetadata(TezosChain.valueOf(chain.uppercase()), contractAddress, tokenId)
         result?.let {
             ctx.json(
                 it
@@ -114,7 +114,7 @@ object TezosNftController {
         it.summary("Get NFT Token Metadata")
             .operationId("GetNFTTokenTezosMetadata").addTagsItem(tag)
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<TezosChain> { }
     }.pathParam<String>("contractAddress") {
     }.pathParam<Int>("tokenId") {
     }.json<TezosNftMetadata>("200") { it.description("NFT Metadata") }
