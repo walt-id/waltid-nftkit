@@ -467,6 +467,16 @@ object NftService {
         }
     }
 
+    fun fetchIPFSData(uri: String): String {
+        return runBlocking {
+            var uriFormat= uri
+            uriFormat= uri.replace("ipfs://","", true)
+            val result = IPFSMetadata.client.get("https://nftstorage.link/ipfs/$uriFormat") {
+            }.body<String>()
+            return@runBlocking result
+        }
+    }
+
      fun getIPFSMetadataUsingNFTStorage(uri: String): NftMetadata {
         return runBlocking {
             var uriFormat= uri
