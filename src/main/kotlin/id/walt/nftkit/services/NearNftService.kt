@@ -1,6 +1,5 @@
 package id.walt.nftkit.services
 
-import com.syntifi.near.api.model.account.Account
 import com.syntifi.near.api.model.identifier.Finality
 import com.syntifi.near.api.service.NearService
 import io.ktor.client.*
@@ -54,6 +53,7 @@ data class OperationResult(
 @Serializable
 data class NearOperationResponse(
     val opHash: String
+
 )
 
 data class NearMintingParameter(
@@ -84,7 +84,11 @@ object NearNftService {
         expectSuccess = false
     }
 
-    fun mintNftToken(account_id :String,contract_id : String  ,token_id: String , title: String , description: String , media: String , media_hash: String,reference: String , reference_hash: String , receiver_id: String): NearOperationResponse {
+    fun mintNftToken(
+        account_id:String,
+        contract_id: String,
+        token_id: String, title: String, description: String, media: String, media_hash: String,
+        reference: String, reference_hash: String?, receiver_id: String): NearOperationResponse {
         return runBlocking {
             val values = mapOf(
                 "account_id" to account_id,
@@ -154,7 +158,7 @@ object NearNftService {
         }
     }
 
-    fun getNftNearMetadata(contract_id: String){
+    fun getNftNearMetadata(contract_id: String) {
        val nearClient = NearService.usingPeer("archival-rpc.testnet.near.org");
 
         val nftMetadataCall = nearClient
@@ -168,13 +172,13 @@ object NearNftService {
         val nftMetadata =nftMetadataCall.result
 
         println("nft metadata :")
-        nftMetadata.forEach {
+         return   nftMetadata.forEach {
             val fin = it.toChar()
             print(fin.toString())
         }
 
     }
-    fun getNFTforAccount(account_id: String , contract_id: String){
+    fun getNFTforAccount(account_id: String , contract_id: String): String {
         val nearClient = NearService.usingPeer("archival-rpc.testnet.near.org");
 
 
@@ -198,8 +202,7 @@ object NearNftService {
         println(accountNft::class.simpleName)
 
         println("Account NFTs :")
-        val nftResultStr = accountNft.map { it.toChar() }.joinToString(separator = "")
-        println("strVal:")
-        println(nftResultStr)
+        return  accountNft.map { it.toChar() }.joinToString(separator = "")
+
     }
 }
