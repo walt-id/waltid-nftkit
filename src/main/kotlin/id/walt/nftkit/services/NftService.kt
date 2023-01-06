@@ -371,7 +371,7 @@ object NftService {
         }
     }
 
-    fun getAccountNFTsByChainScan(chain: Chain, address: String): List<Token?> {
+    fun getAccountNFTsByChainScan(chain: EVMChain, address: String): List<Token?> {
         return runBlocking {
             val url = Common.getNetworkBlockExplorerApiUrl(chain)
             val apiKey = Common.getNetworkBlockExplorerApiKey(chain)
