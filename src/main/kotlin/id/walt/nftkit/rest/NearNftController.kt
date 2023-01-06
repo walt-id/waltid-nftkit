@@ -3,12 +3,14 @@ package id.walt.nftkit.rest
 import id.walt.nftkit.services.*
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
+import io.swagger.util.Json
 import kotlinx.serialization.Serializable
 
 
-
+@Serializable
 data class NearMintRequest(
-    val receiver_id: String,
+    val contract_id: String,
+    val  account_id: String,
     val token_id: String,
     val title: String,
     val description: String,
@@ -16,36 +18,38 @@ data class NearMintRequest(
     val media_hash: String?= null,
     val reference: String?= null,
     val reference_hash: String?= null,
-
+    val receiver_id: String,
     )
 
 object NearNftController {
 
     fun mint(ctx: Context) {
 
-        val contract_id = ctx.pathParam("contract_id")
-        val account_id = ctx.pathParam("account_id")
-        val  token_id = ctx.pathParam("token_id")
-        val  title = ctx.pathParam("title")
-        val  description = ctx.pathParam("description")
-        val  media = ctx.pathParam("media")
-        val  media_hash = ctx.pathParam("media_hash")
-        val  reference = ctx.pathParam("reference")
-        val  reference_hash = ctx.pathParam("reference_hash")
-        val  receiver_id = ctx.pathParam("receiver_id")
+        val mintReq = ctx.bodyAsClass(NearMintRequest::class.java)
 
-        val result= NearNftService.mintNftToken(account_id,contract_id,token_id,title,description,media,media_hash,reference,reference_hash,receiver_id)
-        ctx.json(result)
+
+
+        val result = mintReq.media_hash?.let {
+            NearNftService.mintNftToken(
+                mintReq.account_id, mintReq.contract_id, mintReq.token_id, mintReq.title, mintReq.description, mintReq.media,
+                it, mintReq.reference.toString(), mintReq.reference_hash, mintReq.receiver_id
+            )
+        }
+        if (result != null) {
+            ctx.json(result)
+        }
     }
 
     fun mintDocs() = document().operation {
         it.summary("Near NFT minting")
             .operationId("mintNft").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
     }
-        .pathParam<String>("contractAddress") {
-        }.body<NearMintRequest> {
+
+        .body<NearMintRequest> {
             it.description("")
-        }.json<OperationResponse>("200") { it.description("Transaction ID and token ID") }
+        }.json<String>("200") { it.description("Transaction ID and smart contract address") }
+
+
 
     fun deployDefaultContract(ctx: Context) {
         val result = NearNftService.deployContractDefault(
@@ -90,6 +94,30 @@ object NearNftController {
         }.pathParam<String>("reference") {
         }.pathParam<String>("reference_hash") {
         }.json<OperationResponse>("200") { it.description("Transaction ID") }
+
+
+    fun getNftToken(ctx: Context) {
+        val result = NearNftService.getNFTforAccount(
+            ctx.pathParam("account_id"),
+            ctx.pathParam("contract_id"),
+
+        )
+        ctx.json(result)
+
+
+
+    }
+
+    fun getNftTokenDocs() = document().operation {
+        it.summary("Get NFT token")
+            .operationId("getNftToken").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
+    }
+        .pathParam<String>("account_id") {
+        }.pathParam<String>("contract_id") {
+        }.json<String>("200") { it.description("NFT token") }
+
+
 }
+
 
 
