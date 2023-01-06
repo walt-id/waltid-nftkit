@@ -42,10 +42,10 @@ object NearNftController {
         it.summary("Near NFT minting")
             .operationId("mintNft").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
     }
-    .pathParam<String>("contractAddress") {
-    }.body<NearMintRequest> {
-        it.description("")
-    }.json<OperationResponse>("200") { it.description("Transaction ID and token ID") }
+        .pathParam<String>("contractAddress") {
+        }.body<NearMintRequest> {
+            it.description("")
+        }.json<OperationResponse>("200") { it.description("Transaction ID and token ID") }
 
     fun deployDefaultContract(ctx: Context) {
         val result = NearNftService.deployContractDefault(
@@ -58,8 +58,8 @@ object NearNftController {
         it.summary("Deploy default contract")
             .operationId("deployDefaultContract").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
     }
-    .pathParam<String>("account_id") {
-    }.json<OperationResponse>("200") { it.description("Transaction ID") }
+        .pathParam<String>("account_id") {
+        }.json<OperationResponse>("200") { it.description("Transaction ID") }
 
     fun deployCustomContract(ctx: Context) {
         val result = NearNftService.deployContractWithCustomMetadata(
@@ -80,14 +80,16 @@ object NearNftController {
         it.summary("Deploy custom contract")
             .operationId("deployCustomContract").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
     }
-    .pathParam<String>("account_id") {
-    }.pathParam<String>("owner_id") {
-    }.pathParam<String>("spec") {
-    }.pathParam<String>("name") {
-    }.pathParam<String>("symbol") {
-    }.pathParam<String>("icon") {
-    }.pathParam<String>("base_uri") {
-    }.pathParam<String>("reference") {
-    }.pathParam<String>("reference_hash") {
-    }.json<OperationResponse>("200") { it.description("Transaction ID") }
+        .pathParam<String>("account_id") {
+        }.pathParam<String>("owner_id") {
+        }.pathParam<String>("spec") {
+        }.pathParam<String>("name") {
+        }.pathParam<String>("symbol") {
+        }.pathParam<String>("icon") {
+        }.pathParam<String>("base_uri") {
+        }.pathParam<String>("reference") {
+        }.pathParam<String>("reference_hash") {
+        }.json<OperationResponse>("200") { it.description("Transaction ID") }
 }
+
+
