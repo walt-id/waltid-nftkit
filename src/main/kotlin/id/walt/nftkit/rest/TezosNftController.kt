@@ -40,7 +40,7 @@ data class TezosOperationResponse(
 )
 
 object TezosNftController {
-    const val tag = "Tezos Blockchain: Non-fungible tokens(NFTs)"
+    const val TAG1 = "Tezos Blockchain"
     fun deploy(ctx: Context) {
         val deployReq = ctx.bodyAsClass(TezosDeployRequest::class.java)
         val chain = ctx.pathParam("chain")
@@ -52,7 +52,7 @@ object TezosNftController {
 
     fun deployDocs() = document().operation {
         it.summary("Smart contract deployment")
-            .operationId("deployTezosSmartContract").addTagsItem(tag)
+            .operationId("deployTezosSmartContract").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<TezosChain> { }
     }.body<TezosDeployRequest> {
@@ -70,7 +70,7 @@ object TezosNftController {
 
     fun mintDocs() = document().operation {
         it.summary("NFT minting")
-            .operationId("mintTezosNft").addTagsItem(tag)
+            .operationId("mintTezosNft").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<TezosChain> { }
     }.pathParam<String>("contractAddress") {
@@ -88,7 +88,7 @@ object TezosNftController {
 
     fun addMinterDocs() = document().operation {
         it.summary("Add minter")
-            .operationId("AddMinter").addTagsItem(tag)
+            .operationId("AddMinter").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<TezosChain> { }
     }.pathParam<String>("contractAddress") {
@@ -112,7 +112,7 @@ object TezosNftController {
 
     fun getNftMetadataDocs() = document().operation {
         it.summary("Get NFT Token Metadata")
-            .operationId("GetNFTTokenTezosMetadata").addTagsItem(tag)
+            .operationId("GetNFTTokenTezosMetadata").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<TezosChain> { }
     }.pathParam<String>("contractAddress") {

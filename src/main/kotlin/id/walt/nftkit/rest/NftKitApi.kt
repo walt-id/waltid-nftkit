@@ -92,9 +92,9 @@ object NftKitApi {
                         }
                     }
                 }).apply {
-                    path("/v1/nftkit/api-documentation")
-                    swagger(SwaggerOptions("/v1/nftkit/swagger").title(apiTitle))
-                    reDoc(ReDocOptions("/v1/nftkit/redoc").title(apiTitle))
+                    path("/v2/nftkit/api-documentation")
+                    swagger(SwaggerOptions("/v2/nftkit/swagger").title(apiTitle))
+                    reDoc(ReDocOptions("/v2/nftkit/redoc").title(apiTitle))
                 }))
 
                 val mapper: ObjectMapper = com.fasterxml.jackson.databind.json.JsonMapper.builder()

@@ -19,7 +19,7 @@ data class BurnableRequest(val burnable: Boolean)
 
 
 object ExtensionsController {
-val tag = "NFTs smart contract Extensions"
+val TAG1 = "EVM based Blockchain"
     fun paused(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
@@ -31,7 +31,7 @@ val tag = "NFTs smart contract Extensions"
 
     fun pausedDocs() = document().operation {
         it.summary("Paused")
-            .operationId("paused").addTagsItem(tag)
+            .operationId("paused").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -48,7 +48,7 @@ val tag = "NFTs smart contract Extensions"
 
     fun pauseDocs() = document().operation {
         it.summary("Pause")
-            .operationId("pause").addTagsItem(tag)
+            .operationId("pause").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -65,7 +65,7 @@ val tag = "NFTs smart contract Extensions"
 
     fun unpauseDocs() = document().operation {
         it.summary("Unpause")
-            .operationId("unpause").addTagsItem(tag)
+            .operationId("unpause").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -86,7 +86,7 @@ val tag = "NFTs smart contract Extensions"
 
     fun updateTokenURIDocs() = document().operation {
         it.summary("Update Token URI")
-            .operationId("setTokenURI").addTagsItem(tag)
+            .operationId("setTokenURI").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -107,7 +107,7 @@ val tag = "NFTs smart contract Extensions"
 
     fun getTransferableDocs() = document().operation {
         it.summary("Transferable option")
-            .operationId("Transferable option").addTagsItem(tag)
+            .operationId("Transferable option").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -130,7 +130,7 @@ val tag = "NFTs smart contract Extensions"
 
     fun setTransferableDocs() = document().operation {
         it.summary("Activate/Deactivate transferable option")
-            .operationId("Activate/Deactivate transferable option").addTagsItem(tag)
+            .operationId("Activate/Deactivate transferable option").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -149,7 +149,7 @@ val tag = "NFTs smart contract Extensions"
 
     fun getBurnableDocs() = document().operation {
         it.summary("Burnable option")
-            .operationId("Burnable option").addTagsItem(tag)
+            .operationId("Burnable option").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -168,7 +168,7 @@ val tag = "NFTs smart contract Extensions"
 
     fun setBurnableDocs() = document().operation {
         it.summary("Activate/Deactivate burnable option")
-            .operationId("Activate/Deactivate burnable option").addTagsItem(tag)
+            .operationId("Activate/Deactivate burnable option").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -189,7 +189,7 @@ val tag = "NFTs smart contract Extensions"
 
     fun burnDocs() = document().operation {
         it.summary("Burn token")
-            .operationId("Burn token").addTagsItem(tag)
+            .operationId("Burn token").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
