@@ -14,6 +14,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import java.util.*
 
 
 @Serializable
@@ -153,13 +154,13 @@ object NearNftService {
         }
     }
 
-    fun getNftNearMetadata(account_id: String){
+    fun getNftNearMetadata(contract_id: String){
        val nearClient = NearService.usingPeer("archival-rpc.testnet.near.org");
 
         val nftMetadataCall = nearClient
             .callContractFunction(
                 Finality.FINAL,
-                account_id,
+                contract_id,
                 "nft_metadata",
                 "e30=",
             )
@@ -172,5 +173,33 @@ object NearNftService {
             print(fin.toString())
         }
 
+    }
+    fun getNFTforAccount(account_id: String , contract_id: String){
+        val nearClient = NearService.usingPeer("archival-rpc.testnet.near.org");
+
+
+
+        val accountId = Base64.getEncoder().encodeToString("{\"account_id\":\"${account_id}\"}".toByteArray())
+
+
+
+        println(accountId)
+        val accountsNftCall = nearClient
+            .callContractFunction(
+                Finality.FINAL,
+                contract_id,
+                "nft_tokens_for_owner",
+                accountId,
+            )
+
+
+        val accountNft = accountsNftCall.result
+
+        println(accountNft::class.simpleName)
+
+        println("Account NFTs :")
+        val nftResultStr = accountNft.map { it.toChar() }.joinToString(separator = "")
+        println("strVal:")
+        println(nftResultStr)
     }
 }
