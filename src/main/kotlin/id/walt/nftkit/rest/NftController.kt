@@ -57,7 +57,8 @@ data class ApproveRequest(
 )
 
 object NftController {
-val tag ="Blockchain: Non-fungible tokens(NFTs)"
+    val TAG1 ="EVM based Blockchain"
+    val TAG2 ="General"
     fun deploy(ctx: Context) {
         val deployReq = ctx.bodyAsClass(DeployRequest::class.java)
         val chain = ctx.pathParam("chain")
@@ -72,7 +73,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
 
     fun deployDocs() = document().operation {
         it.summary("Smart contract deployment")
-            .operationId("deploySmartContract").addTagsItem(tag)
+            .operationId("deploySmartContract").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.body<DeployRequest> {
@@ -95,7 +96,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
 
     fun mintDocs() = document().operation {
         it.summary("NFT minting")
-            .operationId("mintNft").addTagsItem(tag)
+            .operationId("mintNft").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -117,7 +118,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
 
     fun getNftMetadatUriDocs() = document().operation {
         it.summary("Get NFT Token Metadata URI")
-            .operationId("MetadataUri").addTagsItem(tag)
+            .operationId("MetadataUri").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -139,7 +140,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
 
     fun getNftMetadataDocs() = document().operation {
         it.summary("Get NFT Token Metadata")
-            .operationId("Metadata").addTagsItem(tag)
+            .operationId("Metadata").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -159,7 +160,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
 
     fun balanceDocs() = document().operation {
         it.summary("Get Account balance")
-            .operationId("balance").addTagsItem(tag)
+            .operationId("balance").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -179,7 +180,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
 
     fun ownerDocs() = document().operation {
         it.summary("Get Token owner")
-            .operationId("owner").addTagsItem(tag)
+            .operationId("owner").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -198,7 +199,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
 
     fun tokenCollectionInfoDocs() = document().operation {
         it.summary("Get Token info")
-            .operationId("tokenInfo").addTagsItem(tag)
+            .operationId("tokenInfo").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -215,7 +216,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
 
     fun getAccountNFTsDocs() = document().operation {
         it.summary("Get NFTs")
-            .operationId("GetNFTs").addTagsItem(tag)
+            .operationId("GetNFTs").addTagsItem(TAG2)
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("ownerAddress") {
@@ -236,7 +237,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
 
     fun updateMetadataDocs() = document().operation {
         it.summary("Metadata update")
-            .operationId("updateMetadata").addTagsItem(tag)
+            .operationId("updateMetadata").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> {  }
     }.pathParam<String>("contractAddress") {
@@ -261,7 +262,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
 
     fun uploadFileToIpfsDocs() = document().operation {
         it.summary("Upload file to IPFS")
-            .operationId("Upload file to IPFS").addTagsItem(tag)
+            .operationId("Upload file to IPFS").addTagsItem(TAG2)
     }.uploadedFile("file") {
         // RequestBody, e.g.
         it.description = "File"
@@ -280,7 +281,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
 
     fun transferFromDocs() = document().operation {
         it.summary("Transfer From")
-            .operationId("Transfer From").addTagsItem(tag)
+            .operationId("Transfer From").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -301,7 +302,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
 
     fun safeTransferFromDocs() = document().operation {
         it.summary("Safe Transfer From")
-            .operationId("Safe Transfer From").addTagsItem(tag)
+            .operationId("Safe Transfer From").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -322,7 +323,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
 
     fun safeTransferFromWithDataDocs() = document().operation {
         it.summary("Safe Transfer From With Data")
-            .operationId("Safe Transfer From With Data").addTagsItem(tag)
+            .operationId("Safe Transfer From With Data").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -342,7 +343,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
 
     fun setApprovalForAllDocs() = document().operation {
         it.summary("Set Approval For All")
-            .operationId("Set Approval For All").addTagsItem(tag)
+            .operationId("Set Approval For All").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -361,7 +362,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
 
     fun isApprovedForAllDocs() = document().operation {
         it.summary("Is Approved For All")
-            .operationId("Is Approved For All").addTagsItem(tag)
+            .operationId("Is Approved For All").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -381,7 +382,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
 
     fun approveDocs() = document().operation {
         it.summary("Approve")
-            .operationId("Approve").addTagsItem(tag)
+            .operationId("Approve").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
@@ -400,7 +401,7 @@ val tag ="Blockchain: Non-fungible tokens(NFTs)"
 
     fun getApprovedDocs() = document().operation {
         it.summary("Get Approved")
-            .operationId("Get Approved").addTagsItem(tag)
+            .operationId("Get Approved").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
