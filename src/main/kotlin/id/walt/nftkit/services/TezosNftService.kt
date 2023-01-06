@@ -14,9 +14,13 @@ import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.util.Identity.decode
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.StringFormat
 import kotlinx.serialization.json.*
+import java.util.*
 
 
 enum class TezosChain {
@@ -112,6 +116,12 @@ data class TezosOperationResponse(
 data class OperationResponse(
     val operationHash: String,
     val operationExternalUrl: String
+)
+
+@Serializable
+data class TezosContractMetadataResponse(
+    val key: String,
+    val value: String
 )
 
 enum class Fa2SmartContractType {
@@ -233,6 +243,31 @@ object TezosNftService {
             val result= parseNftsResult(jsonObject)
             return@runBlocking result
         }
+    }
+
+    fun getContractMetadata(chain: TezosChain, contractAddress: String): JsonObject {
+        return runBlocking {
+            var chainAPI= ""
+            if(Chain.GHOSTNET.equals(chain)) chainAPI= ".ghostnet"
+
+            val contractMetadata =
+                NftService.client.get("https://api$chainAPI.tzkt.io/v1/contracts/$contractAddress/bigmaps/metadata/keys/") {
+                    contentType(ContentType.Application.Json)
+                }
+                    .body<List<TezosContractMetadataResponse>>()
+            val metadataURI=   decodeHex(contractMetadata.get(0).value)
+            val metadata= NftService.fetchIPFSData(metadataURI)
+            val jsonObject = Json.parseToJsonElement(metadata).jsonObject
+            return@runBlocking jsonObject
+        }
+    }
+
+    fun decodeHex( value: String): String {
+        require(value.length % 2 == 0) {"Must have an even length"}
+        return value.chunked(2)
+            .map { it.toInt(16).toByte() }
+            .toByteArray()
+            .toString(Charsets.ISO_8859_1)  // Or whichever encoding your input uses
     }
 
     fun parseNftsResult(nfts: JsonArray): List<TezosNFTsTzktResult>{

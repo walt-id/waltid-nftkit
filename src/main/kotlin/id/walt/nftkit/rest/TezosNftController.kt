@@ -119,5 +119,25 @@ object TezosNftController {
     }.pathParam<Int>("tokenId") {
     }.json<TezosNftMetadata>("200") { it.description("NFT Metadata") }
 
+    fun getContractMetadata(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val result =
+            TezosNftService.getContractMetadata(Common.getTezosChain(chain.uppercase()), contractAddress)
+        result?.let {
+            ctx.json(
+                it
+            )
+        }
+    }
+
+    fun getContractMetadataDocs() = document().operation {
+        it.summary("Get Contract Metadata ")
+            .operationId("GetContractMetadata").addTagsItem(TAG1)
+    }.pathParam<String>("chain") {
+        it.schema<TezosChain> { }
+    }.pathParam<String>("contractAddress") {
+    }
+
 
 }
