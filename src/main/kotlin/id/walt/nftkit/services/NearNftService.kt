@@ -1,5 +1,8 @@
 package id.walt.nftkit.services
 
+import com.syntifi.near.api.model.account.Account
+import com.syntifi.near.api.model.identifier.Finality
+import com.syntifi.near.api.service.NearService
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -41,7 +44,7 @@ data class NearTokenMetadata(
     val reference_hash: String?= null,
 
 
-)
+    )
 @Serializable
 data class OperationResult(
     val operationHash: String,
@@ -111,7 +114,7 @@ object NearNftService {
             val values = mapOf(
                 "account_id" to account_id,
 
-            )
+                )
             val nearOperationResponse = NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/contract/deploywithdefaultmetadata") {
                 contentType(ContentType.Application.Json)
 
@@ -137,7 +140,7 @@ object NearNftService {
                 "reference" to reference,
                 "reference_hash" to reference_hash,
 
-            )
+                )
             val nearOperationResponse = NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/contract/deploywithcustommetadata") {
                 contentType(ContentType.Application.Json)
 
@@ -148,5 +151,26 @@ object NearNftService {
                 .body<NearOperationResponse>()
             return@runBlocking nearOperationResponse
         }
+    }
+
+    fun getNftNearMetadata(account_id: String){
+       val nearClient = NearService.usingPeer("archival-rpc.testnet.near.org");
+
+        val nftMetadataCall = nearClient
+            .callContractFunction(
+                Finality.FINAL,
+                account_id,
+                "nft_metadata",
+                "e30=",
+            )
+
+        val nftMetadata =nftMetadataCall.result
+
+        println("nft metadata :")
+        nftMetadata.forEach {
+            val fin = it.toChar()
+            print(fin.toString())
+        }
+
     }
 }
