@@ -2,6 +2,7 @@ package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
 import id.walt.nftkit.services.Chain
+import id.walt.nftkit.services.EVMChain
 import id.walt.nftkit.services.VerificationService
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.BadRequestResponse
@@ -91,7 +92,7 @@ object VerificationController {
         val propertyKey = ctx.queryParam("propertyKey") ?: throw  BadRequestResponse("Property key not specified")
         val propertyValue = ctx.queryParam("propertyValue") ?: null
 
-        val result = VerificationService.dataNftVerification(Common.getChain(chain.uppercase()), factoryContractAddress,contractAddress, account, propertyKey, propertyValue)
+        val result = VerificationService.dataNftVerification(Common.getEVMChain(chain.uppercase()), factoryContractAddress,contractAddress, account, propertyKey, propertyValue)
         ctx.json(result)
     }
 
@@ -99,7 +100,7 @@ object VerificationController {
         it.summary("Data NFT Verification")
             .operationId("OceanDaoVerification").addTagsItem("NFT verification")
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.queryParam<String>("account") {
         it.required(true)

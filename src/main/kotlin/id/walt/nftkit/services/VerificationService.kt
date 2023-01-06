@@ -102,21 +102,21 @@ object VerificationService {
 
     }
 
-    fun  dataNftVerification(chain: Chain, erc721FactorycontractAddress: String,erc721contractAddress: String,account: String, propertyKey: String?, propertyValue: String?): Boolean{
+    fun  dataNftVerification(chain: EVMChain, erc721FactorycontractAddress: String,erc721contractAddress: String,account: String, propertyKey: String?, propertyValue: String?): Boolean{
         val tx =
             runBlocking {
                 val url = Common.getNetworkBlockExplorerApiUrl(chain)
                 val apiKey = Common.getNetworkBlockExplorerApiKey(chain)
-                val result= getOceanDaoContractCreationTransaction(chain,erc721contractAddress, url, apiKey)
+                val result= getOceanDaoContractCreationTransaction(erc721contractAddress, url, apiKey)
                 return@runBlocking result
             }
         if(!tx.result?.get(0)?.from.equals(erc721FactorycontractAddress, ignoreCase = true)){
             return false
         }
-        val ownership= NFTsEvmOwnershipVerification(EVMChain.valueOf(chain.toString()), erc721contractAddress, account, BigInteger("1"))
+        val ownership= NFTsEvmOwnershipVerification(chain, erc721contractAddress, account, BigInteger("1"))
         if(ownership == true ){
             if( propertyKey != null && propertyKey != "" && propertyValue != null) {
-                return propertyVerification(EVMChain.valueOf(chain.toString()), erc721contractAddress, "1", propertyKey, propertyValue)
+                return propertyVerification(chain, erc721contractAddress, "1", propertyKey, propertyValue)
             }
             return true
         }
@@ -135,7 +135,7 @@ object VerificationService {
         val balance= NftService.balanceOf(chain, contractAddress, owner)
         return if (balance!!.compareTo(BigInteger("0")) == 1) true else false
     }
-    private suspend fun getOceanDaoContractCreationTransaction(chain: Chain, erc721contractAddress: String,url: String, apiKey: String): InternalTransactionsResponse{
+    private suspend fun getOceanDaoContractCreationTransaction(erc721contractAddress: String,url: String, apiKey: String): InternalTransactionsResponse{
             return NftService.client.get("https://$url/api?module=account&action=txlistinternal&address=$erc721contractAddress&page=1&offset=1&startblock=0&sort=asc&apikey=$apiKey") {
                 contentType(ContentType.Application.Json)
             }.body()

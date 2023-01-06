@@ -56,25 +56,21 @@ object Common {
         }
     }
 
-    fun getNetworkBlockExplorerApiUrl(chain: Chain): String{
+    fun getNetworkBlockExplorerApiUrl(chain: EVMChain): String{
         return when (chain) {
-            Chain.ETHEREUM -> Values.ETHEREUM_MAINNET_SCAN_API_URL
-            Chain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_SCAN_API_URL
-            Chain.POLYGON -> Values.POLYGON_MAINNET_SCAN_API_URL
-            Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_SCAN_API_URL
-            Chain.TEZOS -> throw Exception("Tezos is not supported")
-            Chain.GHOSTNET -> throw Exception("Ghostnet is not supported")
+            EVMChain.ETHEREUM -> Values.ETHEREUM_MAINNET_SCAN_API_URL
+            EVMChain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_SCAN_API_URL
+            EVMChain.POLYGON -> Values.POLYGON_MAINNET_SCAN_API_URL
+            EVMChain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_SCAN_API_URL
         }
     }
 
-    fun getNetworkBlockExplorerApiKey(chain: Chain): String{
+    fun getNetworkBlockExplorerApiKey(chain: EVMChain): String{
         return when (chain) {
-            Chain.ETHEREUM -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
-            Chain.GOERLI -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
-            Chain.POLYGON -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
-            Chain.MUMBAI -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
-            Chain.TEZOS -> throw Exception("Tezos is not supported")
-            Chain.GHOSTNET -> throw Exception("Ghostnet is not supported")
+            EVMChain.ETHEREUM -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
+            EVMChain.GOERLI -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
+            EVMChain.POLYGON -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
+            EVMChain.MUMBAI -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
         }
     }
 
