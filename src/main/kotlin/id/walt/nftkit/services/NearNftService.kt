@@ -12,6 +12,7 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.util.*
 
@@ -42,9 +43,15 @@ data class NearTokenMetadata(
     val extra: String?= null,
     val reference: String?= null,
     val reference_hash: String?= null,
-
-
     )
+
+@Serializable
+data class  NearNftMetadata(
+    val token_id: String,
+    val owner_id: String,
+    val metadata: NearTokenMetadata,
+
+)
 @Serializable
 data class OperationResult(
     val operationHash: String,
@@ -178,7 +185,7 @@ object NearNftService {
         }
 
     }
-    fun getNFTforAccount(account_id: String , contract_id: String): String {
+    fun getNFTforAccount(account_id: String , contract_id: String) {
         val nearClient = NearService.usingPeer("archival-rpc.testnet.near.org");
 
 
@@ -202,7 +209,13 @@ object NearNftService {
         println(accountNft::class.simpleName)
 
         println("Account NFTs :")
-        return  accountNft.map { it.toChar() }.joinToString(separator = "")
+        val resultNfts = accountNft.map { it.toChar() }.joinToString(separator = "")
+        val nfts = Json.decodeFromString<List<NearNftMetadata>>(resultNfts)
 
+
+
+        return nfts.forEach {
+            println(it)
+        }
     }
 }

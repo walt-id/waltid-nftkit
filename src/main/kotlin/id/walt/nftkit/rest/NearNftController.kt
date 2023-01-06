@@ -104,8 +104,6 @@ object NearNftController {
         )
         ctx.json(result)
 
-
-
     }
 
     fun getNftTokenDocs() = document().operation {
@@ -115,6 +113,8 @@ object NearNftController {
         .pathParam<String>("account_id") {
         }.pathParam<String>("contract_id") {
         }.json<String>("200") { it.description("NFT token") }
+
+
 
 
 }
