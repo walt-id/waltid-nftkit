@@ -185,7 +185,7 @@ object NearNftService {
         }
 
     }
-    fun getNFTforAccount(account_id: String , contract_id: String) {
+    fun getNFTforAccount(account_id: String , contract_id: String) : List<NearNftMetadata> {
         val nearClient = NearService.usingPeer("archival-rpc.testnet.near.org");
 
 
@@ -213,9 +213,7 @@ object NearNftService {
         val nfts = Json.decodeFromString<List<NearNftMetadata>>(resultNfts)
 
 
-
-        return nfts.forEach {
-            println(it)
-        }
+        println(nfts)
+        return nfts
     }
 }

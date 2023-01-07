@@ -112,7 +112,11 @@ object NearNftController {
     }
         .pathParam<String>("account_id") {
         }.pathParam<String>("contract_id") {
-        }.json<String>("200") { it.description("NFT token") }
+        }.json<NearNftMetadata>("200") {
+            it.description("NFT token")
+
+        }
+
 
 
 
