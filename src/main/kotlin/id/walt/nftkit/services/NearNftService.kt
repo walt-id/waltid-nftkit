@@ -54,8 +54,8 @@ data class  NearNftMetadata(
 )
 @Serializable
 data class OperationResult(
-    val operationHash: String,
-    val operationExternalUrl: String
+    val hash: String,
+
 )
 @Serializable
 data class NearOperationResponse(
@@ -219,7 +219,7 @@ object NearNftService {
         return nfts
     }
 
-    fun createSubAccount (account_id: String , newAccountId: String , amount : String , chain : String) : NearOperationResponse {
+    fun createSubAccount (account_id: String , newAccountId: String , amount : String , chain : String) : OperationResult {
         return runBlocking {
             val values = mapOf(
                 "account_id" to account_id,
@@ -234,7 +234,7 @@ object NearNftService {
                     values
                 )
             }
-                .body<NearOperationResponse>()
+                .body<OperationResult>()
             return@runBlocking nearOperationResponse
         }
 

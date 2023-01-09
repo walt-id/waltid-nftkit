@@ -21,6 +21,14 @@ data class NearMintRequest(
     val receiver_id: String,
     )
 
+@Serializable
+data class NearSubAccountRequest(
+
+        val  account_id: String,
+        val newAccountId: String,
+        val amount: String,
+
+)
 object NearNftController {
 
     fun mint(ctx: Context) {
@@ -134,6 +142,25 @@ object NearNftController {
             it.description("NFT contract metadata")
 
         }
+
+    fun createSubAccount (ctx: Context) {
+
+        val subAccountReq = ctx.bodyAsClass(NearSubAccountRequest::class.java)
+        val chain = ctx.pathParam("chain")
+        val result = NearNftService.createSubAccount(
+            subAccountReq.account_id, subAccountReq.newAccountId, subAccountReq.amount, chain
+        )
+        ctx.json(result)
+    }
+
+    fun createSubAccountDocs() = document().operation {
+        it.summary("Create sub account")
+            .operationId("createSubAccount").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
+    }
+        .pathParam<String>("chain")
+        .body<NearSubAccountRequest> {
+            it.description("")
+        }.json<OperationResult>("200") { it.description("Transaction ID and smart contract address") }
 
 
 }
