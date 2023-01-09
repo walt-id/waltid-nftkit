@@ -207,7 +207,9 @@ object NftKitApi {
                             )
                         }
                         path("near"){
-
+                            post("chain/{chain}/account/create",
+                                documented(NearNftController.createSubAccountDocs(), NearNftController::createSubAccount)
+                            )
                             post(
                                 "/contract/{contract_id}/mint",
                                 documented(NearNftController.mintDocs(), NearNftController::mint)
