@@ -209,7 +209,7 @@ object NftKitApi {
                         path("near"){
 
                             post(
-                                "/contract/{contract_id}/account/{account_id}/mint",
+                                "/contract/{contract_id}/mint",
                                 documented(NearNftController.mintDocs(), NearNftController::mint)
                             )
                             post("/contract/account/{account_id}/deploy/default",
@@ -221,6 +221,9 @@ object NftKitApi {
 
                             get("/contract/{contract_id}/account/{account_id}/NFTS",
                                 documented(NearNftController.getNftTokenDocs(), NearNftController::getNftToken)
+                            )
+                            get("/contract/{contract_id}/NFT/metadata",
+                                documented(NearNftController.getNFTContractMetadataDocs(), NearNftController::getNFTContractMetadata)
                             )
 
                         }

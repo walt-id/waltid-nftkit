@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class NearMintRequest(
-    val contract_id: String,
+
     val  account_id: String,
     val token_id: String,
     val title: String,
@@ -26,12 +26,12 @@ object NearNftController {
     fun mint(ctx: Context) {
 
         val mintReq = ctx.bodyAsClass(NearMintRequest::class.java)
-
+        val contract_id = ctx.pathParam("contract_id")
 
 
         val result = mintReq.media_hash?.let {
             NearNftService.mintNftToken(
-                mintReq.account_id, mintReq.contract_id, mintReq.token_id, mintReq.title, mintReq.description, mintReq.media,
+                mintReq.account_id, contract_id, mintReq.token_id, mintReq.title, mintReq.description, mintReq.media,
                 it, mintReq.reference.toString(), mintReq.reference_hash, mintReq.receiver_id
             )
         }
@@ -118,7 +118,22 @@ object NearNftController {
         }
 
 
+    fun getNFTContractMetadata(ctx: Context) {
+        val result = NearNftService.getNftNearMetadata(
+            ctx.pathParam("contract_id")
+        )
+        ctx.json(result)
+    }
 
+    fun getNFTContractMetadataDocs() = document().operation {
+        it.summary("Get NFT contract metadata")
+            .operationId("getNFTContractMetadata").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
+    }
+        .pathParam<String>("contract_id") {
+        }.json<NearNftMetadata>("200") {
+            it.description("NFT contract metadata")
+
+        }
 
 
 }
