@@ -44,6 +44,13 @@ jobs:
           DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
           DOCKER_FILE: Dockerfile
           CONTAINER_TAG: waltid/nftkit:latest
+      - name: Docker Build and Push SNAPSHOT JS
+        uses: philpotisk/github-action-docker-build-push@master
+        env:
+          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+          DOCKER_FILE: js/Dockerfile
+          CONTAINER_TAG: waltid/nftkit-js:latest
       - name: Prepare CD
         run: sed "s/_DEFAULT_DEPLOYMENT_/$GITHUB_SHA/g" k8s/deployment-dev.yaml > k8s/deployment-dev_mod.yaml
       - name: Continuous deployment
