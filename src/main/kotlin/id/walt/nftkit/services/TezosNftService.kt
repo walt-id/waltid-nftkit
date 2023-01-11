@@ -255,6 +255,10 @@ object TezosNftService {
                     contentType(ContentType.Application.Json)
                 }
                     .body<List<TezosContractMetadataResponse>>()
+            if(contractMetadata.size.equals(0)) {
+                val value = mapOf("error" to JsonPrimitive("The contract doesn't have metadata"))
+                return@runBlocking JsonObject(value)
+            }
             val metadataURI=   decodeHex(contractMetadata.get(0).value)
             val metadata= NftService.fetchIPFSData(metadataURI)
             val jsonObject = Json.parseToJsonElement(metadata).jsonObject
