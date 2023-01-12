@@ -9,5 +9,5 @@ export interface NftMint {
     reference: string;
     reference_hash: string;
     receiver_id : string;
-
+    chain : string;
 }
