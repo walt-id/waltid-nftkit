@@ -8,5 +8,6 @@ export interface DeployContractWithCustomInit {
     reference: string;
     base_uri: string;
     reference_hash: string;
+    chain : string;
 }
 
