@@ -8,6 +8,7 @@ import { CreateSubAccount } from "../dto/create.subaccount.dto";
 
 import { DeployContractWithCustomInit } from "../dto/deploy.contract.customInit";
 import { NftMint } from "../dto/nft.mint.dto";
+import {providers} from "near-api-js";
 dotenv.config();
 
 class NearService {
@@ -201,30 +202,50 @@ class NearService {
     };
     const near = await nearAPI.connect(this.connectionConfig);
     const account = await near.account(nftmint.account_id);
-    const contract = new Contract(account, nftmint.contract_id, {
-      viewMethods: [],
-      changeMethods: ["nft_mint"],
-    });
+    // const contract = new Contract(account, nftmint.contract_id, {
+    //   viewMethods: [],
+    //   changeMethods: ["nft_mint"],
+    // });
 
     const GAS = new BN("100000000000000");
     const Amount_deposited = new BN("100000000000000000000000");
     // @ts-ignore
-  const response =  contract.nft_mint({
+    // let output =  contract.nft_mint({
+    //   args: {
+    //     token_id: nftmint.token_id,
+    //     metadata: {
+    //       title: nftmint.title,
+    //       description: nftmint.description,
+    //       media: nftmint.media,
+    //       media_hash: null,
+    //     },
+    //
+    //     receiver_id: nftmint.receiver_id,
+    //   },
+    //   gas: GAS,
+    //   amount: Amount_deposited,
+    // });
+    const functionCallResponse = await account.functionCall({
+      contractId: nftmint.contract_id,
+      methodName: "nft_mint",
       args: {
-        token_id: nftmint.token_id,
-        metadata: {
-          title: nftmint.title,
-          description: nftmint.description,
-          media: nftmint.media,
-          media_hash: null,
-        },
 
-        receiver_id: nftmint.receiver_id,
-      },
+              token_id: nftmint.token_id,
+              metadata: {
+                title: nftmint.title,
+                description: nftmint.description,
+                media: nftmint.media,
+                media_hash: null,
+              },
+
+              receiver_id: nftmint.receiver_id,
+            },
+
       gas: GAS,
-      amount: Amount_deposited,
+      attachedDeposit: Amount_deposited,
     });
-    return JSON.stringify((await response).transaction.hash);
+
+    return JSON.stringify(functionCallResponse.transaction.hash);
   }
 }
 

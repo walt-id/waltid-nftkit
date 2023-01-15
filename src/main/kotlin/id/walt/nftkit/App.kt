@@ -28,8 +28,8 @@ fun main() {
 //  "khaled_lightency1.testnet"
 //    )
 
-    getNftNearMetadata("demo.khaled_lightency1.testnet")
-    getNFTforAccount("khaled_lightency1.testnet" , "demo.khaled_lightency1.testnet")
+//    getNftNearMetadata("demo.khaled_lightency1.testnet")
+//    getNFTforAccount("khaled_lightency1.testnet" , "demo.khaled_lightency1.testnet")
 }
 
 
