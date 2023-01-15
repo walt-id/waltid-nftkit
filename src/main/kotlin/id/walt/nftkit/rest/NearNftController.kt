@@ -23,12 +23,26 @@ data class NearMintRequest(
 
 @Serializable
 data class NearSubAccountRequest(
-
         val  account_id: String,
         val newAccountId: String,
         val amount: String,
 
 )
+
+@Serializable
+data class NearCustomDeployRequest(
+        val spec: String,
+        val name : String,
+        val symbol : String,
+        val icon : String?= null,
+        val base_uri : String?= null,
+        val reference : String?= null,
+        val reference_hash : String?= null,
+        val owner_id: String,
+    )
+
+
+
 object NearNftController {
 
     fun mint(ctx: Context) {
@@ -75,19 +89,12 @@ object NearNftController {
         }.json<OperationResult>("200") { it.description("Transaction ID") }
 
     fun deployCustomContract(ctx: Context) {
+        val mintReq = ctx.bodyAsClass(NearCustomDeployRequest::class.java)
+        val account_id = ctx.pathParam("account_id")
+        val chain = ctx.pathParam("chain")
 
-        val result = NearNftService.deployContractWithCustomMetadata(
-            ctx.pathParam("account_id"),
-            ctx.pathParam("owner_id"),
-            ctx.pathParam("spec"),
-            ctx.pathParam("name"),
-            ctx.pathParam("symbol"),
-            ctx.pathParam("icon"),
-            ctx.pathParam("base_uri"),
-            ctx.pathParam("reference"),
-            ctx.pathParam("reference_hash"),
-            ctx.pathParam("chain")
-        )
+        val result = NearNftService.deployContractWithCustomMetadata(account_id,mintReq.owner_id, mintReq.spec, mintReq.name, mintReq.symbol, mintReq.icon.toString(), mintReq.base_uri.toString(), mintReq.reference.toString(), mintReq.reference_hash.toString(),chain)
+
         ctx.json(result)
     }
 
@@ -97,22 +104,18 @@ object NearNftController {
     }
         .pathParam<String>("chain"){
         }.pathParam<String>("account_id") {
-        }.pathParam<String>("owner_id") {
-        }.pathParam<String>("spec") {
-        }.pathParam<String>("name") {
-        }.pathParam<String>("symbol") {
-        }.pathParam<String>("icon") {
-        }.pathParam<String>("base_uri") {
-        }.pathParam<String>("reference") {
-        }.pathParam<String>("reference_hash") {
+        }
+        .body<NearCustomDeployRequest> {
+            it.description("")
         }.json<OperationResult>("200") { it.description("Transaction ID") }
+
+
 
 
     fun getNftToken(ctx: Context) {
         val result = NearNftService.getNFTforAccount(
             ctx.pathParam("account_id"),
             ctx.pathParam("contract_id"),
-
         )
         ctx.json(result)
 
@@ -168,7 +171,7 @@ object NearNftController {
         }.json<OperationResult>("200") { it.description("Transaction ID and smart contract address") }
 
 
-}
 
+}
 
 

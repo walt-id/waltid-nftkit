@@ -146,7 +146,7 @@ object NearNftService {
         }
     }
 
-    fun deployContractWithCustomMetadata(account_id : String , owner_id: String , spec: String , name: String , symbol: String , icon: String , base_uri: String , reference: String , reference_hash: String,chain: String): OperationResult {
+    fun deployContractWithCustomMetadata(account_id :String , owner_id: String , spec: String , name: String , symbol: String , icon: String , base_uri: String , reference: String , reference_hash: String,chain: String): OperationResult {
         return runBlocking {
             val values = mapOf(
                 "account_id" to account_id,
