@@ -35,12 +35,12 @@ object NearNftController {
 
         val mintReq = ctx.bodyAsClass(NearMintRequest::class.java)
         val contract_id = ctx.pathParam("contract_id")
-
+        val chain = ctx.pathParam("chain")
 
         val result = mintReq.media_hash?.let {
             NearNftService.mintNftToken(
                 mintReq.account_id, contract_id, mintReq.token_id, mintReq.title, mintReq.description, mintReq.media,
-                it, mintReq.reference.toString(), mintReq.reference_hash, mintReq.receiver_id
+                it, mintReq.reference.toString(), mintReq.reference_hash, mintReq.receiver_id,chain
             )
         }
         if (result != null) {
@@ -55,13 +55,14 @@ object NearNftController {
 
         .body<NearMintRequest> {
             it.description("")
-        }.json<String>("200") { it.description("Transaction ID and smart contract address") }
+        }.json<OperationResult>("200") { it.description("Transaction ID and smart contract address") }
 
 
 
     fun deployDefaultContract(ctx: Context) {
         val result = NearNftService.deployContractDefault(
-            ctx.pathParam("account_id")
+            ctx.pathParam("account_id" ),
+            ctx.pathParam("chain" )
         )
         ctx.json(result)
     }
@@ -71,9 +72,10 @@ object NearNftController {
             .operationId("deployDefaultContract").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
     }
         .pathParam<String>("account_id") {
-        }.json<OperationResponse>("200") { it.description("Transaction ID") }
+        }.json<OperationResult>("200") { it.description("Transaction ID") }
 
     fun deployCustomContract(ctx: Context) {
+
         val result = NearNftService.deployContractWithCustomMetadata(
             ctx.pathParam("account_id"),
             ctx.pathParam("owner_id"),
@@ -83,7 +85,8 @@ object NearNftController {
             ctx.pathParam("icon"),
             ctx.pathParam("base_uri"),
             ctx.pathParam("reference"),
-            ctx.pathParam("reference_hash")
+            ctx.pathParam("reference_hash"),
+            ctx.pathParam("chain")
         )
         ctx.json(result)
     }
@@ -92,7 +95,8 @@ object NearNftController {
         it.summary("Deploy custom contract")
             .operationId("deployCustomContract").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
     }
-        .pathParam<String>("account_id") {
+        .pathParam<String>("chain"){
+        }.pathParam<String>("account_id") {
         }.pathParam<String>("owner_id") {
         }.pathParam<String>("spec") {
         }.pathParam<String>("name") {
@@ -101,7 +105,7 @@ object NearNftController {
         }.pathParam<String>("base_uri") {
         }.pathParam<String>("reference") {
         }.pathParam<String>("reference_hash") {
-        }.json<OperationResponse>("200") { it.description("Transaction ID") }
+        }.json<OperationResult>("200") { it.description("Transaction ID") }
 
 
     fun getNftToken(ctx: Context) {
@@ -128,7 +132,8 @@ object NearNftController {
 
     fun getNFTContractMetadata(ctx: Context) {
         val result = NearNftService.getNftNearMetadata(
-            ctx.pathParam("contract_id")
+            ctx.pathParam("contract_id"),
+            ctx.pathParam("chain")
         )
         ctx.json(result)
     }
@@ -138,7 +143,7 @@ object NearNftController {
             .operationId("getNFTContractMetadata").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
     }
         .pathParam<String>("contract_id") {
-        }.json<NearNftMetadata>("200") {
+        }.json<NFTMetadata>("200") {
             it.description("NFT contract metadata")
 
         }

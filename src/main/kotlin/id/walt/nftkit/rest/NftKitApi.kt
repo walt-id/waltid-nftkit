@@ -211,20 +211,20 @@ object NftKitApi {
                                 documented(NearNftController.createSubAccountDocs(), NearNftController::createSubAccount)
                             )
                             post(
-                                "/contract/{contract_id}/mint",
+                                "/chain/{chain}/contract/{contract_id}/mint",
                                 documented(NearNftController.mintDocs(), NearNftController::mint)
                             )
-                            post("/contract/account/{account_id}/deploy/default",
+                            post("/chain/{chain}/contract/account/{account_id}/deploy/default",
                                 documented(NearNftController.deployDefaultContractDocs(), NearNftController::deployDefaultContract)
                             )
                             post("/contract/account/{account_id}/deploy",
                                 documented(NearNftController.deployCustomContractDocs(), NearNftController::deployCustomContract)
                             )
 
-                            get("/contract/{contract_id}/account/{account_id}/NFTS",
+                            get("chain/{chain}/contract/{contract_id}/account/{account_id}/NFTS",
                                 documented(NearNftController.getNftTokenDocs(), NearNftController::getNftToken)
                             )
-                            get("/contract/{contract_id}/NFT/metadata",
+                            get("/chain/{chain}/contract/{contract_id}/NFT/metadata",
                                 documented(NearNftController.getNFTContractMetadataDocs(), NearNftController::getNFTContractMetadata)
                             )
 

@@ -24,7 +24,7 @@ class NearController {
 
   async deployContract(req: express.Request, res: express.Response) {
     const account = await NearService.deployContract(req.body);
-    res.status(201).send({response : account });
+    res.status(201).send({hash : account });
   }
 
   async deployContractWithCustomMetadata(
@@ -34,12 +34,13 @@ class NearController {
     const account = await NearService.deployContractWithCustomMetadata(
       req.body
     );
-    res.status(201).send({ account });
+    res.status(201).send({ hash :account });
   }
 
   async mintToken(req: express.Request, res: express.Response) {
     const account = await NearService.mintToken(req.body);
-    res.send(account);
+    res.status(201);
+    res.send({hash: account });
   }
 }
 
