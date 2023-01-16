@@ -14,6 +14,14 @@ fun main() {
     /* /////////// */
     NftKitApi.start()
 
+
+println("hey")
+    val getNftNearMetadataa = getNftNearMetadata(
+        "demo.khaled_lightency1.testnet",
+        "testnet"
+    )
+    println(getNftNearMetadataa)
+
 }
 
 
