@@ -173,7 +173,7 @@ object NearNftService {
         }
     }
 
-    fun getNftNearMetadata(contract_id: String , chain: String ): String {
+    fun getNftNearMetadata(contract_id: String , chain: String ): Unit {
         var url = "" ;
         if (chain =="testnet")
         {
@@ -195,16 +195,15 @@ object NearNftService {
 
         val nftMetadata =nftMetadataCall.result
 
+        val stringArray = nftMetadata.map { it.toChar() }.toTypedArray()
+        println("waaaa3" + stringArray.joinToString(""))
 
-         val test =   nftMetadata.forEach {
+        val test =   nftMetadata.forEach {
             val fin = it.toChar()
-              fin.toString()
-                // put it in array
-              print(fin)
-
+            print(fin)
         }
-
-        return test.toString()
+        println("this is test " + test)
+        return test
     }
     fun getNFTforAccount(account_id: String , contract_id: String) : List<NearNftMetadata> {
         val nearClient = NearService.usingPeer("archival-rpc.testnet.near.org");
