@@ -205,8 +205,18 @@ object NearNftService {
         println("this is test " + test)
         return test
     }
-    fun getNFTforAccount(account_id: String , contract_id: String) : List<NearNftMetadata> {
-        val nearClient = NearService.usingPeer("archival-rpc.testnet.near.org");
+    fun getNFTforAccount(account_id: String , contract_id: String ,chain: String) : List<NearNftMetadata> {
+        var url = "" ;
+        if (chain =="testnet")
+        {
+            url = "archival-rpc.testnet.near.org"
+        }
+        else
+        {
+            url = "archival-rpc.mainnet.near.org"
+        }
+        val nearClient = NearService.usingPeer(url);
+
         val accountId = Base64.getEncoder().encodeToString("{\"account_id\":\"${account_id}\"}".toByteArray())
         val accountsNftCall = nearClient
             .callContractFunction(
@@ -239,5 +249,30 @@ object NearNftService {
             return@runBlocking nearOperationResponse
         }
 
+    }
+
+    fun getTokenById(contract_id: String, token_id: String , chain: String): NearNftMetadata {
+        var url = "" ;
+        if (chain =="testnet")
+        {
+            url = "archival-rpc.testnet.near.org"
+        }
+        else
+        {
+            url = "archival-rpc.mainnet.near.org"
+        }
+        val nearClient = NearService.usingPeer(url);
+        val token_id = Base64.getEncoder().encodeToString("{\"token_id\":\"${token_id}\"}".toByteArray())
+        val accountsNftCall = nearClient
+            .callContractFunction(
+                Finality.FINAL,
+                contract_id,
+                "nft_token",
+                token_id
+            )
+        val accountNft = accountsNftCall.result
+        val resultNfts = accountNft.map { it.toChar() }.joinToString(separator = "")
+        val nfts = Json.decodeFromString<NearNftMetadata>(resultNfts)
+        return nfts
     }
 }
