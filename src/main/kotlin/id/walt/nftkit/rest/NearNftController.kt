@@ -116,6 +116,7 @@ object NearNftController {
         val result = NearNftService.getNFTforAccount(
             ctx.pathParam("account_id"),
             ctx.pathParam("contract_id"),
+            ctx.pathParam("chain")
         )
         ctx.json(result)
 
@@ -171,7 +172,24 @@ object NearNftController {
         }.json<OperationResult>("200") { it.description("Transaction ID and smart contract address") }
 
 
+    fun getNFTTokenMetadata(ctx: Context) {
+        val result = NearNftService.getTokenById(
+            ctx.pathParam("contract_id"),
+            ctx.pathParam("token_id"),
+            ctx.pathParam("chain")
+        )
+        ctx.json(result)
+    }
 
+    fun getNFTTokenMetadataDocs() = document().operation {
+        it.summary("Get NFT token metadata")
+            .operationId("getNFTTokenMetadata").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
+    }
+        .pathParam<String>("contract_id") {
+        }.pathParam<String>("token_id") {
+        }.json<NearNftMetadata>("200") {
+            it.description("NFT token metadata")
+        }
 }
 
 
