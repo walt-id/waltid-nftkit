@@ -37,7 +37,7 @@ object DynamicPolicy {
             data.put("category", nftMetadata.tezosNftMetadata.category)
             data.put("collectionName", nftMetadata.tezosNftMetadata.collectionName)
             data.put("creatorName", nftMetadata.tezosNftMetadata.creatorName)
-            nftMetadata.tezosNftMetadata.attributes?.forEach { data.put(it.trait_type, it.value) }
+            nftMetadata.tezosNftMetadata.attributes?.forEach { data.put(it.name, it.value) }
         }
         return data
     }
