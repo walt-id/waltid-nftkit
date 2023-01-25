@@ -6,6 +6,7 @@ import id.walt.nftkit.metadata.MetadataUri
 import id.walt.nftkit.metadata.MetadataUriFactory
 import id.walt.nftkit.rest.TezosSCDeploymentResponse
 import id.walt.nftkit.utilis.Common
+import io.javalin.core.util.RouteOverviewUtil.metaInfo
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -43,13 +44,21 @@ data class TezosNftMetadata(
     val isTransferable:Boolean?= null,
     val isBooleanAmount:Boolean?= null,
     val shouldPreferSymbol:Boolean?= null,
-    val attributes: List<NftMetadata.Attributes>?=null,
+    val attributes: List<Attribute>?=null,
     val tags: List<String>?= null,//["pxlshrd","Pâtisserie","fxhashturnsone"]
     val category: String?= null,
     val collectionName: String?= null,
     val creatorName: String?= null,
     val keywords: String?= null,//"gaming,collectible,rocket,monster,bear,battalion",
-    )
+    ){
+    @Serializable
+    data class Attribute(
+        val name: String,
+        var value: String,
+        //val type: Sting?
+        //val trait_type: String,
+        )
+}
 
 data class TezosMintingParameter(
     val metadataUri: String?,
@@ -218,9 +227,10 @@ object TezosNftService {
                 NftService.client.get("https://api$chainAPI.tzkt.io/v1/tokens?contract=$contractAddress&tokenId=$tokenId&type=fa2&token.totalSupply=1") {
                     contentType(ContentType.Application.Json)
                 }
-                    .body<List<TezosNFTMetadataTzktResult>>()
-
-            return@runBlocking nfts.get(0).metadata
+                    .body<String>()
+            val jsonObject = Json.parseToJsonElement(nfts).jsonArray
+            val result= parseNftTezosMetadataResult(jsonObject)
+            return@runBlocking result.get(0).metadata
         }
     }
      fun fetchAccountNFTsByTzkt(
@@ -240,7 +250,7 @@ object TezosNftService {
                 }
                     .body<String>()
             val jsonObject = Json.parseToJsonElement(nfts).jsonArray
-            val result= parseNftsResult(jsonObject)
+            val result= parseAccountNFTsByTzktResult(jsonObject)
             return@runBlocking result
         }
     }
@@ -274,8 +284,14 @@ object TezosNftService {
             .toString(Charsets.ISO_8859_1)  // Or whichever encoding your input uses
     }
 
-    fun parseNftsResult(nfts: JsonArray): List<TezosNFTsTzktResult>{
+    private fun parseAccountNFTsByTzktResult(nfts: JsonArray): List<TezosNFTsTzktResult>{
         return nfts.jsonArray.map {
+            var attributes: List<TezosNftMetadata.Attribute>?=null
+            if( it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("attributes")?.metaInfo.equals("kotlinx.serialization.json.JsonArray.class")){
+                attributes=  it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("attributes")?.jsonArray?.map {
+                    TezosNftMetadata.Attribute(it.jsonObject.get("name")?.jsonPrimitive?.content ?: "", it.jsonObject.get("value")?.jsonPrimitive?.content ?: "")
+                }
+            }
             TezosNFTsTzktResult(
                 it.jsonObject.get("id")?.jsonPrimitive?.long ?: 0,
                 TezosNFTsTzktResult.Account(
@@ -300,9 +316,7 @@ object TezosNftService {
                         it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("isTransferable")?.jsonPrimitive?.booleanOrNull,
                         it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("isBooleanAmount")?.jsonPrimitive?.booleanOrNull,
                         it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("shouldPreferSymbol")?.jsonPrimitive?.booleanOrNull,
-                        it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("attributes")?.jsonArray?.map {
-                            NftMetadata.Attributes(it.jsonObject.get("trait_type")?.jsonPrimitive?.content ?: "", it.jsonObject.get("value")?.jsonPrimitive?.content ?: "")
-                        },
+                        attributes,
                         it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("tags")?.jsonArray?.map { it.jsonPrimitive?.content },
                         it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("category")?.jsonPrimitive?.content,
                         it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("collectionName")?.jsonPrimitive?.content,
@@ -318,6 +332,43 @@ object TezosNftService {
                 it.jsonObject.get("lastTime")?.jsonPrimitive?.toString(),
 
                 )
+        }
+    }
+
+    private fun parseNftTezosMetadataResult(nfts: JsonArray): List<TezosNFTMetadataTzktResult>{
+        return nfts.jsonArray.map {
+            var attributes: List<TezosNftMetadata.Attribute>?=null
+            if( it.jsonObject?.get("metadata")?.jsonObject?.get("attributes")?.metaInfo.equals("kotlinx.serialization.json.JsonArray.class")){
+                attributes=  it.jsonObject?.get("metadata")?.jsonObject?.get("attributes")?.jsonArray?.map {
+                    TezosNftMetadata.Attribute(it.jsonObject.get("name")?.jsonPrimitive?.content ?: "", it.jsonObject.get("value")?.jsonPrimitive?.content ?: "")
+                }
+            }
+            TezosNFTMetadataTzktResult(
+                it.jsonObject.get("id")?.jsonPrimitive?.long ?: 0,
+                TezosNFTsTzktResult.Token.Contract(it.jsonObject.get("contract")?.jsonObject?.get("address")?.jsonPrimitive?.content ?: ""),
+                it.jsonObject.get("tokenId")?.jsonPrimitive?.content ?: "",
+                it.jsonObject.get("standard")?.jsonPrimitive?.content ?: "",
+                TezosNftMetadata(
+                    it.jsonObject.get("metadata")?.jsonObject?.get("name")?.jsonPrimitive?.content ?: "",
+                    it.jsonObject.get("metadata")?.jsonObject?.get("description")?.jsonPrimitive?.content,
+                    it.jsonObject.get("metadata")?.jsonObject?.get("symbol")?.jsonPrimitive?.content,
+                    it.jsonObject.get("metadata")?.jsonObject?.get("image")?.jsonPrimitive?.content,
+                    it.jsonObject?.get("metadata")?.jsonObject?.get("creators")?.jsonArray?.map { it.jsonPrimitive?.content },
+                    it.jsonObject?.get("metadata")?.jsonObject?.get("decimals")?.jsonPrimitive?.content,
+                    it.jsonObject?.get("metadata")?.jsonObject?.get("displayUri")?.jsonPrimitive?.content,
+                    it.jsonObject?.get("metadata")?.jsonObject?.get("artifactUri")?.jsonPrimitive?.content,
+                    it.jsonObject?.get("metadata")?.jsonObject?.get("thumbnailUri")?.jsonPrimitive?.content,
+                    it.jsonObject?.get("metadata")?.jsonObject?.get("isTransferable")?.jsonPrimitive?.booleanOrNull,
+                    it.jsonObject?.get("metadata")?.jsonObject?.get("isBooleanAmount")?.jsonPrimitive?.booleanOrNull,
+                    it.jsonObject?.get("metadata")?.jsonObject?.get("shouldPreferSymbol")?.jsonPrimitive?.booleanOrNull,
+                    attributes,
+                    it.jsonObject?.get("metadata")?.jsonObject?.get("tags")?.jsonArray?.map { it.jsonPrimitive?.content },
+                    it.jsonObject?.get("metadata")?.jsonObject?.get("category")?.jsonPrimitive?.content,
+                    it.jsonObject?.get("metadata")?.jsonObject?.get("collectionName")?.jsonPrimitive?.content,
+                    it.jsonObject?.get("metadata")?.jsonObject?.get("creatorName")?.jsonPrimitive?.content,
+                    it.jsonObject?.get("metadata")?.jsonObject?.get("keywords")?.jsonPrimitive?.content
+                )
+            )
         }
     }
 }

@@ -86,10 +86,10 @@ object VerificationService {
                 if(ownership){
                     val metadata= TezosNftService.getNftTezosMetadata(TezosChain.valueOf(chain.toString()), contractAddress, tokenId)
                     if(metadata!!.attributes?.filter {
-                            (it.trait_type.equals(traitType) && it.value.equals(
+                            (it.name.equals(traitType) && it.value.equals(
                                 traitValue,
                                 true
-                            )) || (traitValue == null && traitType.equals(it.trait_type))
+                            )) || (traitValue == null && traitType.equals(it.name))
                         }!!.isNotEmpty()){
                         return true
                     }
@@ -127,7 +127,7 @@ object VerificationService {
 
 
     private fun verifyNftOwnershipWithinCollectionTezosChain(chain: Chain, contractAddress: String, owner: String): Boolean {
-        val result= TezosNftService.fetchAccountNFTsByTzkt(chain, owner, contractAddress).filter { "1".equals(it.token.totalSupply) }
+        val result= TezosNftService.fetchAccountNFTsByTzkt(chain, owner, contractAddress).filter { Integer.parseInt(it.balance)>0 }
         return if (result.size >= 1) true else false
     }
 
@@ -155,7 +155,7 @@ object VerificationService {
     }
 
     private fun NFTsTezosOwnershipVerification(chain: Chain, contractAddress: String, account: String, tokenId: String): Boolean{
-        val result= TezosNftService.fetchAccountNFTsByTzkt(chain, account, contractAddress).filter { "1".equals(it.token.totalSupply) && tokenId.equals(it.token.tokenId) }
+        val result= TezosNftService.fetchAccountNFTsByTzkt(chain, account, contractAddress).filter { Integer.parseInt(it.balance)>0 && tokenId.equals(it.token.tokenId) }
         return if (result.size>= 1) true else false
     }
 
