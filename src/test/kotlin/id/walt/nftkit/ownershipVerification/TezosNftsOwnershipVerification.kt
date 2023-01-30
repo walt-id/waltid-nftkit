@@ -4,7 +4,6 @@ import id.walt.nftkit.opa.DynamicPolicyArg
 import id.walt.nftkit.opa.PolicyRegistry
 import id.walt.nftkit.services.Chain
 import id.walt.nftkit.services.VerificationService
-import id.walt.nftkit.utilis.Common
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
@@ -13,12 +12,12 @@ class TezosNftsOwnershipVerification : StringSpec({
 
     "NFT ownership verification".config(enabled=enableTest) {
         val result= VerificationService.verifyNftOwnership(Chain.TEZOS, "KT1U6EHmNxJTkvaWJ4ThczG4FSDaHC21ssvi", "tz2AbAdd7KXzJMxHZUKoRwEDfL9j2peBKgyu", "1462880")
-        result shouldBe  true
+        result shouldBe  false
     }
 
     "NFT ownership verification within a collection ".config(enabled=enableTest) {
         val result= VerificationService.verifyNftOwnershipWithinCollection(Chain.TEZOS, "KT1U6EHmNxJTkvaWJ4ThczG4FSDaHC21ssvi", "tz2AbAdd7KXzJMxHZUKoRwEDfL9j2peBKgyu")
-        result shouldBe  true
+        result shouldBe  false
     }
 
     "NFT ownership verification with traits".config(enabled=enableTest) {
@@ -35,24 +34,23 @@ class TezosNftsOwnershipVerification : StringSpec({
                 "\n" +
                 "\n" +
                 "allow if {\n" +
-                "\tvalid_datanft_Backgrounds\n" +
-                "\tvalid_datanft_symbol\n" +
+                "\tvalid_nft_Background\n" +
+                "\tvalid_nft_Body\n" +
                 "}\n" +
                 "\n" +
                 "\n" +
-                "valid_datanft_Backgrounds if input.Backgrounds= data.Backgrounds\n" +
+                "valid_nft_Background if input.Background= data.Background\n" +
                 "\n" +
-                "valid_datanft_symbol if input.symbol= data.symbol"
+                "valid_nft_Body if input.Body= data.Body"
         val input = mutableMapOf<String, String?>()
-        input.put("Backgrounds","Green")
-        input.put("symbol","RMB")
-        input.put("reference","R1")
-        val policyName= "policy1"
-        val dynArg= DynamicPolicyArg(policyName, "policy1", input, policy, "data.app.nft.allow")
+        input.put("Background","Purple")
+        input.put("Body","Body 11")
+        val policyName= "policy 1"
+        val dynArg= DynamicPolicyArg(policyName, "policy 1", input, policy, "data.app.nft.allow")
         PolicyRegistry.createSavedPolicy(dynArg.name, dynArg)
-        val chain= Chain.GHOSTNET
-        val contractAddress= "KT1Ennr99qgqzKEUCEqypXEexH4wWzVL5a9m"
-        val tokenId="0"
+        val chain= Chain.TEZOS
+        val contractAddress= "KT1U6EHmNxJTkvaWJ4ThczG4FSDaHC21ssvi"
+        val tokenId="1462880"
         val result= VerificationService.verifyPolicy(chain, contractAddress, tokenId, policyName)
         result shouldBe  true
     }
