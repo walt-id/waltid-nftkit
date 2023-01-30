@@ -224,7 +224,7 @@ object TezosNftService {
             if(contractAddress != null)  contractAddressExp= "token.contract=$contractAddress&"
             if(TezosChain.GHOSTNET.equals(chain)) chainAPI= ".ghostnet"
             val nfts =
-                NftService.client.get("https://api$chainAPI.tzkt.io/v1/tokens?contract=$contractAddress&tokenId=$tokenId&type=fa2&token.totalSupply=1") {
+                NftService.client.get("https://api$chainAPI.tzkt.io/v1/tokens?contract=$contractAddress&tokenId=$tokenId&type=fa2") {
                     contentType(ContentType.Application.Json)
                 }
                     .body<String>()

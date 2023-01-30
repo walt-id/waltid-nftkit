@@ -3,6 +3,8 @@ package id.walt.nftkit.services
 
 
 
+import id.walt.nftkit.opa.DynamicPolicy
+import id.walt.nftkit.opa.PolicyRegistry
 import id.walt.nftkit.utilis.Common
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -123,7 +125,23 @@ object VerificationService {
         return false
     }
 
-
+    fun verifyPolicy(chain: Chain, contractAddress: String, tokenId: String, policyName: String): Boolean {
+        val policy = PolicyRegistry.listPolicies().get(policyName)
+        if(policy == null) throw Exception("The policy doesn't exist")
+        return when{
+            Common.isEVMChain(chain) -> {
+                val evmNftmetadata= NftService.getNftMetadata(EVMChain.valueOf(chain.toString()), contractAddress, BigInteger( tokenId))
+                val nftMetadata = NftMetadataWrapper(evmNftmetadata,null)
+                return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
+            }
+            Common.isTezosChain(chain) -> {
+                val tezosNftmetadata= TezosNftService.getNftTezosMetadata(TezosChain.valueOf(chain.toString()), contractAddress, tokenId)
+                val nftMetadata = NftMetadataWrapper(null,tezosNftmetadata)
+                return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
+            }
+            else -> {throw Exception("Chain  is not supported")}
+            }
+    }
 
 
     private fun verifyNftOwnershipWithinCollectionTezosChain(chain: Chain, contractAddress: String, owner: String): Boolean {

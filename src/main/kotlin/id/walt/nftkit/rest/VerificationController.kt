@@ -1,12 +1,17 @@
 package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.Klaxon
+import id.walt.nftkit.opa.DynamicPolicyArg
+import id.walt.nftkit.opa.PolicyRegistry
 import id.walt.nftkit.services.Chain
 import id.walt.nftkit.services.EVMChain
 import id.walt.nftkit.services.VerificationService
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
+import io.javalin.http.HttpCode
 import io.javalin.plugin.openapi.dsl.document
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
@@ -110,5 +115,48 @@ object VerificationController {
         it.required(true)
     }.queryParam<String>("propertyValue") {
     }.json<Boolean>("200") { }
+
+    fun createDynamicPolicy(ctx: Context) {
+        val dynArg = Klaxon().parse<DynamicPolicyArg>(ctx.body()) ?: throw BadRequestResponse("Could not parse dynamic policy argument")
+        val success = PolicyRegistry.createSavedPolicy(dynArg.name, dynArg)
+        if(!success)
+            ctx.status(HttpCode.BAD_REQUEST).result("Failed to create dynamic policy")
+    }
+
+    fun createDynamicPolicyDocs() = document().operation {
+        it.summary("Create dynamic policy verification ").operationId("createDynamicPolicy").addTagsItem("NFT verification")
+    }
+        .queryParam<Boolean>("downloadPolicy")
+        .body<DynamicPolicyArg>()
+        .json<String>("200")
+
+    fun listPolicies(ctx: Context) {
+        ctx.json(PolicyRegistry.listPolicies())
+    }
+
+    fun listPoliciesDocs() = document().operation {
+        it.summary("List verification policies").operationId("listPolicies").addTagsItem("NFT verification")
+    }.json<Pair<String, DynamicPolicyArg>>("200")
+
+    fun verifyNftPolicy(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val tokenId = ctx.pathParam("tokenId")
+        val policyName = ctx.pathParam("policyName")
+        val result= policyName?.let { VerificationService.verifyPolicy(Common.getChain(chain), contractAddress, tokenId, it) }
+        if (result != null) {
+            ctx.json(result)
+        }
+    }
+
+    fun verifyNftPolicyDocs() = document()
+        .operation { it.summary("Verify an NFT metadata against a dynamic policy").operationId("verifyNftPolicy").addTagsItem("NFT verification") }
+        .pathParam<String>("chain") {
+            it.schema<Chain> { }
+        }.pathParam<String>("contractAddress") {
+        }.pathParam<String>("tokenId") {
+        }.pathParam<String>("policyName") {
+            it.required(true)
+        }.jsonArray<Boolean>("200") { it.description("Request processed successfully (NFT metadata might not be valid)") }
 
 }
