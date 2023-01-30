@@ -232,6 +232,27 @@ object NftKitApi {
                                 VerificationController::verifyNftOwnershipWithTraits
                             )
                         )
+                        post(
+                            "policies/create",
+                            documented(
+                                VerificationController.createDynamicPolicyDocs(),
+                                VerificationController::createDynamicPolicy
+                            )
+                        )
+                        get(
+                            "policies",
+                            documented(
+                                VerificationController.listPoliciesDocs(),
+                                VerificationController::listPolicies
+                            )
+                        )
+                        get(
+                            "chain/{chain}/contract/{contractAddress}/token/{tokenId}/policy/{policyName}/verification",
+                            documented(
+                                VerificationController.verifyNftPolicyDocs(),
+                                VerificationController::verifyNftPolicy
+                            )
+                        )
                         get(
                             "oceanDao/chain/{chain}/contract/{contractAddress}/verification",
                             documented(
