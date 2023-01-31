@@ -126,7 +126,6 @@ object VerificationController {
     fun createDynamicPolicyDocs() = document().operation {
         it.summary("Create dynamic policy verification ").operationId("createDynamicPolicy").addTagsItem("NFT verification")
     }
-        .queryParam<Boolean>("downloadPolicy")
         .body<DynamicPolicyArg>()
         .json<String>("200")
 
