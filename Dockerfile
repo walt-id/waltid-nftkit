@@ -26,8 +26,13 @@ RUN tar xf /opt/build/distributions/waltid-nftkit-*.tar -C /opt
 
 FROM openjdk:17-slim-buster
 
+
 RUN mkdir /app
 COPY --from=walt-build /opt/waltid-nftkit-* /app/
+
+FROM docker.io/openpolicyagent/opa:0.46.1-static as opa-env
+COPY --from=opa-env /opa /usr/local/bin/opa
+
 WORKDIR /app
 
 ENTRYPOINT ["/app/bin/waltid-nftkit"]
