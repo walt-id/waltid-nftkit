@@ -17,7 +17,7 @@ VOLUME /home/gradle/.gradle
 WORKDIR /opt
 
 RUN apt-get update && apt-get upgrade --yes
-
+FROM docker.io/openpolicyagent/opa:0.46.1-static as opa-env
 FROM openjdk-gradle AS walt-build
 COPY ./ /opt
 RUN chmod +x gradle
@@ -26,12 +26,12 @@ RUN tar xf /opt/build/distributions/waltid-nftkit-*.tar -C /opt
 
 FROM openjdk:17-slim-buster
 
+COPY --from=opa-env /opa /usr/local/bin/opa
 
 RUN mkdir /app
 COPY --from=walt-build /opt/waltid-nftkit-* /app/
 
-FROM docker.io/openpolicyagent/opa:0.46.1-static as opa-env
-COPY --from=opa-env /opa /usr/local/bin/opa
+
 
 WORKDIR /app
 
