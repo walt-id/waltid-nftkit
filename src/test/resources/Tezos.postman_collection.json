@@ -1,0 +1,217 @@
+{
+	"info": {
+		"_postman_id": "81fc8068-de29-4b98-b47d-8f2fe7f5fcf1",
+		"name": "Tezos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "NFTOwnershipVerification",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://nftkit.walt-test.cloud/v2/nftkit/nft/verifier/chain/TEZOS/contract/KT1U6EHmNxJTkvaWJ4ThczG4FSDaHC21ssvi/verifyNftOwnership?account=tz1eBKt2zTv69sniuVNbPsW2RwuC28d9R2VB&tokenId=1462880",
+					"protocol": "https",
+					"host": [
+						"nftkit",
+						"walt-test",
+						"cloud"
+					],
+					"path": [
+						"v2",
+						"nftkit",
+						"nft",
+						"verifier",
+						"chain",
+						"TEZOS",
+						"contract",
+						"KT1U6EHmNxJTkvaWJ4ThczG4FSDaHC21ssvi",
+						"verifyNftOwnership"
+					],
+					"query": [
+						{
+							"key": "account",
+							"value": "tz1eBKt2zTv69sniuVNbPsW2RwuC28d9R2VB"
+						},
+						{
+							"key": "tokenId",
+							"value": "1462880"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NFTOwnershipVerificationWithinCollection",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://nftkit.walt-test.cloud/v2/nftkit/nft/verifier/chain/TEZOS/contract/KT1U6EHmNxJTkvaWJ4ThczG4FSDaHC21ssvi/verifyNftOwnershipWithinCollection?account=tz1eBKt2zTv69sniuVNbPsW2RwuC28d9R2VB",
+					"protocol": "https",
+					"host": [
+						"nftkit",
+						"walt-test",
+						"cloud"
+					],
+					"path": [
+						"v2",
+						"nftkit",
+						"nft",
+						"verifier",
+						"chain",
+						"TEZOS",
+						"contract",
+						"KT1U6EHmNxJTkvaWJ4ThczG4FSDaHC21ssvi",
+						"verifyNftOwnershipWithinCollection"
+					],
+					"query": [
+						{
+							"key": "account",
+							"value": "tz1eBKt2zTv69sniuVNbPsW2RwuC28d9R2VB"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NFTOwnershipVerificationWithTraits",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://nftkit.walt-test.cloud/v2/nftkit/nft/verifier/chain/TEZOS/contract/KT1L7GvUxZH5tfa6cgZKnH6vpp2uVxnFVHKu/verifyNftOwnershipWithTraits?account=tz1eBKt2zTv69sniuVNbPsW2RwuC28d9R2VB&tokenId=3691&traitType=Background&traitValue=Yellow",
+					"protocol": "https",
+					"host": [
+						"nftkit",
+						"walt-test",
+						"cloud"
+					],
+					"path": [
+						"v2",
+						"nftkit",
+						"nft",
+						"verifier",
+						"chain",
+						"TEZOS",
+						"contract",
+						"KT1L7GvUxZH5tfa6cgZKnH6vpp2uVxnFVHKu",
+						"verifyNftOwnershipWithTraits"
+					],
+					"query": [
+						{
+							"key": "account",
+							"value": "tz1eBKt2zTv69sniuVNbPsW2RwuC28d9R2VB"
+						},
+						{
+							"key": "tokenId",
+							"value": "3691"
+						},
+						{
+							"key": "traitType",
+							"value": "Background"
+						},
+						{
+							"key": "traitValue",
+							"value": "Yellow"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create dynamic  policy verification",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"policy 1\",\n  \"description\": \"policy 1\",\n  \"input\": {\n    \"Background\": \"Purple\",\n          \"Body\": \"Body 11\"\n  },\n  \"policy\": \"package app.nft\n\nimport future.keywords.if\n\ndefault allow := false\n\n\nallow if {\n\tvalid_nft_Background\n\tvalid_nft_Body\n}\n\n\nvalid_nft_Background if input.Background= data.Background\n\nvalid_nft_Body if input.Body= data.Body\n\",\n  \"policyQuery\": \"data.app.nft.allow\",\n  \"policyEngine\": \"OPA\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://nftkit.walt-test.cloud/v2/nftkit/nft/verifier/policies/create",
+					"protocol": "https",
+					"host": [
+						"nftkit",
+						"walt-test",
+						"cloud"
+					],
+					"path": [
+						"v2",
+						"nftkit",
+						"nft",
+						"verifier",
+						"policies",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List verification policies",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://nftkit.walt-test.cloud/v2/nftkit/nft/verifier/policies",
+					"protocol": "https",
+					"host": [
+						"nftkit",
+						"walt-test",
+						"cloud"
+					],
+					"path": [
+						"v2",
+						"nftkit",
+						"nft",
+						"verifier",
+						"policies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify an NFT metadata against a dynamic policy",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://nftkit.walt-test.cloud/v2/nftkit/nft/verifier/chain/TEZOS/contract/KT1U6EHmNxJTkvaWJ4ThczG4FSDaHC21ssvi/token/1462880/policy/policy 1/verification",
+					"protocol": "https",
+					"host": [
+						"nftkit",
+						"walt-test",
+						"cloud"
+					],
+					"path": [
+						"v2",
+						"nftkit",
+						"nft",
+						"verifier",
+						"chain",
+						"TEZOS",
+						"contract",
+						"KT1U6EHmNxJTkvaWJ4ThczG4FSDaHC21ssvi",
+						"token",
+						"1462880",
+						"policy",
+						"policy 1",
+						"verification"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
