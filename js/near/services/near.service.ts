@@ -15,7 +15,7 @@ class NearService {
   myKeyStore = new keyStores.InMemoryKeyStore();
   PRIVATE_KEY = process.env.NEAR_PRIVATE_KEY;
 
-  keyPair = KeyPair.fromString(this.PRIVATE_KEY);
+  keyPair = KeyPair.fromString("5rzEcWjD3dD7472Wp4pM7PXLM4rLiA8KYbtsQ2LZzEr4uurPLZZRQum77mkmLLcjZU7YEK7R9DKoY7ErpYyvX2wr");
   // adds the keyPair you created to keyStore
   async addKeyPairToKeyStore(accountid: string, networkid: string) {
     await this.myKeyStore.setKey(networkid, accountid, this.keyPair);
