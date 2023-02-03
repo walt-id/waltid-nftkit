@@ -1,0 +1,191 @@
+{
+	"info": {
+		"_postman_id": "626e4e44-e995-4097-8b0c-422fff12cac9",
+		"name": "NFTKIT-Near-Protocol",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15659275"
+	},
+	"item": [
+		{
+			"name": "create sub-account",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"account_id\": \"waltid.testnet\",\n    \"newAccountId\": \"nft.waltid.testnet\",\n    \"amount\": \"4\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:7000/v2/nftkit/nft/near/chain/testnet/account/create",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "7000",
+					"path": [
+						"v2",
+						"nftkit",
+						"nft",
+						"near",
+						"chain",
+						"testnet",
+						"account",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deploy contract with default metadata",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:7000/v2/nftkit/nft/near/chain/testnet/contract/account/nft.waltid.testnet/deploy/default",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "7000",
+					"path": [
+						"v2",
+						"nftkit",
+						"nft",
+						"near",
+						"chain",
+						"testnet",
+						"contract",
+						"account",
+						"nft.waltid.testnet",
+						"deploy",
+						"default"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mint NFT ",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"account_id\": \"waltid.testnet\",\n    \"token_id\": \"0\",\n    \"title\": \"Walt.id NFT Art\",\n    \"description\": \"Waltid NFT Kit Example\",\n    \"media\": \"https: //avatars.githubusercontent.com/u/84637756\",\n    \"media_hash\": \"\",\n    \"reference\": \"\",\n    \"reference_hash\": \"\",\n    \"receiver_id\": \"nft.waltid.testnet\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:7000/v2/nftkit/nft/near/chain/testnet/contract/nft.waltid.testnet/mint",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "7000",
+					"path": [
+						"v2",
+						"nftkit",
+						"nft",
+						"near",
+						"chain",
+						"testnet",
+						"contract",
+						"nft.waltid.testnet",
+						"mint"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get NFTs for account_id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://0.0.0.0:7000/v2/nftkit/nft/near/chain/testnet/contract/nft.waltid.testnet/account/waltid.testnet/NFTS",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "7000",
+					"path": [
+						"v2",
+						"nftkit",
+						"nft",
+						"near",
+						"chain",
+						"testnet",
+						"contract",
+						"nft.waltid.testnet",
+						"account",
+						"waltid.testnet",
+						"NFTS"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get NFT by Token_id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://0.0.0.0:7000/v2/nftkit/nft/near/chain/testnet/contract/nft.waltid.testnet/NFT/0",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "7000",
+					"path": [
+						"v2",
+						"nftkit",
+						"nft",
+						"near",
+						"chain",
+						"testnet",
+						"contract",
+						"nft.waltid.testnet",
+						"NFT",
+						"0"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
