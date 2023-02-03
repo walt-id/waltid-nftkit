@@ -9,7 +9,7 @@ WORKDIR /usr/app
 COPY js/package*.json ./
 
 RUN npm install
-RUN npm install @types/bn.js
+
 
 # If you are building your code for production
 # RUN npm install --only=production
