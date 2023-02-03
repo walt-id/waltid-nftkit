@@ -202,10 +202,6 @@ class NearService {
     };
     const near = await nearAPI.connect(this.connectionConfig);
     const account = await near.account(nftmint.account_id);
-    // const contract = new Contract(account, nftmint.contract_id, {
-    //   viewMethods: [],
-    //   changeMethods: ["nft_mint"],
-    // });
 
     const GAS = new BN("100000000000000");
     const Amount_deposited = new BN("100000000000000000000000");
