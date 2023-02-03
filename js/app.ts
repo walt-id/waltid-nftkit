@@ -6,6 +6,8 @@ import * as expressWinston from 'express-winston';
 import cors from 'cors'
 import {CommonRoutesConfig} from './common/common.routes.config';
 import {TezosRoutes} from './tezos/tezos.routes.config';
+import {NearRoutes} from './near/near.routes.config';
+
 import debug from 'debug';
 
 const app: express.Application = express();
@@ -28,6 +30,7 @@ app.use(expressWinston.logger({
 }));
 
 routes.push(new TezosRoutes(app));
+routes.push(new NearRoutes(app));
 
 app.use(expressWinston.errorLogger({
     transports: [
