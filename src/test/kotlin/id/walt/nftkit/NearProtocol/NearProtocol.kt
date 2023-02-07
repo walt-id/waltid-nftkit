@@ -13,7 +13,7 @@ class NearProtocol : StringSpec  ({
     "create sub account".config(enableTest) {
         val result = NearNftService.createSubAccount("khaled_lightency1.testnet", "${random_subaccount}.khaled_lightency1.testnet", "4" , "testnet")
 
-        result shouldNotBe null
+        result.hash shouldNotBe null
     }
 
     "deploy smart contract to subaccount with default metadata".config(enableTest) {
