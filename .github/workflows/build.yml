@@ -3,7 +3,7 @@ name: CI/CD Workflow for walt.id NFT Kit
 on:
   push:
     branches:
-      - feat/nearProtocolNFT
+      - main
   pull_request:
     branches:
       - main
