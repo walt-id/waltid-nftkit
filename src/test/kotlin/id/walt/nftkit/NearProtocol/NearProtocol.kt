@@ -7,7 +7,7 @@ import io.kotest.matchers.shouldNotBe
 
 class NearProtocol : StringSpec  ({
     val enableTest = true
-    val random_subaccount = "test" + (20..999).random()
+    val random_subaccount = "test" + System.currentTimeMillis()
     print(random_subaccount)
 
     "create sub account".config(enableTest) {
