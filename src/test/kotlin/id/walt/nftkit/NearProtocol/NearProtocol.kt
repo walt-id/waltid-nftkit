@@ -29,7 +29,6 @@ class NearProtocol : StringSpec  ({
         val result = NearNftService.getNFTforAccount("khaled_lightency1.testnet","testingsub.khaled_lightency1.testnet", "testnet")
         println(result)
         result shouldNotBe null
-
     }
 
     "Get NFT per token_id".config(enableTest) {
@@ -37,9 +36,6 @@ class NearProtocol : StringSpec  ({
         println(result)
         result shouldNotBe null
     }
-
-
-
 
 
 })
