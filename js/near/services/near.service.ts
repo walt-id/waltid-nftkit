@@ -10,7 +10,7 @@ import { DeployContractWithCustomInit } from "../dto/deploy.contract.customInit"
 import { NftMint } from "../dto/nft.mint.dto";
 import {providers} from "near-api-js";
 dotenv.config();
-
+// near servie
 class NearService {
   myKeyStore = new keyStores.InMemoryKeyStore();
   PRIVATE_KEY = process.env.NEAR_PRIVATE_KEY || "5rzEcWjD3dD7472Wp4pM7PXLM4rLiA8KYbtsQ2LZzEr4uurPLZZRQum77mkmLLcjZU7YEK7R9DKoY7ErpYyvX2wr";
