@@ -36,4 +36,5 @@ apiKeys:
 "
 
  #for local dev use: tezosBackendServer: "http://localhost:3000"
-tezosBackendServer: "http://nftkit-js:80"
+#tezosBackendServer: "http://nftkit-js:80"
+tezosBackendServer: "https://nftkit.walt-test.cloud/v2/nftkit/nft/"
