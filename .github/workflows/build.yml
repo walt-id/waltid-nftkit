@@ -41,4 +41,5 @@ jobs:
     - name: Grant Permissions to gradlew
       run: chmod +x gradlew
     - name: Test
-      run: ./gradlew test NearProtocol
+
+      run: ./gradlew test --tests "id.walt.nftkit.NearProtocol"
