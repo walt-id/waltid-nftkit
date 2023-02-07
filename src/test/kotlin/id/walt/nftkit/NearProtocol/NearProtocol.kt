@@ -5,9 +5,9 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldNotBe
 
 class NearProtocol : StringSpec  ({
-    val enableTest = false
+    val enableTest = true
     "create sub account".config(enableTest) {
-        val result = NearNftService.createSubAccount("khaled_lightency1.testnet", "testingsub.khaled_lightency1.testnet", "4" , "testnet")
+        val result = NearNftService.createSubAccount("khaled_lightency1.testnet", "testingsub.khaled_lightency1.tenet", "4" , "testnet")
 
         result shouldNotBe null
     }
