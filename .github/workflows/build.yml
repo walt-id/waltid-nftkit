@@ -3,7 +3,7 @@ name: CI/CD Workflow for walt.id NFT Kit
 on:
   push:
     branches:
-      - main
+      - feat/nearProtocolNFT
   pull_request:
     branches:
       - main
@@ -38,3 +38,39 @@ jobs:
       uses: eskatos/gradle-command-action@v1.3.3
       with:
         arguments: build --no-daemon --info
+    - name: Grant Permissions to gradlew
+      run: chmod +x gradlew
+    - name: Test
+      run: ./gradlew test --tests "*"
+
+    - name: Test Success
+      if: success()
+      uses: actions/github-script@0.2.0
+      with:
+        github-token: ${{ github.token }}
+        script: |
+            const pull_number = "${{github.event.number}}"
+            await github.pulls.createReview({
+              ...context.repo,
+              pull_number,
+              body: "All tests passed.",
+              event: "APPROVE"
+            })
+    - name: Test Fail
+      if: failure()
+      uses: actions/github-script@0.2.0
+      with:
+          github-token: ${{ github.token }}
+          script: |
+            const pull_number = "${{github.event.number}}"
+            await github.pulls.createReview({
+              ...context.repo,
+              pull_number,
+              body: "There is something wrong with test codes.",
+             event: "REQUEST_CHANGES"
+            })
+            await github.pulls.update({
+              ...context.repo,
+              pull_number,
+              state: "closed"
+            })
