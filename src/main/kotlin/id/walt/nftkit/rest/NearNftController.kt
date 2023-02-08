@@ -76,19 +76,24 @@ object NearNftController {
 
 
 
-//    fun deployDefaultContract(ctx: Context) {
-//        val result = NearNftService.deployContractDefault(
-//            ctx.pathParam("account_id" ),
-//            ctx.pathParam("chain" )
-//        )
-//        ctx.json(result)
-//    }
+    fun deployDefaultContract(ctx: Context) {
+
+        val chain = ctx.pathParam("chain")
+        val result = NearNftService.deployContractDefault(
+            ctx.pathParam("account_id" ), Common.getNearChain(chain.uppercase())
+        )
+        ctx.json(result)
+    }
 
     fun deployDefaultContractDocs() = document().operation {
         it.summary("Deploy default contract")
             .operationId("deployDefaultContract").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
     }
         .pathParam<String>("account_id") {
+        }
+        .pathParam<String>("chain") {
+            it.schema<NearChain> { }
+
         }.json<OperationResult>("200") { it.description("Transaction ID") }
 
     fun deployCustomContract(ctx: Context) {
