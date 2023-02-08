@@ -111,6 +111,7 @@ object NearNftController {
             .operationId("deployCustomContract").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
     }
         .pathParam<String>("chain"){
+            it.schema<NearChain> { }
         }.pathParam<String>("account_id") {
         }
         .body<NearCustomDeployRequest> {
