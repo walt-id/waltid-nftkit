@@ -1,6 +1,8 @@
 package id.walt.nftkit.rest
 
+import cc.vileda.openapi.dsl.schema
 import id.walt.nftkit.services.*
+import id.walt.nftkit.utilis.Common
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
 import io.swagger.util.Json
@@ -54,7 +56,7 @@ object NearNftController {
         val result = mintReq.media_hash?.let {
             NearNftService.mintNftToken(
                 mintReq.account_id, contract_id, mintReq.token_id, mintReq.title, mintReq.description, mintReq.media,
-                it, mintReq.reference.toString(), mintReq.reference_hash, mintReq.receiver_id,chain
+                it, mintReq.reference.toString(), mintReq.reference_hash, mintReq.receiver_id, Common.getNearChain(chain.uppercase())
             )
         }
         if (result != null) {
@@ -65,21 +67,22 @@ object NearNftController {
     fun mintDocs() = document().operation {
         it.summary("Near NFT minting")
             .operationId("mintNft").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
-    }
+    }.pathParam<String>("chain") {
+        it.schema<NearChain> { }
 
-        .body<NearMintRequest> {
-            it.description("")
+    }.body<NearMintRequest> {
+        it.description("")
         }.json<OperationResult>("200") { it.description("Transaction ID and smart contract address") }
 
 
 
-    fun deployDefaultContract(ctx: Context) {
-        val result = NearNftService.deployContractDefault(
-            ctx.pathParam("account_id" ),
-            ctx.pathParam("chain" )
-        )
-        ctx.json(result)
-    }
+//    fun deployDefaultContract(ctx: Context) {
+//        val result = NearNftService.deployContractDefault(
+//            ctx.pathParam("account_id" ),
+//            ctx.pathParam("chain" )
+//        )
+//        ctx.json(result)
+//    }
 
     fun deployDefaultContractDocs() = document().operation {
         it.summary("Deploy default contract")
@@ -93,7 +96,7 @@ object NearNftController {
         val account_id = ctx.pathParam("account_id")
         val chain = ctx.pathParam("chain")
 
-        val result = NearNftService.deployContractWithCustomMetadata(account_id,mintReq.owner_id, mintReq.spec, mintReq.name, mintReq.symbol, mintReq.icon.toString(), mintReq.base_uri.toString(), mintReq.reference.toString(), mintReq.reference_hash.toString(),chain)
+        val result = NearNftService.deployContractWithCustomMetadata(account_id,mintReq.owner_id, mintReq.spec, mintReq.name, mintReq.symbol, mintReq.icon.toString(), mintReq.base_uri.toString(), mintReq.reference.toString(), mintReq.reference_hash.toString(),Common.getNearChain(chain.uppercase()))
 
         ctx.json(result)
     }
@@ -112,74 +115,74 @@ object NearNftController {
 
 
 
-    fun getNftToken(ctx: Context) {
-        val result = NearNftService.getNFTforAccount(
-            ctx.pathParam("account_id"),
-            ctx.pathParam("contract_id"),
-            ctx.pathParam("chain")
-        )
-        ctx.json(result)
-
-    }
-
-    fun getNftTokenDocs() = document().operation {
-        it.summary("Get NFT token")
-            .operationId("getNftToken").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
-    }
-        .pathParam<String>("account_id") {
-        }.pathParam<String>("contract_id") {
-        }.json<NearNftMetadata>("200") {
-            it.description("NFT token")
-
-        }
-
-
-    fun getNFTContractMetadata(ctx: Context) {
-        val result = NearNftService.getNftNearMetadata(
-            ctx.pathParam("contract_id"),
-            ctx.pathParam("chain")
-        )
-        ctx.json(result)
-    }
-
-    fun getNFTContractMetadataDocs() = document().operation {
-        it.summary("Get NFT contract metadata")
-            .operationId("getNFTContractMetadata").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
-    }
-        .pathParam<String>("contract_id") {
-        }.json<NFTMetadata>("200") {
-            it.description("NFT contract metadata")
-
-        }
-
-    fun createSubAccount (ctx: Context) {
-
-        val subAccountReq = ctx.bodyAsClass(NearSubAccountRequest::class.java)
-        val chain = ctx.pathParam("chain")
-        val result = NearNftService.createSubAccount(
-            subAccountReq.account_id, subAccountReq.newAccountId, subAccountReq.amount, chain
-        )
-        ctx.json(result)
-    }
-
-    fun createSubAccountDocs() = document().operation {
-        it.summary("Create sub account")
-            .operationId("createSubAccount").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
-    }
-        .pathParam<String>("chain")
-        .body<NearSubAccountRequest> {
-            it.description("")
-        }.json<OperationResult>("200") { it.description("Transaction ID and smart contract address") }
-
-
-    fun getNFTTokenMetadata(ctx: Context) {
-        val result = NearNftService.getTokenById(
-            ctx.pathParam("contract_id"),
-            ctx.pathParam("token_id"),
-            ctx.pathParam("chain")
-        )
-        ctx.json(result)
-    }
+//    fun getNftToken(ctx: Context) {
+//        val result = NearNftService.getNFTforAccount(
+//            ctx.pathParam("account_id"),
+//            ctx.pathParam("contract_id"),
+//            ctx.pathParam("chain")
+//        )
+//        ctx.json(result)
+//
+//    }
+//
+//    fun getNftTokenDocs() = document().operation {
+//        it.summary("Get NFT token")
+//            .operationId("getNftToken").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
+//    }
+//        .pathParam<String>("account_id") {
+//        }.pathParam<String>("contract_id") {
+//        }.json<NearNftMetadata>("200") {
+//            it.description("NFT token")
+//
+//        }
+//
+//
+//    fun getNFTContractMetadata(ctx: Context) {
+//        val result = NearNftService.getNftNearMetadata(
+//            ctx.pathParam("contract_id"),
+//            ctx.pathParam("chain")
+//        )
+//        ctx.json(result)
+//    }
+//
+//    fun getNFTContractMetadataDocs() = document().operation {
+//        it.summary("Get NFT contract metadata")
+//            .operationId("getNFTContractMetadata").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
+//    }
+//        .pathParam<String>("contract_id") {
+//        }.json<NFTMetadata>("200") {
+//            it.description("NFT contract metadata")
+//
+//        }
+//
+//    fun createSubAccount (ctx: Context) {
+//
+//        val subAccountReq = ctx.bodyAsClass(NearSubAccountRequest::class.java)
+//        val chain = ctx.pathParam("chain")
+//        val result = NearNftService.createSubAccount(
+//            subAccountReq.account_id, subAccountReq.newAccountId, subAccountReq.amount, chain
+//        )
+//        ctx.json(result)
+//    }
+//
+//    fun createSubAccountDocs() = document().operation {
+//        it.summary("Create sub account")
+//            .operationId("createSubAccount").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
+//    }
+//        .pathParam<String>("chain")
+//        .body<NearSubAccountRequest> {
+//            it.description("")
+//        }.json<OperationResult>("200") { it.description("Transaction ID and smart contract address") }
+//
+//
+//    fun getNFTTokenMetadata(ctx: Context) {
+//        val result = NearNftService.getTokenById(
+//            ctx.pathParam("contract_id"),
+//            ctx.pathParam("token_id"),
+//            ctx.pathParam("chain")
+//        )
+//        ctx.json(result)
+//    }
 
     fun getNFTTokenMetadataDocs() = document().operation {
         it.summary("Get NFT token metadata")

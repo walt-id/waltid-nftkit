@@ -26,4 +26,8 @@ object Values {
     const val TEZOS_GHOSTNET_BETTER_CALL_DEV = "https://better-call.dev/ghostnet"
 
 
+    const val NEAR_MAINNET_EXPLORER= "https://explorer.near.org"
+    const val NEAR_TESTNET_EXPLORER = "https://explorer.testnet.near.org"
+
+
 }
