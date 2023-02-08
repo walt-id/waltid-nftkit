@@ -229,12 +229,12 @@ object NftKitApi {
                                 "/chain/{chain}/contract/{contract_id}/mint",
                                 documented(NearNftController.mintDocs(), NearNftController::mint)
                             )
-//                            get("chain/{chain}/contract/{contract_id}/account/{account_id}/NFTS",
-//                                documented(NearNftController.getNftTokenDocs(), NearNftController::getNftToken)
-//                            )
-//                            get("chain/{chain}/contract/{contract_id}/NFT/{token_id}",
-//                                documented(NearNftController.getNFTTokenMetadataDocs(), NearNftController::getNFTTokenMetadata)
-//                            )
+                            get("chain/{chain}/contract/{contract_id}/account/{account_id}/NFTS",
+                                documented(NearNftController.getNftTokenDocs(), NearNftController::getNftToken)
+                            )
+                            get("chain/{chain}/contract/{contract_id}/NFT/{token_id}",
+                                documented(NearNftController.getNFTTokenMetadataDocs(), NearNftController::getNFTTokenMetadata)
+                            )
 //                            get("/chain/{chain}/contract/{contract_id}/NFT/metadata",
 //                                documented(NearNftController.getNFTContractMetadataDocs(), NearNftController::getNFTContractMetadata)
 //                            )

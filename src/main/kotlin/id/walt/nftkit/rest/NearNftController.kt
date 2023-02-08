@@ -121,26 +121,30 @@ object NearNftController {
 
 
 
-//    fun getNftToken(ctx: Context) {
-//        val result = NearNftService.getNFTforAccount(
-//            ctx.pathParam("account_id"),
-//            ctx.pathParam("contract_id"),
-//            ctx.pathParam("chain")
-//        )
-//        ctx.json(result)
-//
-//    }
-//
-//    fun getNftTokenDocs() = document().operation {
-//        it.summary("Get NFT token")
-//            .operationId("getNftToken").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
-//    }
-//        .pathParam<String>("account_id") {
-//        }.pathParam<String>("contract_id") {
-//        }.json<NearNftMetadata>("200") {
-//            it.description("NFT token")
-//
-//        }
+    fun getNftToken(ctx: Context) {
+
+        val chain = ctx.pathParam("chain")
+        val result = NearNftService.getNFTforAccount(
+            ctx.pathParam("account_id"),
+            ctx.pathParam("contract_id"),
+            Common.getNearChain(chain.uppercase())
+        )
+        ctx.json(result)
+
+    }
+
+    fun getNftTokenDocs() = document().operation {
+        it.summary("Get NFT token")
+            .operationId("getNftToken").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
+    }.pathParam<String>("chain") {
+        it.schema<NearChain> { }
+    }
+        .pathParam<String>("account_id") {
+        }.pathParam<String>("contract_id") {
+        }.json<NearNftMetadata>("200") {
+            it.description("NFT token")
+
+        }
 //
 //
 //    fun getNFTContractMetadata(ctx: Context) {
@@ -182,19 +186,22 @@ object NearNftController {
             it.description("")
         }.json<OperationResult>("200") { it.description("Transaction ID and smart contract address") }
 
-//
-//    fun getNFTTokenMetadata(ctx: Context) {
-//        val result = NearNftService.getTokenById(
-//            ctx.pathParam("contract_id"),
-//            ctx.pathParam("token_id"),
-//            ctx.pathParam("chain")
-//        )
-//        ctx.json(result)
-//    }
+
+    fun getNFTTokenMetadata(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val result = NearNftService.getTokenById(
+            ctx.pathParam("contract_id"),
+            ctx.pathParam("token_id"),
+            Common.getNearChain(chain.uppercase())
+        )
+        ctx.json(result)
+    }
 
     fun getNFTTokenMetadataDocs() = document().operation {
         it.summary("Get NFT token metadata")
             .operationId("getNFTTokenMetadata").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
+    }.pathParam<String>("chain") {
+        it.schema<NearChain> { }
     }
         .pathParam<String>("contract_id") {
         }.pathParam<String>("token_id") {
