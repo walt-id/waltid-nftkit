@@ -161,25 +161,27 @@ object NearNftController {
 //
 //        }
 //
-//    fun createSubAccount (ctx: Context) {
-//
-//        val subAccountReq = ctx.bodyAsClass(NearSubAccountRequest::class.java)
-//        val chain = ctx.pathParam("chain")
-//        val result = NearNftService.createSubAccount(
-//            subAccountReq.account_id, subAccountReq.newAccountId, subAccountReq.amount, chain
-//        )
-//        ctx.json(result)
-//    }
-//
-//    fun createSubAccountDocs() = document().operation {
-//        it.summary("Create sub account")
-//            .operationId("createSubAccount").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
-//    }
-//        .pathParam<String>("chain")
-//        .body<NearSubAccountRequest> {
-//            it.description("")
-//        }.json<OperationResult>("200") { it.description("Transaction ID and smart contract address") }
-//
+    fun createSubAccount (ctx: Context) {
+
+        val subAccountReq = ctx.bodyAsClass(NearSubAccountRequest::class.java)
+        val chain = ctx.pathParam("chain")
+        val result = NearNftService.createSubAccount(
+            subAccountReq.account_id, subAccountReq.newAccountId, subAccountReq.amount, Common.getNearChain(chain.uppercase())
+        )
+        ctx.json(result)
+    }
+
+    fun createSubAccountDocs() = document().operation {
+        it.summary("Create sub account")
+            .operationId("createSubAccount").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
+    }
+        .pathParam<String>("chain"){
+            it.schema<NearChain> {}
+        }
+        .body<NearSubAccountRequest> {
+            it.description("")
+        }.json<OperationResult>("200") { it.description("Transaction ID and smart contract address") }
+
 //
 //    fun getNFTTokenMetadata(ctx: Context) {
 //        val result = NearNftService.getTokenById(

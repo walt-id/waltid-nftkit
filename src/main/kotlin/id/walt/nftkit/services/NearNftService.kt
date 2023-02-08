@@ -268,25 +268,33 @@ object NearNftService {
 //        return nfts
 //    }
 //
-//    fun createSubAccount (account_id: String , newAccountId: String , amount : String , chain: NearChain) : OperationResult {
-//        return runBlocking {
-//            val values = mapOf(
-//                "account_id" to account_id,
-//                "newAccountId" to newAccountId,
-//                "amount" to amount,
-//                "chain" to chain
-//            )
-//            val nearOperationResponse = NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/sub-account/create") {
-//                contentType(ContentType.Application.Json)
-//                setBody(
-//                    values
-//                )
-//            }
-//                .body<OperationResult>()
-//            return@runBlocking nearOperationResponse
-//        }
-//
-//    }
+    fun createSubAccount (account_id: String , newAccountId: String , amount : String , chain: NearChain) : OperationResult {
+        return runBlocking {
+            val values = mapOf(
+                "account_id" to account_id,
+                "newAccountId" to newAccountId,
+                "amount" to amount,
+                "chain" to chain.toString()
+            )
+            val nearOperationResult = NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/sub-account/create") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    values
+                )
+            }
+                .body<nearOperationResult>()
+            val contractExternalUrl = when (Common.getNearChain(chain.toString())) {
+                NearChain.mainnet -> Values.NEAR_MAINNET_EXPLORER
+                NearChain.testnet -> Values.NEAR_TESTNET_EXPLORER
+            }
+            return@runBlocking OperationResult(
+                nearOperationResult.hash,
+                "$contractExternalUrl/transactions/${nearOperationResult.hash}"
+            )
+
+        }
+
+    }
 //
 //    fun getTokenById(contract_id: String, token_id: String , chain: NearChain): NearNftMetadata {
 //        var url = "" ;
