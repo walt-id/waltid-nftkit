@@ -219,9 +219,9 @@ object NftKitApi {
 //                            post("chain/{chain}/account/create",
 //                                documented(NearNftController.createSubAccountDocs(), NearNftController::createSubAccount)
 //                            )
-//                            post("/chain/{chain}/contract/account/{account_id}/deploy/default",
-//                                documented(NearNftController.deployDefaultContractDocs(), NearNftController::deployDefaultContract)
-//                            )
+                            post("/chain/{chain}/contract/account/{account_id}/deploy/default",
+                                documented(NearNftController.deployDefaultContractDocs(), NearNftController::deployDefaultContract)
+                            )
                             post("/chain/{chain}/account/{account_id}/deploy",
                                 documented(NearNftController.deployCustomContractDocs(), NearNftController::deployCustomContract)
                             )
