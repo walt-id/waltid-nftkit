@@ -188,18 +188,25 @@ object NearNftService {
                 "base_uri" to base_uri,
                 "reference" to reference,
                 "reference_hash" to reference_hash,
-                "chain" to chain
+                "chain" to chain.toString()
 
                 )
-            val OperationResult = NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/contract/deploywithcustommetadata") {
+            val nearOperationResult = NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/contract/deploywithcustommetadata") {
                 contentType(ContentType.Application.Json)
 
                 setBody(
                     values
                 )
             }
-                .body<OperationResult>()
-            return@runBlocking OperationResult
+                .body<nearOperationResult>()
+            val contractExternalUrl = when (Common.getNearChain(chain.toString())) {
+                NearChain.mainnet -> Values.NEAR_MAINNET_EXPLORER
+                NearChain.testnet -> Values.NEAR_TESTNET_EXPLORER
+            }
+            return@runBlocking OperationResult(
+                nearOperationResult.hash,
+                "$contractExternalUrl/transactions/${nearOperationResult.hash}"
+            )
         }
     }
 
