@@ -47,7 +47,11 @@ object VerificationService {
             Common.isTezosChain(chain) -> {
                 return NFTsTezosOwnershipVerification(chain, contractAddress, account, tokenId)
             }
+
+
+
             else -> {throw Exception("Chain  is not supported")}
+
         }
     }
 

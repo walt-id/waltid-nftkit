@@ -30,6 +30,15 @@ object Common {
         }
     }
 
+    fun getNearChain(chain: String): NearChain{
+        return chain.let {
+            if (it.isEmpty()){
+                throw Exception("No chain defined")
+            }
+            NearChain.valueOf(it.lowercase())
+        }
+    }
+
     fun getEVMChain(chain: String): EVMChain{
         return chain.let {
             if (it.isEmpty()){
