@@ -1,5 +1,6 @@
 package id.walt.nftkit.services
 
+
 import com.syntifi.near.api.model.identifier.Finality
 import com.syntifi.near.api.service.NearService
 import id.walt.nftkit.Values
@@ -69,7 +70,6 @@ data class  NearNftMetadata(
     val owner_id: String,
     val metadata: NearTokenMetadata,
     val approved_account_ids:ApprovedAccount?= null,
-
     val royalty: Royalty?= null,
 
 )
@@ -224,38 +224,42 @@ object NearNftService {
         }
     }
 
-//    fun getNftNearMetadata(contract_id: String , chain: NearChain ): Unit {
-//        var url = "" ;
-//        if (chain =="testnet")
-//        {
-//            url = "archival-rpc.testnet.near.org"
-//        }
-//        else
-//        {
-//            url = "archival-rpc.mainnet.near.org"
-//        }
-//       val nearClient = NearService.usingPeer(url);
+    fun getNftNearMetadata(contract_id: String , chain: NearChain ): Any{
+        var url = "" ;
+        if (NearChain.testnet.toString() == chain.toString())
+        {
+            url = "archival-rpc.testnet.near.org"
+        }
+        else
+        {
+            url = "archival-rpc.mainnet.near.org"
+        }
+       val nearClient = NearService.usingPeer(url);
+
+        val nftMetadataCall = nearClient
+            .callContractFunction(
+                Finality.FINAL,
+                contract_id,
+                "nft_metadata",
+                "e30=",
+            )
+
+        val nftMetadata =nftMetadataCall.result
+
+
+        val stringArray = nftMetadata.map { it.toChar() }.toTypedArray()
+        val jsonString =  stringArray.joinToString("")
+
+
 //
-//        val nftMetadataCall = nearClient
-//            .callContractFunction(
-//                Finality.FINAL,
-//                contract_id,
-//                "nft_metadata",
-//                "e30=",
-//            )
+////        val test =   nftMetadata.forEach {
+////            val fin = it.toChar()
+////            print(fin)
+////        }
 //
-//        val nftMetadata =nftMetadataCall.result
-//
-//        val stringArray = nftMetadata.map { it.toChar() }.toTypedArray()
-//        println("waaaa3" + stringArray.joinToString(""))
-//
-//        val test =   nftMetadata.forEach {
-//            val fin = it.toChar()
-//            print(fin)
-//        }
-//        println("this is test " + test)
-//        return test
-//    }
+
+        return jsonString
+    }
     fun getNFTforAccount(account_id: String , contract_id: String ,chain: NearChain) : List<NearNftMetadata> {
         var url = "" ;
         if (NearChain.testnet.toString() == chain.toString())
