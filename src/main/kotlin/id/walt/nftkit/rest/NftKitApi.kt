@@ -235,9 +235,9 @@ object NftKitApi {
                             get("chain/{chain}/contract/{contract_id}/NFT/{token_id}",
                                 documented(NearNftController.getNFTTokenMetadataDocs(), NearNftController::getNFTTokenMetadata)
                             )
-//                            get("/chain/{chain}/contract/{contract_id}/NFT/metadata",
-//                                documented(NearNftController.getNFTContractMetadataDocs(), NearNftController::getNFTContractMetadata)
-//                            )
+                            get("/chain/{chain}/contract/{contract_id}/NFT/metadata",
+                                documented(NearNftController.getNFTContractMetadataDocs(), NearNftController::getNFTContractMetadata)
+                            )
 
                         }
                     }

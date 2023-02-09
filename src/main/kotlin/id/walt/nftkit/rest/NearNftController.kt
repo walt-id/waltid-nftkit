@@ -5,7 +5,6 @@ import id.walt.nftkit.services.*
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
-import io.swagger.util.Json
 import kotlinx.serialization.Serializable
 
 
@@ -145,26 +144,30 @@ object NearNftController {
             it.description("NFT token")
 
         }
-//
-//
-//    fun getNFTContractMetadata(ctx: Context) {
-//        val result = NearNftService.getNftNearMetadata(
-//            ctx.pathParam("contract_id"),
-//            ctx.pathParam("chain")
-//        )
-//        ctx.json(result)
-//    }
-//
-//    fun getNFTContractMetadataDocs() = document().operation {
-//        it.summary("Get NFT contract metadata")
-//            .operationId("getNFTContractMetadata").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
-//    }
-//        .pathParam<String>("contract_id") {
-//        }.json<NFTMetadata>("200") {
-//            it.description("NFT contract metadata")
-//
-//        }
-//
+
+
+    fun getNFTContractMetadata(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val result = NearNftService.getNftNearMetadata(
+            ctx.pathParam("contract_id"),
+            Common.getNearChain(chain.uppercase())
+        )
+       ctx.result(result.toString())
+    }
+
+    fun getNFTContractMetadataDocs() = document().operation {
+        it.summary("Get NFT contract metadata")
+            .operationId("getNFTContractMetadata").addTagsItem("Near Blockchain: Non-fungible tokens(NFTs)")
+    }   .pathParam<String>("chain") {
+        it.schema<NearChain>{}
+    }
+        .pathParam<String>("contract_id") {
+        }
+            .json<String>("200") {
+            it.description("NFT contract metadata")
+        }
+
+
     fun createSubAccount (ctx: Context) {
 
         val subAccountReq = ctx.bodyAsClass(NearSubAccountRequest::class.java)
