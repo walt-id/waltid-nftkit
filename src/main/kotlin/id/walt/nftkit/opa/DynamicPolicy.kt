@@ -38,6 +38,23 @@ object DynamicPolicy {
             data.put("collectionName", nftMetadata.tezosNftMetadata.collectionName)
             data.put("creatorName", nftMetadata.tezosNftMetadata.creatorName)
             nftMetadata.tezosNftMetadata.attributes?.forEach { data.put(it.name, it.value) }
+        }else if(nftMetadata.nearNftMetadata != null){
+            data.put("title", nftMetadata.nearNftMetadata.metadata.title)
+            data.put("description", nftMetadata.nearNftMetadata.metadata.description)
+            data.put("media", nftMetadata.nearNftMetadata.metadata.media)
+            data.put("mediaHash", nftMetadata.nearNftMetadata.metadata.media_hash)
+            data.put("copies", nftMetadata.nearNftMetadata.metadata.copies.toString())
+            data.put("issuedAt", nftMetadata.nearNftMetadata.metadata.issued_at.toString())
+            data.put("expiresAt", nftMetadata.nearNftMetadata.metadata.expires_at.toString())
+            data.put("startsAt", nftMetadata.nearNftMetadata.metadata.starts_at.toString())
+            data.put("updatedAt", nftMetadata.nearNftMetadata.metadata.updated_at.toString())
+            data.put("reference", nftMetadata.nearNftMetadata.metadata.starts_at.toString())
+            data.put("referenceHash", nftMetadata.nearNftMetadata.metadata.reference_hash.toString())
+            data.put("extra", nftMetadata.nearNftMetadata.metadata.extra.toString())
+            data.put("royalties", nftMetadata.nearNftMetadata.royalty.toString())
+            data.put("approved_accounts", nftMetadata.nearNftMetadata.approved_account_ids.toString())
+
+
         }
         return data
     }
