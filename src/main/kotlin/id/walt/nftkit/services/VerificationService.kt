@@ -67,10 +67,16 @@ object VerificationService {
             Common.isTezosChain(chain) -> {
                 return verifyNftOwnershipWithinCollectionTezosChain(chain, contractAddress, account)
             }
+
+            Common.isNearChain(chain) -> {
+                return verifyNftOwnershipWithinCollectionNearChain(NearChain.valueOf(chain.toString().lowercase()), contractAddress, account)
+            }
+
             else -> {throw Exception("Chain  is not supported")}
         }
 
     }
+
 
     //  simply check if a certain trait type and trait value is in the metadata
     fun verifyNftOwnershipWithTraits(chain: Chain, contractAddress: String, account: String, tokenId: String, traitType: String, traitValue: String? = null): Boolean {
@@ -161,6 +167,18 @@ object VerificationService {
         val balance= NftService.balanceOf(chain, contractAddress, owner)
         return if (balance!!.compareTo(BigInteger("0")) == 1) true else false
     }
+
+
+    private fun verifyNftOwnershipWithinCollectionNearChain(chain: NearChain, contractAddress: String, account: String): Boolean {
+      try {
+          val result = NearNftService.getNFTforAccount(account, contractAddress , NearChain.valueOf(chain.toString().lowercase()))
+          return true
+      }
+        catch (e: Exception){
+            return false
+        }
+    }
+
     private suspend fun getOceanDaoContractCreationTransaction(erc721contractAddress: String,url: String, apiKey: String): InternalTransactionsResponse{
             return NftService.client.get("https://$url/api?module=account&action=txlistinternal&address=$erc721contractAddress&page=1&offset=1&startblock=0&sort=asc&apikey=$apiKey") {
                 contentType(ContentType.Application.Json)
