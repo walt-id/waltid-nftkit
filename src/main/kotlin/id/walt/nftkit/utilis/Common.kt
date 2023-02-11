@@ -94,5 +94,11 @@ object Common {
         if(chain in TezosChains) return true
         return false
     }
+
+    fun isNearChain(chain: Chain): Boolean{
+        val NearChains= listOf(Chain.MAINNET, Chain.TESTNET)
+        if(chain in NearChains) return true
+        return false
+    }
 }
 

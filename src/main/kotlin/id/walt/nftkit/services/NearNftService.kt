@@ -315,28 +315,30 @@ object NearNftService {
 
     }
 
-    fun getTokenById(contract_id: String, token_id: String , chain: NearChain): NearNftMetadata {
-        var url = "" ;
-        if (NearChain.testnet.toString()== chain.toString())
-        {
+    fun getTokenById(contract_id: String, token_id: String , chain: NearChain): NearNftMetadata{
+        var url = "";
+        if (NearChain.testnet.toString() == chain.toString()) {
             url = "archival-rpc.testnet.near.org"
-        }
-        else
-        {
+        } else {
             url = "archival-rpc.mainnet.near.org"
         }
-        val nearClient = NearService.usingPeer(url);
-        val token_id = Base64.getEncoder().encodeToString("{\"token_id\":\"${token_id}\"}".toByteArray())
-        val accountsNftCall = nearClient
-            .callContractFunction(
-                Finality.FINAL,
-                contract_id,
-                "nft_token",
-                token_id
-            )
-        val accountNft = accountsNftCall.result
-        val resultNfts = accountNft.map { it.toChar() }.joinToString(separator = "")
-        val nfts = Json.decodeFromString<NearNftMetadata>(resultNfts)
-        return nfts
+        try {
+            val nearClient = NearService.usingPeer(url);
+            val token_id = Base64.getEncoder().encodeToString("{\"token_id\":\"${token_id}\"}".toByteArray())
+            val accountsNftCall = nearClient
+                .callContractFunction(
+                    Finality.FINAL,
+                    contract_id,
+                    "nft_token",
+                    token_id
+                )
+            val accountNft = accountsNftCall.result
+            val resultNfts = accountNft.map { it.toChar() }.joinToString(separator = "")
+            val nfts = Json.decodeFromString<NearNftMetadata>(resultNfts)
+            return nfts
+        } catch (e: Exception) {
+            return  NearNftMetadata("","",
+                NearTokenMetadata("" , "", "","" ,""), ApprovedAccount(),Royalty())
+        }
     }
 }
