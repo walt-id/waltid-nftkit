@@ -9,6 +9,7 @@ import id.walt.nftkit.utilis.Common
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.util.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import org.web3j.tx.exceptions.ContractCallException
@@ -48,6 +49,9 @@ object VerificationService {
                 return NFTsTezosOwnershipVerification(chain, contractAddress, account, tokenId)
             }
 
+            Common.isNearChain(chain) -> {
+                return NFTsNearOwnershipVerification(NearChain.valueOf(chain.toString().lowercase()), contractAddress, account, tokenId)
+            }
 
 
             else -> {throw Exception("Chain  is not supported")}
@@ -179,6 +183,19 @@ object VerificationService {
     private fun NFTsTezosOwnershipVerification(chain: Chain, contractAddress: String, account: String, tokenId: String): Boolean{
         val result= TezosNftService.fetchAccountNFTsByTzkt(chain, account, contractAddress).filter { Integer.parseInt(it.balance)>0 && tokenId.equals(it.token.tokenId) }
         return if (result.size>= 1) true else false
+    }
+
+
+    private fun NFTsNearOwnershipVerification(chain:NearChain, contractAddress : String, account : String, tokenId : String) : Boolean{
+
+
+        try {
+            val result = NearNftService.getTokenById(contractAddress, tokenId , NearChain.valueOf(chain.toString()))
+            return result.owner_id.equals(account, true)
+        }
+        catch (e: Exception){
+            return false
+        }
     }
 
     private fun propertyVerification(chain: EVMChain, contractAddress: String, tokenId: String, propertyKey: String, propertyValue: String): Boolean {

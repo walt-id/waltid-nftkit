@@ -70,8 +70,8 @@ enum class Chain {
     MUMBAI,
     TEZOS,
     GHOSTNET,
-    NEAR_MAINNET,
-    NEAR_TESTNET,
+    MAINNET,
+    TESTNET,
 }
 
 enum class EVMChain {
@@ -397,8 +397,8 @@ object NftService {
                 Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_ALCHEMY_URL
                 Chain.TEZOS -> throw Exception("Tezos is not supported")
                 Chain.GHOSTNET -> throw Exception("Ghostnet is not supported")
-                Chain.NEAR_TESTNET  -> throw Exception("Near testnet is not supported")
-                Chain.NEAR_MAINNET  -> throw Exception("Near mainnet is not supported")
+                Chain.TESTNET  -> throw Exception("Near testnet is not supported")
+                Chain.MAINNET  -> throw Exception("Near mainnet is not supported")
             }
 
             val result = fetchAccountNFTsTokensByAlchemy(account = account, url = url)
