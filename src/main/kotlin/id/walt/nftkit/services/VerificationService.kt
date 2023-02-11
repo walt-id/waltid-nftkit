@@ -153,6 +153,11 @@ object VerificationService {
                 val nftMetadata = NftMetadataWrapper(null,tezosNftmetadata)
                 return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
             }
+            Common.isNearChain(chain) -> {
+                val nearNftmetadata= NearNftService.getTokenById( contractAddress,tokenId, NearChain.valueOf(chain.toString().lowercase()))
+                val nftMetadata = NftMetadataWrapper(null,null, nearNftmetadata)
+                return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
+            }
             else -> {throw Exception("Chain  is not supported")}
             }
     }
