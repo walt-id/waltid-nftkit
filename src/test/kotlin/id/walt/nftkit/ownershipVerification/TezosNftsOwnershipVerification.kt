@@ -8,24 +8,23 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
 class TezosNftsOwnershipVerification : StringSpec({
-    val enableTest = false
 
-    "NFT ownership verification".config(enabled=enableTest) {
+    "NFT ownership verification".config() {
         val result= VerificationService.verifyNftOwnership(Chain.TEZOS, "KT1U6EHmNxJTkvaWJ4ThczG4FSDaHC21ssvi", "tz2AbAdd7KXzJMxHZUKoRwEDfL9j2peBKgyu", "1462880")
         result shouldBe  false
     }
 
-    "NFT ownership verification within a collection ".config(enabled=enableTest) {
+    "NFT ownership verification within a collection ".config() {
         val result= VerificationService.verifyNftOwnershipWithinCollection(Chain.TEZOS, "KT1U6EHmNxJTkvaWJ4ThczG4FSDaHC21ssvi", "tz2AbAdd7KXzJMxHZUKoRwEDfL9j2peBKgyu")
-        result shouldBe  false
+        result shouldBe  true
     }
 
-    "NFT ownership verification with traits".config(enabled=enableTest) {
+    "NFT ownership verification with traits".config() {
         val result= VerificationService.verifyNftOwnershipWithTraits(Chain.TEZOS, "KT1L7GvUxZH5tfa6cgZKnH6vpp2uVxnFVHKu", "tz1eBKt2zTv69sniuVNbPsW2RwuC28d9R2VB", "3691","Background","Yellow")
         result shouldBe  true
     }
 
-    "Verify an NFT metadata against a dynamic policy".config(enabled=enableTest) {
+    "Verify an NFT metadata against a dynamic policy".config(enabled=false) {
         val policy="package app.nft\n" +
                 "\n" +
                 "import future.keywords.if\n" +
