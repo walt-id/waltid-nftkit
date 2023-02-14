@@ -1,6 +1,7 @@
 package id.walt.nftkit.NearProtocol
 
 import com.sksamuel.hoplite.fp.valid
+import id.walt.nftkit.services.NearChain
 import id.walt.nftkit.services.NearNftService
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.should
@@ -31,13 +32,13 @@ class NearProtocol : StringSpec  ({
 //    }
 
     "Get NFT for owner".config(enableTest) {
-        val result = NearNftService.getNFTforAccount("khaled_lightency1.testnet","nft.khaled_lightency1.testnet", "testnet")
+        val result = NearNftService.getNFTforAccount("khaled_lightency1.testnet","nft.khaled_lightency1.testnet", NearChain.testnet)
         println(result)
         result should { it != null }
     }
 
     "Get NFT per token_id".config(enableTest) {
-        val result = NearNftService.getTokenById("nft.khaled_lightency1.testnet","token1", "testnet")
+        val result = NearNftService.getTokenById("nft.khaled_lightency1.testnet","token1", NearChain.testnet)
         println(result)
         result should { it != null }
     }
