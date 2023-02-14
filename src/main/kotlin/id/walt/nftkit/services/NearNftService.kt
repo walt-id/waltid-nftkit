@@ -43,7 +43,7 @@ data class NearTokenMetadata(
     val description: String?= null,
     val media: String,
     val media_hash: String?= null,
-    val copies: String?= null,
+    val copies: Int?= null,
     val issued_at: String?= null,
     val expires_at: String?= null,
     val starts_at: String?= null,
@@ -338,7 +338,7 @@ object NearNftService {
             return nfts
         } catch (e: Exception) {
             return  NearNftMetadata("","",
-                NearTokenMetadata("" , "", "","" ,""), ApprovedAccount(),Royalty())
+                NearTokenMetadata("" , "", "","" ,), ApprovedAccount(),Royalty())
         }
     }
 }
