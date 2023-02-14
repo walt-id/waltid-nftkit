@@ -8,14 +8,14 @@ import { CreateSubAccount } from "../dto/create.subaccount.dto";
 
 import { DeployContractWithCustomInit } from "../dto/deploy.contract.customInit";
 import { NftMint } from "../dto/nft.mint.dto";
-import {providers} from "near-api-js";
+import { providers } from "near-api-js";
 dotenv.config();
-// near servie
+
 class NearService {
   myKeyStore = new keyStores.InMemoryKeyStore();
   PRIVATE_KEY = process.env.NEAR_PRIVATE_KEY || "5rzEcWjD3dD7472Wp4pM7PXLM4rLiA8KYbtsQ2LZzEr4uurPLZZRQum77mkmLLcjZU7YEK7R9DKoY7ErpYyvX2wr";
 
-  keyPair = KeyPair.fromString(this.PRIVATE_KEY);
+  keyPair = KeyPair.fromString("5rzEcWjD3dD7472Wp4pM7PXLM4rLiA8KYbtsQ2LZzEr4uurPLZZRQum77mkmLLcjZU7YEK7R9DKoY7ErpYyvX2wr");
   // adds the keyPair you created to keyStore
   async addKeyPairToKeyStore(accountid: string, networkid: string) {
     await this.myKeyStore.setKey(networkid, accountid, this.keyPair);
@@ -65,7 +65,7 @@ class NearService {
       const PK = publickey.replace("ed25519:", "");
 
       const amount = new BN(createSubAccount.amount);
-     const response = account.createAccount(
+      const response = account.createAccount(
         createSubAccount.newAccountId,
         PK,
         amount.mul(new BN("1000000000000000000000000"))
@@ -73,9 +73,7 @@ class NearService {
 
       // return (await response).transaction.hash;
 
-      
-      return JSON.stringify( (await response).transaction.hash );
-   
+      return (await response).transaction.hash;
     } catch (err) {
       console.log(err);
     }
@@ -107,7 +105,7 @@ class NearService {
       },
       gas: GAS,
     });
-    return JSON.stringify((await response).transaction.hash);
+    return (await response).transaction.hash;
   }
 
   // deploy contract with custom metadata
@@ -136,7 +134,7 @@ class NearService {
       walletUrl: "",
       helperUrl: "",
     };
-  
+
     const near = await nearAPI.connect(this.connectionConfig);
     const account = await near.account(
       ContractDeploymentWithCustomMetadata.account_id
@@ -173,11 +171,10 @@ class NearService {
       },
       gas: GAS,
     });
-    return JSON.stringify((await response).transaction.hash);
+    return (await response).transaction.hash;
   }
 
   async mintToken(nftmint: NftMint) {
-
     let rpcUrl;
     let networkId;
     if (nftmint.chain === "testnet") {
@@ -189,10 +186,7 @@ class NearService {
     } else {
       throw new Error("Chain parameter is not defined");
     }
-    this.addKeyPairToKeyStore(
-      nftmint.account_id,
-      nftmint.chain
-    );
+    this.addKeyPairToKeyStore(nftmint.account_id, nftmint.chain);
     this.connectionConfig = {
       networkId: networkId,
       keyStore: this.myKeyStore, // first create a key store
@@ -202,6 +196,10 @@ class NearService {
     };
     const near = await nearAPI.connect(this.connectionConfig);
     const account = await near.account(nftmint.account_id);
+    // const contract = new Contract(account, nftmint.contract_id, {
+    //   viewMethods: [],
+    //   changeMethods: ["nft_mint"],
+    // });
 
     const GAS = new BN("100000000000000");
     const Amount_deposited = new BN("100000000000000000000000");
@@ -225,23 +223,22 @@ class NearService {
       contractId: nftmint.contract_id,
       methodName: "nft_mint",
       args: {
+        token_id: nftmint.token_id,
+        metadata: {
+          title: nftmint.title,
+          description: nftmint.description,
+          media: nftmint.media,
+          media_hash: null,
+        },
 
-              token_id: nftmint.token_id,
-              metadata: {
-                title: nftmint.title,
-                description: nftmint.description,
-                media: nftmint.media,
-                media_hash: null,
-              },
-
-              receiver_id: nftmint.receiver_id,
-            },
+        receiver_id: nftmint.receiver_id,
+      },
 
       gas: GAS,
       attachedDeposit: Amount_deposited,
     });
 
-    return JSON.stringify(functionCallResponse.transaction.hash);
+    return functionCallResponse.transaction.hash;
   }
 }
 

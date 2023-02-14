@@ -9,6 +9,7 @@ import id.walt.nftkit.utilis.Common
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.util.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import org.web3j.tx.exceptions.ContractCallException
@@ -47,7 +48,14 @@ object VerificationService {
             Common.isTezosChain(chain) -> {
                 return NFTsTezosOwnershipVerification(chain, contractAddress, account, tokenId)
             }
+
+            Common.isNearChain(chain) -> {
+                return NFTsNearOwnershipVerification(NearChain.valueOf(chain.toString().lowercase()), contractAddress, account, tokenId)
+            }
+
+
             else -> {throw Exception("Chain  is not supported")}
+
         }
     }
 
@@ -59,10 +67,16 @@ object VerificationService {
             Common.isTezosChain(chain) -> {
                 return verifyNftOwnershipWithinCollectionTezosChain(chain, contractAddress, account)
             }
+
+            Common.isNearChain(chain) -> {
+                return verifyNftOwnershipWithinCollectionNearChain(NearChain.valueOf(chain.toString().lowercase()), contractAddress, account)
+            }
+
             else -> {throw Exception("Chain  is not supported")}
         }
 
     }
+
 
     //  simply check if a certain trait type and trait value is in the metadata
     fun verifyNftOwnershipWithTraits(chain: Chain, contractAddress: String, account: String, tokenId: String, traitType: String, traitValue: String? = null): Boolean {
@@ -139,6 +153,11 @@ object VerificationService {
                 val nftMetadata = NftMetadataWrapper(null,tezosNftmetadata)
                 return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
             }
+            Common.isNearChain(chain) -> {
+                val nearNftmetadata= NearNftService.getTokenById( contractAddress,tokenId, NearChain.valueOf(chain.toString().lowercase()))
+                val nftMetadata = NftMetadataWrapper(null,null, nearNftmetadata)
+                return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
+            }
             else -> {throw Exception("Chain  is not supported")}
             }
     }
@@ -153,6 +172,18 @@ object VerificationService {
         val balance= NftService.balanceOf(chain, contractAddress, owner)
         return if (balance!!.compareTo(BigInteger("0")) == 1) true else false
     }
+
+
+    private fun verifyNftOwnershipWithinCollectionNearChain(chain: NearChain, contractAddress: String, account: String): Boolean {
+      try {
+          val result = NearNftService.getNFTforAccount(account, contractAddress , NearChain.valueOf(chain.toString().lowercase()))
+          return true
+      }
+        catch (e: Exception){
+            return false
+        }
+    }
+
     private suspend fun getOceanDaoContractCreationTransaction(erc721contractAddress: String,url: String, apiKey: String): InternalTransactionsResponse{
             return NftService.client.get("https://$url/api?module=account&action=txlistinternal&address=$erc721contractAddress&page=1&offset=1&startblock=0&sort=asc&apikey=$apiKey") {
                 contentType(ContentType.Application.Json)
@@ -175,6 +206,19 @@ object VerificationService {
     private fun NFTsTezosOwnershipVerification(chain: Chain, contractAddress: String, account: String, tokenId: String): Boolean{
         val result= TezosNftService.fetchAccountNFTsByTzkt(chain, account, contractAddress).filter { Integer.parseInt(it.balance)>0 && tokenId.equals(it.token.tokenId) }
         return if (result.size>= 1) true else false
+    }
+
+
+    private fun NFTsNearOwnershipVerification(chain:NearChain, contractAddress : String, account : String, tokenId : String) : Boolean{
+
+
+        try {
+            val result = NearNftService.getTokenById(contractAddress, tokenId , NearChain.valueOf(chain.toString()))
+            return result.owner_id.equals(account, true)
+        }
+        catch (e: Exception){
+            return false
+        }
     }
 
     private fun propertyVerification(chain: EVMChain, contractAddress: String, tokenId: String, propertyKey: String, propertyValue: String): Boolean {
