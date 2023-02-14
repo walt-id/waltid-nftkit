@@ -30,6 +30,15 @@ object Common {
         }
     }
 
+    fun getNearChain(chain: String): NearChain{
+        return chain.let {
+            if (it.isEmpty()){
+                throw Exception("No chain defined")
+            }
+            NearChain.valueOf(it.lowercase())
+        }
+    }
+
     fun getEVMChain(chain: String): EVMChain{
         return chain.let {
             if (it.isEmpty()){
@@ -83,6 +92,12 @@ object Common {
     fun isTezosChain(chain: Chain): Boolean{
         val TezosChains= listOf(Chain.TEZOS, Chain.GHOSTNET)
         if(chain in TezosChains) return true
+        return false
+    }
+
+    fun isNearChain(chain: Chain): Boolean{
+        val NearChains= listOf(Chain.MAINNET, Chain.TESTNET)
+        if(chain in NearChains) return true
         return false
     }
 }

@@ -54,7 +54,8 @@ data class NftMetadata(
 
 data class NftMetadataWrapper(
     val evmNftMetadata: NftMetadata?= null,
-    val tezosNftMetadata: TezosNftMetadata?= null
+    val tezosNftMetadata: TezosNftMetadata?= null,
+    val nearNftMetadata: NearNftMetadata?= null,
 )
 
 data class TokenCollectionInfo(
@@ -68,7 +69,9 @@ enum class Chain {
     GOERLI,
     MUMBAI,
     TEZOS,
-    GHOSTNET
+    GHOSTNET,
+    MAINNET,
+    TESTNET,
 }
 
 enum class EVMChain {
@@ -394,6 +397,8 @@ object NftService {
                 Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_ALCHEMY_URL
                 Chain.TEZOS -> throw Exception("Tezos is not supported")
                 Chain.GHOSTNET -> throw Exception("Ghostnet is not supported")
+                Chain.TESTNET  -> throw Exception("Near testnet is not supported")
+                Chain.MAINNET  -> throw Exception("Near mainnet is not supported")
             }
 
             val result = fetchAccountNFTsTokensByAlchemy(account = account, url = url)

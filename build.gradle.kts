@@ -66,6 +66,7 @@ dependencies {
 
     //near
     implementation ("com.syntifi.near:near-java-api:0.1.0")
+
 }
 
 tasks.withType<Test> {
