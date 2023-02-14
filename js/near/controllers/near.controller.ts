@@ -2,6 +2,13 @@ import express from "express";
 import NearService from "../services/near.service";
 
 class NearController {
+  async test(req: express.Request, res: express.Response) {
+    console.log("test");
+    res.send("test");
+  }
+  async init(req: express.Request, res: express.Response) {
+    console.log("init");
+  }
 
   async accountDetails(req: express.Request, res: express.Response) {
     const account = await NearService.getAccountDetails();
