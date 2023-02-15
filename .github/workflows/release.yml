@@ -20,6 +20,11 @@ jobs:
       - run: |
           git tag v${{ env.release_version }}
           git push --tags
+      - name: Setup java
+        uses: actions/setup-java@v2.1.0
+        with:
+          distribution: 'adopt-hotspot'
+          java-version: '16'
       - name: Setup cache
         uses: actions/cache@v2
         with:
