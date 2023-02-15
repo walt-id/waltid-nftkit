@@ -20,7 +20,7 @@ jobs:
           echo "release_version=1.$(date +'%g%m%d%H%M').$(echo ${{ github.ref_name }} | tr / -)" >> $GITHUB_ENV
       - name: Set version
         run: |
-          sed -i "s/1.SNAPSHOT/${{ env.release_version }}/g" build.gradle.kts src/main/kotlin/id/walt/Values.kt
+          sed -i "s/1.SNAPSHOT/${{ env.release_version }}/g" build.gradle.kts src/main/kotlin/id/walt/nftkit/Values.kt
       - run: |
           git tag v${{ env.release_version }}
           git push --tags
