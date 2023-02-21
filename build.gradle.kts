@@ -71,6 +71,12 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+
+    // Use the following condition to optionally run the integration tests:
+    // > gradle build -PrunIntegrationTests
+    if (!project.hasProperty("runIntegrationTests")) {
+        exclude("id/walt/nftkit/blockchainTransactionsCalls/**")
+    }
 }
 
 tasks.withType<KotlinCompile> {

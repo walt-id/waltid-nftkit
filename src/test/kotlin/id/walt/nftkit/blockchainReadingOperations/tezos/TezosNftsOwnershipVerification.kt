@@ -1,4 +1,4 @@
-package id.walt.nftkit.ownershipVerification
+package id.walt.nftkit.blockchainReadingOperations.tezos
 
 import id.walt.nftkit.opa.DynamicPolicyArg
 import id.walt.nftkit.opa.PolicyRegistry
