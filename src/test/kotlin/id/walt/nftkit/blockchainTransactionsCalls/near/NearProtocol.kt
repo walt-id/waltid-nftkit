@@ -1,15 +1,11 @@
-package id.walt.nftkit.NearProtocol
+package id.walt.nftkit.blockchainTransactionsCalls.near
 
-import com.sksamuel.hoplite.fp.valid
 import id.walt.nftkit.services.NearChain
 import id.walt.nftkit.services.NearNftService
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 
 class NearProtocol : StringSpec  ({
-    val enableTest = true
     val random_subaccount = "test" + System.currentTimeMillis()
 //
 //    "create sub account".config(enableTest) {
@@ -31,13 +27,13 @@ class NearProtocol : StringSpec  ({
 //        result shouldNotBe null
 //    }
 
-    "Get NFT for owner".config(enableTest) {
+    "Get NFT for owner".config() {
         val result = NearNftService.getNFTforAccount("khaled_lightency1.testnet","nft.khaled_lightency1.testnet", NearChain.testnet)
         println(result)
         result should { it != null }
     }
 
-    "Get NFT per token_id".config(enableTest) {
+    "Get NFT per token_id".config() {
         val result = NearNftService.getTokenById("nft.khaled_lightency1.testnet","token1", NearChain.testnet)
         println(result)
         result should { it != null }
