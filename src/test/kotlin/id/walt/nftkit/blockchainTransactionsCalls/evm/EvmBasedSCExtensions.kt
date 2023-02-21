@@ -1,4 +1,4 @@
-package id.walt.nftkit.extensions
+package id.walt.nftkit.blockchainTransactionsCalls.evm
 
 import id.walt.nftkit.rest.UpdateTokenURIRequest
 import id.walt.nftkit.services.*
@@ -13,29 +13,21 @@ import java.util.*
 
 class EvmBasedSCExtensions : StringSpec({
 
-    val enableTest = false
-
-
-    "Smart contract pause function ".config(enabled=enableTest) {
+    "Smart contract pause function ".config() {
         val result= ExtensionsService.pause(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
         val pausedValue= ExtensionsService.paused(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
         pausedValue shouldBe true
         result.transactionId shouldNotBe null
     }
 
-    "Verifying Smart contract state ".config(enabled=enableTest) {
-        val result= ExtensionsService.paused(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
-        result shouldBe true
-    }
-
-    "Smart contract unpause function ".config(enabled=enableTest) {
+    "Smart contract unpause function ".config() {
         val result= ExtensionsService.unpause(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
         val pausedValue= ExtensionsService.paused(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
         pausedValue shouldBe false
         result.transactionId shouldNotBe null
     }
 
-    "Setting token URI".config(enabled=enableTest){
+    "Setting token URI".config(){
         val oldURI = NftService.getNftMetadataUri(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", BigInteger.valueOf(4) )
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
         val currentDate = sdf.format(Date())
@@ -54,7 +46,7 @@ class EvmBasedSCExtensions : StringSpec({
         result.transactionId shouldNotBe null
     }
 
-    "Changing transferable status".config(enabled=enableTest){
+    "Changing transferable status".config(){
         val oldT = ExtensionsService.getTransferable(EVMChain.MUMBAI,"0xf277BE034881eE38A9b270E5b6C5c6f333Af2517" )
         val result = ExtensionsService.setTransferable(EVMChain.MUMBAI,"0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", !oldT )
         val newT = ExtensionsService.getTransferable(EVMChain.MUMBAI,"0xf277BE034881eE38A9b270E5b6C5c6f333Af2517" )
@@ -62,7 +54,7 @@ class EvmBasedSCExtensions : StringSpec({
         newT shouldBe !oldT
     }
 
-    "Changing burnable status".config(enabled=enableTest) {
+    "Changing burnable status".config() {
         val oldB = ExtensionsService.getBurnable(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
         val result = ExtensionsService.setBurnable(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", !oldB)
         val newB = ExtensionsService.getBurnable(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
@@ -70,7 +62,7 @@ class EvmBasedSCExtensions : StringSpec({
         newB shouldBe !oldB
     }
 
-    "Burning token".config(enabled=enableTest){
+    "Burning token".config(){
         val nftMetaData = NftMetadata("To burn", "To burn", "string", "string","string")
         val mintingParametre = MintingParameter(metadataUri = "", recipientAddress="0xaf87c5ce7a1fb6bd5aadb6dd9c0b8ef51ef1bc31", metadata = nftMetaData )
         val mintingOption = MintingOptions(MetadataStorageType.ON_CHAIN)
