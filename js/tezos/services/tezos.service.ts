@@ -4,8 +4,8 @@ import {AddMinterDto} from '../dto/add.minter.dto'
 import { TezosToolkit } from '@taquito/taquito';
 import { MichelsonMap } from '@taquito/taquito';
 import { InMemorySigner } from '@taquito/signer';
-import {code as multipleNftFa2Code, getStorage as multipleNftFa2GetStorage} from '../smart contract/multiple-nft-fa2-private-collection'
-import {code as singleNftFa2Code, getStorage as singleNftFa2GetStorage} from '../smart contract/single-nft-fa2-private-collection'
+import {code as multipleNftFa2Code, getStorage as multipleNftFa2GetStorage} from '../smart_contract/multiple-nft-fa2-private-collection'
+import {code as singleNftFa2Code, getStorage as singleNftFa2GetStorage} from '../smart_contract/single-nft-fa2-private-collection'
 import * as dotenv from 'dotenv'
 import {verifySignature} from "@taquito/utils";
 

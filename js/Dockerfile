@@ -20,8 +20,10 @@ RUN npm install @types/bn.js
 COPY js/. .
 
 # for typescript
+COPY js/.env .
 RUN npm run build
 COPY js/.env ./dist/
+COPY js/resources/ dist/
 WORKDIR ./dist
 
 EXPOSE 3000
