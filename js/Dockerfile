@@ -22,6 +22,7 @@ COPY js/. .
 # for typescript
 RUN npm run build
 COPY js/.env ./dist/
+COPY js/resources/ dist/
 WORKDIR ./dist
 
 EXPOSE 3000
