@@ -88,7 +88,7 @@ class NearService {
     const account = await near.account(contractDeployment.account_id);
 
     const response = await account.deployContract(
-      fs.readFileSync("near/smart contract/waltid_nftkit.wasm")
+      fs.readFileSync("near/smart_contract/waltid_nftkit.wasm")
     );
     console.log(response);
 
@@ -141,7 +141,7 @@ class NearService {
     );
 
     const response = await account.deployContract(
-      fs.readFileSync("near/smart contract/waltid_nftkit.wasm")
+      fs.readFileSync("near/smart_contract/waltid_nftkit.wasm")
     );
     console.log(response);
 
