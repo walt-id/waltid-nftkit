@@ -31,13 +31,13 @@ class NearProtocol : StringSpec  ({
 //    }
 
     "Get NFT for owner".config() {
-        val result = NearNftService.getNFTforAccount("khaled_lightency1.testnet","nft.khaled_lightency1.testnet", NearChain.testnet)
+        val result = NearNftService.getNFTforAccount("khaled_lightency1.testnet","nft.khaled_lightency1.testnet", NearChain.TESTNET)
         println(result)
         result should { it != null }
     }
 
     "Get NFT per token_id".config() {
-        val result = NearNftService.getTokenById("nft.khaled_lightency1.testnet","token1", NearChain.testnet)
+        val result = NearNftService.getTokenById("nft.khaled_lightency1.testnet","token1", NearChain.TESTNET)
         println(result)
         result should { it != null }
     }
