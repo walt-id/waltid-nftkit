@@ -55,7 +55,7 @@ object NearNftController {
         val result = mintReq.media_hash?.let {
             NearNftService.mintNftToken(
                 mintReq.account_id, contract_id, mintReq.token_id, mintReq.title, mintReq.description, mintReq.media,
-                it, mintReq.reference.toString(), mintReq.reference_hash, mintReq.receiver_id, Common.getNearChain(chain.uppercase())
+                it, mintReq.reference.toString(), mintReq.reference_hash, mintReq.receiver_id, Common.getNearChain(chain.lowercase())
             )
         }
         if (result != null) {
@@ -79,7 +79,7 @@ object NearNftController {
 
         val chain = ctx.pathParam("chain")
         val result = NearNftService.deployContractDefault(
-            ctx.pathParam("account_id" ), Common.getNearChain(chain.uppercase())
+            ctx.pathParam("account_id" ), Common.getNearChain(chain.lowercase())
         )
         ctx.json(result)
     }
@@ -100,7 +100,7 @@ object NearNftController {
         val account_id = ctx.pathParam("account_id")
         val chain = ctx.pathParam("chain")
 
-        val result = NearNftService.deployContractWithCustomMetadata(account_id,mintReq.owner_id, mintReq.spec, mintReq.name, mintReq.symbol, mintReq.icon.toString(), mintReq.base_uri.toString(), mintReq.reference.toString(), mintReq.reference_hash.toString(),Common.getNearChain(chain.uppercase()))
+        val result = NearNftService.deployContractWithCustomMetadata(account_id,mintReq.owner_id, mintReq.spec, mintReq.name, mintReq.symbol, mintReq.icon.toString(), mintReq.base_uri.toString(), mintReq.reference.toString(), mintReq.reference_hash.toString(),Common.getNearChain(chain.lowercase()))
 
         ctx.json(result)
     }
@@ -173,7 +173,7 @@ object NearNftController {
         val subAccountReq = ctx.bodyAsClass(NearSubAccountRequest::class.java)
         val chain = ctx.pathParam("chain")
         val result = NearNftService.createSubAccount(
-            subAccountReq.account_id, subAccountReq.newAccountId, subAccountReq.amount, Common.getNearChain(chain.uppercase())
+            subAccountReq.account_id, subAccountReq.newAccountId, subAccountReq.amount, Common.getNearChain(chain.lowercase())
         )
         ctx.json(result)
     }
@@ -195,7 +195,7 @@ object NearNftController {
         val result = NearNftService.getTokenById(
             ctx.pathParam("contract_id"),
             ctx.pathParam("token_id"),
-            Common.getNearChain(chain.uppercase())
+            Common.getNearChain(chain.lowercase())
         )
         ctx.json(result)
     }
