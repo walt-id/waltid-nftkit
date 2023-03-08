@@ -20,8 +20,8 @@ import kotlinx.serialization.json.Json
 import java.util.*
 
 enum class NearChain {
-    testnet,
-    mainnet
+    TESTNET,
+    MAINNET,
 }
 
 
@@ -143,7 +143,7 @@ object NearNftService {
                 "reference" to reference,
                 "reference_hash" to reference_hash,
                 "receiver_id" to receiver_id,
-                "chain" to chain.toString()
+                "chain" to chain.toString().lowercase()
             )
             val nearOperationResult =
                 NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/contract/mintToken") {
@@ -154,9 +154,9 @@ object NearNftService {
                     )
                 }
                     .body<nearOperationResult>()
-            val contractExternalUrl = when (Common.getNearChain(chain.toString())) {
-                NearChain.mainnet -> Values.NEAR_MAINNET_EXPLORER
-                NearChain.testnet -> Values.NEAR_TESTNET_EXPLORER
+            val contractExternalUrl = when (Common.getNearChain(chain.toString().lowercase())) {
+                NearChain.MAINNET -> Values.NEAR_MAINNET_EXPLORER
+                NearChain.TESTNET -> Values.NEAR_TESTNET_EXPLORER
             }
 
             return@runBlocking OperationResult(
@@ -170,7 +170,7 @@ object NearNftService {
         return runBlocking {
             val values = mapOf(
                 "account_id" to account_id,
-                "chain" to chain.toString()
+                "chain" to chain.toString().lowercase()
                 )
             val nearOperationResult = NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/contract/deploywithdefaultmetadata") {
                 contentType(ContentType.Application.Json)
@@ -180,8 +180,8 @@ object NearNftService {
             }
                 .body<nearOperationResult>()
             val contractExternalUrl = when (Common.getNearChain(chain.toString())) {
-                NearChain.mainnet -> Values.NEAR_MAINNET_EXPLORER
-                NearChain.testnet -> Values.NEAR_TESTNET_EXPLORER
+                NearChain.MAINNET -> Values.NEAR_MAINNET_EXPLORER
+                NearChain.TESTNET -> Values.NEAR_TESTNET_EXPLORER
             }
             return@runBlocking OperationResult(
                  nearOperationResult.hash,
@@ -202,7 +202,7 @@ object NearNftService {
                 "base_uri" to base_uri,
                 "reference" to reference,
                 "reference_hash" to reference_hash,
-                "chain" to chain.toString()
+                "chain" to chain.toString().lowercase()
 
                 )
             val nearOperationResult = NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/contract/deploywithcustommetadata") {
@@ -214,8 +214,8 @@ object NearNftService {
             }
                 .body<nearOperationResult>()
             val contractExternalUrl = when (Common.getNearChain(chain.toString())) {
-                NearChain.mainnet -> Values.NEAR_MAINNET_EXPLORER
-                NearChain.testnet -> Values.NEAR_TESTNET_EXPLORER
+                NearChain.MAINNET -> Values.NEAR_MAINNET_EXPLORER
+                NearChain.TESTNET -> Values.NEAR_TESTNET_EXPLORER
             }
             return@runBlocking OperationResult(
                 nearOperationResult.hash,
@@ -226,7 +226,7 @@ object NearNftService {
 
     fun getNftNearMetadata(contract_id: String , chain: NearChain ): Any{
         var url = "" ;
-        if (NearChain.testnet.toString() == chain.toString())
+        if (NearChain.TESTNET.toString().lowercase() == chain.toString())
         {
             url = "archival-rpc.testnet.near.org"
         }
@@ -262,7 +262,7 @@ object NearNftService {
     }
     fun getNFTforAccount(account_id: String , contract_id: String ,chain: NearChain) : List<NearNftMetadata> {
         var url = "" ;
-        if (NearChain.testnet.toString() == chain.toString())
+        if (NearChain.TESTNET.toString() == chain.toString())
 
         {
             url = "archival-rpc.testnet.near.org"
@@ -293,7 +293,7 @@ object NearNftService {
                 "account_id" to account_id,
                 "newAccountId" to newAccountId,
                 "amount" to amount,
-                "chain" to chain.toString()
+                "chain" to chain.toString().lowercase()
             )
             val nearOperationResult = NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/sub-account/create") {
                 contentType(ContentType.Application.Json)
@@ -302,9 +302,9 @@ object NearNftService {
                 )
             }
                 .body<nearOperationResult>()
-            val contractExternalUrl = when (Common.getNearChain(chain.toString())) {
-                NearChain.mainnet -> Values.NEAR_MAINNET_EXPLORER
-                NearChain.testnet -> Values.NEAR_TESTNET_EXPLORER
+            val contractExternalUrl = when (Common.getNearChain(chain.toString().lowercase())) {
+                NearChain.MAINNET -> Values.NEAR_MAINNET_EXPLORER
+                NearChain.TESTNET -> Values.NEAR_TESTNET_EXPLORER
             }
             return@runBlocking OperationResult(
                 nearOperationResult.hash,
@@ -317,7 +317,7 @@ object NearNftService {
 
     fun getTokenById(contract_id: String, token_id: String , chain: NearChain): NearNftMetadata{
         var url = "";
-        if (NearChain.testnet.toString() == chain.toString()) {
+        if (NearChain.TESTNET.toString() == chain.toString()) {
             url = "archival-rpc.testnet.near.org"
         } else {
             url = "archival-rpc.mainnet.near.org"

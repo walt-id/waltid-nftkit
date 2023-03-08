@@ -17,7 +17,7 @@ object Common {
             if (it.isEmpty()){
                 throw Exception("No chain defined")
             }
-            Chain.valueOf(it.uppercase())
+            Chain.valueOf(it.lowercase())
         }
     }
 
@@ -35,7 +35,7 @@ object Common {
             if (it.isEmpty()){
                 throw Exception("No chain defined")
             }
-            NearChain.valueOf(it.lowercase())
+            NearChain.valueOf(it.uppercase())
         }
     }
 
