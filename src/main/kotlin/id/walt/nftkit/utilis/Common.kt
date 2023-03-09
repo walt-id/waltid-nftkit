@@ -17,7 +17,7 @@ object Common {
             if (it.isEmpty()){
                 throw Exception("No chain defined")
             }
-            Chain.valueOf(it.lowercase())
+            Chain.valueOf(it.uppercase())
         }
     }
 
