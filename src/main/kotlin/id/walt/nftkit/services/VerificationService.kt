@@ -50,7 +50,7 @@ object VerificationService {
             }
 
             Common.isNearChain(chain) -> {
-                return NFTsNearOwnershipVerification(NearChain.valueOf(chain.toString().lowercase()), contractAddress, account, tokenId)
+                return NFTsNearOwnershipVerification(NearChain.valueOf(chain.toString()), contractAddress, account, tokenId)
             }
 
 
@@ -69,7 +69,7 @@ object VerificationService {
             }
 
             Common.isNearChain(chain) -> {
-                return verifyNftOwnershipWithinCollectionNearChain(NearChain.valueOf(chain.toString().lowercase()), contractAddress, account)
+                return verifyNftOwnershipWithinCollectionNearChain(NearChain.valueOf(chain.toString()), contractAddress, account)
             }
 
             else -> {throw Exception("Chain  is not supported")}
@@ -154,7 +154,7 @@ object VerificationService {
                 return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
             }
             Common.isNearChain(chain) -> {
-                val nearNftmetadata= NearNftService.getTokenById( contractAddress,tokenId, NearChain.valueOf(chain.toString().lowercase()))
+                val nearNftmetadata= NearNftService.getTokenById( contractAddress,tokenId, NearChain.valueOf(chain.toString()))
                 val nftMetadata = NftMetadataWrapper(null,null, nearNftmetadata)
                 return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
             }
@@ -176,7 +176,7 @@ object VerificationService {
 
     private fun verifyNftOwnershipWithinCollectionNearChain(chain: NearChain, contractAddress: String, account: String): Boolean {
       try {
-          val result = NearNftService.getNFTforAccount(account, contractAddress , NearChain.valueOf(chain.toString().lowercase()))
+          val result = NearNftService.getNFTforAccount(account, contractAddress , NearChain.valueOf(chain.toString()))
           return true
       }
         catch (e: Exception){
