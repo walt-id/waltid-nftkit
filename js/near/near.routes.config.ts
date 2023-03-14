@@ -38,6 +38,9 @@ export class NearRoutes extends CommonRoutesConfig {
             NearController.mintToken
             
         );
+        this.app
+            .route(`/near/signature/verification`)
+            .get(NearController.verifySignature);
         return this.app;
     }
 }

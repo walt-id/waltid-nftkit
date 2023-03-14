@@ -240,6 +240,49 @@ class NearService {
 
     return functionCallResponse.transaction.hash;
   }
+
+  async verifySignature(
+      message: any,
+      public_key: any,
+      signature_to_verif: any
+  ) {
+    // try {
+    //   const keyPair = KeyPair.fromString(
+    //     "5rzEcWjD3dD7472Wp4pM7PXLM4rLiA8KYbtsQ2LZzEr4uurPLZZRQum77mkmLLcjZU7YEK7R9DKoY7ErpYyvX2wr"
+    //   );
+
+    //   const msg = Buffer.from("hi");
+
+    //   const { signature } = keyPair.sign(msg);
+
+    //   console.log("Signature:", signature);
+
+    //   const isValid = keyPair.verify(msg, signature);
+
+    //   const new_public_key = keyPair.getPublicKey();
+    //   console.log("New Public Key:", new_public_key);
+
+    //   console.log("Signature Valid?:", isValid);
+
+    //   return isValid;
+    // } catch (error) {
+    //   console.log(error);
+    // }
+    try {
+      const keyPair = KeyPair.fromString(
+          "dKS78f3o3kyifKfjdPUkkWcVYa8wL48NwXgb7eLa3Nz5ocdmoZRNdDWFJkbYCNvVGkioyHkV7PBQBmPqiTweQ5W"
+      );
+      const msg = Buffer.from(message);
+      const { signature } = keyPair.sign(msg);
+
+      const isValid = keyPair.verify(msg, signature);
+
+      console.log("isValid:", isValid);
+      return isValid;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
 
 export default new NearService();
