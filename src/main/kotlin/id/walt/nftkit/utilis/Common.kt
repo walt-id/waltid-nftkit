@@ -100,5 +100,11 @@ object Common {
         if(chain in NearChains) return true
         return false
     }
+
+    fun isPolkadotParachain(chain: Chain): Boolean{
+        val polkadotParachain= listOf(Chain.ASTAR, Chain.MOONBEAM)
+        if(chain in polkadotParachain) return true
+        return false
+    }
 }
 

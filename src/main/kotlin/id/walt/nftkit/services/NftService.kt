@@ -72,6 +72,8 @@ enum class Chain {
     GHOSTNET,
     MAINNET,
     TESTNET,
+    ASTAR,
+    MOONBEAM
 }
 
 enum class EVMChain {
@@ -399,6 +401,8 @@ object NftService {
                 Chain.GHOSTNET -> throw Exception("Ghostnet is not supported")
                 Chain.TESTNET  -> throw Exception("Near testnet is not supported")
                 Chain.MAINNET  -> throw Exception("Near mainnet is not supported")
+                Chain.ASTAR  -> throw Exception("ASTAR mainnet is not supported")
+                Chain.MOONBEAM  -> throw Exception("MOONBEAM mainnet is not supported")
             }
 
             val result = fetchAccountNFTsTokensByAlchemy(account = account, url = url)
