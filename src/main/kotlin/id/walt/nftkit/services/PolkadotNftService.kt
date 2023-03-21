@@ -35,6 +35,31 @@ data class PolkadotNFTsSubscanResult(
             )
     }
 }
+@Serializable
+data class SubscanEvmErc721CollectiblesBody(
+    val address: String,
+    val row: Int
+)
+
+@Serializable
+data class SubscanEvmErc721CollectiblesResult(
+    val data: Data?=null,
+){
+    @Serializable
+    data class Data(
+        val count: Int,
+        val list: List<TokenHolder>?=null,
+    ){
+        @Serializable
+        data class TokenHolder(
+            val contract: String,
+            val holder: String,
+            val token_id: String,
+            val storage_url: String
+        )
+    }
+}
+
 
 object PolkadotNftService {
 
@@ -52,7 +77,7 @@ object PolkadotNftService {
         expectSuccess = false
     }
 
-    fun fetchAccountNFTsBySubscan(parachain: PolkadotParachain, account: String): PolkadotNFTsSubscanResult{//https://moonbeam.api.subscan.io/api/scan/account/tokens
+    fun fetchAccountTokensBySubscan(parachain: PolkadotParachain, account: String): PolkadotNFTsSubscanResult{
         return runBlocking {
             val values = mapOf("address" to account)
             var parachainAPI= when(parachain){
@@ -61,9 +86,25 @@ object PolkadotNftService {
             }
             client.post("https://$parachainAPI.api.subscan.io/api/scan/account/tokens") {
                 contentType(ContentType.Application.Json)
-                header("X-API-Key", "a316376503ab4bceb3c38c601de91ca7")
+                header("X-API-Key", "")
                 setBody(values)
             }.body<PolkadotNFTsSubscanResult>()
+        }
+    }
+
+
+    fun fetchEvmErc721CollectiblesBySubscan(parachain: PolkadotParachain, account: String):SubscanEvmErc721CollectiblesResult{
+        return runBlocking {
+            val v = SubscanEvmErc721CollectiblesBody(account, 100)
+            var parachainAPI= when(parachain){
+                PolkadotParachain.ASTAR -> "astar"
+                PolkadotParachain.MOONBEAM -> "moonbeam"
+            }
+            client.post("https://$parachainAPI.api.subscan.io/api/scan/evm/erc721/collectibles") {
+                contentType(ContentType.Application.Json)
+                header("X-API-Key", "")
+                setBody(v)
+            }.body<SubscanEvmErc721CollectiblesResult>()
         }
     }
 }

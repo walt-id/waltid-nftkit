@@ -52,8 +52,9 @@ object VerificationService {
             Common.isNearChain(chain) -> {
                 return NFTsNearOwnershipVerification(NearChain.valueOf(chain.toString()), contractAddress, account, tokenId)
             }
-
-
+            Common.isPolkadotParachain(chain) ->{
+                return NFTsPolkadotOwnershipVerification(PolkadotParachain.valueOf(chain.toString()), contractAddress, account, tokenId)
+            }
             else -> {throw Exception("Chain  is not supported")}
 
         }
@@ -187,7 +188,7 @@ object VerificationService {
     }
 
     private fun verifyNftOwnershipWithinCollectionPolkadotChain(parachain: PolkadotParachain, contractAddress: String, owner: String): Boolean {
-        val polkadotNFTsSubscanResult= PolkadotNftService.fetchAccountNFTsBySubscan(parachain, owner)
+        val polkadotNFTsSubscanResult= PolkadotNftService.fetchAccountTokensBySubscan(parachain, owner)
         if(polkadotNFTsSubscanResult.data == null) return false
         val result= polkadotNFTsSubscanResult.data?.ERC721?.filter { Integer.parseInt(it.balance)>0 && contractAddress.equals(it.contract)}
         return if (result!!.size >= 1) true else false
@@ -230,10 +231,12 @@ object VerificationService {
         }
     }
 
-    /*private fun NFTsPolkadotOwnershipVerification(parachain: PolkadotParachain, contractAddress: String, account: String, tokenId: String): Boolean{
-        val result= PolkadotNftService.fetchAccountNFTsBySubscan(parachain, account).data.ERC721?.filter { Integer.parseInt(it.balance)>0 && contractAddress.equals(it.contract) /*&& tokenId.equals(it.)*/ }
+    private fun NFTsPolkadotOwnershipVerification(parachain: PolkadotParachain, contractAddress: String, account: String, tokenId: String): Boolean{
+        val evmErc721CollectiblesResult= PolkadotNftService.fetchEvmErc721CollectiblesBySubscan(parachain, account)
+        if(evmErc721CollectiblesResult.data?.list == null) return false
+        val result= evmErc721CollectiblesResult.data?.list?.filter { contractAddress.equals(it.contract) && tokenId.equals(it.token_id)}
         return if (result!!.size>= 1) true else false
-    }*/
+    }
 
     private fun propertyVerification(chain: EVMChain, contractAddress: String, tokenId: String, propertyKey: String, propertyValue: String): Boolean {
         val metadata= NftService.getNftMetadata(chain, contractAddress, BigInteger(tokenId))
