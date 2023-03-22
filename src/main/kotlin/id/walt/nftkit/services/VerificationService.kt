@@ -115,6 +115,21 @@ object VerificationService {
                 }
                 return false;
             }
+            Common.isPolkadotParachain(chain) -> {
+                val ownership= NFTsPolkadotOwnershipVerification(PolkadotParachain.valueOf(chain.toString()), contractAddress, account, tokenId)
+                if(ownership){
+                    val metadata= NftService.getNftMetadata(EVMChain.valueOf(chain.toString()), contractAddress, BigInteger( tokenId))
+                    if(metadata!!.attributes?.filter {
+                            (it.trait_type.equals(traitType) && it.value.equals(
+                                traitValue,
+                                true
+                            )) || (traitValue == null && traitType.equals(it.trait_type))
+                        }!!.isNotEmpty()){
+                        return true
+                    }
+                }
+                return false
+            }
             else -> {throw Exception("Chain  is not supported")}
         }
 
@@ -159,6 +174,11 @@ object VerificationService {
             Common.isNearChain(chain) -> {
                 val nearNftmetadata= NearNftService.getTokenById( contractAddress,tokenId, NearChain.valueOf(chain.toString()))
                 val nftMetadata = NftMetadataWrapper(null,null, nearNftmetadata)
+                return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
+            }
+            Common.isPolkadotParachain(chain) -> {
+                val evmNftmetadata= NftService.getNftMetadata(EVMChain.valueOf(chain.toString()), contractAddress, BigInteger( tokenId))
+                val nftMetadata = NftMetadataWrapper(evmNftmetadata,null)
                 return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
             }
             else -> {throw Exception("Chain  is not supported")}
