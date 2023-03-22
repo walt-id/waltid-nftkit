@@ -10,6 +10,7 @@ import id.walt.nftkit.models.NFTsInfos
 import id.walt.nftkit.services.WaltIdServices.decBase64Str
 import id.walt.nftkit.smart_contract_wrapper.Erc721OnchainCredentialWrapper
 import id.walt.nftkit.utilis.Common
+import io.javalin.core.util.RouteOverviewUtil.metaInfo
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -21,7 +22,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.*
 import org.web3j.abi.EventEncoder
 import org.web3j.abi.EventValues
 import org.web3j.abi.FunctionReturnDecoder
@@ -81,6 +82,8 @@ enum class EVMChain {
     POLYGON,
     GOERLI,
     MUMBAI,
+    ASTAR,
+    MOONBEAM
 }
 
 enum class TokenStandard {
@@ -293,7 +296,11 @@ object NftService {
             val decodedUri = decBase64Str(uri.substring(29))
             return Json{ ignoreUnknownKeys = true }.decodeFromString(decodedUri)
         }else{
-            return getIPFSMetadataUsingNFTStorage(uri)
+            if(uri.contains("https://", true)){
+                return getWebDocumentMetadata(uri)
+            }else{
+                return getIPFSMetadataUsingNFTStorage(uri)
+            }
         }
     }
 
@@ -497,6 +504,17 @@ object NftService {
         }
     }
 
+    fun getWebDocumentMetadata(uri: String): NftMetadata {
+        return runBlocking {
+            val nft = client.get(uri) {
+            }.body<String>()
+            println("result")
+            println(nft)
+            val jsonObject = Json.parseToJsonElement(nft).jsonObject
+            val result= parseNftEvmMetadataResult(jsonObject)
+            return@runBlocking result
+        }
+    }
     fun addFileToIpfsUsingNFTStorage(file: ByteArray): NFTStorageAddFileResult {
         return runBlocking {
             val res = IPFSMetadata.client.post("https://api.nft.storage/upload") {
@@ -544,6 +562,23 @@ object NftService {
 
     private fun isErc721Standard(chain: EVMChain, contractAddress: String): Boolean {
         return Erc721TokenStandard.supportsInterface(chain, contractAddress)
+    }
+
+    private fun parseNftEvmMetadataResult(nft: JsonObject): NftMetadata{
+        var attributes: List<NftMetadata.Attributes>?=null
+        if(nft.get("attributes")?.metaInfo.equals("kotlinx.serialization.json.JsonArray.class")){
+            attributes= nft.get("attributes")?.jsonArray?.map {
+                NftMetadata.Attributes(it.jsonObject.get("trait_type")?.jsonPrimitive?.content ?: "", it.jsonObject.get("value")?.jsonPrimitive?.content ?: "")
+            }
+        }
+        return NftMetadata(
+            name= nft.get("name")?.jsonPrimitive?.content,
+            description = nft.get("description")?.jsonPrimitive?.content,
+            image = nft.get("image")?.jsonPrimitive?.content,
+            image_data = nft.get("image_data")?.jsonPrimitive?.content,
+            external_url = nft.get("external_url")?.jsonPrimitive?.content,
+            attributes = attributes
+        )
     }
 
     private fun staticExtractEventParameters(

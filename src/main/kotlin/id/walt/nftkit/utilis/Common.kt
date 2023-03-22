@@ -71,6 +71,7 @@ object Common {
             EVMChain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_SCAN_API_URL
             EVMChain.POLYGON -> Values.POLYGON_MAINNET_SCAN_API_URL
             EVMChain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_SCAN_API_URL
+            else -> {throw Exception("${chain.toString()} is not supported")}
         }
     }
 
@@ -80,6 +81,7 @@ object Common {
             EVMChain.GOERLI -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
             EVMChain.POLYGON -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
             EVMChain.MUMBAI -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
+            else -> {throw Exception("${chain.toString()} is not supported")}
         }
     }
 
