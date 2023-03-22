@@ -86,7 +86,7 @@ object PolkadotNftService {
             }
             client.post("https://$parachainAPI.api.subscan.io/api/scan/account/tokens") {
                 contentType(ContentType.Application.Json)
-                header("X-API-Key", "")
+                header("X-API-Key", WaltIdServices.loadApiKeys().apiKeys.subscan)
                 setBody(values)
             }.body<PolkadotNFTsSubscanResult>()
         }
@@ -102,7 +102,7 @@ object PolkadotNftService {
             }
             client.post("https://$parachainAPI.api.subscan.io/api/scan/evm/erc721/collectibles") {
                 contentType(ContentType.Application.Json)
-                header("X-API-Key", "")
+                header("X-API-Key", WaltIdServices.loadApiKeys().apiKeys.subscan)
                 setBody(v)
             }.body<SubscanEvmErc721CollectiblesResult>()
         }
