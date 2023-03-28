@@ -1,5 +1,9 @@
 package id.walt.nftkit.services
 
+import com.expediagroup.graphql.client.serialization.GraphQLClientKotlinxSerializer
+import com.expediagroup.graphql.client.spring.GraphQLWebClient
+import id.walt.nftkit.TokenOwnersQuery
+import id.walt.nftkit.TokensQuery
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -17,6 +21,11 @@ import kotlinx.serialization.json.Json
 enum class PolkadotParachain {
     ASTAR,
     MOONBEAM
+}
+
+enum class UniqueNetwork{
+    UNIQUE,
+    OPAL
 }
 
 @Serializable
@@ -77,6 +86,9 @@ object PolkadotNftService {
         expectSuccess = false
     }
 
+    val uniqueGraphqlClient = GraphQLWebClient(url = "https://scan-api.opal.uniquenetwork.dev/v1/graphql",serializer = GraphQLClientKotlinxSerializer())
+
+
     fun fetchAccountTokensBySubscan(parachain: PolkadotParachain, account: String): PolkadotNFTsSubscanResult{
         return runBlocking {
             val values = mapOf("address" to account)
@@ -105,6 +117,26 @@ object PolkadotNftService {
                 header("X-API-Key", WaltIdServices.loadApiKeys().apiKeys.subscan)
                 setBody(v)
             }.body<SubscanEvmErc721CollectiblesResult>()
+        }
+    }
+
+    fun fetchUniqueNFTs(account: String){
+        runBlocking {
+            val tokenOwnersQuery = TokenOwnersQuery()
+            tokenOwnersQuery.query =
+                tokenOwnersQuery.query.replace("address", account)
+            val result = uniqueGraphqlClient.execute(tokenOwnersQuery)
+            println("hello world query result: ${result.data?.token_owners}")
+        }
+    }
+
+    fun fetchUniqueNFTsMetadata(tokenId: String, collectionId: String){
+        runBlocking {
+            val tokensQuery = TokensQuery()
+            tokensQuery.query= tokensQuery.query.replace("tokenId",tokenId)
+            tokensQuery.query= tokensQuery.query.replace("collectionId",collectionId)
+            val result = uniqueGraphqlClient.execute(tokensQuery)
+            println("hello world query result: ${result.data?.tokens}")
         }
     }
 }
