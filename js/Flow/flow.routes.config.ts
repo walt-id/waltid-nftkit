@@ -14,9 +14,14 @@ export class FlowRoutes extends CommonRoutesConfig {
                 FlowController.accountDetails
             );
         this.app
-            .route(`/flow/getNFTs`)
+            .route(`/flow/getNFTsByAddress`)
             .post(
-                FlowController.getNFTs
+                FlowController.getNFTsByAddress
+            );
+        this.app
+            .route(`/flow/getAllNFTs`)
+            .post(
+                FlowController.getAllNFTs
             );
 
         return this.app;
