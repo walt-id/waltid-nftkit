@@ -247,14 +247,29 @@ object NftKitApi {
                             documented(VerificationController.verifyNftOwnershipDocs(), VerificationController::verifyNftOwnership)
                         )
                         get(
+                            "chain/{chain}/collection/{collectionId}/verifyNftOwnership",
+                            documented(VerificationController.verifyNftOwnershipWithCollectionIdDocs(), VerificationController::verifyNftOwnershipWithCollectionId)
+                        )
+                        get(
                             "chain/{chain}/contract/{contractAddress}/verifyNftOwnershipWithinCollection",
                             documented(VerificationController.verifyNftOwnershipWithinCollectionDocs(), VerificationController::verifyNftOwnershipWithinCollection)
+                        )
+                        get(
+                            "chain/{chain}/collection/{collectionId}/verifyNftOwnershipWithinCollection",
+                            documented(VerificationController.verifyNftOwnershipWithinCollectionWithCollectionIdDocs(), VerificationController::verifyNftOwnershipWithinCollectionWithCollectionId)
                         )
                         get(
                             "chain/{chain}/contract/{contractAddress}/verifyNftOwnershipWithTraits",
                             documented(
                                 VerificationController.verifyNftOwnershipWithTraitsDocs(),
                                 VerificationController::verifyNftOwnershipWithTraits
+                            )
+                        )
+                        get(
+                            "chain/{chain}/collection/{collectionId}/verifyNftOwnershipWithTraits",
+                            documented(
+                                VerificationController.verifyNftOwnershipWithTraitsWithCollectionIdDocs(),
+                                VerificationController::verifyNftOwnershipWithTraitsWithCollectionId
                             )
                         )
                         post(
@@ -276,6 +291,13 @@ object NftKitApi {
                             documented(
                                 VerificationController.verifyNftPolicyDocs(),
                                 VerificationController::verifyNftPolicy
+                            )
+                        )
+                        get(
+                            "chain/{chain}/collection/{collectionId}/token/{tokenId}/policy/{policyName}/verification",
+                            documented(
+                                VerificationController.verifyNftPolicyWithCollectionIdDocs(),
+                                VerificationController::verifyNftPolicyWithCollectionId
                             )
                         )
                         get(

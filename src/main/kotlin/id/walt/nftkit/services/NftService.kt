@@ -57,6 +57,7 @@ data class NftMetadataWrapper(
     val evmNftMetadata: NftMetadata?= null,
     val tezosNftMetadata: TezosNftMetadata?= null,
     val nearNftMetadata: NearNftMetadata?= null,
+    val uniqueNftMetadata: UniqueNftMetadata?= null
 )
 
 data class TokenCollectionInfo(
@@ -74,7 +75,9 @@ enum class Chain {
     MAINNET,
     TESTNET,
     ASTAR,
-    MOONBEAM
+    MOONBEAM,
+    UNIQUE,
+    OPAL
 }
 
 enum class EVMChain {
@@ -410,6 +413,8 @@ object NftService {
                 Chain.MAINNET  -> throw Exception("Near mainnet is not supported")
                 Chain.ASTAR  -> throw Exception("ASTAR mainnet is not supported")
                 Chain.MOONBEAM  -> throw Exception("MOONBEAM mainnet is not supported")
+                Chain.UNIQUE -> throw Exception("MOONBEAM mainnet is not supported")
+                Chain.OPAL -> throw Exception("MOONBEAM mainnet is not supported")
             }
 
             val result = fetchAccountNFTsTokensByAlchemy(account = account, url = url)

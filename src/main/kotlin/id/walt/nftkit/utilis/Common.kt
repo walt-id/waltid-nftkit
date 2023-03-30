@@ -108,5 +108,11 @@ object Common {
         if(chain in polkadotParachain) return true
         return false
     }
+
+    fun isUniqueParachain(chain: Chain): Boolean{
+        val uniqueParachain= listOf(Chain.UNIQUE, Chain.OPAL)
+        if(chain in uniqueParachain) return true
+        return false
+    }
 }
 
