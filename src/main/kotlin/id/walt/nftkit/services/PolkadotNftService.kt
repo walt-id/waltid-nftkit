@@ -4,6 +4,8 @@ import com.expediagroup.graphql.client.serialization.GraphQLClientKotlinxSeriali
 import com.expediagroup.graphql.client.spring.GraphQLWebClient
 import id.walt.nftkit.TokenOwnersQuery
 import id.walt.nftkit.TokensQuery
+import id.walt.nftkit.tokenownersquery.TokenOwnersDataResponse
+import id.walt.nftkit.tokensquery.TokenDataResponse
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -17,6 +19,9 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 enum class PolkadotParachain {
     ASTAR,
@@ -69,6 +74,19 @@ data class SubscanEvmErc721CollectiblesResult(
     }
 }
 
+@Serializable
+data class UniqueNftMetadata(
+    val fullUrl: String,
+    val ipfsCid: String,
+    val attributes: List<Attribute>?=null
+){
+    @Serializable
+    data class Attribute(
+        val name: String,
+        var value: String,
+    )
+}
+
 
 object PolkadotNftService {
 
@@ -86,7 +104,7 @@ object PolkadotNftService {
         expectSuccess = false
     }
 
-    val uniqueGraphqlClient = GraphQLWebClient(url = "https://scan-api.opal.uniquenetwork.dev/v1/graphql",serializer = GraphQLClientKotlinxSerializer())
+    val uniqueGraphqlClient = GraphQLWebClient(url = "https://api-opal.uniquescan.io/v1/graphql",serializer = GraphQLClientKotlinxSerializer())
 
 
     fun fetchAccountTokensBySubscan(parachain: PolkadotParachain, account: String): PolkadotNFTsSubscanResult{
@@ -120,23 +138,32 @@ object PolkadotNftService {
         }
     }
 
-    fun fetchUniqueNFTs(account: String){
-        runBlocking {
+    fun fetchUniqueNFTs(network: UniqueNetwork, account: String): TokenOwnersDataResponse {
+        return runBlocking {
             val tokenOwnersQuery = TokenOwnersQuery()
-            tokenOwnersQuery.query =
-                tokenOwnersQuery.query.replace("address", account)
-            val result = uniqueGraphqlClient.execute(tokenOwnersQuery)
-            println("hello world query result: ${result.data?.token_owners}")
+            tokenOwnersQuery.query = tokenOwnersQuery.query.replace("address", account)
+            uniqueGraphqlClient.execute(tokenOwnersQuery).data!!.token_owners
         }
     }
 
-    fun fetchUniqueNFTsMetadata(tokenId: String, collectionId: String){
-        runBlocking {
+    fun fetchUniqueNFTsMetadata(network: UniqueNetwork, collectionId: String, tokenId: String): TokenDataResponse? {
+        return runBlocking {
+            val uniqueGraphqlClient = GraphQLWebClient(url = "https://api-opal.uniquescan.io/v1/graphql",serializer = GraphQLClientKotlinxSerializer())
             val tokensQuery = TokensQuery()
             tokensQuery.query= tokensQuery.query.replace("tokenId",tokenId)
             tokensQuery.query= tokensQuery.query.replace("collectionId",collectionId)
-            val result = uniqueGraphqlClient.execute(tokensQuery)
-            println("hello world query result: ${result.data?.tokens}")
+            uniqueGraphqlClient.execute(tokensQuery).data?.tokens
         }
+    }// unique https://api-unique.uniquescan.io/v1/graphql
+
+    fun parseNftMetadataUniqueResponse(tokens: TokenDataResponse): UniqueNftMetadata {
+        val attributes= tokens.data?.get(0)!!.attributes!!.values.map({
+            UniqueNftMetadata.Attribute(it.jsonObject.get("name")!!.jsonObject.get("_")!!.jsonPrimitive.content,it.jsonObject.get("value")!!.jsonObject.get("_")!!.jsonPrimitive.content)
+
+        })
+        val uniqueNftMetadata=  UniqueNftMetadata(tokens.data!!.get(0).image!!.jsonObject.get("fullUrl")!!.jsonPrimitive.content,
+            tokens.data?.get(0)!!.image!!.jsonObject.get("ipfsCid")!!.jsonPrimitive.content, attributes)
+        return uniqueNftMetadata
     }
+
 }
