@@ -87,7 +87,12 @@ data class UniqueNftMetadata(
     )
 }
 
-
+@Serializable
+data class PolkadotEvmNft(
+    val constractAddress: String,
+    val tokenId: String,
+    val nftMetadata:NftMetadata ?=null
+)
 object PolkadotNftService {
 
     val client = HttpClient(CIO.create{requestTimeout = 0}) {
