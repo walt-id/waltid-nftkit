@@ -382,6 +382,19 @@ object NftService {
                 val result= TezosNftService.fetchAccountNFTsByTzkt(chain, account)
                 return (NFTsInfos(tezosNfts = result))
             }
+            Common.isPolkadotParachain(chain) ->{
+                val evmErc721CollectiblesResult= PolkadotNftService.fetchEvmErc721CollectiblesBySubscan(
+                    PolkadotParachain.valueOf(chain.toString()), account)
+                if(evmErc721CollectiblesResult.data?.list == null) return NFTsInfos()
+                val result= evmErc721CollectiblesResult.data.list.map {
+                    var nftMetadata: NftMetadata? = null
+                    try {
+                        nftMetadata= NftService.getNftMetadata(EVMChain.valueOf(chain.toString()), it.contract, BigInteger( it.token_id))
+                    }catch (e: Exception){}
+                    PolkadotEvmNft(it.contract, it.token_id, nftMetadata)
+                }
+                return (NFTsInfos(polkadotEvmNft = result))
+            }
             else -> {throw Exception("Chain  is not supported")}
         }
     }
