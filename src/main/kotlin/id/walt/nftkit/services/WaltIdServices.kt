@@ -8,15 +8,19 @@ import java.io.File
 import java.util.*
 
 
-data class Providers(val ethereum: String, val goerli: String, val polygon: String, val mumbai: String)
+data class Providers(val ethereum: String, val goerli: String, val polygon: String, val mumbai: String, val astar: String, val moonbeam: String)
 data class ChainConfig(val providers: Providers, val privateKey: String)
 
 data class KeysConfig(val keys: Map<String, String>)
 
-data class ApiKeys(val ethereumBlockExplorer: String, val polygonBlockExplorer: String, val alchemy: String, val nftstorage: String)
+data class ApiKeys(val ethereumBlockExplorer: String, val polygonBlockExplorer: String, val alchemy: String, val nftstorage: String, val subscan: String)
 data class BlockExplorerScanApiKeyConfig(val apiKeys: ApiKeys)
 data class TezosConfig(val tezosBackendServer: String)
 data class NearConfig(val nearBackendServer: String)
+
+data class Indexers(val unique: String, val opal: String)
+
+data class IndexerList(val indexers: Indexers)
 
 
 val WALTID_CONFIG_PATH = System.getenv("WALTID_CONFIG_PATH") ?: "."
@@ -62,6 +66,13 @@ object WaltIdServices {
         .build()
         .loadConfigOrThrow<NearConfig>()
 
+    fun loadIndexers() = ConfigLoader.builder()
+        .addFileExtensionMapping("yaml", YamlParser())
+        .addSource(PropertySource.file(File("$WALTID_CONFIG_PATH/walt.yaml"), optional = true))
+        .addSource(PropertySource.resource(default_yaml_path))
+        .build()
+        .loadConfigOrThrow<IndexerList>()
+
 
     fun getBlockExplorerUrl(chain: EVMChain): String {
         return when (chain) {
@@ -69,6 +80,7 @@ object WaltIdServices {
             EVMChain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_BLOCK_EXPLORER_URL
             EVMChain.POLYGON -> Values.POLYGON_MAINNET_BLOCK_EXPLORER_URL
             EVMChain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_BLOCK_EXPLORER_URL
+            else -> {throw Exception("${chain.toString()} is not supported")}
         }
     }
 }
