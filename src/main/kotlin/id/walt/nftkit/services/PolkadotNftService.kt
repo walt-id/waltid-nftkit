@@ -104,9 +104,6 @@ object PolkadotNftService {
         expectSuccess = false
     }
 
-    val uniqueGraphqlClient = GraphQLWebClient(url = "https://api-opal.uniquescan.io/v1/graphql",serializer = GraphQLClientKotlinxSerializer())
-
-
     fun fetchAccountTokensBySubscan(parachain: PolkadotParachain, account: String): PolkadotNFTsSubscanResult{
         return runBlocking {
             val values = mapOf("address" to account)
@@ -139,7 +136,9 @@ object PolkadotNftService {
     }
 
     fun fetchUniqueNFTs(network: UniqueNetwork, account: String): TokenOwnersDataResponse {
+        println(WaltIdServices.loadIndexers())
         return runBlocking {
+            val uniqueGraphqlClient = GraphQLWebClient(url = getUniqueNetworkIndexerUrl(network),serializer = GraphQLClientKotlinxSerializer())
             val tokenOwnersQuery = TokenOwnersQuery()
             tokenOwnersQuery.query = tokenOwnersQuery.query.replace("address", account)
             uniqueGraphqlClient.execute(tokenOwnersQuery).data!!.token_owners
@@ -148,13 +147,13 @@ object PolkadotNftService {
 
     fun fetchUniqueNFTsMetadata(network: UniqueNetwork, collectionId: String, tokenId: String): TokenDataResponse? {
         return runBlocking {
-            val uniqueGraphqlClient = GraphQLWebClient(url = "https://api-opal.uniquescan.io/v1/graphql",serializer = GraphQLClientKotlinxSerializer())
+            val uniqueGraphqlClient = GraphQLWebClient(url = getUniqueNetworkIndexerUrl(network),serializer = GraphQLClientKotlinxSerializer())
             val tokensQuery = TokensQuery()
             tokensQuery.query= tokensQuery.query.replace("tokenId",tokenId)
             tokensQuery.query= tokensQuery.query.replace("collectionId",collectionId)
             uniqueGraphqlClient.execute(tokensQuery).data?.tokens
         }
-    }// unique https://api-unique.uniquescan.io/v1/graphql
+    }
 
     fun parseNftMetadataUniqueResponse(tokens: TokenDataResponse): UniqueNftMetadata {
         val attributes= tokens.data?.get(0)!!.attributes!!.values.map({
@@ -164,6 +163,13 @@ object PolkadotNftService {
         val uniqueNftMetadata=  UniqueNftMetadata(tokens.data!!.get(0).image!!.jsonObject.get("fullUrl")!!.jsonPrimitive.content,
             tokens.data?.get(0)!!.image!!.jsonObject.get("ipfsCid")!!.jsonPrimitive.content, attributes)
         return uniqueNftMetadata
+    }
+
+    fun getUniqueNetworkIndexerUrl(uniqueNetwork: UniqueNetwork): String {
+        return when(uniqueNetwork){
+            UniqueNetwork.UNIQUE -> WaltIdServices.loadIndexers().indexers.unique
+            UniqueNetwork.OPAL -> WaltIdServices.loadIndexers().indexers.opal
+        }
     }
 
 }

@@ -18,6 +18,10 @@ data class BlockExplorerScanApiKeyConfig(val apiKeys: ApiKeys)
 data class TezosConfig(val tezosBackendServer: String)
 data class NearConfig(val nearBackendServer: String)
 
+data class Indexers(val unique: String, val opal: String)
+
+data class IndexerList(val indexers: Indexers)
+
 
 val WALTID_CONFIG_PATH = System.getenv("WALTID_CONFIG_PATH") ?: "."
 
@@ -61,6 +65,13 @@ object WaltIdServices {
         .addSource(PropertySource.resource("/walt-default.yaml"))
         .build()
         .loadConfigOrThrow<NearConfig>()
+
+    fun loadIndexers() = ConfigLoader.builder()
+        .addFileExtensionMapping("yaml", YamlParser())
+        .addSource(PropertySource.file(File("$WALTID_CONFIG_PATH/walt.yaml"), optional = true))
+        .addSource(PropertySource.resource(default_yaml_path))
+        .build()
+        .loadConfigOrThrow<IndexerList>()
 
 
     fun getBlockExplorerUrl(chain: EVMChain): String {

@@ -51,7 +51,7 @@ object VerificationController {
         it.summary("NFT ownership verification within a collection based on collection ID")
             .operationId("NFTOwnershipVerificationWithinCollection based on collection ID").addTagsItem("NFT verification")
     }.pathParam<String>("chain") {
-        it.schema<Chain> { }
+        it.schema<UniqueNetwork> { }
     }.pathParam<String>("collectionId") {
     }.queryParam<String>("account") {
         it.required(true)
