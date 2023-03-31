@@ -7,8 +7,8 @@ class FlowService {
 
   async getAccountDetails() {
     fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
-
-    return await fcl.account("0xa9ccb9756a0ee7eb")
+    const account = await fcl.account("0xa9ccb9756a0ee7eb");
+    return account
   }
 
 
@@ -399,7 +399,56 @@ license:license
 
   }
 
+  async getContractStoragePath() {
+    fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
+    const response = await fcl.query({
+      cadence: `
+      import MetadataViews from 0x631e88ae7f1d7c20
+      import ViewResolver from 0x631e88ae7f1d7c20
 
+    pub fun main(addr: Address, name: String): StoragePath? {
+    
+}
+
+     `,
+        //@ts-ignore
+        args: (arg, t) => [
+            arg("0x683564e46977788a", t.Address),
+            arg("MFLPlayer", t.String)
+        ],
+
+    });
+    console.log(response);
+
+  }
+
+  async getNFTinCollection() {
+      const namee = "ExampleNFT"
+    fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
+    const response = await fcl.query({
+        cadence: `
+        import ${namee} from ${process.env.contractAddress}
+       // return nft collection for a given address
+pub fun main(addr: Address): AnyStruct {
+    let account = getAccount(addr)
+    let collection = account
+        .getCapability(${namee}.CollectionPublicPath)
+        .borrow<&{${namee}.${namee}CollectionPublic}>()
+        
+        
+        
+    return collection
+    
+    }`,
+        //@ts-ignore
+        args: (arg, t) => [
+            arg("0xe8e83eb775b67bc2", t.Address),
+
+        ],
+
+    });
+    console.log(response);
+    }
 }
 
 export default new FlowService();
