@@ -39,6 +39,12 @@ class FlowController {
     console.log(account);
     res.send(account);
   }
+
+  async getNFTinCollection(req: express.Request, res: express.Response) {
+    const account = await FlowService.getNFTinCollection()
+    console.log(account);
+    res.send(account);
+  }
 }
 
 export default new FlowController();

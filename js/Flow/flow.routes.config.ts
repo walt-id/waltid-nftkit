@@ -36,6 +36,12 @@ export class FlowRoutes extends CommonRoutesConfig {
                 FlowController.getNFTById
             );
 
+        this.app
+            .route(`/flow/NFTinCollection`)
+            .get(
+                FlowController.getNFTinCollection
+            );
+
         return this.app;
     }
 }
