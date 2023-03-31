@@ -93,6 +93,13 @@ data class PolkadotEvmNft(
     val tokenId: String,
     val nftMetadata:NftMetadata ?=null
 )
+
+@Serializable
+data class PolkadotUniqueNft(
+    val collectionId: String,
+    val tokenId: String,
+    val metadata:UniqueNftMetadata ?=null
+)
 object PolkadotNftService {
 
     val client = HttpClient(CIO.create{requestTimeout = 0}) {
@@ -141,7 +148,6 @@ object PolkadotNftService {
     }
 
     fun fetchUniqueNFTs(network: UniqueNetwork, account: String): TokenOwnersDataResponse {
-        println(WaltIdServices.loadIndexers())
         return runBlocking {
             val uniqueGraphqlClient = GraphQLWebClient(url = getUniqueNetworkIndexerUrl(network),serializer = GraphQLClientKotlinxSerializer())
             val tokenOwnersQuery = TokenOwnersQuery()

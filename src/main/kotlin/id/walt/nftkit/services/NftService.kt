@@ -382,18 +382,29 @@ object NftService {
                 val result= TezosNftService.fetchAccountNFTsByTzkt(chain, account)
                 return (NFTsInfos(tezosNfts = result))
             }
-            Common.isPolkadotParachain(chain) ->{
+            Common.isPolkadotParachain(chain) -> {
                 val evmErc721CollectiblesResult= PolkadotNftService.fetchEvmErc721CollectiblesBySubscan(
                     PolkadotParachain.valueOf(chain.toString()), account)
                 if(evmErc721CollectiblesResult.data?.list == null) return NFTsInfos()
                 val result= evmErc721CollectiblesResult.data.list.map {
                     var nftMetadata: NftMetadata? = null
                     try {
-                        nftMetadata= NftService.getNftMetadata(EVMChain.valueOf(chain.toString()), it.contract, BigInteger( it.token_id))
+                        nftMetadata= getNftMetadata(EVMChain.valueOf(chain.toString()), it.contract, BigInteger( it.token_id))
                     }catch (e: Exception){}
                     PolkadotEvmNft(it.contract, it.token_id, nftMetadata)
                 }
                 return (NFTsInfos(polkadotEvmNft = result))
+            }
+            Common.isUniqueParachain(chain) -> {
+                val uniqueNftsResult = PolkadotNftService.fetchUniqueNFTs(UniqueNetwork.valueOf(chain.toString()), account)
+                if(uniqueNftsResult.data == null || uniqueNftsResult.data.size == 0)  return NFTsInfos()
+
+                val result= uniqueNftsResult.data.map {
+                    val metadata= PolkadotNftService.fetchUniqueNFTsMetadata(UniqueNetwork.valueOf(chain.toString()), it.collection_id.toString(), it.token_id.toString())
+                    val uniqueNftMetadata= PolkadotNftService.parseNftMetadataUniqueResponse(metadata!!)
+                    PolkadotUniqueNft(it.collection_id.toString(), it.token_id.toString(), uniqueNftMetadata)
+                }
+                return (NFTsInfos(polkadotUniqueNft = result))
             }
             else -> {throw Exception("Chain  is not supported")}
         }
