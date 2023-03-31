@@ -7,6 +7,7 @@ import id.walt.nftkit.opa.DynamicPolicyArg
 import id.walt.nftkit.opa.PolicyRegistry
 import id.walt.nftkit.services.Chain
 import id.walt.nftkit.services.EVMChain
+import id.walt.nftkit.services.UniqueNetwork
 import id.walt.nftkit.services.VerificationService
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.BadRequestResponse
@@ -38,6 +39,24 @@ object VerificationController {
         it.required(true)
     }.json<Boolean>("200") { }
 
+    fun verifyNftOwnershipWithinCollectionWithCollectionId(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val collectionId = ctx.pathParam("collectionId")
+        val account = ctx.queryParam("account") ?: throw  BadRequestResponse("Account not specified")
+        val result = VerificationService.verifyNftOwnershipWithinCollectionWithCollectionId(UniqueNetwork.valueOf(chain.uppercase()), collectionId, account!!)
+        ctx.json(result)
+    }
+
+    fun verifyNftOwnershipWithinCollectionWithCollectionIdDocs() = document().operation {
+        it.summary("NFT ownership verification within a collection based on collection ID")
+            .operationId("NFTOwnershipVerificationWithinCollection based on collection ID").addTagsItem("NFT verification")
+    }.pathParam<String>("chain") {
+        it.schema<UniqueNetwork> { }
+    }.pathParam<String>("collectionId") {
+    }.queryParam<String>("account") {
+        it.required(true)
+    }.json<Boolean>("200") { }
+
      fun verifyNftOwnership(ctx: Context) {
          val chain = ctx.pathParam("chain")
          val contractAddress = ctx.pathParam("contractAddress")
@@ -55,6 +74,30 @@ object VerificationController {
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
+    }.queryParam<String>("account") {
+        it.required(true)
+    }.queryParam<String>("tokenId") {
+        it.required(true)
+    }.json<Boolean>("200") { }
+
+
+    fun verifyNftOwnershipWithCollectionId(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val collectionId = ctx.pathParam("collectionId")
+        val account = ctx.queryParam("account") ?: throw  BadRequestResponse("Account not specified")
+        val tokenId = ctx.queryParam("tokenId") ?: throw  BadRequestResponse("Token Id not specified")
+        runBlocking {
+            val result = VerificationService.verifyNftOwnershipWithCollectionId(UniqueNetwork.valueOf(chain.uppercase()), collectionId, account, tokenId)
+            ctx.json(result)
+        }
+    }
+
+    fun verifyNftOwnershipWithCollectionIdDocs() = document().operation {
+        it.summary("NFT ownership verification based on collection ID")
+            .operationId("NFTOwnershipVerificationbased on collection ID").addTagsItem("NFT verification")
+    }.pathParam<String>("chain") {
+        it.schema<UniqueNetwork> { }
+    }.pathParam<String>("collectionId") {
     }.queryParam<String>("account") {
         it.required(true)
     }.queryParam<String>("tokenId") {
@@ -87,6 +130,35 @@ object VerificationController {
     }.queryParam<String>("traitType") {
         it.required(true)
     }.queryParam<String>("traitValue") {
+    }.json<Boolean>("200") { }
+
+
+    fun verifyNftOwnershipWithTraitsWithCollectionId(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val collectionId = ctx.pathParam("collectionId")
+        val account = ctx.queryParam("account") ?: throw  BadRequestResponse("Account not specified")
+        val tokenId = ctx.queryParam("tokenId") ?: throw  BadRequestResponse("Token Id not specified")
+        val name = ctx.queryParam("name") ?: throw  BadRequestResponse("Trait type  not specified")
+        val value = ctx.queryParam("value") ?: null
+
+        val result = VerificationService.verifyNftOwnershipWithTraitsWithCollectionId(UniqueNetwork.valueOf(chain.uppercase()), collectionId, account, tokenId, name, value)
+        ctx.json(result)
+    }
+
+
+    fun verifyNftOwnershipWithTraitsWithCollectionIdDocs() = document().operation {
+        it.summary("NFT ownership verification with traits based on collection ID")
+            .operationId("NFTOwnershipVerificationWithTraits based on collection ID").addTagsItem("NFT verification")
+    }.pathParam<String>("chain") {
+        it.schema<UniqueNetwork> { }
+    }.pathParam<String>("collectionId") {
+    }.queryParam<String>("account") {
+        it.required(true)
+    }.queryParam<String>("tokenId") {
+        it.required(true)
+    }.queryParam<String>("name") {
+        it.required(true)
+    }.queryParam<String>("value") {
     }.json<Boolean>("200") { }
 
     fun oceanDaoVerification(ctx: Context) {
@@ -153,6 +225,27 @@ object VerificationController {
         .pathParam<String>("chain") {
             it.schema<Chain> { }
         }.pathParam<String>("contractAddress") {
+        }.pathParam<String>("tokenId") {
+        }.pathParam<String>("policyName") {
+            it.required(true)
+        }.jsonArray<Boolean>("200") { it.description("Request processed successfully (NFT metadata might not be valid)") }
+
+    fun verifyNftPolicyWithCollectionId(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val collectionId = ctx.pathParam("collectionId")
+        val tokenId = ctx.pathParam("tokenId")
+        val policyName = ctx.pathParam("policyName")
+        val result= policyName?.let { VerificationService.verifyPolicyWithCollectionId(UniqueNetwork.valueOf(chain.uppercase()), collectionId, tokenId, it) }
+        if (result != null) {
+            ctx.json(result)
+        }
+    }
+
+    fun verifyNftPolicyWithCollectionIdDocs() = document()
+        .operation { it.summary("Verify an NFT metadata against a dynamic policy based on collection ID").operationId("verifyNftPolicy based on collection ID").addTagsItem("NFT verification") }
+        .pathParam<String>("chain") {
+            it.schema<UniqueNetwork> { }
+        }.pathParam<String>("collectionId") {
         }.pathParam<String>("tokenId") {
         }.pathParam<String>("policyName") {
             it.required(true)

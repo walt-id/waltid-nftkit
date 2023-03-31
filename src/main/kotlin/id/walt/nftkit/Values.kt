@@ -4,8 +4,12 @@ object Values {
     const val version = "1.SNAPSHOT"
     const val isSnapshot = true
 
+    const val ETHEREUM_MAINNET_CHAIN_ID: Long = 1
+    const val ETHEREUM_TESTNET_GOERLI_CHAIN_ID: Long = 5
     const val POLYGON_MAINNET_CHAIN_ID: Long = 137
     const val POLYGON_TESTNET_MUMBAI_CHAIN_ID: Long = 80001
+    const val MOONBEAM_MAINNET_CHAIN_ID: Long = 1284
+    const val ASTAR_MAINNET_CHAIN_ID: Long = 592
 
     const val ETHEREUM_MAINNET_SCAN_API_URL= "api.etherscan.io"
     const val ETHEREUM_TESTNET_GOERLI_SCAN_API_URL = "api-goerli.etherscan.io"

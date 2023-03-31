@@ -3,7 +3,7 @@ package id.walt.nftkit.chains.evm.erc721
 import id.walt.nftkit.Values
 import id.walt.nftkit.WaltIdGasProvider
 import id.walt.nftkit.services.*
-import id.walt.nftkit.utilis.providers.ProviderFactory
+import id.walt.nftkit.utilis.providers.*
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.Bool
 import org.web3j.abi.datatypes.DynamicBytes
@@ -285,8 +285,19 @@ object Erc721TokenStandard : IErc721TokenStandard {
         val credentials: Credentials = Credentials.create(privateKey)
 
         val gasProvider: ContractGasProvider = WaltIdGasProvider
-
-        if (chain == EVMChain.POLYGON || chain == EVMChain.MUMBAI) {
+        val chainId= when(chain){
+            EVMChain.ETHEREUM -> Values.ETHEREUM_MAINNET_CHAIN_ID
+            EVMChain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_CHAIN_ID
+            EVMChain.POLYGON -> Values.POLYGON_MAINNET_CHAIN_ID
+            EVMChain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
+            EVMChain.ASTAR -> Values.ASTAR_MAINNET_CHAIN_ID
+            EVMChain.MOONBEAM -> Values.MOONBEAM_MAINNET_CHAIN_ID
+        }
+        val transactionManager: TransactionManager = RawTransactionManager(
+            web3j, credentials, chainId
+        )
+        return  CustomOwnableERC721.load(address, web3j,transactionManager,gasProvider)
+        /*if (chain == EVMChain.POLYGON || chain == EVMChain.MUMBAI) {
             val chainId: Long
             if (chain == EVMChain.POLYGON) {
                 chainId = Values.POLYGON_MAINNET_CHAIN_ID
@@ -301,7 +312,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
         }else{
             return CustomOwnableERC721.load(address, web3j,credentials,gasProvider)
 
-        }
+        }*/
     }
 
 
