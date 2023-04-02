@@ -16,7 +16,7 @@ export class FlowRoutes extends CommonRoutesConfig {
         this.app
             .route(`/flow/getNFTsByAddress`)
             .post(
-                FlowController.getNFTsByAddress
+                FlowController.getNFTsByAddressInCollection
             );
         this.app
             .route(`/flow/getAllNFTs`)
@@ -36,11 +36,6 @@ export class FlowRoutes extends CommonRoutesConfig {
                 FlowController.getNFTById
             );
 
-        this.app
-            .route(`/flow/NFTinCollection`)
-            .get(
-                FlowController.getNFTinCollection
-            );
 
         return this.app;
     }

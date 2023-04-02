@@ -16,8 +16,8 @@ class FlowController {
     res.send(account);
   }
 
-  async getNFTsByAddress(req: express.Request, res: express.Response) {
-    const account = await FlowService.getNftsByAddress(req.body)
+  async getNFTsByAddressInCollection(req: express.Request, res: express.Response) {
+    const account = await FlowService.getNftsByAddressInCollection(req.body)
     console.log(account);
     res.send(account);
   }
@@ -40,11 +40,7 @@ class FlowController {
     res.send(account);
   }
 
-  async getNFTinCollection(req: express.Request, res: express.Response) {
-    const account = await FlowService.getNFTinCollection()
-    console.log(account);
-    res.send(account);
-  }
+
 }
 
 export default new FlowController();

@@ -7,8 +7,8 @@ class FlowService {
 
   async getAccountDetails() {
     fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
-    const account = await fcl.account("0xa9ccb9756a0ee7eb");
-    return account
+      const account = await fcl.send([fcl.getAccount("0xa9ccb9756a0ee7eb")]).then(fcl.decode);
+      return account;
   }
 
 
@@ -16,12 +16,10 @@ class FlowService {
     fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
     const ad = Address;
 
-    console.log("this is the add", ad);
     const response = await fcl.query({
       cadence: `
-   import MetadataViews from 0x631e88ae7f1d7c20
+import MetadataViews from 0x631e88ae7f1d7c20
 import NFTCatalog from 0x324c34e1c517e4db
-
 import NFTRetrieval from 0x324c34e1c517e4db
 
 pub struct NFT {
@@ -144,30 +142,26 @@ pub fun main(ownerAddress: Address): {String: [NFT]} {
 
     return data
 }
-
-
- 
   `,
       //@ts-ignore
       args: (arg, t) => [arg(ad.Address, t.Address)],
     });
-    console.log(response);
+    console.log(response.example);
   }
 
-  async getNftsByAddress(Address: string) {
+  async getNftsByAddressInCollection(Address: string) {
     fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
     const ad = Address;
 
-    console.log("this is the add", ad);
     const response = await fcl.query({
       cadence: `
-    import ExampleNFT from ${process.env.contractAddress}
+    import ${process.env.contractName} from ${process.env.contractAddress}
     import MetadataViews from 0x631e88ae7f1d7c20
    pub fun main(address: Address): [{String: AnyStruct}] {
     let account = getAccount(address)
     let collection = account
-        .getCapability(ExampleNFT.CollectionPublicPath)
-        .borrow<&{ExampleNFT.ExampleNFTCollectionPublic}>()
+        .getCapability(${process.env.collectionPublicPath})
+        .borrow<&{${process.env.collectionType}}>()
         ?? panic("Could not borrow a reference to the collection")
     let nft = collection.getIDs()
        var nfts: [{String: AnyStruct}] = []
@@ -176,16 +170,20 @@ pub fun main(ownerAddress: Address): {String: [NFT]} {
        let nft = collection.borrowExampleNFT(id: id)!
     // Get the basic display information for this NFT
      let display = MetadataViews.getDisplay(nft)!
-    	
-        
-      let nftData = {"id": UInt64(id), "metadata": {"name": display.name, "description": display.description, "thumbnail": display.thumbnail.uri()}}
+     let displayTraits = MetadataViews.getTraits(nft)!
+  
+        let nftData = {
+            "id": UInt64(id), 
+            "metadata": {
+                "name": display.name, 
+                "description": display.description, 
+                "thumbnail": display.thumbnail.uri() 
+                }
+            }
         nfts.append(nftData)
     }
-  
-    
     return nfts
 }
- 
   `,
       //@ts-ignore
       args: (arg, t) => [arg(ad.Address, t.Address)],
@@ -196,8 +194,6 @@ pub fun main(ownerAddress: Address): {String: [NFT]} {
   async getAccountCollection(address: string) {
     fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
     const ad = address;
-
-    console.log("this is the add", ad);
     const response = await fcl.query({
       cadence: `
       import MetadataViews from 0x631e88ae7f1d7c20
@@ -248,15 +244,11 @@ pub fun main(ownerAddress: Address): {String: Number} {
     fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
     const ad = id;
 
-    console.log("this is the add", ad);
-
-
     const response = await fcl.query({
       cadence: `
-         import ExampleNFT from ${process.env.contractAddress}
+         import ${process.env.contractName} from ${process.env.contractAddress}
 import MetadataViews from 0x631e88ae7f1d7c20
-/// This script gets all the view-based metadata associated with the specified NFT
-/// and returns it as a single struct
+
 pub struct NFT {
     pub let name: String
     pub let description: String
@@ -383,8 +375,8 @@ let license=MetadataViews.getLicense(nft)
         collectionSocials: collectionSocials,
         edition: nftEditionView.infoList[0],
         traits: traits,
-medias:medias,
-license:license
+        medias:medias,
+        license:license
     )
 }
      `,
@@ -399,56 +391,19 @@ license:license
 
   }
 
-  async getContractStoragePath() {
-    fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
-    const response = await fcl.query({
-      cadence: `
-      import MetadataViews from 0x631e88ae7f1d7c20
-      import ViewResolver from 0x631e88ae7f1d7c20
-
-    pub fun main(addr: Address, name: String): StoragePath? {
-    
-}
-
-     `,
-        //@ts-ignore
-        args: (arg, t) => [
-            arg("0x683564e46977788a", t.Address),
-            arg("MFLPlayer", t.String)
-        ],
-
-    });
-    console.log(response);
+  async getContractName(contractAddress: String) {
+     fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
+    const response = await fcl.send([
+        fcl.script`
+        import ${contractAddress} from ${contractAddress}
+        pub fun main(): String {
+            return ExampleNFT.name
+            }`,
+    ]);
+    const decoded = await fcl.decode(response);
 
   }
 
-  async getNFTinCollection() {
-      const namee = "ExampleNFT"
-    fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
-    const response = await fcl.query({
-        cadence: `
-        import ${namee} from ${process.env.contractAddress}
-       // return nft collection for a given address
-pub fun main(addr: Address): AnyStruct {
-    let account = getAccount(addr)
-    let collection = account
-        .getCapability(${namee}.CollectionPublicPath)
-        .borrow<&{${namee}.${namee}CollectionPublic}>()
-        
-        
-        
-    return collection
-    
-    }`,
-        //@ts-ignore
-        args: (arg, t) => [
-            arg("0xe8e83eb775b67bc2", t.Address),
-
-        ],
-
-    });
-    console.log(response);
-    }
 }
 
 export default new FlowService();
