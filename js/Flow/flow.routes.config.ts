@@ -36,6 +36,11 @@ export class FlowRoutes extends CommonRoutesConfig {
                 FlowController.getNFTById
             );
 
+        this.app
+            .route(`/flow/getContractName`)
+            .get(
+                FlowController.getContractName
+            );
 
         return this.app;
     }
