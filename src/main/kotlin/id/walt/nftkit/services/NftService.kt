@@ -435,10 +435,10 @@ object NftService {
                 Chain.GHOSTNET -> throw Exception("Ghostnet is not supported")
                 Chain.TESTNET  -> throw Exception("Near testnet is not supported")
                 Chain.MAINNET  -> throw Exception("Near mainnet is not supported")
-                Chain.ASTAR  -> throw Exception("ASTAR mainnet is not supported")
-                Chain.MOONBEAM  -> throw Exception("MOONBEAM mainnet is not supported")
-                Chain.UNIQUE -> throw Exception("MOONBEAM mainnet is not supported")
-                Chain.OPAL -> throw Exception("MOONBEAM mainnet is not supported")
+                Chain.ASTAR  -> throw Exception("ASTAR is not supported")
+                Chain.MOONBEAM  -> throw Exception("MOONBEAM is not supported")
+                Chain.UNIQUE -> throw Exception("UNIQUE is not supported")
+                Chain.OPAL -> throw Exception("OPAL is not supported")
             }
 
             val result = fetchAccountNFTsTokensByAlchemy(account = account, url = url)
@@ -500,7 +500,7 @@ object NftService {
             apiKeyUrlParameter = "&pageKey=$apiKey"
         }
         val nfts =
-            client.get("$url${WaltIdServices.loadApiKeys().apiKeys.alchemy}/getNFTs/?owner=$account&withMetadata = true$apiKeyUrlParameter") {
+            client.get("$url${WaltIdServices.loadApiKeys().apiKeys.alchemy}/getNFTs/?owner=$account&withMetadata=true$apiKeyUrlParameter") {
                 contentType(ContentType.Application.Json)
             }
                 .body<NFTsAlchemyResult>()
@@ -511,6 +511,7 @@ object NftService {
             return nfts.ownedNfts
         }
     }
+
 
     fun fetchIPFSData(uri: String): String {
         return runBlocking {
