@@ -7,17 +7,22 @@ class FlowService {
 
   async getAccountDetails() {
     fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
-      const account = await fcl.send([fcl.getAccount("0xa9ccb9756a0ee7eb")]).then(fcl.decode);
-      return account;
+     try{
+         const account = await fcl.send([fcl.getAccount(process.env.contractAddress)]).then(fcl.decode);
+         return account;
+     }catch (error) {
+         return error;
+     }
   }
 
 
   async getAllNFTs(Address: string) {
     fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
     const ad = Address;
+    try {
 
-    const response = await fcl.query({
-      cadence: `
+        const response = await fcl.query({
+            cadence: `
 import MetadataViews from 0x631e88ae7f1d7c20
 import NFTCatalog from 0x324c34e1c517e4db
 import NFTRetrieval from 0x324c34e1c517e4db
@@ -143,18 +148,23 @@ pub fun main(ownerAddress: Address): {String: [NFT]} {
     return data
 }
   `,
-      //@ts-ignore
-      args: (arg, t) => [arg(ad.Address, t.Address)],
-    });
-    console.log(response.example);
+            //@ts-ignore
+            args: (arg, t) => [arg(ad.Address, t.Address)],
+        });
+        return response.example;
+    }
+    catch (error) {
+        return error;
+    }
   }
 
   async getNftsByAddressInCollection(Address: string) {
     fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
     const ad = Address;
 
-    const response = await fcl.query({
-      cadence: `
+    try {
+        const response = await fcl.query({
+            cadence: `
     import ${process.env.contractName} from ${process.env.contractAddress}
     import MetadataViews from 0x631e88ae7f1d7c20
    pub fun main(address: Address): [{String: AnyStruct}] {
@@ -185,17 +195,21 @@ pub fun main(ownerAddress: Address): {String: [NFT]} {
     return nfts
 }
   `,
-      //@ts-ignore
-      args: (arg, t) => [arg(ad.Address, t.Address)],
-    });
-    console.log(response);
+            //@ts-ignore
+            args: (arg, t) => [arg(ad.Address, t.Address)],
+        });
+        return response;
+    }catch (error) {
+        return error;
+    }
   }
 
   async getAccountCollection(address: string) {
     fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
     const ad = address;
-    const response = await fcl.query({
-      cadence: `
+    try {
+        const response = await fcl.query({
+            cadence: `
       import MetadataViews from 0x631e88ae7f1d7c20
 import NFTCatalog from 0x324c34e1c517e4db
 
@@ -233,19 +247,23 @@ pub fun main(ownerAddress: Address): {String: Number} {
     return items
 }
    `,
-      //@ts-ignore
-      args: (arg, t) => [arg(ad.Address, t.Address)],
-    });
+            //@ts-ignore
+            args: (arg, t) => [arg(ad.Address, t.Address)],
+        });
 
-    console.log(response);
+        return response;
+    }catch (error) {
+        return error;
+    }
   }
 
   async getNftById(adress : String ,id: number ) {
     fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
     const ad = id;
 
-    const response = await fcl.query({
-      cadence: `
+    try {
+        const response = await fcl.query({
+            cadence: `
          import ${process.env.contractName} from ${process.env.contractAddress}
 import MetadataViews from 0x631e88ae7f1d7c20
 
@@ -380,27 +398,262 @@ let license=MetadataViews.getLicense(nft)
     )
 }
      `,
-        //@ts-ignore
-      args: (arg, t) => [
-        arg(adress, t.Address),
-        arg(ad, t.UInt64)
-      ],
+            //@ts-ignore
+            args: (arg, t) => [
+                arg(adress, t.Address),
+                arg(ad, t.UInt64)
+            ],
 
-    });
-    console.log(response);
+        });
+        return response;
+    }catch (error) {
+        return error;
+    }
 
   }
 
-  async getContractName(contractAddress: String) {
+  async getContractName() {
      fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
-    const response = await fcl.send([
-        fcl.script`
-        import ${contractAddress} from ${contractAddress}
-        pub fun main(): String {
-            return ExampleNFT.name
-            }`,
-    ]);
-    const decoded = await fcl.decode(response);
+    try {
+        const response = await fcl.send([
+            fcl.script`
+//         import NFTCatalog from 0x324c34e1c517e4db
+//
+// pub fun main(): {String : Bool}? {
+//     let nftTypeIdentifier = "A.1c5033ad60821c97.Wearables.NFT"
+//     return NFTCatalog.getCollectionsForType(nftTypeIdentifier: CompositeType(nftTypeIdentifier)!.identifier)
+// }
+
+import MetadataViews from 0x631e88ae7f1d7c20
+import NFTRetrieval from 0x324c34e1c517e4db
+
+pub struct DisplayView {
+    pub let name : String
+    pub let description : String
+    pub let thumbnail : String
+
+    init (
+        name : String,
+        description : String,
+        thumbnail : String
+    ) {
+        self.name = name
+        self.description = description
+        self.thumbnail = thumbnail
+    }
+}
+
+pub struct ExternalURLView {
+    pub let externalURL : String
+
+    init (
+        externalURL : String
+    ) {
+        self.externalURL = externalURL
+    }
+}
+
+pub struct NFTCollectionDataView {
+    pub let storagePath : StoragePath
+    pub let publicPath : PublicPath
+    pub let privatePath: PrivatePath
+    pub let publicLinkedType: Type
+    pub let privateLinkedType: Type
+
+    init (
+        storagePath : StoragePath,
+        publicPath : PublicPath,
+        privatePath : PrivatePath,
+        publicLinkedType : Type,
+        privateLinkedType : Type,
+    ) {
+        self.storagePath = storagePath
+        self.publicPath = publicPath
+        self.privatePath = privatePath
+        self.publicLinkedType = publicLinkedType
+        self.privateLinkedType = privateLinkedType
+    }
+}
+
+pub struct NFTCollectionDisplayView {
+    pub let collectionName : String
+    pub let collectionDescription: String
+    pub let collectionSquareImage : MetadataViews.Media
+    pub let collectionBannerImage : MetadataViews.Media
+    pub let externalURL : String
+    pub let socials : {String: MetadataViews.ExternalURL}
+
+    init (
+        collectionName : String,
+        collectionDescription : String,
+        collectionSquareImage : MetadataViews.Media,
+        collectionBannerImage : MetadataViews.Media,
+        externalURL : String,
+        socials : {String: MetadataViews.ExternalURL}
+    ) {
+        self.collectionName = collectionName
+        self.collectionDescription = collectionDescription
+        self.collectionSquareImage = collectionSquareImage
+        self.collectionBannerImage = collectionBannerImage
+        self.externalURL = externalURL
+        self.socials = socials
+    }
+}
+
+pub struct RoyaltiesView {
+    pub let royalties: [MetadataViews.Royalty]
+
+    init (
+        royalties : [MetadataViews.Royalty]
+    ) {
+        self.royalties = royalties
+    }
+}
+
+pub struct NFT {
+    pub let id : UInt64
+    pub let display : DisplayView?
+    pub let externalURL : ExternalURLView?
+    pub let nftCollectionData : NFTCollectionDataView?
+    pub let nftCollectionDisplay : NFTCollectionDisplayView?
+    pub let royalties : RoyaltiesView?
+
+    init(
+            id: UInt64,
+            display : DisplayView?,
+            externalURL : ExternalURLView?,
+            nftCollectionData : NFTCollectionDataView?,
+            nftCollectionDisplay : NFTCollectionDisplayView?,
+            royalties : RoyaltiesView?
+    ) {
+        self.id = id
+        self.display = display
+        self.externalURL = externalURL
+        self.nftCollectionData = nftCollectionData
+        self.nftCollectionDisplay = nftCollectionDisplay
+        self.royalties = royalties
+}
+
+pub fun getMapping() : {String : AnyStruct} {
+    return {
+        "Id" : self.id,
+        "Display" : self.display,
+        "ExternalURL" : self.externalURL,
+        "NFTCollectionData" : self.nftCollectionData,
+        "NFTCollectionDisplay" : self.nftCollectionDisplay,
+        "Royalties" : self.royalties
+    }
+}
+
+}
+
+pub fun main(): [{String : AnyStruct}]    {
+    
+    let storagePathIdentifier = "exampleNFTCollection"
+
+    let owner = getAuthAccount(${process.env.contractAddress})
+    
+    let tempPathStr = "getNFTsInAccountFromPathNFTCatalog"
+    let tempPublicPath = PublicPath(identifier: tempPathStr)!
+    owner.link<&{MetadataViews.ResolverCollection}>(
+        tempPublicPath,
+        target: StoragePath(identifier : storagePathIdentifier)!
+    )
+
+    let collectionCap = owner.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
+    assert(collectionCap.check(), message: "MetadataViews Collection is not set up properly, ensure the Capability was created/linked correctly.")
+    let collection = collectionCap.borrow()!
+    assert(collection.getIDs().length > 0, message: "No NFTs exist in this collection, ensure the provided account has at least 1 NFTs.")
+
+    let data : [{String : AnyStruct}] = []
+
+    for nftID in collection.getIDs() {
+        data.append(getNFTData(nftID: nftID, collection: collection))
+    }
+
+    return data
+}
+
+
+pub fun getNFTData(nftID: UInt64, collection: &AnyResource{MetadataViews.ResolverCollection} ): {String : AnyStruct} {
+    let nftResolver = collection.borrowViewResolver(id: nftID)
+    let nftViews = MetadataViews.getNFTView(
+        id : nftID,
+        viewResolver: nftResolver
+    )
+
+    let displayView = nftViews.display
+    let externalURLView = nftViews.externalURL
+    let collectionDataView = nftViews.collectionData
+    let collectionDisplayView = nftViews.collectionDisplay
+    let royaltyView = nftViews.royalties
+
+    var display : DisplayView? = nil
+    if displayView != nil {
+        display = DisplayView(
+            name : displayView!.name,
+            description : displayView!.description,
+            thumbnail : displayView!.thumbnail.uri()
+        )
+    }
+
+    var externalURL : ExternalURLView? = nil
+    if externalURLView != nil {
+        externalURL = ExternalURLView(
+            externalURL : externalURLView!.url,
+        )
+    }
+
+    var nftCollectionData : NFTCollectionDataView? = nil
+    if collectionDataView != nil {
+        nftCollectionData = NFTCollectionDataView(
+            storagePath : collectionDataView!.storagePath,
+            publicPath : collectionDataView!.publicPath,
+            privatePath : collectionDataView!.providerPath,
+            publicLinkedType : collectionDataView!.publicLinkedType,
+            privateLinkedType : collectionDataView!.providerLinkedType,
+        )
+    }
+
+    var nftCollectionDisplay : NFTCollectionDisplayView? = nil
+    if collectionDisplayView != nil {
+        nftCollectionDisplay = NFTCollectionDisplayView(
+            collectionName : collectionDisplayView!.name,
+            collectionDescription : collectionDisplayView!.description,
+            collectionSquareImage : collectionDisplayView!.squareImage,
+            collectionBannerImage : collectionDisplayView!.bannerImage,
+            externalURL : collectionDisplayView!.externalURL.url,
+            socials : collectionDisplayView!.socials
+        )
+    }
+
+    var royalties : RoyaltiesView? = nil
+    if royaltyView != nil {
+        royalties = RoyaltiesView(
+            royalties : royaltyView!.getRoyalties()
+        )
+    }
+
+    return NFT(
+        id: nftID,
+        display : display,
+        externalURL : externalURL,
+        nftCollectionData : nftCollectionData,
+        nftCollectionDisplay : nftCollectionDisplay,
+        royalties : royalties
+    ).getMapping()
+}
+
+`,
+
+        ]);
+        const data = await fcl.decode(response);
+
+        console.log(data[0].NFTCollectionData);
+        return data[0].NFTCollectionData;
+    }catch (error) {
+        console.log(error);
+    }
 
   }
 

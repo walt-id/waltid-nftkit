@@ -40,6 +40,11 @@ class FlowController {
     res.send(account);
   }
 
+  async getContractName(req: express.Request, res: express.Response) {
+    const account = await FlowService.getContractName()
+    console.log(account);
+  }
+
 
 }
 
