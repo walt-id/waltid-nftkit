@@ -39,6 +39,14 @@ object Common {
         }
     }
 
+    fun getFlowChain(chain: String): FlowChain{
+        return chain.let {
+            if (it.isEmpty()){
+                throw Exception("No chain defined")
+            }
+            FlowChain.valueOf(it.uppercase())
+        }
+    }
     fun getEVMChain(chain: String): EVMChain{
         return chain.let {
             if (it.isEmpty()){
