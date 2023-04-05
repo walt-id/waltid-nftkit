@@ -240,6 +240,11 @@ object NftKitApi {
                             )
 
                         }
+                        path("flow"){
+                            post("chain/{chain}/account/{account_id}/AllNFTs",
+                                documented(FlowNftController.getAllNFTsDocs() , FlowNftController::getAllNFTs)
+                            )
+                        }
                     }
                     path("nft/verifier") {
                         get(
