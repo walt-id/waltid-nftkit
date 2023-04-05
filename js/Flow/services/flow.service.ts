@@ -658,6 +658,70 @@ pub fun getNFTData(nftID: UInt64, collection: &AnyResource{MetadataViews.Resolve
 
   }
 
+
+  // get nfts from account + collection
+  async getID_script(){
+      fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
+      const adress = process.env.contractAddress;
+      const response = await fcl.query({
+            cadence: `
+//             import MetadataViews from 0x631e88ae7f1d7c20;
+// pub fun main(): AnyStruct? {
+//    
+//   let account = getAccount(0xa9ccb9756a0ee7eb)
+//   let collection = account
+//     .getCapability(/public/exampleNFTCollection)
+//        .borrow<&{MetadataViews.ResolverCollection}>()
+//     ?? panic("Could not borrow a reference to the collection")
+//   let IDs = collection
+//    
+//   return IDs;
+// }
+import MetadataViews from 0x631e88ae7f1d7c20;
+pub fun main(): NFTResult {
+  let id : UInt64 = 0
+  let account = getAccount(0xa9ccb9756a0ee7eb)
+  let collection = account
+      .getCapability(/public/exampleNFTCollection) // Update the path here!
+      .borrow<&{MetadataViews.ResolverCollection}>()
+      ?? panic("Could not borrow a reference to the collection")
+  let nft = collection.borrowViewResolver(id: id)
+  var data = NFTResult()
+  // Get the basic display information for this NFT
+  if let view = nft.resolveView(Type<MetadataViews.Display>()) {
+    let display = view as! MetadataViews.Display
+    data.name = display.name
+    data.description = display.description
+    data.thumbnail = display.thumbnail.uri()
+  }
+  // The owner is stored directly on the NFT object
+  let owner: Address = nft.owner!.address
+  data.owner = owner
+  return data
+}
+pub struct NFTResult {
+  pub(set) var name: String
+  pub(set) var description: String
+  pub(set) var thumbnail: String
+  pub(set) var owner: Address
+  pub(set) var type: String
+  init() {
+    self.name = ""
+    self.description = ""
+    self.thumbnail = ""
+    self.owner = 0x0
+    self.type = ""
+  }
+}
+
+            `,
+
+        });
+
+        console.log(response);
+      }
+
+
 }
 
 export default new FlowService();

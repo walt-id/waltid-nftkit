@@ -42,6 +42,12 @@ export class FlowRoutes extends CommonRoutesConfig {
                 FlowController.getContractName
             );
 
+        this.app
+            .route(`/flow/getIDScript`)
+            .get(
+                FlowController.getIDScript
+            );
+
         return this.app;
     }
 }

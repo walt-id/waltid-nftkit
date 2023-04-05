@@ -45,6 +45,11 @@ class FlowController {
     console.log(account);
   }
 
+  async getIDScript(req: express.Request, res: express.Response) {
+    const account = await FlowService.getID_script()
+    console.log(account);
+  }
+
 
 }
 
