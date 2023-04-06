@@ -250,7 +250,7 @@ object NftKitApi {
                             get("chain/{chain}/collection/{collectionId}/token/{tokenId}/metadata",
                                 documented(
                                     PolkadotUniqueNftController.fetchUniqueNftMetadataDocs(),
-                                    PolkadotUniqueNftController::fetchUniqueNfts)
+                                    PolkadotUniqueNftController::fetchUniqueNftMetadata)
                             )
                             get("chain/{chain}/indexerUrl",
                                 documented(
