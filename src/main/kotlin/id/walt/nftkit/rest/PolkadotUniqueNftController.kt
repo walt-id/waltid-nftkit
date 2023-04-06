@@ -56,9 +56,9 @@ object PolkadotUniqueNftController {
         it.summary("Fetching NFTs on Unique Network")
             .operationId("fetchUniqueNfts")
             .addTagsItem(TAG)
-    }.pathParam<String>("chain") {
+        }.pathParam<String>("network") {
         it.schema<UniqueNetwork> {}
-    }.pathParam<String>("address"){
+    }.pathParam<String>("account"){
     }.json<TokenOwnersDataResponse>("200"){
         it.description("Fetched NFTs")
     }
