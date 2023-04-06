@@ -8,7 +8,7 @@ import java.io.File
 import java.util.*
 
 
-data class Providers(val ethereum: String, val goerli: String, val polygon: String, val mumbai: String, val astar: String, val moonbeam: String)
+data class Providers(val ethereum: String, val goerli: String, val polygon: String, val mumbai: String, val astar: String, val moonbeam: String, val opal: String, val unique: String)
 data class ChainConfig(val providers: Providers, val privateKey: String)
 
 data class KeysConfig(val keys: Map<String, String>)
@@ -18,6 +18,7 @@ data class BlockExplorerScanApiKeyConfig(val apiKeys: ApiKeys)
 data class TezosConfig(val tezosBackendServer: String)
 data class NearConfig(val nearBackendServer: String)
 
+data class PolkadotConfig(val polkadotAccounts: Map<String, String>)
 data class Indexers(val unique: String, val opal: String)
 
 data class IndexerList(val indexers: Indexers)
@@ -65,6 +66,13 @@ object WaltIdServices {
         .addSource(PropertySource.resource("/walt-default.yaml"))
         .build()
         .loadConfigOrThrow<NearConfig>()
+
+    fun loadPolkadotConfig() = ConfigLoader.builder()
+        .addFileExtensionMapping("yaml", YamlParser())
+        .addSource(PropertySource.file(File("$WALTID_CONFIG_PATH/walt.yaml"), optional = true))
+        .addSource(PropertySource.resource("/walt-default.yaml"))
+        .build()
+        .loadConfigOrThrow<PolkadotConfig>()
 
     fun loadIndexers() = ConfigLoader.builder()
         .addFileExtensionMapping("yaml", YamlParser())

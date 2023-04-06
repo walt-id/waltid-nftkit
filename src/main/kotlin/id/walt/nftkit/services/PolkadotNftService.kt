@@ -9,8 +9,6 @@ import id.walt.nftkit.tokensquery.TokenDataResponse
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.auth.*
-import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
@@ -19,7 +17,6 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
@@ -116,10 +113,17 @@ object PolkadotNftService {
         expectSuccess = false
     }
 
+    // val seed: String = ""
+    // val seedPassword: String = ""
+
+    // val signer = Sr25519SignerWrapper(seed, seedPassword)
+    // // create SDK god object. First parameter - signer, second - base url of backend of blockchain
+    // val sdk = UniqueSdk(signer, "https://rest.opal.uniquenetwork.dev")
+
     fun fetchAccountTokensBySubscan(parachain: PolkadotParachain, account: String): PolkadotNFTsSubscanResult{
         return runBlocking {
             val values = mapOf("address" to account)
-            var parachainAPI= when(parachain){
+            val parachainAPI= when(parachain){
                 PolkadotParachain.ASTAR -> "astar"
                 PolkadotParachain.MOONBEAM -> "moonbeam"
             }
@@ -135,7 +139,7 @@ object PolkadotNftService {
     fun fetchEvmErc721CollectiblesBySubscan(parachain: PolkadotParachain, account: String):SubscanEvmErc721CollectiblesResult{
         return runBlocking {
             val v = SubscanEvmErc721CollectiblesBody(account, 100)
-            var parachainAPI= when(parachain){
+            val parachainAPI= when(parachain){
                 PolkadotParachain.ASTAR -> "astar"
                 PolkadotParachain.MOONBEAM -> "moonbeam"
             }
@@ -167,13 +171,17 @@ object PolkadotNftService {
     }
 
     fun parseNftMetadataUniqueResponse(tokens: TokenDataResponse): UniqueNftMetadata {
-        val attributes= tokens.data?.get(0)!!.attributes!!.values.map({
-            UniqueNftMetadata.Attribute(it.jsonObject.get("name")!!.jsonObject.get("_")!!.jsonPrimitive.content,it.jsonObject.get("value")!!.jsonObject.get("_")!!.jsonPrimitive.content)
+        val attributes = tokens.data?.get(0)!!.attributes!!.values.map {
+            UniqueNftMetadata.Attribute(
+                it.jsonObject["name"]!!.jsonObject["_"]!!.jsonPrimitive.content,
+                it.jsonObject["value"]!!.jsonObject["_"]!!.jsonPrimitive.content
+            )
 
-        })
-        val uniqueNftMetadata=  UniqueNftMetadata(tokens.data!!.get(0).image!!.jsonObject.get("fullUrl")!!.jsonPrimitive.content,
-            tokens.data?.get(0)!!.image!!.jsonObject.get("ipfsCid")!!.jsonPrimitive.content, attributes)
-        return uniqueNftMetadata
+        }
+        return UniqueNftMetadata(
+            tokens.data[0].image!!.jsonObject["fullUrl"]!!.jsonPrimitive.content,
+            tokens.data[0].image!!.jsonObject["ipfsCid"]!!.jsonPrimitive.content, attributes
+        )
     }
 
     fun getUniqueNetworkIndexerUrl(uniqueNetwork: UniqueNetwork): String {
