@@ -242,7 +242,7 @@ object NftKitApi {
                         }
                         path("unique") {
                             get(
-                                "chain/{chain}/account/{account}/",
+                                "chain/{network}/account/{account}/",
                                 documented(
                                     PolkadotUniqueNftController.fetchUniqueNftsDocs(),
                                     PolkadotUniqueNftController::fetchUniqueNfts)
