@@ -259,6 +259,14 @@ object NftKitApi {
                                 )
                             )
                         }
+                        path("parachain"){
+                            get("parachain/{chain}/account/{account}/",
+                                documented(
+                                    PolkadotParaChainNftController.fetchparachainNFTSDocs(),
+                                    PolkadotParaChainNftController::fetchparachainNFTS
+                                )
+                            )
+                        }
                     }
                     path("nft/verifier") {
                         get(
