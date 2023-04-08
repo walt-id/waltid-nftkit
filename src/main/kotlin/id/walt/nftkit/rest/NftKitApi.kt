@@ -260,13 +260,13 @@ object NftKitApi {
                             )
                         }
                         path("parachain"){
-                            get("parachain/{chain}/account/{account}/",
+                            get("{chain}/account/{account}/",
                                 documented(
                                     PolkadotParaChainNftController.fetchparachainNFTSDocs(),
                                     PolkadotParaChainNftController::fetchparachainNFTS
                                 )
                             )
-                            get("parachain/{chain}/account/{account}/EvmErc721",
+                            get("{chain}/account/{account}/EvmErc721",
                                 documented(
                                     PolkadotParaChainNftController.fetchEvmErc721CollectiblesBySubscanDocs(),
                                     PolkadotParaChainNftController::fetchEvmErc721CollectiblesBySubscan
