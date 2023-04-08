@@ -30,4 +30,23 @@ object PolkadotParaChainNftController {
 
         }
 
+    fun fetchEvmErc721CollectiblesBySubscan(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val account = ctx.pathParam("account")
+        val result = PolkadotNftService.fetchEvmErc721CollectiblesBySubscan(PolkadotParachain.valueOf(chain), account)
+        ctx.json(result)
+    }
+
+    fun fetchEvmErc721CollectiblesBySubscanDocs() = document().operation {
+        it.summary("Fetching EvmErc721 Collectibles by Subscan")
+            .operationId("fetchEvmErc721CollectiblesBySubscan")
+            .addTagsItem(TAG)
+        }.pathParam<String>("chain") {
+        it.schema<PolkadotParachain> {}
+          }.pathParam<String>("account") {
+        it.schema<String> {}
+
+        }
+
+
 }

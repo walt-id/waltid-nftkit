@@ -266,6 +266,12 @@ object NftKitApi {
                                     PolkadotParaChainNftController::fetchparachainNFTS
                                 )
                             )
+                            get("parachain/{chain}/account/{account}/EvmErc721",
+                                documented(
+                                    PolkadotParaChainNftController.fetchEvmErc721CollectiblesBySubscanDocs(),
+                                    PolkadotParaChainNftController::fetchEvmErc721CollectiblesBySubscan
+                                )
+                            )
                         }
                     }
                     path("nft/verifier") {
