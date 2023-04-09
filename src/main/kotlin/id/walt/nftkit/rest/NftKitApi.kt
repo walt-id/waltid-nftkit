@@ -240,6 +240,31 @@ object NftKitApi {
                             )
 
                         }
+                        path("unique") {
+                            get(
+                                "chain/{network}/account/{account}/",
+                                documented(
+                                    PolkadotUniqueNftController.fetchUniqueNftsDocs(),
+                                    PolkadotUniqueNftController::fetchUniqueNfts)
+                            )
+                            get("chain/{chain}/collection/{collectionId}/token/{tokenId}/metadata",
+                                documented(
+                                    PolkadotUniqueNftController.fetchUniqueNftMetadataDocs(),
+                                    PolkadotUniqueNftController::fetchUniqueNftMetadata)
+                            )
+                            get("chain/{chain}/account/{account}/subscan",
+                                documented(
+                                    PolkadotUniqueNftController.fetchparachainNFTSDocs(),
+                                    PolkadotUniqueNftController::fetchparachainNFTS
+                                )
+                            )
+                            get("chain/{chain}/account/{account}/EvmErc721/subscan",
+                                documented(
+                                    PolkadotUniqueNftController.fetchEvmErc721CollectiblesBySubscanDocs(),
+                                    PolkadotUniqueNftController::fetchEvmErc721CollectiblesBySubscan
+                                )
+                            )
+                        }
                     }
                     path("nft/verifier") {
                         get(

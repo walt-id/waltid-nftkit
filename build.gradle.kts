@@ -69,6 +69,9 @@ dependencies {
     //near
     implementation ("com.syntifi.near:near-java-api:0.1.0")
 
+    // unique
+    implementation ("network.unique:unique-sdk-jvm:0.0.1")
+
     // expediagroup graphql
     implementation("com.expediagroup:graphql-kotlin-spring-client:6.4.0")
     implementation("com.expediagroup", "graphql-kotlin-client-serialization", "6.4.0")

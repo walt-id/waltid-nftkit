@@ -39,6 +39,14 @@ object Common {
         }
     }
 
+    fun getUniqueChain(chain: String): UniqueNetwork {
+        return chain.let {
+            if (it.isEmpty()){
+                throw Exception("No chain defined")
+            }
+            UniqueNetwork.valueOf(it.uppercase())
+        }
+    }
     fun getEVMChain(chain: String): EVMChain{
         return chain.let {
             if (it.isEmpty()){
