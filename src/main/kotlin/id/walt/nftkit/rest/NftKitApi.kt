@@ -252,12 +252,6 @@ object NftKitApi {
                                     PolkadotUniqueNftController.fetchUniqueNftMetadataDocs(),
                                     PolkadotUniqueNftController::fetchUniqueNftMetadata)
                             )
-                            get("chain/{chain}/indexerUrl",
-                                documented(
-                                    PolkadotUniqueNftController.getUniqueNetworkIndexerUrlDocs(),
-                                    PolkadotUniqueNftController::getUniqueNetworkIndexerUrl
-                                )
-                            )
                         }
                         path("parachain"){
                             get("{chain}/account/{account}/",

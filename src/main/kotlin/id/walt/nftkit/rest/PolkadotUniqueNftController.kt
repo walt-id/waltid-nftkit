@@ -78,24 +78,11 @@ object PolkadotUniqueNftController {
             .operationId("fetchUniqueNftMetadata")
             .addTagsItem(TAG)
     }.pathParam<String>("chain"){
+        it.schema<UniqueNetwork> {}
     }.pathParam<String>("collectionId"){
     }.pathParam<String>("tokenId"){
     }.json<UniqueNftMetadata>("200"){
         it.description("Fetched NFT metadata")
-    }
-
-    fun getUniqueNetworkIndexerUrl(ctx: Context) {
-        val chain: String = ctx.pathParam("chain")
-        val network: UniqueNetwork = Common.getUniqueChain(chain.uppercase())
-        ctx.json(PolkadotNftService.getUniqueNetworkIndexerUrl(network))
-    }
-
-    fun getUniqueNetworkIndexerUrlDocs() = document().operation {
-        it.summary("Fetching indexer for network")
-            .operationId("getUniqueNetworkIndexerUrl").addTagsItem(TAG)
-    }.pathParam<String>("chain"){
-    }.json<String>("200") {
-            it.description("Network's indexer URL")
     }
 
 }
