@@ -33,5 +33,7 @@ object Values {
     const val NEAR_MAINNET_EXPLORER= "https://explorer.near.org"
     const val NEAR_TESTNET_EXPLORER = "https://explorer.testnet.near.org"
 
+    const val POLKADOT_UNIQUE_EXPLORER = "https://unique.subscan.io/"
+    const val POLKADOT_OPAL_EXPLORER = "https://uniquescan.io/OPAL/"
 
 }

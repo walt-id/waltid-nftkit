@@ -18,6 +18,8 @@ providers:
     mumbai: "https://polygon-mumbai.g.alchemy.com/v2/5TYSteGJgJwJjaQTNN3j_4JtYcvdr3Uy"
     astar: "https://evm.astar.network"
     moonbeam: "https://rpc.api.moonbeam.network"
+    polkadotUnique: "https://rpc.unique.network"
+    polkadotOpal: "https://rpc-opal.unique.network"
 
 privateKey: "bd4cb3e507f342ee3a710370cef39dda48f17b0a158b0b8dd3f000fbd5b2c2d9"
 
@@ -28,6 +30,18 @@ keys:
   0x8448Ff4b2733b52f62d81ca46d64bD16786299Cd: "d720ef2cb49c6cbe94175ed413d27e635c5acaa1b7cf03d1faad3a0abc2f53f3"
   0x6E7448a6335d5C947953994d071D4Dc1F6e5BE96: "b4680ed04f685a2334dea52c069dfa696c02bd3c14e94b99187f5925a555eebe"
   0xc8ca7c4f2dc014d7e4fc6973052da1517b4c54da: "9b9c46d0873a9982ade718ab3f4cfc57172b2f07c21b9901ddf239e931d2d6dc"
+
+polkadotAccounts:
+  - seed: "unhappy crew auto cloud seat trial room later label sight letter famous"
+    seedPassword: "testtest"
+  - seed: "motor swim often garbage often year fly raccoon summer van home swallow"
+    seedPassword: "testtest"
+  - seed: "word monkey pride fitness viable leave own eight title joy genre online"
+    seedPassword: "testtest"
+  - seed: "clip review orange grocery menu cram gaze job input control cup fetch"
+    seedPassword: "testtest"
+  - seed: "loyal parade runway vote myself gossip climb select reflect brass science spray"
+    seedPassword: "testtest"
 
 indexers:
   unique: "https://api-unique.uniquescan.io/v1/graphql"
