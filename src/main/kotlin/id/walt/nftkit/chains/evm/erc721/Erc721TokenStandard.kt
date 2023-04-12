@@ -288,6 +288,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
         val chainId= when(chain){
             EVMChain.ETHEREUM -> Values.ETHEREUM_MAINNET_CHAIN_ID
             EVMChain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_CHAIN_ID
+            EVMChain.SEPOLIA -> Values.ETHEREUM_TESTNET_SEPOLIA_CHAIN_ID
             EVMChain.POLYGON -> Values.POLYGON_MAINNET_CHAIN_ID
             EVMChain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
             EVMChain.ASTAR -> Values.ASTAR_MAINNET_CHAIN_ID
