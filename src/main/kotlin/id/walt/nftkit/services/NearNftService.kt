@@ -86,17 +86,6 @@ data class OperationResult(
 data class nearOperationResult(
     val hash: String,
 )
-@Serializable
-data class NFTMetadata(
-    val spec: String,
-    val name: String,
-    val symbol: String,
-    val icon: String?= null,
-    val base_uri: String?= null,
-    val reference: String?= null,
-    val reference_hash: String?= null,
-
-)
 
 data class NearMintingParameter(
     val receiver_id: String,
