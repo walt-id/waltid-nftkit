@@ -6,6 +6,8 @@
       "strict": true,
       "esModuleInterop": true,
       "inlineSourceMap": true,
-      "rootDir": "."
+      "rootDir": ".",
+      "moduleResolution": "node16"
+
     }
   }
