@@ -252,24 +252,16 @@ object NftKitApi {
                                     PolkadotUniqueNftController.fetchUniqueNftMetadataDocs(),
                                     PolkadotUniqueNftController::fetchUniqueNftMetadata)
                             )
-                            get("chain/{chain}/indexerUrl",
+                            get("chain/{chain}/account/{account}/subscan",
                                 documented(
-                                    PolkadotUniqueNftController.getUniqueNetworkIndexerUrlDocs(),
-                                    PolkadotUniqueNftController::getUniqueNetworkIndexerUrl
+                                    PolkadotUniqueNftController.fetchparachainNFTSDocs(),
+                                    PolkadotUniqueNftController::fetchparachainNFTS
                                 )
                             )
-                        }
-                        path("parachain"){
-                            get("{chain}/account/{account}/",
+                            get("chain/{chain}/account/{account}/EvmErc721/subscan",
                                 documented(
-                                    PolkadotParaChainNftController.fetchparachainNFTSDocs(),
-                                    PolkadotParaChainNftController::fetchparachainNFTS
-                                )
-                            )
-                            get("{chain}/account/{account}/EvmErc721",
-                                documented(
-                                    PolkadotParaChainNftController.fetchEvmErc721CollectiblesBySubscanDocs(),
-                                    PolkadotParaChainNftController::fetchEvmErc721CollectiblesBySubscan
+                                    PolkadotUniqueNftController.fetchEvmErc721CollectiblesBySubscanDocs(),
+                                    PolkadotUniqueNftController::fetchEvmErc721CollectiblesBySubscan
                                 )
                             )
                         }

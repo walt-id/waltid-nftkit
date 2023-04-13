@@ -78,24 +78,48 @@ object PolkadotUniqueNftController {
             .operationId("fetchUniqueNftMetadata")
             .addTagsItem(TAG)
     }.pathParam<String>("chain"){
+        it.schema<UniqueNetwork> {}
     }.pathParam<String>("collectionId"){
     }.pathParam<String>("tokenId"){
     }.json<UniqueNftMetadata>("200"){
         it.description("Fetched NFT metadata")
     }
 
-    fun getUniqueNetworkIndexerUrl(ctx: Context) {
-        val chain: String = ctx.pathParam("chain")
-        val network: UniqueNetwork = Common.getUniqueChain(chain.uppercase())
-        ctx.json(PolkadotNftService.getUniqueNetworkIndexerUrl(network))
+    fun fetchparachainNFTS(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val account = ctx.pathParam("account")
+
+
+        val result = PolkadotNftService.fetchAccountTokensBySubscan(PolkadotParachain.valueOf(chain), account)
+        ctx.json(result)
     }
 
-    fun getUniqueNetworkIndexerUrlDocs() = document().operation {
-        it.summary("Fetching indexer for network")
-            .operationId("getUniqueNetworkIndexerUrl").addTagsItem(TAG)
-    }.pathParam<String>("chain"){
-    }.json<String>("200") {
-            it.description("Network's indexer URL")
+    fun fetchparachainNFTSDocs() = document().operation {
+        it.summary("Fetching Tokens by Subscan")
+            .operationId("fetchparachainNFTS")
+            .addTagsItem(TAG)
+    }.pathParam<String>("chain") {
+        it.schema<PolkadotParachain> {}
+    }.pathParam<String>("account") {
+        it.schema<String> {}
+
     }
 
+    fun fetchEvmErc721CollectiblesBySubscan(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val account = ctx.pathParam("account")
+        val result = PolkadotNftService.fetchEvmErc721CollectiblesBySubscan(PolkadotParachain.valueOf(chain), account)
+        ctx.json(result)
+    }
+
+    fun fetchEvmErc721CollectiblesBySubscanDocs() = document().operation {
+        it.summary("Fetching EvmErc721 Collectibles by Subscan")
+            .operationId("fetchEvmErc721CollectiblesBySubscan")
+            .addTagsItem(TAG)
+    }.pathParam<String>("chain") {
+        it.schema<PolkadotParachain> {}
+    }.pathParam<String>("account") {
+        it.schema<String> {}
+
+    }
 }
