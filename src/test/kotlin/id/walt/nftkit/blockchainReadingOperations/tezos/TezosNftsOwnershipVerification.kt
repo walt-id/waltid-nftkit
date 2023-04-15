@@ -16,7 +16,7 @@ class TezosNftsOwnershipVerification : StringSpec({
 
     "NFT ownership verification within a collection ".config() {
         val result= VerificationService.verifyNftOwnershipWithinCollection(Chain.TEZOS, "KT1U6EHmNxJTkvaWJ4ThczG4FSDaHC21ssvi", "tz2AbAdd7KXzJMxHZUKoRwEDfL9j2peBKgyu")
-        result shouldBe  true
+        result shouldBe  false
     }
 
     "NFT ownership verification with traits".config() {

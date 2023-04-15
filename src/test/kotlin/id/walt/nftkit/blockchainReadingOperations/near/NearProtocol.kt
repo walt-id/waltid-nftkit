@@ -9,7 +9,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
 class NearProtocol : StringSpec  ({
-    val random_subaccount = "test" + System.currentTimeMillis()
 //
 //    "create sub account".config(enableTest) {
 //        val result = NearNftService.createSubAccount("khaled_lightency1.testnet", "${random_subaccount}.khaled_lightency1.testnet", "4" , "testnet")
