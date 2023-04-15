@@ -55,6 +55,9 @@ object VerificationService {
             Common.isPolkadotParachain(chain) -> {
                 return NFTsPolkadotOwnershipVerification(PolkadotParachain.valueOf(chain.toString()), contractAddress, account, tokenId)
             }
+            Common.isUniqueParachain(chain) -> {
+                return NFTsUniqueOwnershipVerification(UniqueNetwork.valueOf(chain.toString()), contractAddress, account, tokenId)
+            }
             else -> {throw Exception("Chain  is not supported")}
 
         }
@@ -78,6 +81,9 @@ object VerificationService {
             }
             Common.isPolkadotParachain(chain) ->{
                 return verifyNftOwnershipWithinCollectionPolkadotChain(PolkadotParachain.valueOf(chain.toString()), contractAddress, account)
+            }
+            Common.isUniqueParachain(chain) ->{
+                return verifyNftOwnershipWithinCollectionUniqueParachain(UniqueNetwork.valueOf(chain.toString()), contractAddress, account)
             }
             else -> {throw Exception("Chain  is not supported")}
         }
@@ -252,9 +258,7 @@ object VerificationService {
 
     private fun verifyNftOwnershipWithinCollectionUniqueParachain(parachain: UniqueNetwork, collectionId: String, account: String): Boolean {
         val uniqueNftsResult = PolkadotNftService.fetchUniqueNFTs(parachain, account)
-        if(uniqueNftsResult.data == null || uniqueNftsResult.data.size == 0) return false
-        val result= uniqueNftsResult.data.filter { collectionId.equals(it.collection_id.toString()) }
-        return if (result!!.size>= 1) true else false
+        return !(uniqueNftsResult.data == null || uniqueNftsResult.data.size == 0)
     }
 
     private suspend fun getOceanDaoContractCreationTransaction(erc721contractAddress: String,url: String, apiKey: String): InternalTransactionsResponse{
