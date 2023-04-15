@@ -7,6 +7,7 @@ import cors from 'cors'
 import {CommonRoutesConfig} from './common/common.routes.config';
 import {TezosRoutes} from './tezos/tezos.routes.config';
 import {NearRoutes} from './near/near.routes.config';
+import {PolkadotRoutes} from './polkadot/polkadot.routes.config';
 
 import debug from 'debug';
 
@@ -31,6 +32,7 @@ app.use(expressWinston.logger({
 
 routes.push(new TezosRoutes(app));
 routes.push(new NearRoutes(app));
+routes.push(new PolkadotRoutes(app));
 
 app.use(expressWinston.errorLogger({
     transports: [
