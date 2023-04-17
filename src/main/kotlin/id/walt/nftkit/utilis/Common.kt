@@ -77,6 +77,7 @@ object Common {
         return when (chain) {
             EVMChain.ETHEREUM -> Values.ETHEREUM_MAINNET_SCAN_API_URL
             EVMChain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_SCAN_API_URL
+            EVMChain.SEPOLIA -> Values.ETHEREUM_TESTNET_SEPOLIA_SCAN_API_URL
             EVMChain.POLYGON -> Values.POLYGON_MAINNET_SCAN_API_URL
             EVMChain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_SCAN_API_URL
             else -> {throw Exception("${chain.toString()} is not supported")}
@@ -87,6 +88,7 @@ object Common {
         return when (chain) {
             EVMChain.ETHEREUM -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
             EVMChain.GOERLI -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
+            EVMChain.SEPOLIA -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
             EVMChain.POLYGON -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
             EVMChain.MUMBAI -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
             else -> {throw Exception("${chain.toString()} is not supported")}
@@ -94,7 +96,7 @@ object Common {
     }
 
     fun isEVMChain(chain: Chain): Boolean{
-        val EVMChains= listOf(Chain.ETHEREUM, Chain.POLYGON, Chain.GOERLI, Chain.MUMBAI)
+        val EVMChains= listOf(Chain.ETHEREUM, Chain.POLYGON, Chain.GOERLI, Chain.SEPOLIA, Chain.MUMBAI)
         if(chain in EVMChains) return true
         return false
     }
