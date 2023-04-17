@@ -69,6 +69,7 @@ enum class Chain {
     ETHEREUM,
     POLYGON,
     GOERLI,
+    SEPOLIA,
     MUMBAI,
     TEZOS,
     GHOSTNET,
@@ -84,6 +85,7 @@ enum class EVMChain {
     ETHEREUM,
     POLYGON,
     GOERLI,
+    SEPOLIA,
     MUMBAI,
     ASTAR,
     MOONBEAM
@@ -429,6 +431,7 @@ object NftService {
             val url = when (chain) {
                 Chain.ETHEREUM -> Values.ETHEREUM_MAINNET_ALCHEMY_URL
                 Chain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_ALCHEMY_URL
+                Chain.SEPOLIA -> Values.ETHEREUM_TESTNET_SEPOLIA_ALCHEMY_URL
                 Chain.POLYGON -> Values.POLYGON_MAINNET_ALCHEMY_URL
                 Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_ALCHEMY_URL
                 Chain.TEZOS -> throw Exception("Tezos is not supported")
