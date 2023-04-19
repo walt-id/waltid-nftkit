@@ -103,6 +103,7 @@ jobs:
         with:
           args: apply -n dev -f k8s/deployment-dev.yaml
       - name: Continuous deployment prod system at *.walt.id
+        uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         with:
