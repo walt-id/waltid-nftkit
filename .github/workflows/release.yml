@@ -43,20 +43,22 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
         with:
           arguments: build publish --no-daemon
-      - name: Docker build and push
-        uses: philpotisk/github-action-docker-build-push@master
-        env:
-          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
-          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-          DOCKER_FILE: Dockerfile
-          CONTAINER_TAG: waltid/nftkit:latest
-      - name: Docker Build and Push SNAPSHOT JS
-        uses: philpotisk/github-action-docker-build-push@master
-        env:
-          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
-          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-          DOCKER_FILE: js/Dockerfile
-          CONTAINER_TAG: waltid/nftkit-js:latest
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v4.0.0
+        with:
+          push: true
+          tags: waltid/nftkit:latest, waltid/nftkit:${{ env.release_version }}
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v4.0.0
+        with:
+          file: js/Dockerfile
+          push: true
+          tags: waltid/nftkit-js:latest, waltid/nftkit-js:${{ env.release_version }}
       - name: Changelog
         uses: ardalanamini/auto-changelog@v3
         id: changelog
@@ -94,9 +96,15 @@ jobs:
           prerelease: ${{ steps.changelog.outputs.prerelease }}
       - name: Prepare CD
         run: sed "s/_DEFAULT_DEPLOYMENT_/$GITHUB_SHA/g; s/_VERSION_TAG_/${{ env.release_version }}/g" k8s/deployment-prod.yaml > k8s/deployment-prod_mod.yaml
-      - name: Continuous deployment
+      - name: Continuous deployment dev system at *.walt-test.cloud
         uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         with:
-          args: apply -n nftkit-prod -f k8s/deployment-prod_mod.yaml
+          args: apply -n dev -f k8s/deployment-dev.yaml
+      - name: Continuous deployment prod system at *.walt.id
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        with:
+          args: apply -n nftkit-prod -f k8s/deployment-prod.yaml
