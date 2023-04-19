@@ -44,9 +44,9 @@ polkadotAccounts:
   - seed: "loyal parade runway vote myself gossip climb select reflect brass science spray"
     seedPassword: "testtest"
 
-indexers:
-  unique: "https://api-unique.uniquescan.io/v1/graphql"
-  opal: "https://api-opal.uniquescan.io/v1/graphql"
+
+unique: "https://api-unique.uniquescan.io/v1/graphql"
+opal: "https://api-opal.uniquescan.io/v1/graphql"
 
 
 apiKeys:
