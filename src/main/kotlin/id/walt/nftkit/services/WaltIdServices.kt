@@ -21,7 +21,7 @@ data class NearConfig(val nearBackendServer: String)
 data class PolkadotConfig(val polkadotAccounts: Map<String, String>)
 data class Indexers(val unique: String, val opal: String)
 
-data class IndexerList(val indexers: Indexers)
+
 
 
 val WALTID_CONFIG_PATH = System.getenv("WALTID_CONFIG_PATH") ?: "."
@@ -79,7 +79,7 @@ object WaltIdServices {
         .addSource(PropertySource.file(File("$WALTID_CONFIG_PATH/walt.yaml"), optional = true))
         .addSource(PropertySource.resource(default_yaml_path))
         .build()
-        .loadConfigOrThrow<IndexerList>()
+        .loadConfigOrThrow<Indexers>()
 
 
     fun getBlockExplorerUrl(chain: EVMChain): String {
