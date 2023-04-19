@@ -20,7 +20,9 @@ data class TezosConfig(val tezosBackendServer: String)
 data class NearConfig(val nearBackendServer: String)
 
 data class PolkadotConfig(val polkadotAccounts: Map<String, String>)
-data class Indexers(val unique: String, val opal: String)
+
+data class IndexersUrl(val uniqueUrl: String, val opalUrl: String)
+data class Indexers(val indexersUrl : IndexersUrl)
 
 
 
