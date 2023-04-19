@@ -32,6 +32,12 @@ keys:
   0x6E7448a6335d5C947953994d071D4Dc1F6e5BE96: "b4680ed04f685a2334dea52c069dfa696c02bd3c14e94b99187f5925a555eebe"
   0xc8ca7c4f2dc014d7e4fc6973052da1517b4c54da: "9b9c46d0873a9982ade718ab3f4cfc57172b2f07c21b9901ddf239e931d2d6dc"
 
+
+indexersUrl:
+  uniqueUrl: "https://api-unique.uniquescan.io/v1/graphql"
+  opalUrl: "https://api-opal.uniquescan.io/v1/graphql"
+
+
 polkadotAccounts:
   - seed: "unhappy crew auto cloud seat trial room later label sight letter famous"
     seedPassword: "testtest"
@@ -45,8 +51,6 @@ polkadotAccounts:
     seedPassword: "testtest"
 
 
-unique: "https://api-unique.uniquescan.io/v1/graphql"
-opal: "https://api-opal.uniquescan.io/v1/graphql"
 
 
 apiKeys:

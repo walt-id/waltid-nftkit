@@ -186,8 +186,8 @@ object PolkadotNftService {
 
     private fun getUniqueNetworkIndexerUrl(uniqueNetwork: UniqueNetwork): String {
         return when(uniqueNetwork){
-            UniqueNetwork.UNIQUE -> WaltIdServices.loadIndexers().unique
-            UniqueNetwork.OPAL -> WaltIdServices.loadIndexers().opal
+            UniqueNetwork.UNIQUE -> WaltIdServices.loadIndexers().indexersUrl.uniqueUrl
+            UniqueNetwork.OPAL -> WaltIdServices.loadIndexers().indexersUrl.opalUrl
         }
     }
 
