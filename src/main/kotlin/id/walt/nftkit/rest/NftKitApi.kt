@@ -244,6 +244,9 @@ object NftKitApi {
                             post("chain/{chain}/account/{account_id}/AllNFTs",
                                 documented(FlowNftController.getAllNFTsDocs() , FlowNftController::getAllNFTs)
                             )
+                            post("chain/{chain}/account/{account_id}/{contractAddress}/{contractName}/{token_id}/getNFTById",
+                                documented(FlowNftController.getNFTbyIdDocs() , FlowNftController::getNFTbyId)
+                            )
                         }
                     }
                     path("nft/verifier") {
