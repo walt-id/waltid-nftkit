@@ -5,6 +5,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.swagger.util.Json
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
 
@@ -95,6 +96,30 @@ object FlowNftService {
             }
                 .body<List<FlowNFTMetadata>>()
            return@runBlocking operationResult
+        }
+    }
+
+
+    fun getNFTbyId(account_id: String , contractAddress: String , contractName : String, id: String ,chain: FlowChain) : FlowNFTMetadata{
+        return runBlocking{
+            val values = mapOf(
+                "account_id" to account_id,
+                "chain" to chain.toString(),
+                "contractAddress" to contractAddress,
+                "contractName" to contractName,
+                "id" to id
+
+
+            )
+            val operationResult = NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/flow/getNFTById"){
+                contentType(ContentType.Application.Json)
+
+                setBody(
+                    values
+                )
+            }
+                .body<FlowNFTMetadata>()
+            return@runBlocking operationResult
         }
     }
 }
