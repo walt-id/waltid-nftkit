@@ -16,7 +16,7 @@ class FlowService {
   }
 
 
-  async getAllNFTs(Address: string) {
+  async getAllNFTs(Address: string , chain: string) {
     fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
     const ad = Address;
     console.log(ad);
