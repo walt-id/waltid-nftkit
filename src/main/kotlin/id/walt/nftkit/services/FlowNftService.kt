@@ -13,24 +13,70 @@ enum class FlowChain {
 }
 
 @Serializable
-data class FlowNFTTraits(
-    val name: String,
-    val value: String,
-    val displayType: String,
-    val rarity: String,
+data class Rarity(
+    val score : String,
+    val max : String,
+    val description: String,
 )
+@Serializable
+data class CollectionSocial(
+    val twitter: String,
+)
+
+@Serializable
+data class CollectionPath(
+    val domain: String,
+    val identifier: String
+)
+@Serializable
+data class Edition(
+    val name: String,
+    val number: String,
+    @Contextual
+    val max: Any?
+)
+@Serializable
+data class Traits(
+    val traits: List<Trait>
+)
+@Serializable
+data class Trait(
+    val name: String?=null,
+    val value: String?=null,
+    val displayType: String?=null,
+    val rarity: String?=null
+)
+
+
+
+
 @Serializable
 data class FlowNFTMetadata(
     val id : String,
     val name: String,
     val description: String,
     val thumbnail: String,
-   // val owner : String,
-  //  val type : String,
-    val externalURL: String?= null,
-    val collectionName: String,
-    val collectionDescription: String,
-  //  val traits: List<FlowNFTTraits>,
+    val owner: String?=null,
+    val type: String?=null,
+    val royalties: List<String?>,
+    val externalURL: String?=null,
+    val serialNumber: String?=null,
+    val collectionPublicPath: CollectionPath?=null,
+    val collectionStoragePath: CollectionPath?=null,
+    val collectionProviderPath: CollectionPath?=null,
+    val collectionPublic: String?=null,
+    val collectionPublicLinkedType: String?=null,
+    val collectionProviderLinkedType: String?=null,
+    val collectionName: String?=null,
+    val collectionDescription: String?=null,
+    val collectionExternalURL: String?=null,
+    val collectionSquareImage: String?=null,
+    val collectionBannerImage: String?=null,
+    val collectionSocials: CollectionSocial?=null,
+    val edition: Edition?=null,
+    val traits: Traits?=null,
+    val medias: String?=null,
+    val license:String?=null,
 )
 object FlowNftService {
 
