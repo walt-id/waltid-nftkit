@@ -53,7 +53,6 @@ data class Trait(
 
 @Serializable
 data class FlowNFTMetadata(
-    val id : String,
     val name: String,
     val description: String,
     val thumbnail: String,
