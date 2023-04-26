@@ -258,14 +258,14 @@ pub fun main(ownerAddress: Address): {String: Number} {
     }
   }
 
-  async getNftById(adress : String ,id: number ) {
+  async getNftById(account_id : String  , contractAddress: string , contractName: string ,id: number, chain: string) {
     fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
     const ad = id;
 
     try {
         const response = await fcl.query({
             cadence: `
-         import ${process.env.contractName} from ${process.env.contractAddress}
+         import ${contractName} from ${contractAddress}
 import MetadataViews from 0x631e88ae7f1d7c20
 
 pub struct NFT {
@@ -289,10 +289,10 @@ pub struct NFT {
     pub let collectionSquareImage: String
     pub let collectionBannerImage: String
     pub let collectionSocials: {String: String}
-    pub let edition: MetadataViews.Edition
+   pub let edition: MetadataViews.Edition
     pub let traits: MetadataViews.Traits
-pub let medias: MetadataViews.Medias?
-pub let license: MetadataViews.License?
+   pub let medias: MetadataViews.Medias?
+   pub let license: MetadataViews.License?
     init(
         name: String,
         description: String,
@@ -315,9 +315,9 @@ pub let license: MetadataViews.License?
         collectionBannerImage: String,
         collectionSocials: {String: String},
         edition: MetadataViews.Edition,
-        traits: MetadataViews.Traits,
-medias:MetadataViews.Medias?,
-license:MetadataViews.License?
+       traits: MetadataViews.Traits,
+       medias:MetadataViews.Medias?,
+       license:MetadataViews.License?
     ) {
         self.name = name
         self.description = description
@@ -326,7 +326,7 @@ license:MetadataViews.License?
         self.type = nftType
         self.royalties = royalties
         self.externalURL = externalURL
-        self.serialNumber = serialNumber
+         self.serialNumber = serialNumber
         self.collectionPublicPath = collectionPublicPath
         self.collectionStoragePath = collectionStoragePath
         self.collectionProviderPath = collectionProviderPath
@@ -340,16 +340,16 @@ license:MetadataViews.License?
         self.collectionBannerImage = collectionBannerImage
         self.collectionSocials = collectionSocials
         self.edition = edition
-        self.traits = traits
-self.medias=medias
-self.license=license
+       self.traits = traits
+       self.medias=medias
+       self.license=license
     }
 }
 pub fun main(address: Address, id: UInt64): NFT {
     let account = getAccount(address)
     let collection = account
-        .getCapability(ExampleNFT.CollectionPublicPath)
-        .borrow<&{ExampleNFT.ExampleNFTCollectionPublic}>()
+        .getCapability(${contractName}.CollectionPublicPath)
+        .borrow<&{${contractName}.ExampleNFTCollectionPublic}>()
         ?? panic("Could not borrow a reference to the collection")
     let nft = collection.borrowExampleNFT(id: id)!
     // Get the basic display information for this NFT
@@ -393,7 +393,7 @@ let license=MetadataViews.getLicense(nft)
         collectionBannerImage: collectionDisplay.bannerImage.file.uri(),
         collectionSocials: collectionSocials,
         edition: nftEditionView.infoList[0],
-        traits: traits,
+       traits: traits,
         medias:medias,
         license:license
     )
@@ -401,7 +401,7 @@ let license=MetadataViews.getLicense(nft)
      `,
             //@ts-ignore
             args: (arg, t) => [
-                arg(adress, t.Address),
+                arg(account_id, t.Address),
                 arg(ad, t.UInt64)
             ],
 
