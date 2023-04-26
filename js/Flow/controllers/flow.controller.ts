@@ -23,7 +23,8 @@ class FlowController {
   }
 
   async getAllNFTs(req: express.Request, res: express.Response) {
-    const account = await FlowService.getAllNFTs(req.body.Address)
+
+    const account = await FlowService.getAllNFTs(req.body.account_id , req.body.chain)
     console.log(account);
     res.send(account);
   }
