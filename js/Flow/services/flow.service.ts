@@ -17,16 +17,29 @@ class FlowService {
 
 
   async getAllNFTs(Address: string , chain: string) {
-    fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
+
+      if (chain ="mainnet") {
+          var MetadataViews = "0x1d7e57aa55817448"
+          var NFTCatalog = "0x49a7cda3a1eecc29"
+          var NFTRetrieval = "0x49a7cda3a1eecc29"
+          var url = "https://rest-mainnet.onflow.org"
+      }else if (chain="testnet"){
+          var MetadataViews = "0x631e88ae7f1d7c20"
+          var NFTCatalog = "0x324c34e1c517e4db"
+          var NFTRetrieval = "0x324c34e1c517e4db"
+          var url = "https://access-testnet.onflow.org"
+      }
+
+    fcl.config().put("accessNode.api", url );
     const ad = Address;
     console.log(ad);
     try {
 
         const response = await fcl.query({
             cadence: `
-import MetadataViews from 0x631e88ae7f1d7c20
-import NFTCatalog from 0x324c34e1c517e4db
-import NFTRetrieval from 0x324c34e1c517e4db
+import MetadataViews from ${MetadataViews}
+import NFTCatalog from 0x324c34e1c517e4db ${NFTCatalog}
+import NFTRetrieval from 0x324c34e1c517e4db ${NFTRetrieval}
 
 pub struct NFT {
     pub let id: UInt64
