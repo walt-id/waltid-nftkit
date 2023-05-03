@@ -1,4 +1,5 @@
 import * as dotenv from "dotenv";
+import * as url from "url";
 
 const fcl = require("@onflow/fcl");
 
@@ -8,8 +9,9 @@ class FlowService {
   async getAccountDetails() {
     fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
      try{
-         const account = await fcl.send([fcl.getAccount(process.env.contractAddress)]).then(fcl.decode);
-         return account;
+       //  const account = await fcl.send([fcl.getAccount(process.env.contractAddress)]).then(fcl.decode);
+
+         //    return account;
      }catch (error) {
          return error;
      }
@@ -17,7 +19,6 @@ class FlowService {
 
 
   async getAllNFTs(Address: string , chain: string) {
-    fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
     const ad = Address;
 
   if (chain === "mainnet") {
@@ -41,9 +42,9 @@ class FlowService {
 
         const response = await fcl.query({
             cadence: `
-import MetadataViews from 0x631e88ae7f1d7c20
-import NFTCatalog from 0x324c34e1c517e4db
-import NFTRetrieval from 0x324c34e1c517e4db
+import MetadataViews from ${MetadataViews}
+import NFTCatalog from ${NFTCatalog}
+import NFTRetrieval from ${NFTRetrieval}
 
 pub struct NFT {
     pub let id: UInt64
@@ -169,7 +170,7 @@ pub fun main(ownerAddress: Address): {String: [NFT]} {
             //@ts-ignore
             args: (arg, t) => [arg(Address, t.Address)],
         });
-        return response.example;
+        return response;
     }
     catch (error) {
         return error;
