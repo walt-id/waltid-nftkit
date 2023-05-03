@@ -22,7 +22,7 @@ object FlowNftController {
         it.summary("Get NFT token").operationId("GetAllNFT").addTagsItem("Flow Blockchain: Non-fungible tokens(NFTs)")
     }.pathParam<String>("chain") {
         it.schema<String> { }
-    }.pathParam<String>("account_id") { }.json<FlowNFTMetadata>("200") {
+    }.pathParam<String>("account_id").json<String>(200.toString()) {
         it.description("NFT token")
     }
 
@@ -46,7 +46,7 @@ object FlowNftController {
         it.summary("Get NFT token by id").operationId("GetNFTbyId").addTagsItem("Flow Blockchain: Non-fungible tokens(NFTs)")
     }.pathParam<String>("chain") {
         it.schema<String> { }
-    }.pathParam<String>("account_id") { }.pathParam<String>("contractAddress") { }.pathParam<String>("contractName") { }.pathParam<String>("token_id") { }.json<FlowNFTMetadata>("200") {
+    }.pathParam<String>("account_id") { }.pathParam<String>("contractAddress") { }.pathParam<String>("contractName") { }.pathParam<String>("token_id") { }.json<String>("200") {
         it.description("NFT token")
     }
 }

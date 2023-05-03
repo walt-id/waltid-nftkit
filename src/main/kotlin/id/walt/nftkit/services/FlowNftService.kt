@@ -3,10 +3,10 @@ package id.walt.nftkit.services
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import io.swagger.util.Json
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.*
 
 
 enum class FlowChain {
@@ -53,12 +53,13 @@ data class Trait(
 
 @Serializable
 data class FlowNFTMetadata(
+    val id: String,
     val name: String,
     val description: String,
     val thumbnail: String,
     val owner: String?=null,
     val type: String?=null,
-    val royalties: List<String?>,
+    val royalties: List<JsonElement>,
     val externalURL: String?=null,
     val serialNumber: String?=null,
     val collectionPublicPath: CollectionPath?=null,
@@ -93,7 +94,20 @@ object FlowNftService {
                     values
                 )
             }
-                .body<List<FlowNFTMetadata>>()
+              //  .body<JsonObject>().entries.first().value.jsonArray.first().jsonObject["id"].jsonPrimitive.content
+
+                .body<JsonObject>().entries.flatMap {
+
+                        it.value.jsonArray.map {
+                            println(it)
+
+                            Json{
+                                ignoreUnknownKeys = true
+                            }.decodeFromJsonElement<FlowNFTMetadata>(it)
+                        }
+
+
+                }
            return@runBlocking operationResult
         }
     }
