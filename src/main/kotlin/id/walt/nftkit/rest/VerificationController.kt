@@ -158,4 +158,29 @@ object VerificationController {
             it.required(true)
         }.jsonArray<Boolean>("200") { it.description("Request processed successfully (NFT metadata might not be valid)") }
 
+
+    fun verifyNftOwnershipOnFlow(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val account = ctx.queryParam("account") ?: throw  BadRequestResponse("Account not specified")
+        val tokenId = ctx.queryParam("tokenId") ?: throw  BadRequestResponse("Token Id not specified")
+        val collectionPath = ctx.queryParam("collectionPath") ?: throw  BadRequestResponse("Collection path not specified")
+        val result = VerificationService.verifyNftOwnershipOnFlow(Common.getChain(chain.uppercase()), contractAddress, account, tokenId , collectionPath)
+        ctx.json(result)
+    }
+
+    fun verifyNftOwnershipOnFlowDocs() = document().operation {
+        it.summary("NFT ownership verification on Flow")
+            .operationId("NFTOwnershipVerificationOnFlow").addTagsItem("NFT verification")
+    }.pathParam<String>("chain") {
+        it.schema<Chain> { }
+    }.pathParam<String>("contractAddress") {
+    }.queryParam<String>("account") {
+        it.required(true)
+    }.queryParam<String>("tokenId") {
+        it.required(true)
+    }.queryParam<String>("collectionPath") {
+    }.json<Boolean>("200") {
+
+    }
 }
