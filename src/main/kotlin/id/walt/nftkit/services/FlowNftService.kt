@@ -113,13 +113,13 @@ object FlowNftService {
     }
 
 
-    fun getNFTbyId(account_id: String , contractAddress: String , contractName : String, id: String ,chain: FlowChain) : FlowNFTMetadata{
+    fun getNFTbyId(account_id: String , contractAddress: String , collectionPublicPath : String, id: String ,chain: FlowChain) : Any{
         return runBlocking{
             val values = mapOf(
                 "account_id" to account_id,
                 "chain" to chain.toString(),
                 "contractAddress" to contractAddress,
-                "contractName" to contractName,
+                "collectionPublicPath" to collectionPublicPath,
                 "id" to id
 
 
@@ -131,7 +131,7 @@ object FlowNftService {
                     values
                 )
             }
-                .body<FlowNFTMetadata>()
+                .body<JsonObject>()
             return@runBlocking operationResult
         }
     }

@@ -36,7 +36,7 @@ class FlowController {
   }
 
   async getNFTById(req: express.Request, res: express.Response) {
-    const account = await FlowService.getNftById(req.body.account_id ,  req.body.contractAddress , req.body.contractName ,req.body.id ,req.body.chain)
+    const account = await FlowService.getNftById(req.body.account_id ,  req.body.contractAddress , req.body.collectionPublicPath ,req.body.id ,req.body.chain)
     console.log(account);
     res.send(account);
   }
