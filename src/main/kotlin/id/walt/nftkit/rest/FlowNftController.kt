@@ -29,14 +29,14 @@ object FlowNftController {
     fun getNFTbyId(ctx: Context) {
         val account_id = ctx.pathParam("account_id")
         val contractAddress = ctx.pathParam("contractAddress")
-        val contractName = ctx.pathParam("contractName")
+        val collectionPublicPath = ctx.pathParam("collectionPublicPath")
         val token_id = ctx.pathParam("token_id")
         val chain = ctx.pathParam("chain")
 
         val result = FlowNftService.getNFTbyId(
             account_id,
             contractAddress,
-            contractName,
+            collectionPublicPath,
             token_id,
             Common.getFlowChain(chain.lowercase())
         )
@@ -46,7 +46,7 @@ object FlowNftController {
         it.summary("Get NFT token by id").operationId("GetNFTbyId").addTagsItem("Flow Blockchain: Non-fungible tokens(NFTs)")
     }.pathParam<String>("chain") {
         it.schema<String> { }
-    }.pathParam<String>("account_id") { }.pathParam<String>("contractAddress") { }.pathParam<String>("contractName") { }.pathParam<String>("token_id") { }.json<String>("200") {
+    }.pathParam<String>("account_id") { }.pathParam<String>("contractAddress") { }.pathParam<String>("collectionPublicPath") { }.pathParam<String>("token_id") { }.json<String>("200") {
         it.description("NFT token")
     }
 }
