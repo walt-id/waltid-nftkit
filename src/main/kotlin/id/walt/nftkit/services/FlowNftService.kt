@@ -79,6 +79,16 @@ data class FlowNFTMetadata(
     val medias: String?=null,
     val license:String?=null,
 )
+
+@Serializable
+data class FlowTokenMetadata(
+    val id: String,
+    val name: String,
+    val description: String,
+    val thumbnail: String,
+    val externalURL: String?=null,
+
+)
 object FlowNftService {
 
     fun getAllNFTs(account_id: String, chain: FlowChain): List<FlowNFTMetadata> {
@@ -113,7 +123,7 @@ object FlowNftService {
     }
 
 
-    fun getNFTbyId(account_id: String , contractAddress: String , collectionPublicPath : String, id: String ,chain: FlowChain) : Any{
+    fun getNFTbyId(account_id: String , contractAddress: String , collectionPublicPath : String, id: String ,chain: FlowChain) : FlowTokenMetadata{
         return runBlocking{
             val values = mapOf(
                 "account_id" to account_id,
@@ -131,7 +141,7 @@ object FlowNftService {
                     values
                 )
             }
-                .body<JsonObject>()
+                .body<FlowTokenMetadata>()
             return@runBlocking operationResult
         }
     }
