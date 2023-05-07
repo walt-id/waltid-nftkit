@@ -53,12 +53,14 @@ object VerificationService {
                 return NFTsNearOwnershipVerification(NearChain.valueOf(chain.toString()), contractAddress, account, tokenId)
             }
 
-
             else -> {throw Exception("Chain  is not supported")}
 
         }
     }
 
+    fun verifyNftOwnershipOnFlow( chain: Chain, contractAddress: String, account: String, tokenId: String, collectionPath: String): Boolean {
+        return NFTsFlowOwnershipVerification(FlowChain.valueOf(chain.toString()) ,contractAddress ,account ,tokenId , collectionPath  )
+    }
      fun verifyNftOwnershipWithinCollection(chain: Chain, contractAddress: String, account: String): Boolean {
         return when{
             Common.isEVMChain(chain) -> {
@@ -217,6 +219,18 @@ object VerificationService {
             return result.owner_id.equals(account, true)
         }
         catch (e: Exception){
+            return false
+        }
+    }
+
+    private fun NFTsFlowOwnershipVerification(chain: FlowChain , contractAddress: String , account: String , tokenId: String , collectionPath : String ) : Boolean {
+        try {
+            val result = FlowNftService.getNFTbyId(account ,contractAddress , collectionPath , tokenId , FlowChain.valueOf(chain.toString()))
+            // if the result is not null return true
+            return result.id.equals(tokenId, true)
+
+        }
+     catch (e: Exception){
             return false
         }
     }
