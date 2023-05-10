@@ -14,7 +14,7 @@ export class FlowRoutes extends CommonRoutesConfig {
                 FlowController.accountDetails
             );
         this.app
-            .route(`/flow/getNFTsByAddress`)
+            .route(`/flow/getNFTsInCollection`)
             .post(
                 FlowController.getNFTsByAddressInCollection
             );
