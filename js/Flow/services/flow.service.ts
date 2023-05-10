@@ -219,10 +219,12 @@ pub fun main(address: Address): [{String: AnyStruct}] {
        let nft = collection.borrowViewResolver(id: id)
 
     // Get the basic display information for this NFT
-     let display = MetadataViews.getDisplay(nft)!
+         let display = MetadataViews.getDisplay(nft)!
 
         let identifier = nft.getType().identifier
         let traits = MetadataViews.getTraits(nft)!
+        
+        let externalURL = MetadataViews.getExternalURL(nft)!.url
 
         
         
@@ -230,14 +232,15 @@ pub fun main(address: Address): [{String: AnyStruct}] {
         
       let nftData = {
         "id": UInt64(id), 
-        "metadata": {
-            "name": display.name,
-            "description": display.description, 
-            "thumbnail": display.thumbnail.uri(),
-            "identifier": identifier,
-            "traits": traits
+        
+         "name": display.name,
+         "description": display.description, 
+         "thumbnail": display.thumbnail.uri(),
+         "identifier": identifier,
+         "traits": traits,
+         "externalURL": externalURL
             
-            }
+       
           
       }
         nfts.append(nftData)
