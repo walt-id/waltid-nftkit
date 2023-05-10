@@ -49,8 +49,6 @@ data class Trait(
 )
 
 
-
-
 @Serializable
 data class FlowNFTMetadata(
     val id: String,
@@ -99,34 +97,41 @@ object FlowNftService {
                 "account_id" to account_id,
                 "chain" to chain.toString()
             )
-            val operationResult = NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/flow/getAllNFTs"){
-                contentType(ContentType.Application.Json)
+            val operationResult =
+                NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/flow/getAllNFTs") {
+                    contentType(ContentType.Application.Json)
 
-                setBody(
-                    values
-                )
-            }
-              //  .body<JsonObject>().entries.first().value.jsonArray.first().jsonObject["id"].jsonPrimitive.content
+                    setBody(
+                        values
+                    )
+                }
+                    //  .body<JsonObject>().entries.first().value.jsonArray.first().jsonObject["id"].jsonPrimitive.content
 
-                .body<JsonObject>().entries.flatMap {
+                    .body<JsonObject>().entries.flatMap {
 
                         it.value.jsonArray.map {
                             println(it)
 
-                            Json{
+                            Json {
                                 ignoreUnknownKeys = true
                             }.decodeFromJsonElement<FlowNFTMetadata>(it)
                         }
 
 
-                }
-           return@runBlocking operationResult
+                    }
+            return@runBlocking operationResult
         }
     }
 
 
-    fun getNFTbyId(account_id: String , contractAddress: String , collectionPublicPath : String, id: String ,chain: FlowChain) : FlowTokenMetadata{
-        return runBlocking{
+    fun getNFTbyId(
+        account_id: String,
+        contractAddress: String,
+        collectionPublicPath: String,
+        id: String,
+        chain: FlowChain
+    ): FlowTokenMetadata {
+        return runBlocking {
             val values = mapOf(
                 "account_id" to account_id,
                 "chain" to chain.toString(),
@@ -136,15 +141,40 @@ object FlowNftService {
 
 
             )
-            val operationResult = NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/flow/getNFTById"){
-                contentType(ContentType.Application.Json)
+            val operationResult =
+                NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/flow/getNFTById") {
+                    contentType(ContentType.Application.Json)
 
-                setBody(
-                    values
-                )
-            }
-                .body<FlowTokenMetadata>()
+                    setBody(
+                        values
+                    )
+                }
+                    .body<FlowTokenMetadata>()
             return@runBlocking operationResult
         }
     }
+
+    fun getNFTinCollectionPath(account_id: String, collectionPath: String, chain: FlowChain): List<FlowTokenMetadata> {
+        return runBlocking {
+            val values = mapOf(
+                "account_id" to account_id,
+                "chain" to chain.toString().lowercase(),
+                "collectionPath" to collectionPath
+            )
+
+            val operationResult =
+                NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/flow/getNFTsInCollection") {
+                    contentType(ContentType.Application.Json)
+
+                    setBody(
+                        values
+                    )
+                }
+
+                    .body<List<FlowTokenMetadata>>()
+            return@runBlocking operationResult
+
+        }
+    }
+
 }
