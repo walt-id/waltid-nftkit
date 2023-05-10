@@ -61,6 +61,15 @@ object VerificationService {
     fun verifyNftOwnershipOnFlow( chain: Chain, contractAddress: String, account: String, tokenId: String, collectionPath: String): Boolean {
         return NFTsFlowOwnershipVerification(FlowChain.valueOf(chain.toString()) ,contractAddress ,account ,tokenId , collectionPath  )
     }
+
+    fun verifyNftOwnershipInCollectionFlow(chain: Chain, contractAddress: String, account: String,  collectionPath: String): Boolean {
+        return NFTsFlowOwnershipVerificationInCollection(
+            FlowChain.valueOf(chain.toString()),
+            contractAddress,
+            account,
+            collectionPath
+        )
+    }
      fun verifyNftOwnershipWithinCollection(chain: Chain, contractAddress: String, account: String): Boolean {
         return when{
             Common.isEVMChain(chain) -> {
@@ -233,6 +242,24 @@ object VerificationService {
      catch (e: Exception){
             return false
         }
+    }
+
+    private fun NFTsFlowOwnershipVerificationInCollection(chain: FlowChain , contractAddress: String , account: String ,  collectionPath : String) : Boolean {
+
+       try {
+           val result = FlowNftService.getNFTinCollectionPath(account, collectionPath, FlowChain.valueOf(chain.toString()))
+           for (i in result.indices) {
+
+               // if identifier has contract address
+               if (result[i].identifier?.contains(contractAddress.removePrefix("0x"), true) == true) {
+                   return true
+               }
+
+           }
+           return false
+       }catch (e:Exception){
+           return false
+       }
     }
 
     private fun propertyVerification(chain: EVMChain, contractAddress: String, tokenId: String, propertyKey: String, propertyValue: String): Boolean {
