@@ -45,7 +45,7 @@ data class Trait(
     val name: String?=null,
     val value: String?=null,
     val displayType: String?=null,
-    val rarity: String?=null
+    val rarity: Rarity?=null,
 )
 
 
