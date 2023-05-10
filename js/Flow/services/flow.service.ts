@@ -179,45 +179,66 @@ pub fun main(ownerAddress: Address): {String: [NFT]} {
     }
   }
 
-  async getNftsByAddressInCollection(Address: string) {
+  async getNftsByAddressInCollection(Address: string ,collectionPath : string ) {
     fcl.config().put("accessNode.api", "https://access-testnet.onflow.org");
-    const ad = Address;
+
 
     try {
         const response = await fcl.query({
             cadence: `
-    import ${process.env.contractName} from ${process.env.contractAddress}
-    import MetadataViews from 0x631e88ae7f1d7c20
-   pub fun main(address: Address): [{String: AnyStruct}] {
+
+import MetadataViews from 0x631e88ae7f1d7c20
+
+/// This script gets all the view-based metadata associated with the specified NFT
+/// and returns it as a single struct
+
+pub fun main(address: Address): [{String: AnyStruct}] {
     let account = getAccount(address)
+
     let collection = account
-        .getCapability(${process.env.collectionPublicPath})
-        .borrow<&{${process.env.collectionType}}>()
+        .getCapability(${collectionPath})
+        .borrow<&{MetadataViews.ResolverCollection}>()
         ?? panic("Could not borrow a reference to the collection")
+
     let nft = collection.getIDs()
        var nfts: [{String: AnyStruct}] = []
     for id in nft {
        
-       let nft = collection.borrowExampleNFT(id: id)!
+       let nft = collection.borrowViewResolver(id: id)
+
     // Get the basic display information for this NFT
      let display = MetadataViews.getDisplay(nft)!
-     let displayTraits = MetadataViews.getTraits(nft)!
-  
-        let nftData = {
-            "id": UInt64(id), 
-            "metadata": {
-                "name": display.name, 
-                "description": display.description, 
-                "thumbnail": display.thumbnail.uri() 
-                }
+
+        let identifier = nft.getType().identifier
+        let traits = MetadataViews.getTraits(nft)!
+
+        
+        
+
+        
+      let nftData = {
+        "id": UInt64(id), 
+        "metadata": {
+            "name": display.name,
+            "description": display.description, 
+            "thumbnail": display.thumbnail.uri(),
+            "identifier": identifier,
+            "traits": traits
+            
             }
+          
+      }
         nfts.append(nftData)
     }
+  
+    
+
     return nfts
 }
+ 
   `,
             //@ts-ignore
-            args: (arg, t) => [arg(ad.Address, t.Address)],
+            args: (arg, t) => [arg(Address, t.Address)],
         });
         return response;
     }catch (error) {
