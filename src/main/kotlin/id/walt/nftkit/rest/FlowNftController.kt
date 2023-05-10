@@ -49,4 +49,26 @@ object FlowNftController {
     }.pathParam<String>("account_id") { }.pathParam<String>("contractAddress") { }.pathParam<String>("collectionPublicPath") { }.pathParam<String>("token_id") { }.json<String>("200") {
         it.description("NFT token")
     }
+
+
+    fun getNFTinCollection (ctx: Context) {
+        val account_id = ctx.pathParam("account_id")
+        val collectionPublicPath = ctx.pathParam("collectionPath")
+        val chain = ctx.pathParam("chain")
+
+        val result = FlowNftService.getNFTinCollectionPath(
+            account_id,
+            collectionPublicPath,
+            Common.getFlowChain(chain.lowercase())
+        )
+        ctx.json(result)
+    }
+
+    fun getNFTinCollectionDocs() = document().operation() {
+        it.summary("Get NFT token in collection").operationId("GetNFTinCollection").addTagsItem("Flow Blockchain: Non-fungible tokens(NFTs)")
+    }.pathParam<String>("chain") {
+        it.schema<String> { }
+    }.pathParam<String>("account_id") { }.pathParam<String>("collectionPath") { }.json<String>("200") {
+        it.description("NFT token")
+    }
 }
