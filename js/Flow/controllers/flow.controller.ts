@@ -17,7 +17,7 @@ class FlowController {
   }
 
   async getNFTsByAddressInCollection(req: express.Request, res: express.Response) {
-    const account = await FlowService.getNftsByAddressInCollection(req.body)
+    const account = await FlowService.getNftsByAddressInCollection(req.body.Address ,  req.body.collectionPath)
     console.log(account);
     res.send(account);
   }
