@@ -183,4 +183,26 @@ object VerificationController {
     }.json<Boolean>("200") {
 
     }
+
+    fun verifyNftOwnershipInCollectionOnFlow(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val account = ctx.queryParam("account") ?: throw  BadRequestResponse("Account not specified")
+        val collectionPath = ctx.queryParam("collectionPath") ?: throw  BadRequestResponse("Collection path not specified")
+        val result = VerificationService.verifyNftOwnershipInCollectionFlow(Common.getChain(chain.uppercase()), contractAddress, account , collectionPath)
+        ctx.json(result)
+    }
+
+    fun verifyNftOwnershipInCollectionOnFlowDocs() = document().operation {
+        it.summary("NFT ownership verification in collection on Flow")
+            .operationId("NFTOwnershipVerificationInCollectionOnFlow").addTagsItem("NFT verification")
+    }.pathParam<String>("chain") {
+        it.schema<Chain> { }
+    }.pathParam<String>("contractAddress") {
+    }.queryParam<String>("account") {
+        it.required(true)
+    }.queryParam<String>("collectionPath") {
+    }.json<Boolean>("200") {
+
+    }
 }
