@@ -87,6 +87,8 @@ data class FlowTokenMetadata(
     val description: String,
     val thumbnail: String,
     val externalURL: String?=null,
+    val identifier: String?=null,
+    val traits: Traits?=null,
 
 )
 object FlowNftService {
