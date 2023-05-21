@@ -55,6 +55,15 @@ object DynamicPolicy {
             data.put("approved_accounts", nftMetadata.nearNftMetadata.approved_account_ids.toString())
 
 
+        }else if (nftMetadata.flowNftMetadata != null){
+            data.put("name", nftMetadata.flowNftMetadata.name)
+            data.put("description", nftMetadata.flowNftMetadata.description)
+            data.put("media", nftMetadata.flowNftMetadata.thumbnail)
+            data.put("owner", nftMetadata.flowNftMetadata.owner)
+            data.put("externalURL" , nftMetadata.flowNftMetadata.externalURL.toString())
+            data.put("collectionName", nftMetadata.flowNftMetadata.collectionName)
+            data.put("traits", nftMetadata.flowNftMetadata.traits?.traits.toString())
+            data.put("royalties", nftMetadata.flowNftMetadata.royalties.toString())
         }
         return data
     }
