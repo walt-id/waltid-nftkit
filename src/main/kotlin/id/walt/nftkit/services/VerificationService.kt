@@ -169,6 +169,7 @@ object VerificationService {
                 val nftMetadata = NftMetadataWrapper(null,null, nearNftmetadata)
                 return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
             }
+
             else -> {throw Exception("Chain  is not supported")}
             }
     }
@@ -261,6 +262,23 @@ object VerificationService {
            return false
        }
     }
+
+
+    fun verifyPolicyFlow(chain: Chain, contractAddress: String,collectionPath:String, tokenId: String, policyName: String , account: String): Boolean {
+        val policy = PolicyRegistry.listPolicies().get(policyName)
+
+        if(policy == null) throw Exception("The policy doesn't exist")
+        if(policy.input == null) throw Exception("The policy doesn't have input")
+        if(policy.policy == null) throw Exception("The policy doesn't have policy")
+        if(policy.policyQuery == null) throw Exception("The policy doesn't have policyQuery")
+
+        val flowNftmetadata = FlowNftService.getNFTbyId(account  ,contractAddress,collectionPath,tokenId, FlowChain.valueOf(chain.toString()))
+        val nftMetadata = NftMetadataWrapper(null,null, null, flowNftmetadata)
+        return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
+
+    }
+
+
 
     private fun propertyVerification(chain: EVMChain, contractAddress: String, tokenId: String, propertyKey: String, propertyValue: String): Boolean {
         val metadata= NftService.getNftMetadata(chain, contractAddress, BigInteger(tokenId))
