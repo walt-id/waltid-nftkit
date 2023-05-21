@@ -130,7 +130,7 @@ object FlowNftService {
         collectionPublicPath: String,
         id: String,
         chain: FlowChain
-    ): FlowTokenMetadata {
+    ): FlowNFTMetadata {
         return runBlocking {
             val values = mapOf(
                 "account_id" to account_id,
@@ -149,7 +149,7 @@ object FlowNftService {
                         values
                     )
                 }
-                    .body<FlowTokenMetadata>()
+                    .body<FlowNFTMetadata>()
             return@runBlocking operationResult
         }
     }
