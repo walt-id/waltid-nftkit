@@ -171,7 +171,7 @@ object VerificationController {
 
     fun verifyNftOwnershipOnFlowDocs() = document().operation {
         it.summary("NFT ownership verification on Flow")
-            .operationId("NFTOwnershipVerificationOnFlow").addTagsItem("NFT verification")
+            .operationId("NFTOwnershipVerificationOnFlow").addTagsItem("NFT verification On Flow")
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
@@ -195,7 +195,7 @@ object VerificationController {
 
     fun verifyNftOwnershipInCollectionOnFlowDocs() = document().operation {
         it.summary("NFT ownership verification in collection on Flow")
-            .operationId("NFTOwnershipVerificationInCollectionOnFlow").addTagsItem("NFT verification")
+            .operationId("NFTOwnershipVerificationInCollectionOnFlow").addTagsItem("NFT verification On Flow")
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("contractAddress") {
@@ -205,4 +205,31 @@ object VerificationController {
     }.json<Boolean>("200") {
 
     }
+
+
+    fun verifyNftPolicyFlow(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val collectionPath = ctx.pathParam("collectionPath")
+        val tokenId = ctx.pathParam("tokenId")
+        val policyName = ctx.pathParam("policyName")
+        val account = ctx.queryParam("account") ?: throw  BadRequestResponse("Account not specified")
+        val result= policyName?.let { VerificationService.verifyPolicyFlow(Common.getChain(chain), contractAddress, collectionPath, tokenId, it , account) }
+        if (result != null) {
+            ctx.json(result)
+        }
+    }
+
+    fun verifyNftPolicyFlowDocs() = document()
+        .operation { it.summary("Verify an NFT metadata against a dynamic policy on Flow").operationId("verifyNftPolicyFlow").addTagsItem("NFT verification On Flow") }
+        .pathParam<String>("chain") {
+            it.schema<Chain> { }
+        }.pathParam<String>("contractAddress") {
+        }.pathParam<String>("collectionPath") {
+        }.pathParam<String>("tokenId") {
+        }.pathParam<String>("policyName") {
+            it.required(true)
+        }.queryParam<String>("account") {
+            it.required(true)
+        }.jsonArray<Boolean>("200") { it.description("Request processed successfully (NFT metadata might not be valid)") }
 }
