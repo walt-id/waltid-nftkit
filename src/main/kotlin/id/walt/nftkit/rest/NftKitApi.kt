@@ -262,14 +262,7 @@ object NftKitApi {
                             documented(VerificationController.verifyNftOwnershipWithinCollectionDocs(), VerificationController::verifyNftOwnershipWithinCollection)
                         )
 
-                        get(
-                            "chain/{chain}/contract/{contractAddress}/verifyNftOwnership/Flow",
-                            documented(VerificationController.verifyNftOwnershipOnFlowDocs(), VerificationController::verifyNftOwnershipOnFlow)
-                        )
-                        get(
-                            "chain/{chain}/contract/{contractAddress}/verifyNftOwnershipWithinCollection/Flow",
-                            documented(VerificationController.verifyNftOwnershipInCollectionOnFlowDocs(), VerificationController::verifyNftOwnershipInCollectionOnFlow)
-                        )
+
                         get(
                             "chain/{chain}/contract/{contractAddress}/verifyNftOwnershipWithTraits",
                             documented(
@@ -305,7 +298,31 @@ object NftKitApi {
                                 VerificationController::oceanDaoVerification
                             )
                         )
+
+                        path("flow"){
+
+                                get(
+                                    "chain/{chain}/contract/{contractAddress}/verifyNftOwnership/Flow",
+                                    documented(VerificationController.verifyNftOwnershipOnFlowDocs(), VerificationController::verifyNftOwnershipOnFlow)
+                                )
+                                get(
+                                    "chain/{chain}/contract/{contractAddress}/verifyNftOwnershipWithinCollection/Flow",
+                                    documented(VerificationController.verifyNftOwnershipInCollectionOnFlowDocs(), VerificationController::verifyNftOwnershipInCollectionOnFlow)
+                                )
+                                get(
+                                    "chain/{chain}/contract/{contractAddress}/collectionPath/{collectionPath}/token/{tokenId}/policy/{policyName}/verification",
+                                    documented(
+                                        VerificationController.verifyNftPolicyFlowDocs(),
+                                        VerificationController::verifyNftPolicyFlow
+                                    )
+                                )
+
+
+                        }
                     }
+
+
+
                     path("nft/extensions") {
                         get(
                             "chain/{chain}/contract/{contractAddress}/paused",
