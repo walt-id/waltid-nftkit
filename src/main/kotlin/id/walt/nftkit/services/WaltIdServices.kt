@@ -8,15 +8,23 @@ import java.io.File
 import java.util.*
 
 
-data class Providers(val ethereum: String, val goerli: String, val polygon: String, val mumbai: String)
+data class Providers(val ethereum: String, val goerli: String, val sepolia: String, val polygon: String, val mumbai: String, val astar: String, val moonbeam: String, val opal: String, val unique: String)
+
 data class ChainConfig(val providers: Providers, val privateKey: String)
 
 data class KeysConfig(val keys: Map<String, String>)
 
-data class ApiKeys(val ethereumBlockExplorer: String, val polygonBlockExplorer: String, val alchemy: String, val nftstorage: String)
+data class ApiKeys(val ethereumBlockExplorer: String, val polygonBlockExplorer: String, val alchemy: String, val nftstorage: String, val subscan: String)
 data class BlockExplorerScanApiKeyConfig(val apiKeys: ApiKeys)
 data class TezosConfig(val tezosBackendServer: String)
 data class NearConfig(val nearBackendServer: String)
+
+data class PolkadotConfig(val polkadotAccounts: Map<String, String>)
+
+data class IndexersUrl(val uniqueUrl: String, val opalUrl: String)
+data class Indexers(val indexersUrl : IndexersUrl)
+
+
 
 
 val WALTID_CONFIG_PATH = System.getenv("WALTID_CONFIG_PATH") ?: "."
@@ -62,13 +70,29 @@ object WaltIdServices {
         .build()
         .loadConfigOrThrow<NearConfig>()
 
+    fun loadPolkadotConfig() = ConfigLoader.builder()
+        .addFileExtensionMapping("yaml", YamlParser())
+        .addSource(PropertySource.file(File("$WALTID_CONFIG_PATH/walt.yaml"), optional = true))
+        .addSource(PropertySource.resource("/walt-default.yaml"))
+        .build()
+        .loadConfigOrThrow<PolkadotConfig>()
+
+    fun loadIndexers() = ConfigLoader.builder()
+        .addFileExtensionMapping("yaml", YamlParser())
+        .addSource(PropertySource.file(File("$WALTID_CONFIG_PATH/walt.yaml"), optional = true))
+        .addSource(PropertySource.resource(default_yaml_path))
+        .build()
+        .loadConfigOrThrow<Indexers>()
+
 
     fun getBlockExplorerUrl(chain: EVMChain): String {
         return when (chain) {
             EVMChain.ETHEREUM -> Values.ETHEREUM_MAINNET_BLOCK_EXPLORER_URL
             EVMChain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_BLOCK_EXPLORER_URL
+            EVMChain.SEPOLIA -> Values.ETHEREUM_TESTNET_SEPOLIA_BLOCK_EXPLORER_URL
             EVMChain.POLYGON -> Values.POLYGON_MAINNET_BLOCK_EXPLORER_URL
             EVMChain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_BLOCK_EXPLORER_URL
+            else -> {throw Exception("${chain.toString()} is not supported")}
         }
     }
 }

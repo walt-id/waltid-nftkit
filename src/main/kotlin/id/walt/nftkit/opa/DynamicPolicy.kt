@@ -64,6 +64,11 @@ object DynamicPolicy {
             data.put("collectionName", nftMetadata.flowNftMetadata.collectionName)
             data.put("traits", nftMetadata.flowNftMetadata.traits?.traits.toString())
             data.put("royalties", nftMetadata.flowNftMetadata.royalties.toString())
+
+        }else if(nftMetadata.uniqueNftMetadata != null){
+            data.put("image", nftMetadata.uniqueNftMetadata.ipfsCid)
+            nftMetadata.uniqueNftMetadata.attributes?.forEach { data.put(it.name, it.value) }
+
         }
         return data
     }

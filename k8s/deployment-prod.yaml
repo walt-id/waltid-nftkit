@@ -22,6 +22,29 @@ spec:
             - containerPort: 7000
               name: http-api
 ---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: nftkit-js
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nftkit-js
+  template:
+    metadata:
+      labels:
+        app: nftkit-js
+      annotations:
+        deployment/id: "_DEFAULT_DEPLOYMENT_"
+    spec:
+      containers:
+        - name: nftkit-js
+          image: waltid/nftkit-js:_VERSION_TAG_
+          ports:
+            - containerPort: 3000
+              name: http-api
+---
 kind: Service
 apiVersion: v1
 metadata:
@@ -34,6 +57,19 @@ spec:
       protocol: TCP
   selector:
     app: nftkit
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nftkit-js
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: http-api
+      protocol: TCP
+  selector:
+    app: nftkit-js
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
