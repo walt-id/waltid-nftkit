@@ -10,6 +10,7 @@ import id.walt.nftkit.models.NFTsInfos
 import id.walt.nftkit.services.WaltIdServices.decBase64Str
 import id.walt.nftkit.smart_contract_wrapper.Erc721OnchainCredentialWrapper
 import id.walt.nftkit.utilis.Common
+import io.javalin.core.util.RouteOverviewUtil.metaInfo
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -21,7 +22,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.*
 import org.web3j.abi.EventEncoder
 import org.web3j.abi.EventValues
 import org.web3j.abi.FunctionReturnDecoder
@@ -57,6 +58,8 @@ data class NftMetadataWrapper(
     val tezosNftMetadata: TezosNftMetadata?= null,
     val nearNftMetadata: NearNftMetadata?= null,
     val flowNftMetadata: FlowNFTMetadata?= null,
+    val uniqueNftMetadata: UniqueNftMetadata?= null
+
 )
 
 data class TokenCollectionInfo(
@@ -68,18 +71,26 @@ enum class Chain {
     ETHEREUM,
     POLYGON,
     GOERLI,
+    SEPOLIA,
     MUMBAI,
     TEZOS,
     GHOSTNET,
     MAINNET,
     TESTNET,
+    ASTAR,
+    MOONBEAM,
+    UNIQUE,
+    OPAL
 }
 
 enum class EVMChain {
     ETHEREUM,
     POLYGON,
     GOERLI,
+    SEPOLIA,
     MUMBAI,
+    ASTAR,
+    MOONBEAM
 }
 
 enum class TokenStandard {
@@ -292,7 +303,11 @@ object NftService {
             val decodedUri = decBase64Str(uri.substring(29))
             return Json{ ignoreUnknownKeys = true }.decodeFromString(decodedUri)
         }else{
-            return getIPFSMetadataUsingNFTStorage(uri)
+            if(uri.contains("https://", true)){
+                return getWebDocumentMetadata(uri)
+            }else{
+                return getIPFSMetadataUsingNFTStorage(uri)
+            }
         }
     }
 
@@ -371,6 +386,30 @@ object NftService {
                 val result= TezosNftService.fetchAccountNFTsByTzkt(chain, account)
                 return (NFTsInfos(tezosNfts = result))
             }
+            Common.isPolkadotParachain(chain) -> {
+                val evmErc721CollectiblesResult= PolkadotNftService.fetchEvmErc721CollectiblesBySubscan(
+                    PolkadotParachain.valueOf(chain.toString()), account)
+                if(evmErc721CollectiblesResult.data?.list == null) return NFTsInfos()
+                val result= evmErc721CollectiblesResult.data.list.map {
+                    var nftMetadata: NftMetadata? = null
+                    try {
+                        nftMetadata= getNftMetadata(EVMChain.valueOf(chain.toString()), it.contract, BigInteger( it.token_id))
+                    }catch (e: Exception){}
+                    PolkadotEvmNft(it.contract, it.token_id, nftMetadata)
+                }
+                return (NFTsInfos(polkadotEvmNft = result))
+            }
+            Common.isUniqueParachain(chain) -> {
+                val uniqueNftsResult = PolkadotNftService.fetchUniqueNFTs(UniqueNetwork.valueOf(chain.toString()), account)
+                if(uniqueNftsResult.data == null || uniqueNftsResult.data.size == 0)  return NFTsInfos()
+
+                val result= uniqueNftsResult.data.map {
+                    val metadata= PolkadotNftService.fetchUniqueNFTsMetadata(UniqueNetwork.valueOf(chain.toString()), it.collection_id.toString(), it.token_id.toString())
+                    val uniqueNftMetadata= PolkadotNftService.parseNftMetadataUniqueResponse(metadata!!)
+                    PolkadotUniqueNft(it.collection_id.toString(), it.token_id.toString(), uniqueNftMetadata)
+                }
+                return (NFTsInfos(polkadotUniqueNft = result))
+            }
             else -> {throw Exception("Chain  is not supported")}
         }
     }
@@ -394,12 +433,17 @@ object NftService {
             val url = when (chain) {
                 Chain.ETHEREUM -> Values.ETHEREUM_MAINNET_ALCHEMY_URL
                 Chain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_ALCHEMY_URL
+                Chain.SEPOLIA -> Values.ETHEREUM_TESTNET_SEPOLIA_ALCHEMY_URL
                 Chain.POLYGON -> Values.POLYGON_MAINNET_ALCHEMY_URL
                 Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_ALCHEMY_URL
                 Chain.TEZOS -> throw Exception("Tezos is not supported")
                 Chain.GHOSTNET -> throw Exception("Ghostnet is not supported")
                 Chain.TESTNET  -> throw Exception("Near testnet is not supported")
                 Chain.MAINNET  -> throw Exception("Near mainnet is not supported")
+                Chain.ASTAR  -> throw Exception("ASTAR is not supported")
+                Chain.MOONBEAM  -> throw Exception("MOONBEAM is not supported")
+                Chain.UNIQUE -> throw Exception("UNIQUE is not supported")
+                Chain.OPAL -> throw Exception("OPAL is not supported")
             }
 
             val result = fetchAccountNFTsTokensByAlchemy(account = account, url = url)
@@ -461,7 +505,7 @@ object NftService {
             apiKeyUrlParameter = "&pageKey=$apiKey"
         }
         val nfts =
-            client.get("$url${WaltIdServices.loadApiKeys().apiKeys.alchemy}/getNFTs/?owner=$account&withMetadata = true$apiKeyUrlParameter") {
+            client.get("$url${WaltIdServices.loadApiKeys().apiKeys.alchemy}/getNFTs/?owner=$account&withMetadata=true$apiKeyUrlParameter") {
                 contentType(ContentType.Application.Json)
             }
                 .body<NFTsAlchemyResult>()
@@ -472,6 +516,7 @@ object NftService {
             return nfts.ownedNfts
         }
     }
+
 
     fun fetchIPFSData(uri: String): String {
         return runBlocking {
@@ -494,6 +539,17 @@ object NftService {
         }
     }
 
+    fun getWebDocumentMetadata(uri: String): NftMetadata {
+        return runBlocking {
+            val nft = client.get(uri) {
+            }.body<String>()
+            println("result")
+            println(nft)
+            val jsonObject = Json.parseToJsonElement(nft).jsonObject
+            val result= parseNftEvmMetadataResult(jsonObject)
+            return@runBlocking result
+        }
+    }
     fun addFileToIpfsUsingNFTStorage(file: ByteArray): NFTStorageAddFileResult {
         return runBlocking {
             val res = IPFSMetadata.client.post("https://api.nft.storage/upload") {
@@ -541,6 +597,23 @@ object NftService {
 
     private fun isErc721Standard(chain: EVMChain, contractAddress: String): Boolean {
         return Erc721TokenStandard.supportsInterface(chain, contractAddress)
+    }
+
+    private fun parseNftEvmMetadataResult(nft: JsonObject): NftMetadata{
+        var attributes: List<NftMetadata.Attributes>?=null
+        if(nft.get("attributes")?.metaInfo.equals("kotlinx.serialization.json.JsonArray.class")){
+            attributes= nft.get("attributes")?.jsonArray?.map {
+                NftMetadata.Attributes(it.jsonObject.get("trait_type")?.jsonPrimitive?.content ?: "", it.jsonObject.get("value")?.jsonPrimitive?.content ?: "")
+            }
+        }
+        return NftMetadata(
+            name= nft.get("name")?.jsonPrimitive?.content,
+            description = nft.get("description")?.jsonPrimitive?.content,
+            image = nft.get("image")?.jsonPrimitive?.content,
+            image_data = nft.get("image_data")?.jsonPrimitive?.content,
+            external_url = nft.get("external_url")?.jsonPrimitive?.content,
+            attributes = attributes
+        )
     }
 
     private fun staticExtractEventParameters(

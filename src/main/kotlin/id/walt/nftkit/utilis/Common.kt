@@ -40,11 +40,15 @@ object Common {
     }
 
     fun getFlowChain(chain: String): FlowChain{
+
+    fun getUniqueChain(chain: String): UniqueNetwork {
+
         return chain.let {
             if (it.isEmpty()){
                 throw Exception("No chain defined")
             }
             FlowChain.valueOf(it.uppercase())
+            UniqueNetwork.valueOf(it.uppercase())
         }
     }
     fun getEVMChain(chain: String): EVMChain{
@@ -77,8 +81,10 @@ object Common {
         return when (chain) {
             EVMChain.ETHEREUM -> Values.ETHEREUM_MAINNET_SCAN_API_URL
             EVMChain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_SCAN_API_URL
+            EVMChain.SEPOLIA -> Values.ETHEREUM_TESTNET_SEPOLIA_SCAN_API_URL
             EVMChain.POLYGON -> Values.POLYGON_MAINNET_SCAN_API_URL
             EVMChain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_SCAN_API_URL
+            else -> {throw Exception("${chain.toString()} is not supported")}
         }
     }
 
@@ -86,13 +92,15 @@ object Common {
         return when (chain) {
             EVMChain.ETHEREUM -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
             EVMChain.GOERLI -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
+            EVMChain.SEPOLIA -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
             EVMChain.POLYGON -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
             EVMChain.MUMBAI -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
+            else -> {throw Exception("${chain.toString()} is not supported")}
         }
     }
 
     fun isEVMChain(chain: Chain): Boolean{
-        val EVMChains= listOf(Chain.ETHEREUM, Chain.POLYGON, Chain.GOERLI, Chain.MUMBAI)
+        val EVMChains= listOf(Chain.ETHEREUM, Chain.POLYGON, Chain.GOERLI, Chain.SEPOLIA, Chain.MUMBAI)
         if(chain in EVMChains) return true
         return false
     }
@@ -106,6 +114,18 @@ object Common {
     fun isNearChain(chain: Chain): Boolean{
         val NearChains= listOf(Chain.MAINNET, Chain.TESTNET)
         if(chain in NearChains) return true
+        return false
+    }
+
+    fun isPolkadotParachain(chain: Chain): Boolean{
+        val polkadotParachain= listOf(Chain.ASTAR, Chain.MOONBEAM)
+        if(chain in polkadotParachain) return true
+        return false
+    }
+
+    fun isUniqueParachain(chain: Chain): Boolean{
+        val uniqueParachain= listOf(Chain.UNIQUE, Chain.OPAL)
+        if(chain in uniqueParachain) return true
         return false
     }
 }

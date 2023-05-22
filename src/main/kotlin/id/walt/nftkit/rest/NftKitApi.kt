@@ -240,6 +240,7 @@ object NftKitApi {
                             )
 
                         }
+
                         path("flow"){
                             post("chain/{chain}/account/{account_id}/AllNFTs",
                                 documented(FlowNftController.getAllNFTsDocs() , FlowNftController::getAllNFTs)
@@ -249,6 +250,32 @@ object NftKitApi {
                             )
                             post("chain/{chain}/account/{account_id}/{collectionPath}/getNFTinCollection",
                                 documented(FlowNftController.getNFTinCollectionDocs() , FlowNftController::getNFTinCollection)
+                                 }
+
+                        path("unique") {
+                            get(
+                                "chain/{network}/account/{account}/",
+                                documented(
+                                    PolkadotUniqueNftController.fetchUniqueNftsDocs(),
+                                    PolkadotUniqueNftController::fetchUniqueNfts)
+                            )
+                            get("chain/{chain}/collection/{collectionId}/token/{tokenId}/metadata",
+                                documented(
+                                    PolkadotUniqueNftController.fetchUniqueNftMetadataDocs(),
+                                    PolkadotUniqueNftController::fetchUniqueNftMetadata)
+                            )
+                        }
+                        path("parachain") {
+                            get("{chain}/account/{account}/subscan",
+                                documented(
+                                    PolkadotParaChainNftController.fetchParachainNFTsDocs(),
+                                    PolkadotParaChainNftController::fetchParachainNFTs)
+                            )
+                            get("{chain}/account/{account}/EvmErc721/subscan",
+                                documented(
+                                    PolkadotParaChainNftController.fetchEvmErc721CollectiblesBySubscanDocs(),
+                                    PolkadotParaChainNftController::fetchEvmErc721CollectiblesBySubscan)
+
                             )
                         }
                     }
@@ -258,16 +285,31 @@ object NftKitApi {
                             documented(VerificationController.verifyNftOwnershipDocs(), VerificationController::verifyNftOwnership)
                         )
                         get(
+                            "chain/{chain}/collection/{collectionId}/verifyNftOwnership",
+                            documented(VerificationController.verifyNftOwnershipWithCollectionIdDocs(), VerificationController::verifyNftOwnershipWithCollectionId)
+                        )
+                        get(
                             "chain/{chain}/contract/{contractAddress}/verifyNftOwnershipWithinCollection",
                             documented(VerificationController.verifyNftOwnershipWithinCollectionDocs(), VerificationController::verifyNftOwnershipWithinCollection)
                         )
 
 
                         get(
+                            "chain/{chain}/collection/{collectionId}/verifyNftOwnershipWithinCollection",
+                            documented(VerificationController.verifyNftOwnershipWithinCollectionWithCollectionIdDocs(), VerificationController::verifyNftOwnershipWithinCollectionWithCollectionId)
+                        )
+                        get(
                             "chain/{chain}/contract/{contractAddress}/verifyNftOwnershipWithTraits",
                             documented(
                                 VerificationController.verifyNftOwnershipWithTraitsDocs(),
                                 VerificationController::verifyNftOwnershipWithTraits
+                            )
+                        )
+                        get(
+                            "chain/{chain}/collection/{collectionId}/verifyNftOwnershipWithTraits",
+                            documented(
+                                VerificationController.verifyNftOwnershipWithTraitsWithCollectionIdDocs(),
+                                VerificationController::verifyNftOwnershipWithTraitsWithCollectionId
                             )
                         )
                         post(
@@ -289,6 +331,13 @@ object NftKitApi {
                             documented(
                                 VerificationController.verifyNftPolicyDocs(),
                                 VerificationController::verifyNftPolicy
+                            )
+                        )
+                        get(
+                            "chain/{chain}/collection/{collectionId}/token/{tokenId}/policy/{policyName}/verification",
+                            documented(
+                                VerificationController.verifyNftPolicyWithCollectionIdDocs(),
+                                VerificationController::verifyNftPolicyWithCollectionId
                             )
                         )
                         get(

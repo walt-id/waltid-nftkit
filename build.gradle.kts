@@ -6,6 +6,8 @@ plugins {
     kotlin("plugin.serialization") version "1.6.10"
     application
     `maven-publish`
+    id("com.expediagroup.graphql") version "6.4.0"
+
 }
 
 group = "id.walt"
@@ -67,6 +69,19 @@ dependencies {
     //near
     implementation ("com.syntifi.near:near-java-api:0.1.0")
 
+    // unique
+    implementation ("network.unique:unique-sdk-jvm:0.0.1")
+
+    // expediagroup graphql
+    implementation("com.expediagroup:graphql-kotlin-spring-client:6.4.0")
+    implementation("com.expediagroup", "graphql-kotlin-client-serialization", "6.4.0")
+
+    implementation("com.expediagroup", "graphql-kotlin-spring-client","6.4.0") {
+    exclude("com.expediagroup", "graphql-kotlin-client-jackson")
+}
+    implementation("com.expediagroup", "graphql-kotlin-client-serialization","6.4.0")
+
+
 }
 
 tasks.withType<Test> {
@@ -124,3 +139,19 @@ publishing {
         }
     }
 }
+
+graphql {
+    client {
+        endpoint = "https://scan-api.opal.uniquenetwork.dev/v1/graphql/"
+        packageName = "id.walt.nftkit"
+        customScalars = listOf(
+            com.expediagroup.graphql.plugin.gradle.config.GraphQLScalar(
+                "_Any",
+                "kotlinx.serialization.json.JsonObject",
+                "com.expediagroup.graphql.examples.client.gradle.AnyScalarConverter"
+            ),
+        )
+        serializer = com.expediagroup.graphql.plugin.gradle.config.GraphQLSerializer.KOTLINX
+    }
+}
+
