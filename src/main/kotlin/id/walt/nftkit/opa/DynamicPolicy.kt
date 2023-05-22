@@ -55,6 +55,7 @@ object DynamicPolicy {
             data.put("approved_accounts", nftMetadata.nearNftMetadata.approved_account_ids.toString())
 
 
+
         }else if (nftMetadata.flowNftMetadata != null){
             data.put("name", nftMetadata.flowNftMetadata.name)
             data.put("description", nftMetadata.flowNftMetadata.description)
@@ -68,6 +69,7 @@ object DynamicPolicy {
         }else if(nftMetadata.uniqueNftMetadata != null){
             data.put("image", nftMetadata.uniqueNftMetadata.ipfsCid)
             nftMetadata.uniqueNftMetadata.attributes?.forEach { data.put(it.name, it.value) }
+
 
         }
         return data
