@@ -39,11 +39,21 @@ object Common {
         }
     }
 
+    fun getFlowChain(chain: String): FlowChain{ return chain.let {
+        if (it.isEmpty()){
+            throw Exception("No chain defined")
+        }
+        FlowChain.valueOf(it.uppercase())
+    }}
+
+
     fun getUniqueChain(chain: String): UniqueNetwork {
+
         return chain.let {
             if (it.isEmpty()){
                 throw Exception("No chain defined")
             }
+            FlowChain.valueOf(it.uppercase())
             UniqueNetwork.valueOf(it.uppercase())
         }
     }

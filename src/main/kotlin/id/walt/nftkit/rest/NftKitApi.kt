@@ -240,6 +240,19 @@ object NftKitApi {
                             )
 
                         }
+
+                        path("flow"){
+                            post("chain/{chain}/account/{account_id}/AllNFTs",
+                                documented(FlowNftController.getAllNFTsDocs() , FlowNftController::getAllNFTs)
+                            )
+                            post("chain/{chain}/account/{account_id}/{contractAddress}/{collectionPublicPath}/{token_id}/getNFTById",
+                                documented(FlowNftController.getNFTbyIdDocs() , FlowNftController::getNFTbyId)
+                            )
+                            post("chain/{chain}/account/{account_id}/{collectionPath}/getNFTinCollection",
+                                documented(FlowNftController.getNFTinCollectionDocs() , FlowNftController::getNFTinCollection)
+                            )
+                                 }
+
                         path("unique") {
                             get(
                                 "chain/{network}/account/{account}/",
@@ -263,6 +276,7 @@ object NftKitApi {
                                 documented(
                                     PolkadotParaChainNftController.fetchEvmErc721CollectiblesBySubscanDocs(),
                                     PolkadotParaChainNftController::fetchEvmErc721CollectiblesBySubscan)
+
                             )
                         }
                     }
@@ -279,6 +293,8 @@ object NftKitApi {
                             "chain/{chain}/contract/{contractAddress}/verifyNftOwnershipWithinCollection",
                             documented(VerificationController.verifyNftOwnershipWithinCollectionDocs(), VerificationController::verifyNftOwnershipWithinCollection)
                         )
+
+
                         get(
                             "chain/{chain}/collection/{collectionId}/verifyNftOwnershipWithinCollection",
                             documented(VerificationController.verifyNftOwnershipWithinCollectionWithCollectionIdDocs(), VerificationController::verifyNftOwnershipWithinCollectionWithCollectionId)
@@ -332,7 +348,31 @@ object NftKitApi {
                                 VerificationController::oceanDaoVerification
                             )
                         )
+
+                        path("flow"){
+
+                                get(
+                                    "chain/{chain}/contract/{contractAddress}/verifyNftOwnership/Flow",
+                                    documented(VerificationController.verifyNftOwnershipOnFlowDocs(), VerificationController::verifyNftOwnershipOnFlow)
+                                )
+                                get(
+                                    "chain/{chain}/contract/{contractAddress}/verifyNftOwnershipWithinCollection/Flow",
+                                    documented(VerificationController.verifyNftOwnershipInCollectionOnFlowDocs(), VerificationController::verifyNftOwnershipInCollectionOnFlow)
+                                )
+                                get(
+                                    "chain/{chain}/contract/{contractAddress}/collectionPath/{collectionPath}/token/{tokenId}/policy/{policyName}/verification",
+                                    documented(
+                                        VerificationController.verifyNftPolicyFlowDocs(),
+                                        VerificationController::verifyNftPolicyFlow
+                                    )
+                                )
+
+
+                        }
                     }
+
+
+
                     path("nft/extensions") {
                         get(
                             "chain/{chain}/contract/{contractAddress}/paused",

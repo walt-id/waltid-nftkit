@@ -52,20 +52,37 @@ object VerificationService {
             Common.isNearChain(chain) -> {
                 return NFTsNearOwnershipVerification(NearChain.valueOf(chain.toString()), contractAddress, account, tokenId)
             }
+
+
             Common.isPolkadotParachain(chain) -> {
                 return NFTsPolkadotOwnershipVerification(PolkadotParachain.valueOf(chain.toString()), contractAddress, account, tokenId)
             }
             Common.isUniqueParachain(chain) -> {
                 return NFTsUniqueOwnershipVerification(UniqueNetwork.valueOf(chain.toString()), contractAddress, account, tokenId)
             }
+
             else -> {throw Exception("Chain  is not supported")}
 
         }
     }
 
+    fun verifyNftOwnershipOnFlow( chain: Chain, contractAddress: String, account: String, tokenId: String, collectionPath: String): Boolean {
+        return NFTsFlowOwnershipVerification(FlowChain.valueOf(chain.toString()) ,contractAddress ,account ,tokenId , collectionPath  )
+    }
+
+    fun verifyNftOwnershipInCollectionFlow(chain: Chain, contractAddress: String, account: String,  collectionPath: String): Boolean {
+        return NFTsFlowOwnershipVerificationInCollection(
+            FlowChain.valueOf(chain.toString()),
+            contractAddress,
+            account,
+            collectionPath
+        )
+    }
+
     fun  verifyNftOwnershipWithCollectionId(chain: UniqueNetwork, collectionId: String, account: String, tokenId: String): Boolean{
         return NFTsUniqueOwnershipVerification(chain, collectionId, account, tokenId)
     }
+
 
      fun verifyNftOwnershipWithinCollection(chain: Chain, contractAddress: String, account: String): Boolean {
         return when{
@@ -209,11 +226,14 @@ object VerificationService {
                 val nftMetadata = NftMetadataWrapper(null,null, nearNftmetadata)
                 return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
             }
+
+
             Common.isPolkadotParachain(chain) -> {
                 val evmNftmetadata= NftService.getNftMetadata(EVMChain.valueOf(chain.toString()), contractAddress, BigInteger( tokenId))
                 val nftMetadata = NftMetadataWrapper(evmNftmetadata,null)
                 return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
             }
+
             else -> {throw Exception("Chain  is not supported")}
             }
     }
@@ -298,6 +318,53 @@ object VerificationService {
         }
     }
 
+    private fun NFTsFlowOwnershipVerification(chain: FlowChain , contractAddress: String , account: String , tokenId: String , collectionPath : String ) : Boolean {
+        try {
+            val result = FlowNftService.getNFTbyId(account ,contractAddress , collectionPath , tokenId , FlowChain.valueOf(chain.toString()))
+            // if the result is not null return true
+            return result.id.equals(tokenId, true)
+
+        }
+     catch (e: Exception){
+            return false
+        }
+    }
+
+    private fun NFTsFlowOwnershipVerificationInCollection(chain: FlowChain , contractAddress: String , account: String ,  collectionPath : String) : Boolean {
+
+       try {
+           val result = FlowNftService.getNFTinCollectionPath(account, collectionPath, FlowChain.valueOf(chain.toString()))
+           for (i in result.indices) {
+
+               // if identifier has contract address
+               if (result[i].identifier?.contains(contractAddress.removePrefix("0x"), true) == true) {
+                   return true
+               }
+
+           }
+           return false
+       }catch (e:Exception){
+           return false
+       }
+    }
+
+
+    fun verifyPolicyFlow(chain: Chain, contractAddress: String,collectionPath:String, tokenId: String, policyName: String , account: String): Boolean {
+        val policy = PolicyRegistry.listPolicies().get(policyName)
+
+        if(policy == null) throw Exception("The policy doesn't exist")
+        if(policy.input == null) throw Exception("The policy doesn't have input")
+        if(policy.policy == null) throw Exception("The policy doesn't have policy")
+        if(policy.policyQuery == null) throw Exception("The policy doesn't have policyQuery")
+
+        val flowNftmetadata = FlowNftService.getNFTbyId(account  ,contractAddress,collectionPath,tokenId, FlowChain.valueOf(chain.toString()))
+        val nftMetadata = NftMetadataWrapper(null,null, null, flowNftmetadata)
+        return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
+
+    }
+
+
+
     private fun NFTsPolkadotOwnershipVerification(parachain: PolkadotParachain, contractAddress: String, account: String, tokenId: String): Boolean{
         val evmErc721CollectiblesResult= PolkadotNftService.fetchEvmErc721CollectiblesBySubscan(parachain, account)
         if(evmErc721CollectiblesResult.data?.list == null) return false
@@ -311,6 +378,7 @@ object VerificationService {
         val result= uniqueNftsResult.data.filter { collectionId.equals(it.collection_id.toString()) && tokenId.equals(it.token_id.toString()) }
         return if (result!!.size>= 1) true else false
     }
+
 
     private fun propertyVerification(chain: EVMChain, contractAddress: String, tokenId: String, propertyKey: String, propertyValue: String): Boolean {
         val metadata= NftService.getNftMetadata(chain, contractAddress, BigInteger(tokenId))
