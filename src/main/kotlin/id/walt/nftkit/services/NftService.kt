@@ -57,7 +57,9 @@ data class NftMetadataWrapper(
     val evmNftMetadata: NftMetadata?= null,
     val tezosNftMetadata: TezosNftMetadata?= null,
     val nearNftMetadata: NearNftMetadata?= null,
+    val flowNftMetadata: FlowNFTMetadata?= null,
     val uniqueNftMetadata: UniqueNftMetadata?= null
+
 )
 
 data class TokenCollectionInfo(
