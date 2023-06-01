@@ -932,6 +932,32 @@ pub struct NFTResult {
 
     console.log(response);
   }
-}
 
+  async verifySignature(signature: any, message: any) {
+    fcl
+      .config()
+      // testnet
+      .put("flow.network", "testnet")
+      .put("accessNode.api", "https://rest-testnet.onflow.org") // grpc: https://access-testnet.onflow.org
+      .put(
+        "discovery.wallet",
+        "https://fcl-discovery.onflow.org/testnet/authn"
+      );
+    const msg = Buffer.from(message, "utf8").toString("hex");
+    console.log("msg",msg);
+    const sig = JSON.parse(signature);
+    console.log("sig",sig);
+    try {
+
+      const isValid = await fcl.AppUtils.verifyUserSignatures(
+          msg,
+          sig
+      );
+     return isValid;
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
 export default new FlowService();
