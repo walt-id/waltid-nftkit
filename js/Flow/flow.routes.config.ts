@@ -47,6 +47,12 @@ export class FlowRoutes extends CommonRoutesConfig {
             .get(
                 FlowController.getIDScript
             );
+            
+        this.app
+            .route(`/flow/signature/verification`)
+            .post(
+                FlowController.verifySignature
+            );
 
         return this.app;
     }
