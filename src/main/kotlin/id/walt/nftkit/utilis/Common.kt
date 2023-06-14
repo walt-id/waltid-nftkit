@@ -53,7 +53,6 @@ object Common {
             if (it.isEmpty()){
                 throw Exception("No chain defined")
             }
-            FlowChain.valueOf(it.uppercase())
             UniqueNetwork.valueOf(it.uppercase())
         }
     }
