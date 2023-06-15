@@ -94,17 +94,19 @@ jobs:
           body: |
             ${{ steps.changelog.outputs.changelog }}
           prerelease: ${{ steps.changelog.outputs.prerelease }}
-      - name: Prepare CD
+      - name: Prepare prod CD
         run: sed "s/_DEFAULT_DEPLOYMENT_/$GITHUB_SHA/g; s/_VERSION_TAG_/${{ env.release_version }}/g" k8s/deployment-prod.yaml > k8s/deployment-prod_mod.yaml
-      - name: Continuous deployment dev system at *.walt-test.cloud
-        uses: actions-hub/kubectl@master
-        env:
-          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
-        with:
-          args: apply -n dev -f k8s/deployment-dev.yaml
       - name: Continuous deployment prod system at *.walt.id
         uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         with:
           args: apply -n nftkit-prod -f k8s/deployment-prod_mod.yaml
+      - name: Prepare dev CD
+        run: sed "s/_DEFAULT_DEPLOYMENT_/$GITHUB_SHA/g; s/_VERSION_TAG_/${{ env.release_version }}/g" k8s/deployment-dev.yaml > k8s/deployment-dev_mod.yaml
+      - name: Continuous deployment dev system at *.walt-test.cloud
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        with:
+          args: apply -n dev -f k8s/deployment-dev_mod.yaml
