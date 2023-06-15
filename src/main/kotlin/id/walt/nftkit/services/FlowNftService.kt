@@ -89,9 +89,34 @@ data class FlowTokenMetadata(
     val traits: Traits?=null,
 
 )
+
+
+@Serializable
+data class FlowNFTsMetadata(
+    val id: String,
+    val name: String,
+    val description: String,
+    val thumbnail: String,
+    val owner: String?=null,
+    val type: String?=null,
+    val royalties: List<JsonElement>,
+    val externalURL: String?=null,
+    val collectionPublicPath: CollectionPath?=null,
+    val collectionStoragePath: CollectionPath?=null,
+    val collectionProviderPath: CollectionPath?=null,
+    val publicLinkedType: JsonElement?=null,
+    val privateLinkedType: JsonElement?=null,
+    val collectionName: String?=null,
+    val collectionDescription: String?=null,
+    val collectionExternalURL: String?=null,
+    val collectionSquareImage: String?=null,
+    val collectionBannerImage: String?=null,
+    val collectionSocials: CollectionSocial?=null,
+)
+
 object FlowNftService {
 
-    fun getAllNFTs(account_id: String, chain: FlowChain): List<FlowNFTMetadata> {
+    fun getAllNFTs(account_id: String, chain: FlowChain): List<FlowNFTsMetadata> {
         return runBlocking {
             val values = mapOf(
                 "account_id" to account_id,
@@ -114,7 +139,7 @@ object FlowNftService {
 
                             Json {
                                 ignoreUnknownKeys = true
-                            }.decodeFromJsonElement<FlowNFTMetadata>(it)
+                            }.decodeFromJsonElement<FlowNFTsMetadata>(it)
                         }
 
 
