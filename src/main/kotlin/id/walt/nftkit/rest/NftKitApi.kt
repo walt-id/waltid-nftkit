@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import id.walt.nftkit.Values
 import id.walt.nftkit.rest.RootController.healthDocs
+import id.walt.nftkit.rest.nftdata.NFTDataRouter
 import id.walt.rest.OpenAPIUtils.documentedIgnored
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.*
@@ -447,6 +448,7 @@ object NftKitApi {
                         )
 
                     }
+                    NFTDataRouter.routes("nft")
                 }
             }
 
