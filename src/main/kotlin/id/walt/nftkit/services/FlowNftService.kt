@@ -116,7 +116,7 @@ data class FlowNFTsMetadata(
 
 object FlowNftService {
 
-    fun getAllNFTs(account_id: String, chain: FlowChain): List<FlowNFTsMetadata> {
+    fun getAllNFTs(account_id: String, chain: FlowChain): List<FlowNFTMetadata> {
         return runBlocking {
             val values = mapOf(
                 "account_id" to account_id,
@@ -139,7 +139,7 @@ object FlowNftService {
 
                             Json {
                                 ignoreUnknownKeys = true
-                            }.decodeFromJsonElement<FlowNFTsMetadata>(it)
+                            }.decodeFromJsonElement<FlowNFTMetadata>(it)
                         }
 
 
