@@ -64,8 +64,8 @@ data class FlowNFTMetadata(
     val collectionStoragePath: CollectionPath?=null,
     val collectionProviderPath: CollectionPath?=null,
     val collectionPublic: String?=null,
-    val collectionPublicLinkedType: String?=null,
-    val collectionProviderLinkedType: String?=null,
+    val collectionPublicLinkedType: JsonElement?=null,
+    val collectionProviderLinkedType: JsonElement?=null,
     val collectionName: String?=null,
     val collectionDescription: String?=null,
     val collectionExternalURL: String?=null,
@@ -90,67 +90,35 @@ data class FlowTokenMetadata(
 
 )
 
-
-@Serializable
-data class FlowNFTsMetadata(
-    val id: String,
-    val name: String,
-    val description: String,
-    val thumbnail: String,
-    val owner: String?=null,
-    val type: String?=null,
-    val royalties: List<JsonElement>,
-    val externalURL: String?=null,
-    val collectionPublicPath: CollectionPath?=null,
-    val collectionStoragePath: CollectionPath?=null,
-    val collectionProviderPath: CollectionPath?=null,
-    val publicLinkedType: JsonElement?=null,
-    val privateLinkedType: JsonElement?=null,
-    val collectionName: String?=null,
-    val collectionDescription: String?=null,
-    val collectionExternalURL: String?=null,
-    val collectionSquareImage: String?=null,
-    val collectionBannerImage: String?=null,
-    val collectionSocials: CollectionSocial?=null,
-)
-
 object FlowNftService {
 
-    fun getAllNFTs(account_id: String, chain: FlowChain): List<FlowNFTsMetadata> {
+    private val FlowFormatJson = Json {
+        ignoreUnknownKeys = true
+    }
+
+    fun getAllNFTs(accountId: String, chain: FlowChain): List<FlowNFTMetadata> {
         return runBlocking {
             val values = mapOf(
-                "account_id" to account_id,
+                "account_id" to accountId,
                 "chain" to chain.toString()
             )
             val operationResult =
                 NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/flow/getAllNFTs") {
                     contentType(ContentType.Application.Json)
-
-                    setBody(
-                        values
-                    )
-                }
-                    //  .body<JsonObject>().entries.first().value.jsonArray.first().jsonObject["id"].jsonPrimitive.content
-
-                    .body<JsonObject>().entries.flatMap {
-
-                        it.value.jsonArray.map {
-                            println(it)
-
-                            Json {
-                                ignoreUnknownKeys = true
-                            }.decodeFromJsonElement<FlowNFTsMetadata>(it)
-                        }
-
-
+                    setBody(values)
+                }.body<JsonObject>().entries.flatMap {
+                    it.value.jsonArray.map {
+                        println(it)
+                        FlowFormatJson.decodeFromJsonElement<FlowNFTMetadata>(it)
                     }
+                }
             return@runBlocking operationResult
         }
     }
 
 
     fun getNFTbyId(
-        account_id: String,
+        accountId: String,
         contractAddress: String,
         collectionPublicPath: String,
         id: String,
@@ -158,31 +126,25 @@ object FlowNftService {
     ): FlowNFTMetadata {
         return runBlocking {
             val values = mapOf(
-                "account_id" to account_id,
+                "account_id" to accountId,
                 "chain" to chain.toString(),
                 "contractAddress" to contractAddress,
                 "collectionPublicPath" to collectionPublicPath,
                 "id" to id
-
-
             )
             val operationResult =
                 NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/flow/getNFTById") {
                     contentType(ContentType.Application.Json)
-
-                    setBody(
-                        values
-                    )
-                }
-                    .body<FlowNFTMetadata>()
+                    setBody(values)
+                }.body<JsonObject>().let { FlowFormatJson.decodeFromJsonElement<FlowNFTMetadata>(it) }
             return@runBlocking operationResult
         }
     }
 
-    fun getNFTinCollectionPath(account_id: String, collectionPath: String, chain: FlowChain): List<FlowTokenMetadata> {
+    fun getNFTinCollectionPath(accountId: String, collectionPath: String, chain: FlowChain): List<FlowTokenMetadata> {
         return runBlocking {
             val values = mapOf(
-                "account_id" to account_id,
+                "account_id" to accountId,
                 "chain" to chain.toString().lowercase(),
                 "collectionPath" to collectionPath
             )
