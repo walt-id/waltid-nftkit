@@ -279,6 +279,12 @@ object NftKitApi {
 
                             )
                         }
+                        path("Algorand"){
+                            post("account/create",
+                                documented(AlgorandNftController.accountCreationDocs(), AlgorandNftController::accountCreation)
+                            )
+
+                        }
                     }
                     path("nft/verifier") {
                         get(
