@@ -56,7 +56,7 @@ polkadotAccounts:
 apiKeys:
   ethereumBlockExplorer: "JGD5ZUUBHE8CUXPNKZASVQPHRGBMB7A5XV"
   polygonBlockExplorer: "DZ3PFVWGJE5B8DMDQPRZ5JFBR6U484B82G"
-  alchemy: "yjbYhlaH3U_vfnTiRQ3miGQS0cKwQMkB"
+  alchemy: "5TYSteGJgJwJjaQTNN3j_4JtYcvdr3Uy"
   nftstorage: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDYwNDNEYThENjU2RTU3NTg2ZDk3MkM1ZDM5RUNENzI1NTNCM2Q1NjAiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY1NDYxNTQ2NjIwNCwibmFtZSI6Ik5GVCBLSVQifQ.PkMJpU3aJMQXqzq1nPnHJcWJR-32as3bQed3GBszMdg"
   subscan: ""
 

@@ -48,9 +48,9 @@ pub struct NFT {
     pub let externalURL: String
     pub let collectionStoragePath: StoragePath
     pub let collectionPublicPath: PublicPath
-    pub let collectionPrivatePath: PrivatePath
-    pub let publicLinkedType: Type
-    pub let privateLinkedType: Type
+    pub let collectionProviderPath: PrivatePath
+    pub let collectionPublicLinkedType: Type
+    pub let collectionProviderLinkedType: Type
     pub let collectionName: String
     pub let collectionDescription: String
     pub let collectionSquareImage: String
@@ -66,9 +66,9 @@ pub struct NFT {
         externalURL: String,
         collectionStoragePath: StoragePath,
         collectionPublicPath: PublicPath,
-        collectionPrivatePath: PrivatePath,
-        publicLinkedType: Type,
-        privateLinkedType: Type,
+        collectionProviderPath: PrivatePath,
+        collectionPublicLinkedType: Type,
+        collectionProviderLinkedType: Type,
         collectionName: String,
         collectionDescription: String,
         collectionSquareImage: String,
@@ -83,9 +83,9 @@ pub struct NFT {
         self.externalURL = externalURL
         self.collectionStoragePath = collectionStoragePath
         self.collectionPublicPath = collectionPublicPath
-        self.collectionPrivatePath = collectionPrivatePath
-        self.publicLinkedType = publicLinkedType
-        self.privateLinkedType = privateLinkedType
+        self.collectionProviderPath = collectionProviderPath
+        self.collectionPublicLinkedType = collectionPublicLinkedType
+        self.collectionProviderLinkedType = collectionProviderLinkedType
         self.collectionName = collectionName
         self.collectionDescription = collectionDescription
         self.collectionSquareImage = collectionSquareImage
@@ -141,9 +141,9 @@ pub fun main(ownerAddress: Address): {String: [NFT]} {
                     externalURL: externalURLView!.url,
                     collectionStoragePath: collectionDataView!.storagePath,
                     collectionPublicPath: collectionDataView!.publicPath,
-                    collectionPrivatePath: collectionDataView!.providerPath,
-                    publicLinkedType: collectionDataView!.publicLinkedType,
-                    privateLinkedType: collectionDataView!.providerLinkedType,
+                    collectionProviderPath: collectionDataView!.providerPath,
+                    collectionPublicLinkedType: collectionDataView!.publicLinkedType,
+                    collectionProviderLinkedType: collectionDataView!.providerLinkedType,
                     collectionName: collectionDisplayView!.name,
                     collectionDescription: collectionDisplayView!.description,
                     collectionSquareImage: collectionDisplayView!.squareImage.file.uri(),
@@ -476,8 +476,8 @@ import MetadataViews from ${MetadataViews}
     pub let collectionStoragePath: StoragePath
     pub let collectionProviderPath: PrivatePath
     pub let collectionPublic: String
-    pub let collectionPublicLinkedType: String
-    pub let collectionProviderLinkedType: String
+    pub let collectionPublicLinkedType: Type
+    pub let collectionProviderLinkedType: Type
     pub let collectionName: String
     pub let collectionDescription: String
     pub let collectionExternalURL: String
@@ -503,8 +503,8 @@ import MetadataViews from ${MetadataViews}
         collectionStoragePath: StoragePath,
         collectionProviderPath: PrivatePath,
         collectionPublic: String,
-        collectionPublicLinkedType: String,
-        collectionProviderLinkedType: String,
+        collectionPublicLinkedType: Type,
+        collectionProviderLinkedType: Type,
         collectionName: String,
         collectionDescription: String,
         collectionExternalURL: String,
@@ -603,8 +603,8 @@ pub fun main(address: Address, id: UInt64) : NFTView {
         collectionStoragePath: nftCollectionView!.storagePath,
         collectionProviderPath: nftCollectionView!.providerPath,
         collectionPublic: nftCollectionView!.publicCollection.identifier,
-        collectionPublicLinkedType: nftCollectionView.publicLinkedType.identifier,
-        collectionProviderLinkedType: nftCollectionView.providerLinkedType.identifier,
+        collectionPublicLinkedType: nftCollectionView.publicLinkedType,
+        collectionProviderLinkedType: nftCollectionView.providerLinkedType,
         collectionName: collectionDisplay.name,
         collectionDescription: collectionDisplay.description,
         collectionExternalURL: collectionDisplay.externalURL.url,
