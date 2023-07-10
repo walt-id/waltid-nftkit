@@ -240,7 +240,6 @@ object NftKitApi {
                             )
 
                         }
-
                         path("flow"){
                             post("chain/{chain}/account/{account_id}/AllNFTs",
                                 documented(FlowNftController.getAllNFTsDocs() , FlowNftController::getAllNFTs)
@@ -252,7 +251,6 @@ object NftKitApi {
                                 documented(FlowNftController.getNFTinCollectionDocs() , FlowNftController::getNFTinCollection)
                             )
                                  }
-
                         path("unique") {
                             get(
                                 "chain/{network}/account/{account}/",
@@ -277,6 +275,12 @@ object NftKitApi {
                                     PolkadotParaChainNftController.fetchEvmErc721CollectiblesBySubscanDocs(),
                                     PolkadotParaChainNftController::fetchEvmErc721CollectiblesBySubscan)
 
+                            )
+                        }
+                        path("Algornad"){
+                            get(
+                                "chain/{chain}/asset/{asset}",
+                                documented(AlgorandNftController.fetchNftMetadataDocs(), AlgorandNftController::fetchNftMetadata)
                             )
                         }
                     }
@@ -370,9 +374,6 @@ object NftKitApi {
 
                         }
                     }
-
-
-
                     path("nft/extensions") {
                         get(
                             "chain/{chain}/contract/{contractAddress}/paused",
