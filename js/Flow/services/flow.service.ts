@@ -66,9 +66,9 @@ pub struct NFT {
         externalURL: String,
         collectionStoragePath: StoragePath,
         collectionPublicPath: PublicPath,
-        collectionPrivatePath: PrivatePath,
-        publicLinkedType: Type,
-        privateLinkedType: Type,
+        collectionProviderPath: PrivatePath,
+        collectionPublicLinkedType: Type,
+        collectionProviderLinkedType: Type,
         collectionName: String,
         collectionDescription: String,
         collectionSquareImage: String,
@@ -83,9 +83,9 @@ pub struct NFT {
         self.externalURL = externalURL
         self.collectionStoragePath = collectionStoragePath
         self.collectionPublicPath = collectionPublicPath
-        self.collectionPrivatePath = collectionPrivatePath
-        self.publicLinkedType = publicLinkedType
-        self.privateLinkedType = privateLinkedType
+        self.collectionProviderPath = collectionProviderPath
+        self.collectionPublicLinkedType = collectionPublicLinkedType
+        self.collectionProviderLinkedType = collectionProviderLinkedType
         self.collectionName = collectionName
         self.collectionDescription = collectionDescription
         self.collectionSquareImage = collectionSquareImage
@@ -141,9 +141,9 @@ pub fun main(ownerAddress: Address): {String: [NFT]} {
                     externalURL: externalURLView!.url,
                     collectionStoragePath: collectionDataView!.storagePath,
                     collectionPublicPath: collectionDataView!.publicPath,
-                    collectionPrivatePath: collectionDataView!.providerPath,
-                    publicLinkedType: collectionDataView!.publicLinkedType,
-                    privateLinkedType: collectionDataView!.providerLinkedType,
+                    collectionProviderPath: collectionDataView!.providerPath,
+                    collectionPublicLinkedType: collectionDataView!.publicLinkedType,
+                    collectionProviderLinkedType: collectionDataView!.providerLinkedType,
                     collectionName: collectionDisplayView!.name,
                     collectionDescription: collectionDisplayView!.description,
                     collectionSquareImage: collectionDisplayView!.squareImage.file.uri(),
