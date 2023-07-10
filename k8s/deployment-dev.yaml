@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: nftkit
-          image: waltid/nftkit:latest
+          image: waltid/nftkit:_VERSION_TAG_
           ports:
             - containerPort: 7000
               name: http-api
