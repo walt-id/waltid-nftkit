@@ -65,6 +65,15 @@ object Common {
         }
     }
 
+    fun getAlgorandChain(chain: String): AlgorandChain{
+        return chain.let {
+            if (it.isEmpty()){
+                throw Exception("No chain defined")
+            }
+            AlgorandChain.valueOf(it.uppercase())
+        }
+    }
+
     fun getFa2SmartContractType(type: String): Fa2SmartContractType{
         return type.let {
             if (it.isEmpty()){
