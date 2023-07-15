@@ -279,7 +279,16 @@ object NftKitApi {
 
                             )
                         }
+
                         path("Algorand"){
+                            get(
+                                "chain/{chain}/asset/{asset}",
+                                documented(AlgorandNftController.fetchAssetMetadataDocs(), AlgorandNftController::fetchAssetMetadata)
+                            )
+                            get(
+                                "chain/{chain}/asset/{asset}/nft",
+                                documented(AlgorandNftController.fetchNftMetadataDocs(), AlgorandNftController::fetchNftMetadata)
+                            )
                             post("account/create/",
                                 documented(AlgorandNftController.accountCreationDocs(), AlgorandNftController::accountCreation)
                             )
