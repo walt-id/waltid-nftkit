@@ -46,7 +46,7 @@ data class AlgoNftMetadata (
     var image: String? = null,
     var decimals: Int? = null,
     var unitName: String? = null,
-    val properties: JsonObject
+    var properties : Map<String, JsonElement> ? = null,
 )
 
 object AlgorandNftService {
