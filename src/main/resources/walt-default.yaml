@@ -60,6 +60,11 @@ apiKeys:
   nftstorage: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEIwNGU5YzMyNzczNjI1MEQ0QTkzQjZmYThjODUwNzQwQkI0N0YyMmYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2ODU1MDg4NjY2MywibmFtZSI6Ik5GVF9URVNUIn0._DnFeEpPXVF4KqIoRRRV2O67HgjGSyYJgpXFhhf-FD4"
   subscan: ""
 
+
+
+algorandConfig:
+  algorand_seed_Mnemonic: "famous hood lend donate orange globe spatial stamp opinion universe found gown river identify negative climb defy galaxy turkey height duty doctor hazard ability athlete"
+
  #for local dev use: tezosBackendServer: "http://localhost:3000"
 tezosBackendServer: "http://nftkit-js:80"
 
