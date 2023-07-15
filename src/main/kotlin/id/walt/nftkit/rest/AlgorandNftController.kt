@@ -1,5 +1,6 @@
 package id.walt.nftkit.rest
 
+import id.walt.nftkit.services.AlgodResponse
 import id.walt.nftkit.services.AlgorandAccount
 import id.walt.nftkit.services.AlgorandNftService
 import io.javalin.http.Context
