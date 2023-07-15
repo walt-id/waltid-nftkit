@@ -24,6 +24,9 @@ data class PolkadotConfig(val polkadotAccounts: Map<String, String>)
 data class IndexersUrl(val uniqueUrl: String, val opalUrl: String)
 data class Indexers(val indexersUrl : IndexersUrl)
 
+data class algorandSeedMnemonic(val algorand_seed_Mnemonic : String)
+data class Algorand(val algorandConfig : algorandSeedMnemonic)
+
 
 
 
@@ -83,6 +86,15 @@ object WaltIdServices {
         .addSource(PropertySource.resource(default_yaml_path))
         .build()
         .loadConfigOrThrow<Indexers>()
+
+
+    fun loadAlgorand() = ConfigLoader.builder()
+        .addFileExtensionMapping("yaml", YamlParser())
+        .addSource(PropertySource.file(File("$WALTID_CONFIG_PATH/walt.yaml"), optional = true))
+        .addSource(PropertySource.resource(default_yaml_path))
+        .build()
+        .loadConfigOrThrow<Algorand>()
+
 
 
     fun getBlockExplorerUrl(chain: EVMChain): String {
