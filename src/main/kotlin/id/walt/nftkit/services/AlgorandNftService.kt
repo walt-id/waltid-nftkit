@@ -2,29 +2,20 @@ package id.walt.nftkit.services
 
 import com.algorand.algosdk.account.Account
 import com.algorand.algosdk.crypto.Address
-import com.algorand.algosdk.transaction.SignedTransaction
 import com.algorand.algosdk.transaction.Transaction
 import com.algorand.algosdk.util.Encoder
-import com.algorand.algosdk.v2.client.Utils
 import com.algorand.algosdk.v2.client.common.AlgodClient
 import com.algorand.algosdk.v2.client.common.IndexerClient
-import com.algorand.algosdk.v2.client.common.Response
 import com.algorand.algosdk.v2.client.model.Asset
-import com.algorand.algosdk.v2.client.model.PostTransactionsResponse
 import id.walt.nftkit.Values.ALGORAND_TESTNET_EXPLORER
 import id.walt.nftkit.metadata.IPFSMetadata
 import id.walt.nftkit.services.WaltIdServices.loadAlgorand
-import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
-import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonElement
+
 
 enum class AlgorandChain {
     TESTNET,
@@ -34,7 +25,6 @@ enum class AlgorandChain {
 
 @Serializable
 data class AlgorandAccount(val address: String, val mnemonic: String)
-
 
 @Serializable
 data class AlgodResponse(val txId: String , val explorerUrl: String)
@@ -50,19 +40,6 @@ data class AlgoNftMetadata (
 )
 
 object AlgorandNftService {
-    val client = HttpClient(CIO.create{requestTimeout = 0}) {
-        install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-            })
-        }
-        install(Logging) {
-//            logger = Logger.SIMPLE
-//            level = LogLevel.ALL
-            level = LogLevel.BODY
-        }
-        expectSuccess = false
-    }
 
     val ALGOD_API_ADDR = "https://testnet-algorand.api.purestake.io/ps2"
     val IDX_API_ADDR = "https://testnet-algorand.api.purestake.io/idx2"
@@ -117,28 +94,26 @@ object AlgorandNftService {
         return AlgodResponse("Null" , "Null")
     }
 
-    fun getAssetMeatadata(assetId: Long, chain: AlgorandChain): Asset {
-//        return runBlocking {
-        val ALGOD_API_ADDR = when(chain){
+    fun getAssetMeatadata(assetId: Long, chain: AlgorandChain) : Asset {
+
+        val ALGOD_API_ADDR = when (chain) {
             AlgorandChain.MAINNET -> "https://mainnet-api.algonode.cloud"
             AlgorandChain.TESTNET -> "https://testnet-api.algonode.cloud"
             AlgorandChain.BETANET -> "https://betanet-api.algonode.cloud"
         }
-        var client1 = AlgodClient(ALGOD_API_ADDR, ALGOD_PORT, ALGOD_API_TOKEN)
-        val asset: Asset = client1.GetAssetByID(assetId).execute().body()
+        var client = AlgodClient(ALGOD_API_ADDR, ALGOD_PORT, ALGOD_API_TOKEN)
 
-        return asset
-//            client.get(ALGOD_API_ADDR+"/v2/assets/"+assetId){
-//                contentType(ContentType.Application.Json)
-//            }.body<id.walt.nftkit.services.Asset>()
+        return client.GetAssetByID(assetId).execute().body()
+
     }
     fun getNftMetadata(assetId: Long, chain: AlgorandChain):AlgoNftMetadata{
+
         return runBlocking {
+
             val asset: Asset = getAssetMeatadata(assetId, chain)
             var cid = (asset.params.url).substringAfter("ipfs://")
             val nft = IPFSMetadata.client.get("https://ipfs.algonode.xyz/ipfs/$cid") {}.body<AlgoNftMetadata>()
-            println("--------")
-            println(nft)
+
             return@runBlocking nft;
         }
     }
