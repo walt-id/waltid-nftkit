@@ -15,6 +15,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AlgorandAccount(val address: String, val mnemonic: String)
 
+
+@Serializable
+data class AlgodResponse(val txId: String , val explorerUrl: String)
+
+
 object AlgorandNftService {
 
     val token = ""
