@@ -11,6 +11,10 @@ import com.algorand.algosdk.v2.client.common.Response
 import com.algorand.algosdk.v2.client.model.PostTransactionsResponse
 import kotlinx.serialization.Serializable
 
+enum class AlgorandChain {
+    TESTNET,
+    MAINNET
+}
 
 @Serializable
 data class AlgorandAccount(val address: String, val mnemonic: String)
