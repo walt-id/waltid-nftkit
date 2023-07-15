@@ -9,6 +9,8 @@ import com.algorand.algosdk.v2.client.common.AlgodClient
 import com.algorand.algosdk.v2.client.common.IndexerClient
 import com.algorand.algosdk.v2.client.common.Response
 import com.algorand.algosdk.v2.client.model.PostTransactionsResponse
+import id.walt.nftkit.Values.ALGORAND_TESTNET_EXPLORER
+import id.walt.nftkit.services.WaltIdServices.loadAlgorand
 import kotlinx.serialization.Serializable
 
 enum class AlgorandChain {
@@ -26,9 +28,6 @@ data class AlgodResponse(val txId: String , val explorerUrl: String)
 
 object AlgorandNftService {
 
-    val token = ""
-    val algod = AlgodClient("https://testnet-api.algonode.cloud", 443, token)
-    val indexer = IndexerClient("https://testnet-idx.algonode.cloud", 443)
     val ALGOD_API_ADDR = "https://testnet-algorand.api.purestake.io/ps2"
     val IDX_API_ADDR = "https://testnet-algorand.api.purestake.io/idx2"
 
@@ -45,7 +44,7 @@ object AlgorandNftService {
 
     fun createAssetArc3(assetName : String , assetUnitName : String ,  url : String) : AlgodResponse{
 
-        val SRC_ACCOUNT = "famous hood lend donate orange globe spatial stamp opinion universe found gown river identify negative climb defy galaxy turkey height duty doctor hazard ability athlete"
+        val SRC_ACCOUNT = loadAlgorand().algorandConfig.algorand_seed_Mnemonic
         val src = Account(SRC_ACCOUNT)
         println(src.getAddress())
 
@@ -75,7 +74,7 @@ object AlgorandNftService {
 
             val txResponse = client.RawTransaction().rawtxn(encodedTxBytes).execute(txHeaders, txValues).body()
                 println("Successfully sent tx with ID " + txResponse.txId)
-            return AlgodResponse(txResponse.txId , "https://testnet.algoexplorer.io/tx/${txResponse.txId}")
+            return AlgodResponse(txResponse.txId , "$ALGORAND_TESTNET_EXPLORER"+"tx/${txResponse.txId}")
         } catch (e: Exception) {
             e.printStackTrace()
         }
