@@ -40,4 +40,7 @@ object Values {
     const val POLKADOT_UNIQUE_EXPLORER = "https://unique.subscan.io/"
     const val POLKADOT_OPAL_EXPLORER = "https://uniquescan.io/OPAL/"
 
+    const val ALGORAND_MAINNET_EXPLORER = "https://algoexplorer.io/"
+    const val ALGORAND_TESTNET_EXPLORER = "https://testnet.algoexplorer.io/"
+
 }
