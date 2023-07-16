@@ -1,11 +1,7 @@
 package id.walt.nftkit.services
-
-
 import com.algorand.algosdk.crypto.Address
-import com.algorand.algosdk.v2.client.common.AlgodClient
-import com.algorand.algosdk.v2.client.model.Asset
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.gson.annotations.SerializedName
+import com.algorand.algosdk.v2.client.model.AssetParams
+import com.fasterxml.jackson.annotation.JsonProperty
 import id.walt.nftkit.metadata.IPFSMetadata
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -16,18 +12,43 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.util.*
-import io.ktor.util.Encoder
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.*
 import kotlinx.serialization.json.*
 import java.util.*
 
-
 enum class AlgorandChain{
     MAINNET, TESTNET, BETANET
+}
+@Serializable
+data class Asset (
+    var index: Long? = null,
+    @SerialName("created-at-round")
+    var createdAtRound: Long? = null,
+    var deleted: Boolean? = null,
+    @SerialName("destroyed-at-round")
+    var destroyedAtRound: Long? = null,
+    @SerialName("params")
+    var params: AssetParams? = null
+){
+    @Serializable
+    data class AssetParams(
+        var clawback: String? = null,
+        var creator: String? = null,
+        var decimals: Long? = null,
+        @SerialName("default-frozen")
+        var defaultFrozen: Boolean? = null,
+        var freeze: String? = null,
+        var manager: String? = null,
+        var name: String? = null,
+        var reserve: String? = null,
+        var total: Long? = null,
+        @SerialName("unit-name")
+        var unitName: String? = null,
+        var url: String? = null
+    )
 }
 
 
@@ -40,8 +61,23 @@ data class AlgoNftMetadata (
     var unitName: String? = null,
     val properties: JsonObject
 )
+@Serializable
+data class AssetHoldingsResponse (
+var assets: List<AssetHolding> = ArrayList())
+{
+    @Serializable
+    data class AssetHolding(
+        var amount: Int? = null,
+        @SerialName("asset-id")
+        var assetId: Long? = null,
+        @SerialName("deleted")
+        var deleted: Boolean? = null,
+        @SerialName("is-frozen")
+        var isFrozen: Boolean? = null,
+    )
+}
 object AlgorandNftService {
-    val client = HttpClient(CIO.create{requestTimeout = 0}) {
+    val client = HttpClient(CIO.create { requestTimeout = 0 }) {
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
@@ -58,43 +94,49 @@ object AlgorandNftService {
     const val ALGOD_API_TOKEN_KEY = "X-API-Key"
     const val ALGOD_API_TOKEN = ""
 
-    fun getAssetMeatadata(assetId: Long, chain: AlgorandChain):Asset{
-//        return runBlocking {
-        val ALGOD_API_ADDR = when(chain){
-            AlgorandChain.MAINNET -> "https://mainnet-api.algonode.cloud"
-            AlgorandChain.TESTNET -> "https://testnet-api.algonode.cloud"
-            AlgorandChain.BETANET -> "https://betanet-api.algonode.cloud"
-        }
-        var client1 = AlgodClient(ALGOD_API_ADDR, ALGOD_PORT, ALGOD_API_TOKEN)
-        val asset: Asset = client1.GetAssetByID(assetId).execute().body()
+    fun getAssetMeatadata(assetId: Long, chain: AlgorandChain): Asset {
+        return runBlocking {
+            val ALGOD_API_ADDR = when (chain) {
+                AlgorandChain.MAINNET -> "https://mainnet-api.algonode.cloud"
+                AlgorandChain.TESTNET -> "https://testnet-api.algonode.cloud"
+                AlgorandChain.BETANET -> "https://betanet-api.algonode.cloud"
+            }
 
-        return asset
-//            client.get(ALGOD_API_ADDR+"/v2/assets/"+assetId){
-//                contentType(ContentType.Application.Json)
-//            }.body<id.walt.nftkit.services.Asset>()
+
+            val asset = client.get(ALGOD_API_ADDR + "/v2/assets/" + assetId){
+                    contentType(ContentType.Application.Json)
+                }.body<Asset>()
+            return@runBlocking asset
         }
-    fun getNftMetadata(assetId: Long, chain: AlgorandChain):AlgoNftMetadata{
+    }
+
+    fun getNftMetadata(assetId: Long, chain: AlgorandChain): AlgoNftMetadata {
         return runBlocking {
             val asset: Asset = getAssetMeatadata(assetId, chain)
-            var cid = (asset.params.url).substringAfter("ipfs://")
-            val nft = IPFSMetadata.client.get("https://ipfs.algonode.xyz/ipfs/$cid") {}.body<AlgoNftMetadata>()
-            println("--------")
-            println(nft)
+            var cid = (asset.params?.url)?.substringAfter("ipfs://")
+            val nft =
+                IPFSMetadata.client.get("https://ipfs.algonode.xyz/ipfs/$cid")
+                { contentType(ContentType.Application.Json)}.body<AlgoNftMetadata>()
             return@runBlocking nft;
         }
     }
 
-    fun getAccountAssets(address:String, chain: AlgorandChain):Any{
-        var ALGOD_API_ADDR = when(chain){
-            AlgorandChain.MAINNET -> "https://mainnet-algorand.api.purestake.io/idx2"
-            AlgorandChain.TESTNET -> "https://testnet-algorand.api.purestake.io/idx2"
-            AlgorandChain.BETANET -> "https://betanet-algorand.api.purestake.io/idx2"
+    fun getAccountAssets(address: String, chain: AlgorandChain): AssetHoldingsResponse {
+        return runBlocking {
+            var ALGOD_API_ADDR = when (chain) {
+                AlgorandChain.MAINNET -> "https://mainnet-idx.algonode.cloud"
+                AlgorandChain.TESTNET -> "https://testnet-idx.algonode.cloud"
+                AlgorandChain.BETANET -> "https://betanet-idx.algonode.cloud"
+            }
+            val add = Address(address);
+            val result =
+                client.get(ALGOD_API_ADDR + "/v2/accounts/" + add + "/assets") {
+                contentType(ContentType.Application.Json)
+            }.body<AssetHoldingsResponse>()
+            return@runBlocking result;
         }
-        var client = AlgodClient(ALGOD_API_ADDR, ALGOD_PORT, ALGOD_API_TOKEN, ALGOD_API_TOKEN_KEY)
-        val add = Address(address);
-
-        return 0;
     }
+
 
 }
 

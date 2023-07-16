@@ -286,6 +286,10 @@ object NftKitApi {
                                 "chain/{chain}/asset/{asset}/nft",
                                 documented(AlgorandNftController.fetchNftMetadataDocs(), AlgorandNftController::fetchNftMetadata)
                             )
+                            get(
+                                "chain/{chain}/assets/account/{address}/",
+                                documented(AlgorandNftController.fetchAccountAssetsDocs(), AlgorandNftController::fetchAccountAssets)
+                            )
                         }
                     }
                     path("nft/verifier") {
