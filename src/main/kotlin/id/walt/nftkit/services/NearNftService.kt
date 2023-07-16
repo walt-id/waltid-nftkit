@@ -238,15 +238,12 @@ object NearNftService {
 
         val stringArray = nftMetadata.map { it.toChar() }.toTypedArray()
         val jsonString =  stringArray.joinToString("")
-
-
 //
 ////        val test =   nftMetadata.forEach {
 ////            val fin = it.toChar()
 ////            print(fin)
 ////        }
 //
-
         return jsonString
     }
     fun getNFTforAccount(account_id: String , contract_id: String ,chain: NearChain) : List<NearNftMetadata> {
