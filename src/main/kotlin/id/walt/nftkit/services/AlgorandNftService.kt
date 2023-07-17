@@ -1,7 +1,5 @@
 package id.walt.nftkit.services
 import com.algorand.algosdk.crypto.Address
-import com.algorand.algosdk.v2.client.model.AssetParams
-import com.fasterxml.jackson.annotation.JsonProperty
 import id.walt.nftkit.metadata.IPFSMetadata
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -22,6 +20,15 @@ import java.util.*
 enum class AlgorandChain{
     MAINNET, TESTNET, BETANET
 }
+
+@Serializable
+data class AlgorandToken
+    (
+    var TokenParams: Asset?= null,
+    var Metadata : AlgoNftMetadata? = null
+)
+
+
 @Serializable
 data class Asset (
     var index: Long? = null,
@@ -50,7 +57,6 @@ data class Asset (
         var url: String? = null
     )
 }
-
 
 @Serializable
 data class AlgoNftMetadata (
@@ -94,6 +100,30 @@ object AlgorandNftService {
     const val ALGOD_API_TOKEN_KEY = "X-API-Key"
     const val ALGOD_API_TOKEN = ""
 
+    fun getToken(assetId: Long, chain: AlgorandChain): AlgorandToken {
+        return runBlocking {
+            val ALGOD_API_ADDR = when (chain) {
+                AlgorandChain.MAINNET -> "https://mainnet-api.algonode.cloud"
+                AlgorandChain.TESTNET -> "https://testnet-api.algonode.cloud"
+                AlgorandChain.BETANET -> "https://betanet-api.algonode.cloud"
+            }
+
+            val tokenParams = client.get(ALGOD_API_ADDR + "/v2/assets/" + assetId){
+                contentType(ContentType.Application.Json)
+            }.body<Asset>()
+
+            var cid = (tokenParams.params?.url)?.substringAfter("ipfs://")
+            val nft =
+                IPFSMetadata.client.get("https://ipfs.algonode.xyz/ipfs/$cid")
+                { contentType(ContentType.Application.Json)}.body<AlgoNftMetadata>()
+
+            var result = AlgorandToken()
+
+            result.TokenParams = tokenParams
+            result.Metadata = nft
+            return@runBlocking result
+        }
+    }
     fun getAssetMeatadata(assetId: Long, chain: AlgorandChain): Asset {
         return runBlocking {
             val ALGOD_API_ADDR = when (chain) {
@@ -102,10 +132,10 @@ object AlgorandNftService {
                 AlgorandChain.BETANET -> "https://betanet-api.algonode.cloud"
             }
 
-
             val asset = client.get(ALGOD_API_ADDR + "/v2/assets/" + assetId){
                     contentType(ContentType.Application.Json)
                 }.body<Asset>()
+
             return@runBlocking asset
         }
     }
