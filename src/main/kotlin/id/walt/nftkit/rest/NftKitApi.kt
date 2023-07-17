@@ -279,11 +279,15 @@ object NftKitApi {
                         }
                         path("Algornad"){
                             get(
-                                "chain/{chain}/asset/{asset}",
+                                "chain/{chain}/asset/{assetId}",
+                                documented(AlgorandNftController.fetchTokenDocs(), AlgorandNftController::fetchToken)
+                            )
+                            get(
+                                "chain/{chain}/asset/{assetId}/params",
                                 documented(AlgorandNftController.fetchAssetMetadataDocs(), AlgorandNftController::fetchAssetMetadata)
                             )
                             get(
-                                "chain/{chain}/asset/{asset}/nft",
+                                "chain/{chain}/asset/{assetId}/metadata",
                                 documented(AlgorandNftController.fetchNftMetadataDocs(), AlgorandNftController::fetchNftMetadata)
                             )
                             get(

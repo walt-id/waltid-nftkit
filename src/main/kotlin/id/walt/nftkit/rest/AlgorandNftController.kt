@@ -15,26 +15,51 @@ import kotlinx.serialization.json.encodeToJsonElement
 
 object AlgorandNftController {
     private const val TAG = "Algorand Blockchain"
+
+
+    fun fetchToken(ctx: Context){
+        val chain =ctx.pathParam("chain")
+        val asset  = ctx.pathParam("assetId")
+        val response = AlgorandNftService.getToken(
+            asset.toLong(),
+            Common.getAlgorandChain(chain.uppercase())
+        )
+        ctx.json(response)
+    }
+    fun fetchTokenDocs()= document().operation {
+        it.summary("Fetching Token")
+            .operationId("fetchToken")
+            .addTagsItem(TAG)}
+        .pathParam<String>("chain") {
+            it.schema<AlgorandChain>{}}
+        .pathParam<String>("assetId"){}
+        .json<TokenOwnersDataResponse>("200"){
+            it.description("Fetched token")
+        }
+
+    ///////////////////////////////////////////////////////////////////////////
+
     fun fetchAssetMetadata(ctx: Context){
         val chain =ctx.pathParam("chain")
-        val asset  = ctx.pathParam("asset")
+        val asset  = ctx.pathParam("assetId")
         val response = AlgorandNftService.getAssetMeatadata(
                 asset.toLong(),
                 Common.getAlgorandChain(chain.uppercase())
         )
         ctx.json(response)
-//        ctx.result(Json.encodeToString(nft))
     }
     fun fetchAssetMetadataDocs()= document().operation {
-        it.summary("Fetching Asset on Algorand Network")
+        it.summary("Fetching token parametrs ")
             .operationId("fetchAlgornadAssets")
             .addTagsItem(TAG)}
         .pathParam<String>("chain") {
             it.schema<AlgorandChain>{}}
-        .pathParam<String>("asset"){}
+        .pathParam<String>("assetId"){}
         .json<TokenOwnersDataResponse>("200"){
-            it.description("Fetched asset")
+            it.description("Fetched token parameteres")
         }
+
+    ///////////////////////////////////////////////////////////////////////////
 
     fun fetchAccountAssets(ctx: Context){
         val chain = ctx.pathParam("chain")
@@ -43,29 +68,32 @@ object AlgorandNftController {
         ctx.json(response)
     }
     fun fetchAccountAssetsDocs()= document().operation {
-        it.summary("Fetching NFTs on Algorand Network")
+        it.summary("Fetching account tokens ")
             .operationId("fetchAccountAssets")
             .addTagsItem(TAG)}
         .pathParam<String>("chain") {
             it.schema<AlgorandChain>{}}
         .pathParam<String>("address"){}
         .json<TokenOwnersDataResponse>("200"){
-            it.description("Fetched NFT")
+            it.description("Fetched Tokens")
         }
+
+    ///////////////////////////////////////////////////////////////////////////
+
     fun fetchNftMetadata(ctx: Context){
         val chain =ctx.pathParam("chain")
-        val asset  = ctx.pathParam("asset")
+        val asset  = ctx.pathParam("assetId")
         val result = AlgorandNftService.getNftMetadata(asset.toLong(), Common.getAlgorandChain(chain.uppercase()) )
         ctx.result(Json.encodeToString(result))
     }
     fun fetchNftMetadataDocs()= document().operation {
-        it.summary("Fetching NFTs on Algorand Network")
+        it.summary("Fetching NFT metadata ")
             .operationId("fetchAlgornadNfts")
             .addTagsItem(TAG)}
         .pathParam<String>("chain") {
             it.schema<AlgorandChain>{}}
-        .pathParam<String>("asset"){}
+        .pathParam<String>("assetId"){}
         .json<TokenOwnersDataResponse>("200"){
-            it.description("Fetched NFT")
+            it.description("Fetched NFT metadata")
     }
 }
