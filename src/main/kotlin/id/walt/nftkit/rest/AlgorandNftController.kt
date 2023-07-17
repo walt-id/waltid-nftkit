@@ -85,6 +85,7 @@ object AlgorandNftController {
         val asset  = ctx.pathParam("assetId")
         val result = AlgorandNftService.getNftMetadata(asset.toLong(), Common.getAlgorandChain(chain.uppercase()) )
         ctx.result(Json.encodeToString(result))
+
     }
     fun fetchNftMetadataDocs()= document().operation {
         it.summary("Fetching NFT metadata ")

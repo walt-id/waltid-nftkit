@@ -65,7 +65,7 @@ data class AlgoNftMetadata (
     var image: String? = null,
     var decimals: Int? = null,
     var unitName: String? = null,
-    val properties: JsonObject
+    val properties:  Map<String, JsonElement> ? = null,
 )
 @Serializable
 data class AssetHoldingsResponse (
@@ -107,14 +107,13 @@ object AlgorandNftService {
                 AlgorandChain.TESTNET -> "https://testnet-api.algonode.cloud"
                 AlgorandChain.BETANET -> "https://betanet-api.algonode.cloud"
             }
-
             val tokenParams = client.get(ALGOD_API_ADDR + "/v2/assets/" + assetId){
                 contentType(ContentType.Application.Json)
             }.body<Asset>()
 
             var cid = (tokenParams.params?.url)?.substringAfter("ipfs://")
             val nft =
-                IPFSMetadata.client.get("https://ipfs.algonode.xyz/ipfs/$cid")
+                IPFSMetadata.client.get("https://ipfs.io/ipfs/$cid")
                 { contentType(ContentType.Application.Json)}.body<AlgoNftMetadata>()
 
             var result = AlgorandToken()
@@ -131,7 +130,6 @@ object AlgorandNftService {
                 AlgorandChain.TESTNET -> "https://testnet-api.algonode.cloud"
                 AlgorandChain.BETANET -> "https://betanet-api.algonode.cloud"
             }
-
             val asset = client.get(ALGOD_API_ADDR + "/v2/assets/" + assetId){
                     contentType(ContentType.Application.Json)
                 }.body<Asset>()
@@ -166,7 +164,5 @@ object AlgorandNftService {
             return@runBlocking result;
         }
     }
-
-
 }
 
