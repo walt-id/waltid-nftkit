@@ -240,7 +240,6 @@ object NftKitApi {
                             )
 
                         }
-
                         path("flow"){
                             post("chain/{chain}/account/{account_id}/AllNFTs",
                                 documented(FlowNftController.getAllNFTsDocs() , FlowNftController::getAllNFTs)
@@ -252,7 +251,6 @@ object NftKitApi {
                                 documented(FlowNftController.getNFTinCollectionDocs() , FlowNftController::getNFTinCollection)
                             )
                                  }
-
                         path("unique") {
                             get(
                                 "chain/{network}/account/{account}/",
@@ -277,6 +275,24 @@ object NftKitApi {
                                     PolkadotParaChainNftController.fetchEvmErc721CollectiblesBySubscanDocs(),
                                     PolkadotParaChainNftController::fetchEvmErc721CollectiblesBySubscan)
 
+                            )
+                        }
+                        path("Algornad"){
+                            get(
+                                "chain/{chain}/asset/{assetId}",
+                                documented(AlgorandNftController.fetchTokenDocs(), AlgorandNftController::fetchToken)
+                            )
+                            get(
+                                "chain/{chain}/asset/{assetId}/params",
+                                documented(AlgorandNftController.fetchAssetMetadataDocs(), AlgorandNftController::fetchAssetMetadata)
+                            )
+                            get(
+                                "chain/{chain}/asset/{assetId}/metadata",
+                                documented(AlgorandNftController.fetchNftMetadataDocs(), AlgorandNftController::fetchNftMetadata)
+                            )
+                            get(
+                                "chain/{chain}/assets/account/{address}/",
+                                documented(AlgorandNftController.fetchAccountAssetsDocs(), AlgorandNftController::fetchAccountAssets)
                             )
                         }
                     }
@@ -370,9 +386,6 @@ object NftKitApi {
 
                         }
                     }
-
-
-
                     path("nft/extensions") {
                         get(
                             "chain/{chain}/contract/{contractAddress}/paused",
