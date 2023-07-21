@@ -279,6 +279,34 @@ object NftKitApi {
 
                             )
                         }
+
+                        path("Algorand"){
+
+                            post("account/create/",
+                                documented(AlgorandNftController.accountCreationDocs(), AlgorandNftController::accountCreation)
+                            )
+                            post("asset/create/{assetName}/{assetUnitName}/{url}/",
+                                documented(AlgorandNftController.assetCreationDocs(), AlgorandNftController::assetCreation)
+                            )
+
+                            get(
+                                "chain/{chain}/asset/{assetId}",
+                                documented(AlgorandNftController.fetchTokenDocs(), AlgorandNftController::fetchToken)
+                            )
+                            get(
+                                "chain/{chain}/asset/{assetId}/params",
+                                documented(AlgorandNftController.fetchAssetMetadataDocs(), AlgorandNftController::fetchAssetMetadata)
+                            )
+                            get(
+                                "chain/{chain}/asset/{assetId}/metadata",
+                                documented(AlgorandNftController.fetchNftMetadataDocs(), AlgorandNftController::fetchNftMetadata)
+                            )
+                            get(
+                                "chain/{chain}/assets/account/{address}/",
+                                documented(AlgorandNftController.fetchAccountAssetsDocs(), AlgorandNftController::fetchAccountAssets)
+                            )
+
+                        }
                     }
                     path("nft/verifier") {
                         get(

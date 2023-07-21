@@ -40,4 +40,17 @@ object Values {
     const val POLKADOT_UNIQUE_EXPLORER = "https://unique.subscan.io/"
     const val POLKADOT_OPAL_EXPLORER = "https://uniquescan.io/OPAL/"
 
+
+    //algorand values
+    const val ALGORAND_INDEXER_TESTNET= "https://testnet-algorand.api.purestake.io/idx2";
+    const val ALGORAND_INDEXER_MAINNET= "https://mainnet-algorand.api.purestake.io/idx2";
+
+    const val ALGORAND_ALGOD_TESTNET = "https://testnet-algorand.api.purestake.io/ps2";
+    const val ALGORAND_ALGOD_MAINNET = "https://mainnet-algorand.api.purestake.io/ps2";
+
+
+
+    const val ALGORAND_MAINNET_EXPLORER = "https://algoexplorer.io/"
+    const val ALGORAND_TESTNET_EXPLORER = "https://testnet.algoexplorer.io/"
+
 }

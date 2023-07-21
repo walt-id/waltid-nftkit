@@ -65,6 +65,14 @@ object Common {
         }
     }
 
+    fun getAlgorandChain(chain: String): AlgorandChain{
+        return chain.let {
+            if (it.isEmpty()){
+                throw Exception("No chain defined")
+            }
+            AlgorandChain.valueOf(it.uppercase())
+        }
+    }
     fun getFa2SmartContractType(type: String): Fa2SmartContractType{
         return type.let {
             if (it.isEmpty()){
@@ -131,6 +139,12 @@ object Common {
     fun isUniqueParachain(chain: Chain): Boolean{
         val uniqueParachain= listOf(Chain.UNIQUE, Chain.OPAL)
         if(chain in uniqueParachain) return true
+        return false
+    }
+
+    fun isAlgorandChain(chain: Chain): Boolean{
+        val algorandChains= listOf(Chain.MAINNET, Chain.TESTNET)
+        if(chain in algorandChains) return true
         return false
     }
 }
