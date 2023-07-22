@@ -53,19 +53,19 @@ object VerificationService {
                 return NFTsNearOwnershipVerification(NearChain.valueOf(chain.toString()), contractAddress, account, tokenId)
             }
 
-
             Common.isPolkadotParachain(chain) -> {
                 return NFTsPolkadotOwnershipVerification(PolkadotParachain.valueOf(chain.toString()), contractAddress, account, tokenId)
             }
             Common.isUniqueParachain(chain) -> {
                 return NFTsUniqueOwnershipVerification(UniqueNetwork.valueOf(chain.toString()), contractAddress, account, tokenId)
             }
+            Common.isAlgorand(chain) -> {
+                return NFTsAlgorandOwnershipVerification(AlgorandChain.valueOf(chain.toString()), account, tokenId )
+            }
 
             else -> {throw Exception("Chain  is not supported")}
-
         }
     }
-
     fun verifyNftOwnershipOnFlow( chain: Chain, contractAddress: String, account: String, tokenId: String, collectionPath: String): Boolean {
         return NFTsFlowOwnershipVerification(FlowChain.valueOf(chain.toString()) ,contractAddress ,account ,tokenId , collectionPath  )
     }
@@ -305,6 +305,11 @@ object VerificationService {
         return if (result.size>= 1) true else false
     }
 
+    fun NFTsAlgorandOwnershipVerification(chain: AlgorandChain, account: String, assetId: String): Boolean{
+        val result = AlgorandNftService.verifyOwnership(account, assetId,chain )
+        return if (result.assetHolding?.assetId.toString().equals(assetId)) true else false
+    }
+
 
     private fun NFTsNearOwnershipVerification(chain:NearChain, contractAddress : String, account : String, tokenId : String) : Boolean{
 
@@ -362,7 +367,6 @@ object VerificationService {
         return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
 
     }
-
 
 
     private fun NFTsPolkadotOwnershipVerification(parachain: PolkadotParachain, contractAddress: String, account: String, tokenId: String): Boolean{

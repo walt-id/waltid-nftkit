@@ -141,10 +141,9 @@ object Common {
         if(chain in uniqueParachain) return true
         return false
     }
-
-    fun isAlgorandChain(chain: Chain): Boolean{
-        val algorandChains= listOf(Chain.MAINNET, Chain.TESTNET)
-        if(chain in algorandChains) return true
+    fun isAlgorand(chain: Chain): Boolean{
+        val algorandChain= listOf(Chain.ALGORAND_MAINNET, Chain.ALGORAND_TESTNET, Chain.ALGORAND_BETANET)
+        if(chain in algorandChain) return true
         return false
     }
 }

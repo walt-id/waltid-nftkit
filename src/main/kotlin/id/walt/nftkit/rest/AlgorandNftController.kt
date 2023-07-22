@@ -1,7 +1,6 @@
 package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
-
 import id.walt.nftkit.services.*
 import id.walt.nftkit.tokenownersquery.TokenOwnersDataResponse
 import id.walt.nftkit.utilis.Common
@@ -9,7 +8,7 @@ import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-
+import kotlinx.serialization.json.encodeToJsonElement
 
 
 object AlgorandNftController{
@@ -39,14 +38,11 @@ object AlgorandNftController{
     }
 
 
-
-
-
-    fun fetchToken(ctx: Context){
+      fun fetchToken(ctx: Context){
         val chain =ctx.pathParam("chain")
         val asset  = ctx.pathParam("assetId")
         val response = AlgorandNftService.getToken(
-            asset.toLong(),
+            asset,
             Common.getAlgorandChain(chain.uppercase())
         )
         ctx.json(response)
@@ -58,9 +54,7 @@ object AlgorandNftController{
         .pathParam<String>("chain") {
             it.schema<AlgorandChain>{}}
         .pathParam<String>("assetId"){}
-        .json<AlgorandToken>("200"){
-            it.description("Fetched token")
-        }
+
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -68,8 +62,8 @@ object AlgorandNftController{
         val chain =ctx.pathParam("chain")
         val asset  = ctx.pathParam("assetId")
         val response = AlgorandNftService.getAssetMeatadata(
-            asset.toLong(),
-            Common.getAlgorandChain(chain.uppercase())
+                asset,
+                Common.getAlgorandChain(chain.uppercase())
         )
         ctx.json(response)
     }
@@ -81,6 +75,7 @@ object AlgorandNftController{
             it.schema<AlgorandChain>{}}
         .pathParam<String>("assetId"){}
         .json<Asset>("200"){
+
             it.description("Fetched token parameteres")
         }
 
@@ -103,12 +98,13 @@ object AlgorandNftController{
             it.description("Fetched Tokens")
         }
 
+
     ///////////////////////////////////////////////////////////////////////////
 
     fun fetchNftMetadata(ctx: Context){
         val chain =ctx.pathParam("chain")
         val asset  = ctx.pathParam("assetId")
-        val result = AlgorandNftService.getNftMetadata(asset.toLong(), Common.getAlgorandChain(chain.uppercase()) )
+        val result = AlgorandNftService.getNftMetadata(asset, Common.getAlgorandChain(chain.uppercase()) )
         ctx.result(Json.encodeToString(result))
 
     }
@@ -119,7 +115,6 @@ object AlgorandNftController{
         .pathParam<String>("chain") {
             it.schema<AlgorandChain>{}}
         .pathParam<String>("assetId"){}
-        .json<AlgoNftMetadata>("200"){
-            it.description("Fetched NFT metadata")
-        }
+
 }
+
