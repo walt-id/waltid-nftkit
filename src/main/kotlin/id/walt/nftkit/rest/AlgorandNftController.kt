@@ -54,9 +54,7 @@ object AlgorandNftController{
         .pathParam<String>("chain") {
             it.schema<AlgorandChain>{}}
         .pathParam<String>("assetId"){}
-        .json<AlgorandToken>("200"){
-            it.description("Fetched token")
-        }
+
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -117,8 +115,6 @@ object AlgorandNftController{
         .pathParam<String>("chain") {
             it.schema<AlgorandChain>{}}
         .pathParam<String>("assetId"){}
-        .json<AlgoNftMetadata>("200"){
-            it.description("Fetched NFT metadata")
-    }
+
 }
 
