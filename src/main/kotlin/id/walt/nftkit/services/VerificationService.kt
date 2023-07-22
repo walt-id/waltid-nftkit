@@ -62,6 +62,7 @@ object VerificationService {
             Common.isAlgorand(chain) -> {
                 return NFTsAlgorandOwnershipVerification(AlgorandChain.valueOf(chain.toString()), account, tokenId )
             }
+
             else -> {throw Exception("Chain  is not supported")}
         }
     }
