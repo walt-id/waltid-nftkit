@@ -3,7 +3,6 @@ package id.walt.nftkit.rest
 import cc.vileda.openapi.dsl.schema
 import id.walt.nftkit.services.AlgorandChain
 import id.walt.nftkit.services.AlgorandNftService
-import id.walt.nftkit.services.UniqueNetwork
 import id.walt.nftkit.tokenownersquery.TokenOwnersDataResponse
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.Context
@@ -21,7 +20,7 @@ object AlgorandNftController {
         val chain =ctx.pathParam("chain")
         val asset  = ctx.pathParam("assetId")
         val response = AlgorandNftService.getToken(
-            asset.toLong(),
+            asset,
             Common.getAlgorandChain(chain.uppercase())
         )
         ctx.json(response)
@@ -43,7 +42,7 @@ object AlgorandNftController {
         val chain =ctx.pathParam("chain")
         val asset  = ctx.pathParam("assetId")
         val response = AlgorandNftService.getAssetMeatadata(
-                asset.toLong(),
+                asset,
                 Common.getAlgorandChain(chain.uppercase())
         )
         ctx.json(response)
@@ -83,7 +82,7 @@ object AlgorandNftController {
     fun fetchNftMetadata(ctx: Context){
         val chain =ctx.pathParam("chain")
         val asset  = ctx.pathParam("assetId")
-        val result = AlgorandNftService.getNftMetadata(asset.toLong(), Common.getAlgorandChain(chain.uppercase()) )
+        val result = AlgorandNftService.getNftMetadata(asset, Common.getAlgorandChain(chain.uppercase()) )
         ctx.result(Json.encodeToString(result))
 
     }
