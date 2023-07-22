@@ -8,13 +8,14 @@ import id.walt.nftkit.services.AlgorandNftService.getAccountAssets
 import id.walt.nftkit.services.AlgorandNftService.getAssetMeatadata
 import id.walt.nftkit.services.AlgorandNftService.getNftMetadata
 import id.walt.nftkit.services.AlgorandNftService.getToken
+import id.walt.nftkit.services.AlgorandNftService.verifyOwnership
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 
 fun main() {
     println("\n\n\n")
-    
+
     /* /////////// */
     /* /////////// */
     /* /////////// */

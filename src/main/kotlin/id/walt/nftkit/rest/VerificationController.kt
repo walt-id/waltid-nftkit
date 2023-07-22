@@ -5,10 +5,7 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
 import id.walt.nftkit.opa.DynamicPolicyArg
 import id.walt.nftkit.opa.PolicyRegistry
-import id.walt.nftkit.services.Chain
-import id.walt.nftkit.services.EVMChain
-import id.walt.nftkit.services.UniqueNetwork
-import id.walt.nftkit.services.VerificationService
+import id.walt.nftkit.services.*
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
@@ -19,6 +16,24 @@ import kotlinx.serialization.Serializable
 
 
 object VerificationController {
+
+    fun verifyAlgorandNftOwnership(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val assetId = ctx.queryParam("assetId") ?: throw  BadRequestResponse("Account not specified")
+        val account = ctx.queryParam("account") ?: throw  BadRequestResponse("Account not specified")
+        val result = VerificationService.NFTsAlgorandOwnershipVerification(AlgorandChain.valueOf(chain.uppercase()),  account!!, assetId!!)
+        ctx.json(result)
+    }
+
+    fun verifyAlgorandNftOwnershipDocs() = document().operation {
+        it.summary("NFT ownership verification on algorand")
+            .operationId("verifyAlgorandNftOwnership").addTagsItem("NFT verification")
+    }.pathParam<String>("chain") {
+        it.schema<AlgorandChain> { }
+    }.queryParam<String>("assetId") {
+    }.queryParam<String>("account") {
+        it.required(true)
+    }.json<Boolean>("200") { }
 
 
     fun verifyNftOwnershipWithinCollection(ctx: Context) {
