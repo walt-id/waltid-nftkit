@@ -73,7 +73,6 @@ object Common {
             AlgorandChain.valueOf(it.uppercase())
         }
     }
-
     fun getFa2SmartContractType(type: String): Fa2SmartContractType{
         return type.let {
             if (it.isEmpty()){

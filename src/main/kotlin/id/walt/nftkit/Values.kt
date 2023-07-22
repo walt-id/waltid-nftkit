@@ -50,4 +50,7 @@ object Values {
 
 
 
+    const val ALGORAND_MAINNET_EXPLORER = "https://algoexplorer.io/"
+    const val ALGORAND_TESTNET_EXPLORER = "https://testnet.algoexplorer.io/"
+
 }
