@@ -72,8 +72,8 @@ dependencies {
     // unique
     implementation ("network.unique:unique-sdk-jvm:0.0.1")
 
-    //algorand
-    implementation("com.algorand:algosdk:2.0.0")
+    // algorand
+    implementation ("com.algorand:algosdk:2.2.0")
 
     // expediagroup graphql
     implementation("com.expediagroup:graphql-kotlin-spring-client:6.4.0")

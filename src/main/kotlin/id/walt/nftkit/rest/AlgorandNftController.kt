@@ -1,22 +1,44 @@
 package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
-import id.walt.nftkit.services.AlgorandChain
-import id.walt.nftkit.services.AlgorandNftService
+import id.walt.nftkit.services.*
 import id.walt.nftkit.tokenownersquery.TokenOwnersDataResponse
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
-import io.ktor.util.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 
-object AlgorandNftController {
-    private const val TAG = "Algorand Blockchain"
+
+object AlgorandNftController{
+
+    private const val TAG = "Algorand Blockchain: Non-fungible tokens(NFTs)"
+    fun accountCreation(ctx : Context){
+        val result = AlgorandNftService.createAccount()
+        ctx.json(result)
+    }
+
+    fun accountCreationDocs() = document().operation {
+        it.summary("Create Algorand Account").operationId("CreateAlgorandAccount").addTagsItem("Algorand Blockchain: Non-fungible tokens(NFTs)")
+    }.json<AlgorandAccount>(200.toString()) {
+        it.description("Algorand Account")
+    }
 
 
-    fun fetchToken(ctx: Context){
+    fun assetCreation(ctx : Context){
+        val result = AlgorandNftService.createAssetArc3(ctx.pathParam("assetName"), ctx.pathParam("assetUnitName"), ctx.pathParam("url"))
+        ctx.json(result)
+    }
+
+    fun assetCreationDocs() = document().operation {
+        it.summary("Create Algorand Asset").operationId("CreateAlgorandAsset").addTagsItem("Algorand Blockchain: Non-fungible tokens(NFTs)")
+    }.json<AlgodResponse>(200.toString()) {
+        it.description("Algorand Asset")
+    }
+
+
+      fun fetchToken(ctx: Context){
         val chain =ctx.pathParam("chain")
         val asset  = ctx.pathParam("assetId")
         val response = AlgorandNftService.getToken(
@@ -32,7 +54,7 @@ object AlgorandNftController {
         .pathParam<String>("chain") {
             it.schema<AlgorandChain>{}}
         .pathParam<String>("assetId"){}
-        .json<TokenOwnersDataResponse>("200"){
+        .json<AlgorandToken>("200"){
             it.description("Fetched token")
         }
 
@@ -54,7 +76,8 @@ object AlgorandNftController {
         .pathParam<String>("chain") {
             it.schema<AlgorandChain>{}}
         .pathParam<String>("assetId"){}
-        .json<TokenOwnersDataResponse>("200"){
+        .json<Asset>("200"){
+
             it.description("Fetched token parameteres")
         }
 
@@ -73,9 +96,10 @@ object AlgorandNftController {
         .pathParam<String>("chain") {
             it.schema<AlgorandChain>{}}
         .pathParam<String>("address"){}
-        .json<TokenOwnersDataResponse>("200"){
+        .json<AssetHoldingsResponse>("200"){
             it.description("Fetched Tokens")
         }
+
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -93,7 +117,8 @@ object AlgorandNftController {
         .pathParam<String>("chain") {
             it.schema<AlgorandChain>{}}
         .pathParam<String>("assetId"){}
-        .json<TokenOwnersDataResponse>("200"){
+        .json<AlgoNftMetadata>("200"){
             it.description("Fetched NFT metadata")
     }
 }
+

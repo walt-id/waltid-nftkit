@@ -240,6 +240,7 @@ object NftKitApi {
                             )
 
                         }
+
                         path("flow"){
                             post("chain/{chain}/account/{account_id}/AllNFTs",
                                 documented(FlowNftController.getAllNFTsDocs() , FlowNftController::getAllNFTs)
@@ -251,6 +252,7 @@ object NftKitApi {
                                 documented(FlowNftController.getNFTinCollectionDocs() , FlowNftController::getNFTinCollection)
                             )
                                  }
+
                         path("unique") {
                             get(
                                 "chain/{network}/account/{account}/",
@@ -277,7 +279,16 @@ object NftKitApi {
 
                             )
                         }
-                        path("Algornad"){
+
+                        path("Algorand"){
+
+                            post("account/create/",
+                                documented(AlgorandNftController.accountCreationDocs(), AlgorandNftController::accountCreation)
+                            )
+                            post("asset/create/{assetName}/{assetUnitName}/{url}/",
+                                documented(AlgorandNftController.assetCreationDocs(), AlgorandNftController::assetCreation)
+                            )
+
                             get(
                                 "chain/{chain}/asset/{assetId}",
                                 documented(AlgorandNftController.fetchTokenDocs(), AlgorandNftController::fetchToken)
@@ -389,6 +400,9 @@ object NftKitApi {
 
                         }
                     }
+
+
+
                     path("nft/extensions") {
                         get(
                             "chain/{chain}/contract/{contractAddress}/paused",
