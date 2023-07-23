@@ -285,7 +285,7 @@ object NftKitApi {
                             post("account/create/",
                                 documented(AlgorandNftController.accountCreationDocs(), AlgorandNftController::accountCreation)
                             )
-                            post("asset/create/{assetName}/{assetUnitName}/{url}/",
+                            post("chain/{chain}/asset/create/{assetName}/{assetUnitName}/{url}/",
                                 documented(AlgorandNftController.assetCreationDocs(), AlgorandNftController::assetCreation)
                             )
 

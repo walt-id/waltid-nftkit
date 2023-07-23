@@ -21,19 +21,25 @@ object AlgorandNftController{
 
     fun accountCreationDocs() = document().operation {
         it.summary("Create Algorand Account").operationId("CreateAlgorandAccount").addTagsItem("Algorand Blockchain: Non-fungible tokens(NFTs)")
+
     }.json<AlgorandAccount>(200.toString()) {
         it.description("Algorand Account")
     }
 
 
     fun assetCreation(ctx : Context){
-        val result = AlgorandNftService.createAssetArc3(ctx.pathParam("assetName"), ctx.pathParam("assetUnitName"), ctx.pathParam("url"))
+        val chain =ctx.pathParam("chain")
+        val result = AlgorandNftService.createAssetArc3(Common.getAlgorandChain(chain.uppercase()),ctx.pathParam("assetName"), ctx.pathParam("assetUnitName"), ctx.pathParam("url"))
         ctx.json(result)
     }
 
     fun assetCreationDocs() = document().operation {
         it.summary("Create Algorand Asset").operationId("CreateAlgorandAsset").addTagsItem("Algorand Blockchain: Non-fungible tokens(NFTs)")
-    }.json<AlgodResponse>(200.toString()) {
+
+    }
+        .pathParam<String>("chain") {
+            it.schema<AlgorandChain>{}}
+            .json<AlgodResponse>(200.toString()) {
         it.description("Algorand Asset")
     }
 
