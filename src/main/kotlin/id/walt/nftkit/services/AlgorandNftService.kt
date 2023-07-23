@@ -6,8 +6,12 @@ import com.algorand.algosdk.transaction.Transaction
 import com.algorand.algosdk.util.Encoder
 import com.algorand.algosdk.v2.client.common.AlgodClient
 import com.algorand.algosdk.v2.client.common.IndexerClient
+import id.walt.nftkit.Values.ALGORAND_BETANET_EXPLORER
+
 
 import id.walt.nftkit.Values.ALGORAND_TESTNET_EXPLORER
+import id.walt.nftkit.Values.ALGORAND_MAINNET_EXPLORER
+
 import id.walt.nftkit.metadata.IPFSMetadata
 import id.walt.nftkit.services.WaltIdServices.loadAlgorand
 import io.ktor.client.*
@@ -120,26 +124,32 @@ object AlgorandNftService {
 
 
     val ALGOD_API_ADDR = "https://testnet-algorand.api.purestake.io/ps2"
-    val IDX_API_ADDR = "https://testnet-algorand.api.purestake.io/idx2"
+
 
     val ALGOD_PORT = 443
     val ALGOD_API_TOKEN_KEY = "X-API-Key"
     val ALGOD_API_TOKEN = "B3SU4KcVKi94Jap2VXkK83xx38bsv95K5UZm2lab"
     val client1 = AlgodClient(ALGOD_API_ADDR, ALGOD_PORT, ALGOD_API_TOKEN, ALGOD_API_TOKEN_KEY)
-    val idxClient = IndexerClient(IDX_API_ADDR, ALGOD_PORT, ALGOD_API_TOKEN, ALGOD_API_TOKEN_KEY)
+
     fun createAccount(): AlgorandAccount {
         val account = com.algorand.algosdk.account.Account()
         return AlgorandAccount(account.address.toString(), account.toMnemonic())
     }
 
 
-    fun createAssetArc3(assetName : String , assetUnitName : String ,  url : String) : AlgodResponse{
+    fun createAssetArc3(chain : AlgorandChain ,assetName : String , assetUnitName : String ,  url : String) : AlgodResponse{
+
+        val client_algod = when(chain) {
+            AlgorandChain.ALGORAND_MAINNET -> AlgodClient("https://mainnet-algorand.api.purestake.io/ps2", ALGOD_PORT, ALGOD_API_TOKEN, ALGOD_API_TOKEN_KEY)
+            AlgorandChain.ALGORAND_TESTNET -> AlgodClient("https://testnet-algorand.api.purestake.io/ps2", ALGOD_PORT, ALGOD_API_TOKEN, ALGOD_API_TOKEN_KEY)
+            AlgorandChain.ALGORAND_BETANET -> AlgodClient("https://betanet-algorand.api.purestake.io/ps2", ALGOD_PORT, ALGOD_API_TOKEN, ALGOD_API_TOKEN_KEY)
+        }
 
         val SRC_ACCOUNT = loadAlgorand().algorandConfig.algorand_seed_Mnemonic
         val src = Account(SRC_ACCOUNT)
         println(src.getAddress())
 
-        val params = client1.TransactionParams().execute().body()
+        val params = client_algod.TransactionParams().execute().body()
 
         val tx = Transaction.AssetCreateTransactionBuilder()
             .suggestedParams(params)
@@ -163,9 +173,14 @@ object AlgorandNftService {
             val txValues = arrayOf("application/x-binary")
             val encodedTxBytes = Encoder.encodeToMsgPack(signedTx)
 
-            val txResponse = client1.RawTransaction().rawtxn(encodedTxBytes).execute(txHeaders, txValues).body()
-            println("Successfully sent tx with ID " + txResponse.txId)
-            return AlgodResponse(txResponse.txId , "$ALGORAND_TESTNET_EXPLORER"+"tx/${txResponse.txId}")
+            val txResponse = client_algod.RawTransaction().rawtxn(encodedTxBytes).execute(txHeaders, txValues).body()
+
+            return when(chain) {
+                AlgorandChain.ALGORAND_MAINNET -> AlgodResponse(txResponse.txId, "$ALGORAND_MAINNET_EXPLORER"+"tx/${txResponse.txId}")
+                AlgorandChain.ALGORAND_TESTNET -> AlgodResponse(txResponse.txId, "$ALGORAND_TESTNET_EXPLORER"+"tx/${txResponse.txId}")
+                AlgorandChain.ALGORAND_BETANET -> AlgodResponse(txResponse.txId, "$ALGORAND_BETANET_EXPLORER"+"tx/${txResponse.txId}")
+            }
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
