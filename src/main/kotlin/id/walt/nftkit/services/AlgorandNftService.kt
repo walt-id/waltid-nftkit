@@ -1,19 +1,17 @@
 package id.walt.nftkit.services
 
 import com.algorand.algosdk.account.Account
-import com.algorand.algosdk.crypto.Address
 import com.algorand.algosdk.transaction.Transaction
 import com.algorand.algosdk.util.Encoder
 import com.algorand.algosdk.v2.client.common.AlgodClient
-import com.algorand.algosdk.v2.client.common.IndexerClient
+import com.beust.klaxon.JsonObject
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import id.walt.nftkit.Values.ALGORAND_BETANET_EXPLORER
-
-
-import id.walt.nftkit.Values.ALGORAND_TESTNET_EXPLORER
 import id.walt.nftkit.Values.ALGORAND_MAINNET_EXPLORER
-
+import id.walt.nftkit.Values.ALGORAND_TESTNET_EXPLORER
 import id.walt.nftkit.metadata.IPFSMetadata
 import id.walt.nftkit.services.WaltIdServices.loadAlgorand
+import id.walt.nftkit.utilis.Common
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -122,10 +120,7 @@ object AlgorandNftService {
 
 
 
-
     val ALGOD_API_ADDR = "https://testnet-algorand.api.purestake.io/ps2"
-
-
     val ALGOD_PORT = 443
     val ALGOD_API_TOKEN_KEY = "X-API-Key"
     val ALGOD_API_TOKEN = "B3SU4KcVKi94Jap2VXkK83xx38bsv95K5UZm2lab"
@@ -136,7 +131,6 @@ object AlgorandNftService {
         return AlgorandAccount(account.address.toString(), account.toMnemonic())
     }
 
-
     fun createAssetArc3(chain : AlgorandChain ,assetName : String , assetUnitName : String ,  url : String) : AlgodResponse{
 
         val client_algod = when(chain) {
@@ -144,11 +138,8 @@ object AlgorandNftService {
             AlgorandChain.ALGORAND_TESTNET -> AlgodClient("https://testnet-algorand.api.purestake.io/ps2", ALGOD_PORT, ALGOD_API_TOKEN, ALGOD_API_TOKEN_KEY)
             AlgorandChain.ALGORAND_BETANET -> AlgodClient("https://betanet-algorand.api.purestake.io/ps2", ALGOD_PORT, ALGOD_API_TOKEN, ALGOD_API_TOKEN_KEY)
         }
-
         val SRC_ACCOUNT = loadAlgorand().algorandConfig.algorand_seed_Mnemonic
         val src = Account(SRC_ACCOUNT)
-        println(src.getAddress())
-
         val params = client_algod.TransactionParams().execute().body()
 
         val tx = Transaction.AssetCreateTransactionBuilder()
@@ -166,57 +157,59 @@ object AlgorandNftService {
             .url("$url#arc3")
             .build()
         val signedTx = src.signTransaction(tx)
-
         // send the transaction to the network
         try {
             val txHeaders = arrayOf("Content-Type")
             val txValues = arrayOf("application/x-binary")
             val encodedTxBytes = Encoder.encodeToMsgPack(signedTx)
-
             val txResponse = client_algod.RawTransaction().rawtxn(encodedTxBytes).execute(txHeaders, txValues).body()
-
             return when(chain) {
                 AlgorandChain.ALGORAND_MAINNET -> AlgodResponse(txResponse.txId, "$ALGORAND_MAINNET_EXPLORER"+"tx/${txResponse.txId}")
                 AlgorandChain.ALGORAND_TESTNET -> AlgodResponse(txResponse.txId, "$ALGORAND_TESTNET_EXPLORER"+"tx/${txResponse.txId}")
                 AlgorandChain.ALGORAND_BETANET -> AlgodResponse(txResponse.txId, "$ALGORAND_BETANET_EXPLORER"+"tx/${txResponse.txId}")
             }
-
         } catch (e: Exception) {
             e.printStackTrace()
         }
         return AlgodResponse("Null" , "Null")
     }
+
+
     fun getToken(assetId: String, chain: AlgorandChain): AlgorandToken {
         return runBlocking {
-            val ALGOD_API_ADDR = when (chain) {
+            val API_ADDR = when (chain) {
                 AlgorandChain.ALGORAND_MAINNET -> "https://mainnet-api.algonode.cloud"
                 AlgorandChain.ALGORAND_TESTNET -> "https://testnet-api.algonode.cloud"
                 AlgorandChain.ALGORAND_BETANET -> "https://betanet-api.algonode.cloud"
             }
-            val tokenParams = client.get(ALGOD_API_ADDR + "/v2/assets/" + assetId){
+            val tokenParams = client.get(API_ADDR + "/v2/assets/" + assetId){
                 contentType(ContentType.Application.Json)
             }.body<Asset>()
-
-            var cid = (tokenParams.params?.url)?.substringAfter("ipfs://")
-            val nft =
-                IPFSMetadata.client.get("https://ipfs.io/ipfs/$cid")
-                { contentType(ContentType.Application.Json)}.body<AlgoNftMetadata>()
-
             var result = AlgorandToken()
 
-            result.TokenParams = tokenParams
-            result.Metadata = nft
+            if (tokenParams.params?.url != null) {
+                var cid = (tokenParams.params?.url)?.substringAfter("ipfs://")
+                val nft =
+                    IPFSMetadata.client.get("https://ipfs.io/ipfs/$cid")
+                    { contentType(ContentType.Application.Json)}.body<AlgoNftMetadata>()
+                result.TokenParams = tokenParams
+                result.Metadata = nft
+                }
+
+            else
+                result.TokenParams = tokenParams
+
             return@runBlocking result
         }
     }
     fun getAssetMeatadata(assetId: String, chain: AlgorandChain): Asset {
         return runBlocking {
-            val ALGOD_API_ADDR = when (chain) {
+            val API_ADDR = when (chain) {
                 AlgorandChain.ALGORAND_MAINNET -> "https://mainnet-api.algonode.cloud"
                 AlgorandChain.ALGORAND_TESTNET -> "https://testnet-api.algonode.cloud"
                 AlgorandChain.ALGORAND_BETANET -> "https://betanet-api.algonode.cloud"
             }
-            val asset = client.get(ALGOD_API_ADDR + "/v2/assets/" + assetId){
+            val asset = client.get(API_ADDR + "/v2/assets/" + assetId){
                     contentType(ContentType.Application.Json)
                 }.body<Asset>()
 
@@ -235,31 +228,35 @@ object AlgorandNftService {
         }
     }
 
-    fun getAccountAssets(address: String, chain: AlgorandChain): AssetHoldingsResponse {
+    fun getAccountAssets(address: String, chain: AlgorandChain): Any {
         return runBlocking {
-            var ALGOD_API_ADDR = when (chain) {
+            var API_ADDR = when (chain) {
                 AlgorandChain.ALGORAND_MAINNET -> "https://mainnet-idx.algonode.cloud"
                 AlgorandChain.ALGORAND_TESTNET -> "https://testnet-idx.algonode.cloud"
                 AlgorandChain.ALGORAND_BETANET -> "https://betanet-idx.algonode.cloud"
             }
-            val result =
-                client.get(ALGOD_API_ADDR + "/v2/accounts/" + address + "/assets") {
+            val resp = client.get(API_ADDR + "/v2/accounts/" + address + "/assets") {
                 contentType(ContentType.Application.Json)
             }.body<AssetHoldingsResponse>()
+
+            val result = mutableListOf<AlgorandToken>()
+            for (a in resp.assets){
+                result.add(getToken(a.assetId.toString(), chain))
+            }
             return@runBlocking result;
         }
     }
 
+
     fun verifyOwnership(address: String, assetId:String, chain: AlgorandChain): AccountAssetResponse{
         return runBlocking {
-            val ALGOD_API_ADDR = when (chain) {
+            val API_ADDR = when (chain) {
                 AlgorandChain.ALGORAND_MAINNET -> "https://mainnet-api.algonode.cloud"
                 AlgorandChain.ALGORAND_TESTNET -> "https://testnet-api.algonode.cloud"
                 AlgorandChain.ALGORAND_BETANET -> "https://betanet-api.algonode.cloud"
-                else -> throw Exception ("Must be an algorand api")
             }
             val response =
-                client.get(ALGOD_API_ADDR+"/v2/accounts/"+address+"/assets/"+assetId){
+                client.get(API_ADDR+"/v2/accounts/"+address+"/assets/"+assetId){
                     contentType(ContentType.Application.Json)
                 }.body<AccountAssetResponse>()
             return@runBlocking response

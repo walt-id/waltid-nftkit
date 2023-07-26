@@ -52,6 +52,8 @@ dependencies {
     implementation("io.ktor:ktor-client-logging:2.1.3")
     implementation("io.ktor:ktor-client-auth:2.1.3")
 
+
+
     // Persistence
     implementation("org.jetbrains.exposed:exposed-core:0.38.2")
     implementation("org.jetbrains.exposed:exposed-dao:0.38.2")
