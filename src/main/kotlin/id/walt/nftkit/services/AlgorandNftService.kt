@@ -228,7 +228,7 @@ object AlgorandNftService {
         }
     }
 
-    fun getAccountAssets(address: String, chain: AlgorandChain): Any {
+    fun getAccountAssets(address: String, chain: AlgorandChain): List<AlgorandToken> {
         return runBlocking {
             var API_ADDR = when (chain) {
                 AlgorandChain.ALGORAND_MAINNET -> "https://mainnet-idx.algonode.cloud"
