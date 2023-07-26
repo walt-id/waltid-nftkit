@@ -4,6 +4,8 @@ import com.algorand.algosdk.account.Account
 import com.algorand.algosdk.transaction.Transaction
 import com.algorand.algosdk.util.Encoder
 import com.algorand.algosdk.v2.client.common.AlgodClient
+import com.beust.klaxon.JsonObject
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import id.walt.nftkit.Values.ALGORAND_BETANET_EXPLORER
 import id.walt.nftkit.Values.ALGORAND_MAINNET_EXPLORER
 import id.walt.nftkit.Values.ALGORAND_TESTNET_EXPLORER
@@ -128,28 +130,6 @@ object AlgorandNftService {
         val account = com.algorand.algosdk.account.Account()
         return AlgorandAccount(account.address.toString(), account.toMnemonic())
     }
-
-
-//    fun uploadToIPFS(jsonData: JSONObject): String? {
-//        // Convert the JSON object to a string
-//        val jsonString = jsonData.toString()
-//        // Create a map of the data to be sent in the HTTP POST request
-//        val data = mapOf("file" to jsonString)
-//        return runBlocking {
-//            // Send the HTTP POST request to upload the data to IPFS
-//            val response = client.post("https://api.nft.storage/upload"){
-//                contentType(ContentType.Any)
-//                setBody(data)
-//            }.body<String>()
-//            // Parse the response JSON and get the IPFS hash of the uploaded data
-//            val jsonResponse = JSONObject(response.text)
-//            return jsonResponse.getString("Hash")
-//        }
-//        return@
-//    }
-
-
-
 
     fun createAssetArc3(chain : AlgorandChain ,assetName : String , assetUnitName : String ,  url : String) : AlgodResponse{
 
