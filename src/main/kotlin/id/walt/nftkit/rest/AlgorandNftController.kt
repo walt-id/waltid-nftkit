@@ -60,6 +60,10 @@ object AlgorandNftController{
         .pathParam<String>("chain") {
             it.schema<AlgorandChain>{}}
         .pathParam<String>("assetId"){}
+        .json<String>(200.toString()) {
+            it.description("Algorand Token")
+        }
+
 
 
     ///////////////////////////////////////////////////////////////////////////
@@ -81,7 +85,6 @@ object AlgorandNftController{
             it.schema<AlgorandChain>{}}
         .pathParam<String>("assetId"){}
         .json<Asset>("200"){
-
             it.description("Fetched token parameteres")
         }
 
@@ -100,8 +103,8 @@ object AlgorandNftController{
         .pathParam<String>("chain") {
             it.schema<AlgorandChain>{}}
         .pathParam<String>("address"){}
-        .json<AssetHoldingsResponse>("200"){
-            it.description("Fetched Tokens")
+        .json<List<AlgorandToken>>("200"){
+            it.description("Account tokens")
         }
 
 
@@ -121,6 +124,9 @@ object AlgorandNftController{
         .pathParam<String>("chain") {
             it.schema<AlgorandChain>{}}
         .pathParam<String>("assetId"){}
+        .json<String>(200.toString()) {
+            it.description("Algorand NFT Metadata")
+        }
 
 }
 
