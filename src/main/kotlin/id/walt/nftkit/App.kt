@@ -17,7 +17,8 @@ fun main() {
     /* /////////// */
     /* /////////// */
     /* /////////// */
-  NftKitApi.start()
+
+    NftKitApi.start()
 }
 
 
