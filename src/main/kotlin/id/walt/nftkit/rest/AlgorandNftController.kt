@@ -42,7 +42,24 @@ object AlgorandNftController{
 
     fun assetCreation(ctx : Context){
         val chain =ctx.pathParam("chain")
-        val result = AlgorandNftService.createAssetArc3(Common.getAlgorandChain(chain.uppercase()),ctx.pathParam("assetName"), ctx.pathParam("assetUnitName"), ctx.pathParam("url"))
+
+
+        val properties = ctx.bodyAsClass(Arc3Metadata::class.java)
+
+//        val result = AlgorandNftService.createAssetArc3(Common.getAlgorandChain(chain.uppercase()),ctx.pathParam("assetName"), ctx.pathParam("assetUnitName"), ctx.pathParam("url"))
+//        ctx.json(result)
+
+        val result = properties.let {
+            AlgorandNftService.createAssetArc3(
+                Common.getAlgorandChain(chain.uppercase()),
+                it.name,
+                it.unitName,
+                it.image,
+                it.description,
+                it.decimals,
+                it.properties
+            )
+        }
         ctx.json(result)
     }
 
@@ -51,7 +68,12 @@ object AlgorandNftController{
 
     }
         .pathParam<String>("chain") {
-            it.schema<AlgorandChain>{}}
+            it.schema<AlgorandChain>{}
+        }
+        .body<Arc3Metadata> {
+            it.description("Algorand Asset")
+
+        }
             .json<AlgodResponse>(200.toString()) {
         it.description("Algorand Asset")
     }
