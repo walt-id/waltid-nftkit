@@ -25,7 +25,45 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.encodeToJsonElement
+import java.io.BufferedReader
+import java.io.DataOutputStream
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
 
+
+@Serializable
+data class NFTStoragePin(
+    val cid: String,
+    val created: String,
+    val size: Int,
+    val status: String
+)
+
+
+
+@Serializable
+data class NFTStorageValue(
+    val cid: String,
+    val created: String,
+    val type: String,
+    val scope: String,
+    val files: List<String>,
+    val size: Int,
+    val name: String,
+    val pin: NFTStoragePin,
+    val deals: List<String>
+)
+
+
+@Serializable
+data class NFTStorageResponse(
+    val ok: Boolean,
+    val value: NFTStorageValue
+)
 enum class AlgorandChain{
     MAINNET, TESTNET, BETANET
 }
