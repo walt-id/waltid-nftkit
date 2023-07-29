@@ -6,10 +6,23 @@ import id.walt.nftkit.tokenownersquery.TokenOwnersDataResponse
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 
+
+@Serializable
+data class Arc3Metadata(
+    val name: String,
+    val description: String,
+    val image: String,
+    val decimals: Int,
+    val unitName: String,
+    val image_integrity: String,
+    val image_mimetype : String,
+    val properties: Map<String, String>
+)
 
 object AlgorandNftController{
 
@@ -29,7 +42,24 @@ object AlgorandNftController{
 
     fun assetCreation(ctx : Context){
         val chain =ctx.pathParam("chain")
-        val result = AlgorandNftService.createAssetArc3(Common.getAlgorandChain(chain.uppercase()),ctx.pathParam("assetName"), ctx.pathParam("assetUnitName"), ctx.pathParam("url"))
+
+
+        val properties = ctx.bodyAsClass(Arc3Metadata::class.java)
+
+//        val result = AlgorandNftService.createAssetArc3(Common.getAlgorandChain(chain.uppercase()),ctx.pathParam("assetName"), ctx.pathParam("assetUnitName"), ctx.pathParam("url"))
+//        ctx.json(result)
+
+        val result = properties.let {
+            AlgorandNftService.createAssetArc3(
+                Common.getAlgorandChain(chain.uppercase()),
+                it.name,
+                it.unitName,
+                it.image,
+                it.description,
+                it.decimals,
+                it.properties
+            )
+        }
         ctx.json(result)
     }
 
@@ -38,7 +68,12 @@ object AlgorandNftController{
 
     }
         .pathParam<String>("chain") {
-            it.schema<AlgorandChain>{}}
+            it.schema<AlgorandChain>{}
+        }
+        .body<Arc3Metadata> {
+            it.description("Algorand Asset")
+
+        }
             .json<AlgodResponse>(200.toString()) {
         it.description("Algorand Asset")
     }
