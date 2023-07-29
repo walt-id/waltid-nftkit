@@ -269,7 +269,7 @@ object AlgorandNftService {
             .freeze(src.address)
             .clawback(src.address)
             .assetTotal(1)
-            .assetDecimals(0)
+            .assetDecimals(decimals)
             .defaultFrozen(false)
             .assetUnitName(UnitName)
             .assetName(Name)
