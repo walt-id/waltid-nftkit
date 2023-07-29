@@ -6,10 +6,23 @@ import id.walt.nftkit.tokenownersquery.TokenOwnersDataResponse
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 
+
+@Serializable
+data class Arc3Metadata(
+    val name: String,
+    val description: String,
+    val image: String,
+    val decimals: Int,
+    val unitName: String,
+    val image_integrity: String,
+    val image_mimetype : String,
+    val properties: Map<String, String>
+)
 
 object AlgorandNftController{
 
