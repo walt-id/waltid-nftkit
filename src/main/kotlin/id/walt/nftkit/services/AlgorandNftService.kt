@@ -167,7 +167,90 @@ object AlgorandNftService {
         return AlgorandAccount(account.address.toString(), account.toMnemonic())
     }
 
-    fun createAssetArc3(chain : AlgorandChain ,assetName : String , assetUnitName : String ,  url : String) : AlgodResponse{
+
+
+
+
+
+    fun uploadToNFTStorage(jsonData: String): String? {
+        val nftStorageApiUrl = "https://api.nft.storage/upload"
+        val apiKey = loadApiKeys().apiKeys.nftstorage
+
+        try {
+            val url = URL(nftStorageApiUrl)
+            val connection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = "POST"
+            connection.doOutput = true
+
+            val data = jsonData
+            val postData = data.toByteArray(Charsets.UTF_8)
+
+            connection.setRequestProperty("Authorization", "Bearer $apiKey")
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+            connection.setRequestProperty("Content-Length", postData.size.toString())
+
+            val outputStream = DataOutputStream(connection.outputStream)
+            outputStream.write(postData)
+            outputStream.flush()
+            outputStream.close()
+
+            val responseCode = connection.responseCode
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                val reader = BufferedReader(InputStreamReader(connection.inputStream))
+                val response = reader.readLine()
+
+                reader.close()
+                connection.disconnect()
+
+                // Parse the response JSON and get the IPFS hash of the uploaded data
+                val nftStorageResponse = Json.decodeFromString<NFTStorageResponse>(response)
+                return nftStorageResponse.value.cid
+
+
+            } else {
+                println("Failed to upload JSON data to NFT.Storage. Response code: $responseCode")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+
+    fun toHash(jsonData: String): ByteArray {
+
+        val hash = MessageDigest.getInstance("SHA-256")
+
+        val hashBytes = hash.digest(jsonData.toByteArray(StandardCharsets.UTF_8))
+        return hashBytes
+    }
+
+    fun createAssetArc3(chain : AlgorandChain ,Name : String , UnitName : String ,  image : String , description: String , decimals: Int , properties: Map<String, String>? ) : AlgodResponse{
+
+        val jsonData = """
+        {
+            "name":"${Name}",
+            "description": "${description}",
+            "image": "${image}",
+            "decimals": ${decimals},
+            "unitName": "${UnitName}",
+             "image_integrity": "null",
+             "image_mimetype": "null",
+             "properties": ${properties?.let { Json.encodeToJsonElement(it) }}
+          
+        }
+    """.trimIndent()
+        val ipfsHash = uploadToNFTStorage(jsonData)
+
+        val metadataHash = toHash(jsonData)
+
+
+
+        if (ipfsHash != null) {
+            println("JSON data uploaded to NFT.Storage. IPFS Hash: $ipfsHash")
+        } else {
+            println("Failed to upload JSON data to NFT.Storage.")
+        }
 
         val client_algod = when(chain) {
             AlgorandChain.MAINNET -> AlgodClient("https://mainnet-algorand.api.purestake.io/ps2", ALGOD_PORT, ALGOD_API_TOKEN, ALGOD_API_TOKEN_KEY)
