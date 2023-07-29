@@ -271,9 +271,10 @@ object AlgorandNftService {
             .assetTotal(1)
             .assetDecimals(0)
             .defaultFrozen(false)
-            .assetUnitName(assetUnitName)
-            .assetName(assetName)
-            .url("$url#arc3")
+            .assetUnitName(UnitName)
+            .assetName(Name)
+            .metadataHash(metadataHash)
+            .url("ipfs://${ipfsHash}#arc3")
             .build()
         val signedTx = src.signTransaction(tx)
         // send the transaction to the network
