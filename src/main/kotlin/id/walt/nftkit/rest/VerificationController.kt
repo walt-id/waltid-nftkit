@@ -17,6 +17,31 @@ import kotlinx.serialization.Serializable
 
 object VerificationController {
 
+
+    fun verifyAlgorandNftOwnershipWithTraits(ctx: Context){
+        val chain = ctx.pathParam("chain")
+        val assetId = ctx.queryParam("assetId") ?: throw  BadRequestResponse("Account not specified")
+        val account = ctx.queryParam("account") ?: throw  BadRequestResponse("Account not specified")
+        val traitType = ctx.queryParam("trait") ?: throw  BadRequestResponse("Trait not specified")
+        val traitValue = ctx.queryParam("value") ?: throw  BadRequestResponse("Trait value not specified")
+        val result = VerificationService.NFTAlgorandOwnershipVerificationWithTraits(AlgorandChain.valueOf(chain.uppercase()),  account!!, assetId!!, traitType!! , traitValue!!)
+        ctx.json(result)
+    }
+
+    fun verifyAlgorandNftOwnershipWithTraitsDocs() = document().operation {
+        it.summary("NFT ownership verification on algorand with traits")
+            .operationId("verifyAlgorandNftOwnershipWithTraits").addTagsItem("NFT verification")
+    }.pathParam<String>("chain") {
+        it.schema<AlgorandChain> { }
+    }.queryParam<String>("assetId") {
+    }.queryParam<String>("account") {
+        it.required(true)
+    }.queryParam<String>("trait") {
+        it.required(true)
+    }.queryParam<String>("value") {
+        it.required(true)
+    }.json<Boolean>("200") { }
+
     fun verifyAlgorandNftOwnership(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val assetId = ctx.queryParam("assetId") ?: throw  BadRequestResponse("Account not specified")
