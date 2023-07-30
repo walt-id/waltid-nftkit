@@ -23,9 +23,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.*
 import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.InputStreamReader
@@ -390,6 +388,26 @@ object AlgorandNftService {
                     contentType(ContentType.Application.Json)
                 }.body<AccountAssetResponse>()
             return@runBlocking response
+        }
+    }
+
+
+    fun verifyOwnerShipWithTraits(address: String, assetId:String, chain: AlgorandChain , traitType : String , traitValue : String):Boolean {
+        return runBlocking {
+            print(traitType)
+            print(traitValue)
+            val response = getNftMetadata(assetId, chain)
+            if (response.properties != null) {
+                for (trait in response.properties!!) {
+
+                   if (trait.key.filterIndexed { index, c -> index < traitType.length } ==traitType && trait.value.jsonPrimitive.content.equals(traitValue) ) {
+                        return@runBlocking true
+                    }
+
+
+                }
+            }
+            return@runBlocking false
         }
     }
 }

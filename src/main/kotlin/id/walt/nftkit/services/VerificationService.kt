@@ -309,7 +309,10 @@ object VerificationService {
         val result = AlgorandNftService.verifyOwnership(account, assetId,chain )
         return if (result.assetHolding?.assetId.toString().equals(assetId)) true else false
     }
-
+    fun NFTAlgorandOwnershipVerificationWithTraits(chain: AlgorandChain, account: String, assetId: String , traitType: String, traitValue: String):Boolean{
+        val result = AlgorandNftService.verifyOwnerShipWithTraits(account, assetId, chain,traitType, traitValue)
+        return result
+    }
 
     private fun NFTsNearOwnershipVerification(chain:NearChain, contractAddress : String, account : String, tokenId : String) : Boolean{
 
