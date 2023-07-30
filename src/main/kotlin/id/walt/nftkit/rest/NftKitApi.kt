@@ -314,6 +314,10 @@ object NftKitApi {
                             documented(VerificationController.verifyAlgorandNftOwnershipDocs(), VerificationController::verifyAlgorandNftOwnership)
                         )
                         get(
+                            "chain/{chain}/verifyNftOwnershipWithTraits",
+                            documented(VerificationController.verifyAlgorandNftOwnershipWithTraitsDocs(), VerificationController::verifyAlgorandNftOwnershipWithTraits)
+                        )
+                        get(
                             "chain/{chain}/contract/{contractAddress}/verifyNftOwnership",
                             documented(VerificationController.verifyNftOwnershipDocs(), VerificationController::verifyNftOwnership)
                         )
