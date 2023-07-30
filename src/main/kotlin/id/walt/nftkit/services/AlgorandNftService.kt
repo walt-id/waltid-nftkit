@@ -392,5 +392,25 @@ object AlgorandNftService {
             return@runBlocking response
         }
     }
+
+
+    fun verifyOwnerShipWithTraits(address: String, assetId:String, chain: AlgorandChain , traitType : String , traitValue : String):Boolean {
+        return runBlocking {
+            print(traitType)
+            print(traitValue)
+            val response = getNftMetadata(assetId, chain)
+            if (response.properties != null) {
+                for (trait in response.properties!!) {
+
+                   if (trait.key.filterIndexed { index, c -> index < traitType.length } ==traitType && trait.value.jsonPrimitive.content.equals(traitValue) ) {
+                        return@runBlocking true
+                    }
+
+
+                }
+            }
+            return@runBlocking false
+        }
+    }
 }
 
