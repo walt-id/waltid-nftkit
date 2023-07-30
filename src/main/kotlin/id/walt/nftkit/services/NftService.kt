@@ -77,6 +77,7 @@ enum class Chain {
     GHOSTNET,
     MAINNET,
     TESTNET,
+    BETANET,
     ASTAR,
     MOONBEAM,
     UNIQUE,
