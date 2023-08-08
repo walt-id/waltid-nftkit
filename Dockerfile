@@ -1,38 +1,51 @@
-FROM docker.io/openjdk:17-slim-buster AS openjdk-gradle
+### Configuration
 
-ENV GRADLE_HOME /opt/gradle
+# set --build-args SKIP_TESTS=true to use
+ARG SKIP_TESTS
 
-RUN set -o errexit -o nounset \
-    && echo "Adding gradle user and group" \
-    && groupadd --system --gid 1000 gradle \
-    && useradd --system --gid gradle --uid 1000 --shell /bin/bash --create-home gradle \
-    && mkdir /home/gradle/.gradle \
-    && chown --recursive gradle:gradle /home/gradle \
-    \
-    && echo "Symlinking root Gradle cache to gradle Gradle cache" \
-    && ln -s /home/gradle/.gradle /root/.gradle
+# --- dos2unix-env    # convert line endings from Windows machines
+FROM docker.io/rkimf1/dos2unix@sha256:60f78cd8bf42641afdeae3f947190f98ae293994c0443741a2b3f3034998a6ed as dos2unix-env
+WORKDIR /convert
+COPY gradlew .
+RUN dos2unix ./gradlew
 
+# --- build-env       # build the NFT Kit
+FROM docker.io/gradle:7.5-jdk as build-env
+
+ARG SKIP_TESTS
+
+WORKDIR /appbuild
+
+COPY . /appbuild
+
+# copy converted Windows line endings files
+COPY --from=dos2unix-env /convert/gradlew .
+
+# cache Gradle dependencies
 VOLUME /home/gradle/.gradle
 
-WORKDIR /opt
+RUN if [ -z "$SKIP_TESTS" ]; \
+    then echo "* Running full build" && gradle -i clean build installDist; \
+    else echo "* Building but skipping tests" && gradle -i clean installDist -x test; \
+    fi
 
-RUN apt-get update && apt-get upgrade --yes
-FROM docker.io/openpolicyagent/opa:0.46.1-static as opa-env
-FROM openjdk-gradle AS walt-build
-COPY ./ /opt
-RUN chmod +x gradle
-RUN ./gradlew clean build
-RUN tar xf /opt/build/distributions/waltid-nftkit-*.tar -C /opt
+# --- opa-env
+FROM docker.io/openpolicyagent/opa:0.50.2-static as opa-env
 
-FROM openjdk:17-slim-buster
+
+# --- app-env
+FROM openjdk:17-slim-buster AS app-env
+
+WORKDIR /app
 
 COPY --from=opa-env /opa /usr/local/bin/opa
 
-RUN mkdir /app
-COPY --from=walt-build /opt/waltid-nftkit-* /app/
+RUN ldconfig
+
+COPY --from=build-env /appbuild/build/install/waltid-nftkit /app/
 
 
-
-WORKDIR /app
+### Execution
+EXPOSE 7000
 
 ENTRYPOINT ["/app/bin/waltid-nftkit"]
