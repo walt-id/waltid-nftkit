@@ -14,7 +14,7 @@ import debug from 'debug';
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
-const port = 4000;
+const port = 3000;
 const routes: Array<CommonRoutesConfig> = [];
 const debugLog: debug.IDebugger = debug('app');
 
