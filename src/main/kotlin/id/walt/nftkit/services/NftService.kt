@@ -58,7 +58,8 @@ data class NftMetadataWrapper(
     val tezosNftMetadata: TezosNftMetadata?= null,
     val nearNftMetadata: NearNftMetadata?= null,
     val flowNftMetadata: FlowNFTMetadata?= null,
-    val uniqueNftMetadata: UniqueNftMetadata?= null
+    val uniqueNftMetadata: UniqueNftMetadata?= null,
+    val algorandNftMetadata : AlgoNftMetadata?= null,
 
 )
 
