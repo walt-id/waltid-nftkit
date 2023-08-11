@@ -17,6 +17,7 @@
     "@taquito/signer": "^14.1.0",
     "@taquito/taquito": "^14.1.0",
     "@taquito/utils": "^14.1.0",
+    "algosdk": "^2.4.0",
     "big-number": "^2.0.0",
     "bn.js": "^5.2.1",
     "cors": "^2.8.5",
