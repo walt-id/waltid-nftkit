@@ -1,6 +1,6 @@
 import {CommonRoutesConfig} from '../common/common.routes.config';
 import express from 'express';
-import FlowController from "../Flow/controllers/flow.controller";
+import AlgorandController from "./controllers/algorand.controller";
 
 
 export class AlgorandRoutes extends CommonRoutesConfig{
@@ -14,8 +14,8 @@ export class AlgorandRoutes extends CommonRoutesConfig{
 
         this.app
             .route(`/algorand/signature/verification`)
-            .post(
-               //TODO
+            .get(
+                AlgorandController.verifySignature
             );
 
         return this.app;
