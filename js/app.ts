@@ -9,7 +9,7 @@ import {TezosRoutes} from './tezos/tezos.routes.config';
 import {NearRoutes} from './near/near.routes.config';
 import {FlowRoutes} from './Flow/flow.routes.config';
 import {PolkadotRoutes} from './polkadot/polkadot.routes.config';
-
+import {AlgorandRoutes} from "./algorand/algorand.routes.config";
 import debug from 'debug';
 
 const app: express.Application = express();
@@ -35,6 +35,7 @@ routes.push(new TezosRoutes(app));
 routes.push(new NearRoutes(app));
 routes.push(new FlowRoutes(app));
 routes.push(new PolkadotRoutes(app));
+routes.push(new AlgorandRoutes(app))
 
 
 app.use(expressWinston.errorLogger({
