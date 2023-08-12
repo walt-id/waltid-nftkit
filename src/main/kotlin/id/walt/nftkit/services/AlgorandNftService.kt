@@ -410,5 +410,18 @@ object AlgorandNftService {
             return@runBlocking false
         }
     }
+
+    fun verifyOwnerShipBasedOnCreator(address: String, chain: AlgorandChain , creatorAddress : String):Boolean {
+        return runBlocking {
+
+            val response = getAccountAssets(address, chain)
+            for (asset in response) {
+                if (asset.TokenParams?.params?.creator.equals(creatorAddress)) {
+                    return@runBlocking true
+                }
+            }
+            return@runBlocking false
+        }
+    }
 }
 
