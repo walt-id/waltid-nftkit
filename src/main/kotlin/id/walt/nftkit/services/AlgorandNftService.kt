@@ -352,27 +352,27 @@ object AlgorandNftService {
     }
 
     fun getAccountAssets(address: String, chain: AlgorandChain): List<AlgorandToken> {
+        val API_ADDR = when (chain) {
+            AlgorandChain.MAINNET -> "https://mainnet-idx.algonode.cloud"
+            AlgorandChain.TESTNET -> "https://testnet-idx.algonode.cloud"
+            AlgorandChain.BETANET -> "https://betanet-idx.algonode.cloud"
+        }
+
         return runBlocking {
-            var API_ADDR = when (chain) {
-                AlgorandChain.MAINNET -> "https://mainnet-idx.algonode.cloud"
-                AlgorandChain.TESTNET -> "https://testnet-idx.algonode.cloud"
-                AlgorandChain.BETANET -> "https://betanet-idx.algonode.cloud"
-            }
-            val resp = client.get(API_ADDR + "/v2/accounts/" + address + "/assets") {
+            val resp = client.get("$API_ADDR/v2/accounts/$address/assets") {
                 contentType(ContentType.Application.Json)
             }.body<AssetHoldingsResponse>()
 
-            val result = mutableListOf<AlgorandToken>()
-            if (resp.assets.isNotEmpty()){
-            for (a in resp.assets){
-                if (a.amount == 1) {
-                    var token = getToken(a.assetId.toString(), chain)
-                    if (token.TokenParams?.params?.total == 1L )
-                    result.add(token)
+            resp.assets
+                .filter { it.amount?.toLong() == 1L }
+                .mapNotNull { asset ->
+                    val token = getToken(asset.assetId.toString(), chain)
+                    if (token.TokenParams?.params?.total == 1L) {
+                        token
+                    } else {
+                        null
+                    }
                 }
-            }
-            }
-            return@runBlocking result;
         }
     }
 
@@ -405,6 +405,19 @@ object AlgorandNftService {
                     }
 
 
+                }
+            }
+            return@runBlocking false
+        }
+    }
+
+    fun verifyOwnerShipBasedOnCreator(address: String, chain: AlgorandChain , creatorAddress : String):Boolean {
+        return runBlocking {
+
+            val response = getAccountAssets(address, chain)
+            for (asset in response) {
+                if (asset.TokenParams?.params?.creator.equals(creatorAddress)) {
+                    return@runBlocking true
                 }
             }
             return@runBlocking false
