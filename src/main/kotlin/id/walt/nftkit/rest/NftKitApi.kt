@@ -306,6 +306,8 @@ object NftKitApi {
                                 documented(AlgorandNftController.fetchAccountAssetsDocs(), AlgorandNftController::fetchAccountAssets)
                             )
 
+
+
                         }
                     }
                     path("nft/verifier") {
@@ -316,6 +318,10 @@ object NftKitApi {
                         get(
                             "chain/{chain}/verifyNftOwnershipWithTraits",
                             documented(VerificationController.verifyAlgorandNftOwnershipWithTraitsDocs(), VerificationController::verifyAlgorandNftOwnershipWithTraits)
+                        )
+                        get(
+                            "chain/{chain}/{address}/verifyNftOwnershipBasedOnCreator/{creatorAddress}",
+                            documented(AlgorandNftController.verifyNftOwnerShipBasedOnCreatorDocs(), AlgorandNftController::verifyNftOwnerShipBasedOnCreator)
                         )
                         get(
                             "chain/{chain}/contract/{contractAddress}/verifyNftOwnership",

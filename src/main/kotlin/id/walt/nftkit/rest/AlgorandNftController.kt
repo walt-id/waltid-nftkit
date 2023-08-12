@@ -163,5 +163,28 @@ object AlgorandNftController{
             it.description("Algorand NFT Metadata")
         }
 
+    ///////////////////////////////////////////////////////////////////////////
+
+    fun verifyNftOwnerShipBasedOnCreator(ctx: Context){
+        val chain =ctx.pathParam("chain")
+        val address = ctx.pathParam("address")
+        val creatorAddress = ctx.pathParam("creatorAddress")
+        val result = AlgorandNftService.verifyOwnerShipBasedOnCreator(address, Common.getAlgorandChain(chain.uppercase()) , creatorAddress)
+        ctx.result(Json.encodeToString(result))
+
+    }
+
+    fun verifyNftOwnerShipBasedOnCreatorDocs()= document().operation {
+        it.summary("Verifying NFT ownership based on creator ")
+            .operationId("verifyNftOwnerShipBasedOnCreator")
+            .addTagsItem("NFT verification")}
+        .pathParam<String>("chain") {
+            it.schema<AlgorandChain>{}}
+        .pathParam<String>("address"){}
+        .pathParam<String>("creatorAddress"){}
+        .json<String>(200.toString()) {
+            it.description("Algorand NFT Metadata")
+        }
+
 }
 
