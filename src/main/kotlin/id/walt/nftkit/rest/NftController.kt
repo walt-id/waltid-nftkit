@@ -80,6 +80,50 @@ object NftController {
         it.description("")
     }.json<DeploymentResponse>("200") { it.description("Transaction ID and smart contract address") }
 
+    fun deploySoulBoundSmartContract (ctx: Context) {
+        val deployReq = ctx.bodyAsClass(DeployRequest::class.java)
+        val chain = ctx.pathParam("chain")
+        val deploymentOptions = DeploymentOptions(deployReq.accessControl, deployReq.tokenStandard)
+        val deploymentParameter = DeploymentParameter(deployReq.name, deployReq.symbol, deployReq.options)
+        val result =
+            NftService.deploySoulBoundSmartContractToken(Common.getEVMChain(chain.uppercase()), deploymentParameter, deploymentOptions)
+        ctx.json(
+            result
+        )
+    }
+
+    fun deploySoulBoundSmartContractDocs() = document().operation {
+        it.summary("SoulBound Smart contract deployment")
+            .operationId("deploySoulBoundSmartContract").addTagsItem(TAG1)
+    }.pathParam<String>("chain") {
+        it.schema<EVMChain> { }
+    }.body<DeployRequest> {
+        it.description("")
+    }.json<DeploymentResponse>("200") { it.description("Transaction ID and smart contract address") }
+
+
+    fun mintSoulbound(ctx: Context){
+        val mintReq = ctx.bodyAsClass(MintRequest::class.java)
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val mintingParameter = MintingParameter(mintReq.metadataUri, mintReq.recipientAddress, mintReq.metadata)
+        val mintingOptions = MintingOptions(mintReq.metadataStorageType)
+        val result =
+            NftService.mintSoulBoundToken(Common.getEVMChain(chain.uppercase()), contractAddress, mintingParameter, mintingOptions)
+        ctx.json(
+            result
+        )
+    }
+
+    fun mintSoulboundDocs() = document().operation {
+        it.summary("SoulBound NFT minting")
+            .operationId("mintSoulBoundNft").addTagsItem(TAG1)
+    }.pathParam<String>("chain") {
+        it.schema<EVMChain> { }
+    }.pathParam<String>("contractAddress") {
+    }.body<MintRequest> {
+        it.description("")
+    }.json<MintingResponse>("200") { it.description("Transaction ID and token ID") }
 
     fun mint(ctx: Context) {
         val mintReq = ctx.bodyAsClass(MintRequest::class.java)
