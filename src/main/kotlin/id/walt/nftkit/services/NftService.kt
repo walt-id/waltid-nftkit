@@ -308,6 +308,24 @@ object NftService {
         return mintNewToken(parameter.recipientAddress, tokenUri, chain, contractAddress)
     }
 
+    fun mintSoulBoundToken(
+        chain: EVMChain,
+        contractAddress: String,
+        parameter: MintingParameter,
+        options: MintingOptions
+    ): MintingResponse {
+        var tokenUri: String?
+        if (parameter.metadataUri != null && parameter.metadataUri != "") {
+            tokenUri = parameter.metadataUri
+        } else {
+            val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(options.metadataStorageType)
+            val nftMetadataWrapper= NftMetadataWrapper(evmNftMetadata = parameter.metadata)
+            tokenUri = metadataUri.getTokenUri(nftMetadataWrapper)
+        }
+
+        return mintSoulBound(parameter.recipientAddress, tokenUri, chain, contractAddress)
+    }
+
      fun getNftMetadata(chain: EVMChain, contractAddress: String, tokenId: BigInteger): NftMetadata {
         var uri = getMetadatUri(chain, contractAddress, tokenId)
         if(Common.getMetadataType(uri).equals(MetadataStorageType.ON_CHAIN)){
@@ -599,6 +617,29 @@ object NftService {
         return MintingResponse(null, null)
     }
 
+    private fun mintSoulBound(
+        recipientAddress: String,
+        metadataUri: String,
+        chain: EVMChain,
+        contractAddress: String
+    ) : MintingResponse{
+        if(isSoulBoundToken(chain, contractAddress) == true){
+            val recipient = Address(recipientAddress)
+            val tokenUri = Utf8String(metadataUri)
+            val transactionReceipt: TransactionReceipt? =
+                SoulBoundTokenStandard.mintToken(chain, contractAddress, recipient, tokenUri)
+            val eventValues: EventValues? =
+                staticExtractEventParameters(Erc721OnchainCredentialWrapper.TRANSFER_EVENT, transactionReceipt?.logs?.get(0))
+
+            val url = WaltIdServices.getBlockExplorerUrl(chain)
+            val ts =
+                TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt.transactionHash}")
+            val mr = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
+            return mr
+        }
+        return MintingResponse(null, null)
+    }
+
     private fun getMetadatUri(chain: EVMChain, contractAddress: String, tokenId: BigInteger): String {
         if (isErc721Standard(chain, contractAddress) == true) {
             return Erc721TokenStandard.tokenURI(chain, contractAddress, Uint256(tokenId))
@@ -611,6 +652,9 @@ object NftService {
         return Erc721TokenStandard.supportsInterface(chain, contractAddress)
     }
 
+    private fun isSoulBoundToken(chain: EVMChain, contractAddress: String): Boolean {
+        return SoulBoundTokenStandard.supportsInterface(chain, contractAddress)
+    }
     private fun parseNftEvmMetadataResult(nft: JsonObject): NftMetadata{
         var attributes: List<NftMetadata.Attributes>?=null
         if(nft.get("attributes")?.metaInfo.equals("kotlinx.serialization.json.JsonArray.class")){
