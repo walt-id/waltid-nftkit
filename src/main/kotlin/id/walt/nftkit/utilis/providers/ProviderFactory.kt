@@ -1,6 +1,5 @@
 package id.walt.nftkit.utilis.providers
 
-import id.walt.nftkit.services.Chain
 import id.walt.nftkit.services.EVMChain
 
 object ProviderFactory {
@@ -13,6 +12,7 @@ object ProviderFactory {
         EVMChain.MUMBAI -> MumbaiWeb3()
         EVMChain.ASTAR -> AstarWeb3()
         EVMChain.MOONBEAM -> MoonbeamWeb3()
+        EVMChain.SHIMMEREVM -> IotaWeb3()
     }
 }
 
