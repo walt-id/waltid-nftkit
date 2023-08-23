@@ -286,6 +286,10 @@ object NftService {
         return Erc721TokenStandard.deployContract(chain, parameter, options)
     }
 
+    fun deploySoulBoundSmartContractToken(chain: EVMChain, parameter: DeploymentParameter, options: DeploymentOptions): DeploymentResponse {
+        return SoulBoundTokenStandard.deployContract(chain, parameter, options)
+    }
+
     fun mintToken(
         chain: EVMChain,
         contractAddress: String,
