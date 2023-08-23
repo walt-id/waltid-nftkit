@@ -96,7 +96,8 @@ enum class EVMChain {
     SEPOLIA,
     MUMBAI,
     ASTAR,
-    MOONBEAM
+    MOONBEAM,
+    SHIMMEREVM,
 }
 
 enum class TokenStandard {
