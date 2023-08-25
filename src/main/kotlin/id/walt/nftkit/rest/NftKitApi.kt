@@ -129,14 +129,7 @@ object NftKitApi {
                             "chain/{chain}/contract/deploy",
                             documented(NftController.deployDocs(), NftController::deploy)
                         )
-                        post (
-                            "chain/{chain}/contract/soulbound/deploy",
-                            documented(NftController.deploySoulBoundSmartContractDocs(), NftController::deploySoulBoundSmartContract)
-                        )
-                        post(
-                            "chain/{chain}/contract/{contractAddress}/token/mint/soulbound",
-                            documented(NftController.mintSoulboundDocs(), NftController::mintSoulbound)
-                        )
+
                         post(
                             "chain/{chain}/contract/{contractAddress}/token/mint",
                             documented(NftController.mintDocs(), NftController::mint)
