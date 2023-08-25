@@ -72,50 +72,7 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
     }
 
     override fun balanceOf(chain: EVMChain, contractAddress: String, owner: Address): BigInteger? {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
-        return erc721URIStorageWrapper.balanceOf(owner).send().value
-    }
-
-    override fun supportsInterface(chain: EVMChain, contractAddress: String): Boolean {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
-        val data = Numeric.hexStringToByteArray("0x5b5e139f") // ERC721 interface id
-        val interfaceId = Bytes4(data)
-        return erc721URIStorageWrapper.supportsInterface(interfaceId).send().value
-    }
-
-    override fun updateTokenUri(
-        chain: EVMChain,
-        contractAddress: String,
-        token: BigInteger,
-        tokenURI: Utf8String,
-        signedAccount: String?
-    ): TransactionReceipt? {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress, signedAccount)
-        return erc721URIStorageWrapper.setTokenURI(Uint256(token), tokenURI).send()
-    }
-
-    override fun transferFrom(
-        chain: EVMChain,
-        contractAddress: String,
-        from: Address,
-        to: Address,
-        tokenId: Uint256,
-        signedAccount: String?
-    ): TransactionReceipt {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress, signedAccount)
-        return erc721URIStorageWrapper.transferFrom(from, to, tokenId).send()
-    }
-
-    override fun safeTransferFrom(
-        chain: EVMChain,
-        contractAddress: String,
-        from: Address,
-        to: Address,
-        tokenId: Uint256,
-        signedAccount: String?
-    ): TransactionReceipt {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress, signedAccount)
-        return  erc721URIStorageWrapper.safeTransferFrom(from, to, tokenId).send()
+        return loadContract(chain, contractAddress).balanceOf(owner).send().value
     }
 
     override fun safeTransferFrom(
