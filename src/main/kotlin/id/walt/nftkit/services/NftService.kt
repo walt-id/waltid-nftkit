@@ -360,6 +360,10 @@ object NftService {
         return String()
     }
 
+    fun ownerOfSoulbound( chain: EVMChain , contractAddress: String , tokenId: Uint256) : String{
+        return SoulBoundTokenStandard.ownerOf(chain, contractAddress, tokenId).toString()
+    }
+
     fun transferFrom(chain: EVMChain, contractAddress: String, from: String, to: String, tokenId: BigInteger, signedAccount: String?): TransactionResponse {
         val transactionReceipt = Erc721TokenStandard.transferFrom(chain, contractAddress, Address(from), Address(to), Uint256(tokenId), signedAccount)
         return Common.getTransactionResponse(chain, transactionReceipt)
