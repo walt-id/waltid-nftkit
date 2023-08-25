@@ -81,58 +81,15 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
         from: Address,
         to: Address,
         tokenId: Uint256,
-        data: DynamicBytes,
         signedAccount: String?
     ): TransactionReceipt {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress, signedAccount)
-        return erc721URIStorageWrapper.safeTransferFrom(from, to, tokenId, data).send()
-    }
-
-    override fun setApprovalForAll(
-        chain: EVMChain,
-        contractAddress: String,
-        operator: Address,
-        approved: Bool,
-        signedAccount: String?
-    ): TransactionReceipt {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress, signedAccount)
-        return erc721URIStorageWrapper.setApprovalForAll(operator, approved).send()
-    }
-
-    override fun isApprovedForAll(chain: EVMChain, contractAddress: String, owner: Address, operator: Address): Bool {
         TODO("Not yet implemented")
     }
 
-    override fun approve(
-        chain: EVMChain,
-        contractAddress: String,
-        to: Address,
-        tokenId: Uint256,
-        signedAccount: String?
-    ): TransactionReceipt {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress, signedAccount)
-        return erc721URIStorageWrapper.approve(to, tokenId).send()
+    override fun safeMint(chain: EVMChain, contractAddress: String, to: String, uri: String): TransactionReceipt? {
+        return loadContract(chain, contractAddress).safeMint(to, uri).send()
     }
 
-    override fun getApproved(chain: EVMChain, contractAddress: String, tokenId: Uint256): Address {
-        TODO("Not yet implemented")
-    }
-
-    private fun loadContract(chain: EVMChain, address: String, signedAccount: String? ="") : CustomOwnableERC721 {
-        val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
-
-        val privateKey: String
-        if(signedAccount == null || "".equals(signedAccount)){
-            privateKey= WaltIdServices.loadChainConfig().privateKey
-        }else{
-            val lowercaseAddress= WaltIdServices.loadAccountKeysConfig().keys.mapKeys { it.key.lowercase() }
-            privateKey= lowercaseAddress.get(signedAccount.lowercase())!!
-            if(privateKey == null){
-                throw Exception("Account not found")
-            }
-        }
-
-        val credentials: Credentials = Credentials.create(privateKey)
 
         val gasProvider: ContractGasProvider = WaltIdGasProvider
         val chainId= when(chain){
