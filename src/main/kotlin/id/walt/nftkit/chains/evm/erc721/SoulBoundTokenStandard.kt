@@ -68,8 +68,7 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
     }
 
     override fun tokenURI(chain: EVMChain, contractAddress: String, tokenId: Uint256): String? {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
-        return erc721URIStorageWrapper.tokenURI(tokenId).send().value
+        return loadContract(chain, contractAddress).tokenURI(tokenId).send().value
     }
 
     override fun balanceOf(chain: EVMChain, contractAddress: String, owner: Address): BigInteger? {
