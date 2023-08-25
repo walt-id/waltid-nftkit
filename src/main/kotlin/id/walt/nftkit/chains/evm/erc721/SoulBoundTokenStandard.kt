@@ -91,7 +91,7 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
     }
 
 
-        val gasProvider: ContractGasProvider = WaltIdGasProvider
+    fun deployContract(chain: EVMChain) : DeploymentResponse {
         val chainId= when(chain){
             EVMChain.ETHEREUM -> Values.ETHEREUM_MAINNET_CHAIN_ID
             EVMChain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_CHAIN_ID
@@ -102,101 +102,16 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
             EVMChain.MOONBEAM -> Values.MOONBEAM_MAINNET_CHAIN_ID
             EVMChain.SHIMMEREVM -> Values.SHIMMEREVM_TESTNET_CHAIN_ID
         }
+
+        val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
+        val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
+        val gasProvider: ContractGasProvider = WaltIdGasProvider
+        val remotCall: RemoteCall<SoulBoundTest>
         val transactionManager: TransactionManager = RawTransactionManager(
             web3j, credentials, chainId
         )
-        return  CustomOwnableERC721.load(address, web3j,transactionManager,gasProvider)
-        /*if (chain == EVMChain.POLYGON || chain == EVMChain.MUMBAI) {
-            val chainId: Long
-            if (chain == EVMChain.POLYGON) {
-                chainId = Values.POLYGON_MAINNET_CHAIN_ID
-            } else {
-                chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
-            }
-            val transactionManager: TransactionManager = RawTransactionManager(
-                web3j, credentials, chainId
-            )
+        remotCall = SoulBoundTest.deploy(web3j, transactionManager, gasProvider)
 
-             return  CustomOwnableERC721.load(address, web3j,transactionManager,gasProvider)
-        }else{
-            return CustomOwnableERC721.load(address, web3j,credentials,gasProvider)
-
-        }*/
-    }
-
-    fun deployOwnableContract(chain: EVMChain, parameter: DeploymentParameter, options: DeploymentOptions): DeploymentResponse {
-        val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
-        val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
-        val gasProvider: ContractGasProvider = WaltIdGasProvider
-        val remotCall: RemoteCall<CustomOwnableERC721>
-        if (chain == EVMChain.SHIMMEREVM) {
-            val chainId: Long
-            chainId = Values.SHIMMEREVM_TESTNET_CHAIN_ID
-            val transactionManager: TransactionManager = RawTransactionManager(
-                web3j, credentials, chainId
-            )
-            remotCall = CustomOwnableERC721.deploy(
-                web3j,
-                transactionManager,
-                gasProvider,
-                Utf8String(parameter.name),
-                Utf8String(parameter.symbol),
-                Bool(parameter.options.burnable),
-                Bool(parameter.options.transferable)
-            )
-        } else {
-            remotCall = CustomOwnableERC721.deploy(
-                web3j,
-                credentials,
-                gasProvider,
-                Utf8String(parameter.name),
-                Utf8String(parameter.symbol),
-                Bool(parameter.options.burnable),
-                Bool(parameter.options.transferable)
-            )
-        }
-        val contract = remotCall.send()
-
-        val url = WaltIdServices.getBlockExplorerUrl(chain)
-        val ts = TransactionResponse(
-            contract.transactionReceipt.get().transactionHash,
-            "$url/tx/${contract.transactionReceipt.get().transactionHash}"
-        )
-        return DeploymentResponse(ts, contract.contractAddress, "$url/address/${contract.contractAddress}")
-
-    }
-
-    fun deployRBACContract(chain: EVMChain, parameter: DeploymentParameter, options: DeploymentOptions): DeploymentResponse {
-        val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
-        val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
-        val gasProvider: ContractGasProvider = WaltIdGasProvider
-        val remotCall: RemoteCall<CustomAccessControlERC721>
-        if (chain == EVMChain.SHIMMEREVM ) {
-            val chainId: Long
-            chainId = Values.SHIMMEREVM_TESTNET_CHAIN_ID
-            val transactionManager: TransactionManager = RawTransactionManager(
-                web3j, credentials, chainId
-            )
-            remotCall = CustomAccessControlERC721.deploy(
-                web3j,
-                transactionManager,
-                gasProvider,
-                Utf8String(parameter.name),
-                Utf8String(parameter.symbol),
-                Bool(parameter.options.burnable),
-                Bool(parameter.options.transferable)
-            )
-        } else {
-            remotCall = CustomAccessControlERC721.deploy(
-                web3j,
-                credentials,
-                gasProvider,
-                Utf8String(parameter.name),
-                Utf8String(parameter.symbol),
-                Bool(parameter.options.burnable),
-                Bool(parameter.options.transferable)
-            )
-        }
         val contract = remotCall.send()
 
         val url = WaltIdServices.getBlockExplorerUrl(chain)
@@ -206,5 +121,4 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
         )
         return DeploymentResponse(ts, contract.contractAddress, "$url/address/${contract.contractAddress}")
     }
-
 }
