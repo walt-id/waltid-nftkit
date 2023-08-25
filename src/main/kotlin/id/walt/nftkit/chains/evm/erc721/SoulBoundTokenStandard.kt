@@ -53,20 +53,9 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
 
     }
 
-    }
-    override fun mintToken(
-        chain: EVMChain,
-        contractAddress: String,
-        recipient: Address,
-        tokenURI: Utf8String
-    ): TransactionReceipt? {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
-        return erc721URIStorageWrapper.mintTo(recipient, tokenURI).send()
-    }
 
     override fun ownerOf(chain: EVMChain, contractAddress: String, tokenId: Uint256): String? {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
-        return erc721URIStorageWrapper.ownerOf(tokenId).send().value
+        return loadContract(chain, contractAddress).ownerOf(tokenId).send().value
     }
 
     override fun name(chain: EVMChain, contractAddress: String): String? {
