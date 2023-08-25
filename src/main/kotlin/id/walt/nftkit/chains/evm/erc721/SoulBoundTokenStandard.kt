@@ -59,8 +59,8 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
     }
 
     override fun name(chain: EVMChain, contractAddress: String): String? {
-        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
-        return erc721URIStorageWrapper.name().send().value
+        val contract = loadContract(chain, contractAddress)
+        return contract.name().send().value
     }
 
     override fun symbol(chain: EVMChain, contractAddress: String): String? {
