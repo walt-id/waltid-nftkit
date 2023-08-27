@@ -24,5 +24,6 @@ interface ISoulBoundTokenStandard {
 
     fun safeTransferFrom(chain: EVMChain, contractAddress: String, from: Address, to: Address, tokenId: Uint256, signedAccount: String?): TransactionReceipt
 
+    fun supportsInterface(chain: EVMChain, contractAddress: String): Boolean
 
 }
