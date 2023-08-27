@@ -5,6 +5,7 @@ import id.walt.nftkit.WaltIdGasProvider
 import id.walt.nftkit.services.*
 import id.walt.nftkit.utilis.providers.ProviderFactory
 import org.web3j.abi.datatypes.Address
+import org.web3j.abi.datatypes.generated.Bytes4
 import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.crypto.Credentials
 import org.web3j.protocol.core.RemoteCall
@@ -12,7 +13,7 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.tx.RawTransactionManager
 import org.web3j.tx.TransactionManager
 import org.web3j.tx.gas.ContractGasProvider
-import smart_contract_wrapper.CustomOwnableERC721
+import org.web3j.utils.Numeric
 import smart_contract_wrapper.SoulBoundTest
 import java.math.BigInteger
 
@@ -120,5 +121,13 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
             "$url/tx/${contract.transactionReceipt.get().transactionHash}"
         )
         return DeploymentResponse(ts, contract.contractAddress, "$url/address/${contract.contractAddress}")
+    }
+
+
+    override fun supportsInterface(chain: EVMChain, contractAddress: String) : Boolean {
+        val erc721URIStorageWrapper = loadContract(chain, contractAddress)
+        val data = Numeric.hexStringToByteArray("0x5b5e139f") // ERC721 interface id
+        val interfaceId = Bytes4(data)
+        return erc721URIStorageWrapper.supportsInterface(interfaceId).send().value
     }
 }
