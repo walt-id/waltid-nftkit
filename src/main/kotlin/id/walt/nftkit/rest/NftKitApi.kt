@@ -129,6 +129,7 @@ object NftKitApi {
                             "chain/{chain}/contract/deploy",
                             documented(NftController.deployDocs(), NftController::deploy)
                         )
+
                         post(
                             "chain/{chain}/contract/{contractAddress}/token/mint",
                             documented(NftController.mintDocs(), NftController::mint)

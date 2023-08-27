@@ -2,6 +2,7 @@ package id.walt.nftkit.services
 
 import id.walt.nftkit.Values
 import id.walt.nftkit.chains.evm.erc721.Erc721TokenStandard
+import id.walt.nftkit.chains.evm.erc721.SoulBoundTokenStandard
 import id.walt.nftkit.metadata.IPFSMetadata
 import id.walt.nftkit.metadata.MetadataUri
 import id.walt.nftkit.metadata.MetadataUriFactory
@@ -95,7 +96,8 @@ enum class EVMChain {
     SEPOLIA,
     MUMBAI,
     ASTAR,
-    MOONBEAM
+    MOONBEAM,
+    SHIMMEREVM,
 }
 
 enum class TokenStandard {
@@ -281,8 +283,13 @@ object NftService {
     }
 
     fun deploySmartContractToken(chain: EVMChain, parameter: DeploymentParameter, options: DeploymentOptions): DeploymentResponse {
-        return Erc721TokenStandard.deployContract(chain, parameter, options)
+        return if (parameter.options.transferable){
+            Erc721TokenStandard.deployContract(chain, parameter, options)
+        }else{
+            SoulBoundTokenStandard.deployContract(chain)
+        }
     }
+
 
     fun mintToken(
         chain: EVMChain,
@@ -301,6 +308,7 @@ object NftService {
 
         return mintNewToken(parameter.recipientAddress, tokenUri, chain, contractAddress)
     }
+
 
      fun getNftMetadata(chain: EVMChain, contractAddress: String, tokenId: BigInteger): NftMetadata {
         var uri = getMetadatUri(chain, contractAddress, tokenId)
@@ -334,6 +342,10 @@ object NftService {
 
         }
         return String()
+    }
+
+    fun ownerOfSoulbound( chain: EVMChain , contractAddress: String , tokenId: Uint256) : String{
+        return SoulBoundTokenStandard.ownerOf(chain, contractAddress, tokenId).toString()
     }
 
     fun transferFrom(chain: EVMChain, contractAddress: String, from: String, to: String, tokenId: BigInteger, signedAccount: String?): TransactionResponse {
@@ -573,7 +585,7 @@ object NftService {
         chain: EVMChain,
         contractAddress: String
     ): MintingResponse {
-        if (isErc721Standard(chain, contractAddress) == true) {
+        if (isErc721Standard(chain, contractAddress) && !isSoulBoundStandard(chain , contractAddress)) {
             //val erc721TokenStandard = Erc721TokenStandard()
             val recipient = Address(recipientAddress)
             val tokenUri = Utf8String(metadataUri)
@@ -587,11 +599,24 @@ object NftService {
                 TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt.transactionHash}")
             val mr = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
             return mr
-        } else {
+        } else if (isSoulBoundStandard(chain , contractAddress) && isErc721Standard(chain, contractAddress)){
+            val recipient = recipientAddress
+            val tokenUri = metadataUri
+            val transactionReceipt: TransactionReceipt? =
+                SoulBoundTokenStandard.safeMint(chain, contractAddress, recipient, tokenUri)
+            val eventValues: EventValues? =
+                staticExtractEventParameters(Erc721OnchainCredentialWrapper.TRANSFER_EVENT, transactionReceipt?.logs?.get(0))
 
+            val url = WaltIdServices.getBlockExplorerUrl(chain)
+            val ts =
+                TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt.transactionHash}")
+            val mr = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
+            return mr
         }
         return MintingResponse(null, null)
     }
+
+
 
     private fun getMetadatUri(chain: EVMChain, contractAddress: String, tokenId: BigInteger): String {
         if (isErc721Standard(chain, contractAddress) == true) {
@@ -603,6 +628,9 @@ object NftService {
 
     private fun isErc721Standard(chain: EVMChain, contractAddress: String): Boolean {
         return Erc721TokenStandard.supportsInterface(chain, contractAddress)
+    }
+    private fun isSoulBoundStandard(chain: EVMChain, contractAddress: String): Boolean {
+        return SoulBoundTokenStandard.supportsInterface(chain, contractAddress)
     }
 
     private fun parseNftEvmMetadataResult(nft: JsonObject): NftMetadata{
