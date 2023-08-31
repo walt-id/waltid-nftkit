@@ -67,7 +67,7 @@ class Erc721Standard : StringSpec({
         result.image shouldBe "string"
         result.external_url shouldBe "string"
         result.attributes?.get(0)!!.trait_type shouldBe "string"
-        result.attributes?.get(0)!!.value shouldBe "15/7/2022 10:30:07"
+        (result.attributes?.get(0)!!.value?.content ?:  "") shouldBe "15/7/2022 10:30:07"
     }
 
 
