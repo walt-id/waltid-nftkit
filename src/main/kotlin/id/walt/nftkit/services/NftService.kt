@@ -21,6 +21,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
@@ -34,6 +35,13 @@ import org.web3j.protocol.core.methods.response.Log
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 import java.math.BigInteger
 
+@Serializable
+sealed class Value {
+
+    data class StringValue(val value: String) : Value()
+
+    data class NumberValue(val value: Int) : Value()
+}
 
 @Serializable
 data class NftMetadata(
@@ -49,8 +57,9 @@ data class NftMetadata(
     @Serializable
     data class Attributes(
         val trait_type: String,
-        var value: JsonElement? = null,
-        //val display_type: DisplayType?
+
+        var value: JsonPrimitive? = null
+
     )
 }
 
@@ -639,7 +648,17 @@ object NftService {
         var attributes: List<NftMetadata.Attributes>?=null
         if(nft.get("attributes")?.metaInfo.equals("kotlinx.serialization.json.JsonArray.class")){
             attributes= nft.get("attributes")?.jsonArray?.map {
-                NftMetadata.Attributes(it.jsonObject.get("trait_type")?.jsonPrimitive?.content ?: "", it.jsonObject.get("value") ?: JsonPrimitive(""))
+                val trait_type= it.jsonObject.get("trait_type")?.jsonPrimitive?.content
+
+                val value= it.jsonObject.get("value")?.jsonPrimitive?.content
+
+                // verify is value is number
+                if(value?.toIntOrNull() != null){
+                    NftMetadata.Attributes(trait_type!!, JsonPrimitive(value.toInt()))
+                }else{
+                    NftMetadata.Attributes(trait_type!!, JsonPrimitive(value))
+                }
+
             }
         }
         return NftMetadata(
