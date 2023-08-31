@@ -22,7 +22,7 @@ object DynamicPolicy {
         if(nftMetadata.evmNftMetadata != null){
             data.put("name", nftMetadata.evmNftMetadata.name)
             data.put("description", nftMetadata.evmNftMetadata.description)
-            nftMetadata.evmNftMetadata.attributes?.forEach { data.put(it.trait_type, it.value) }
+            nftMetadata.evmNftMetadata.attributes?.forEach { data.put(it.trait_type, it.value.toString()) }
         }else if(nftMetadata.tezosNftMetadata != null){
             data.put("name", nftMetadata.tezosNftMetadata.name)
             data.put("description", nftMetadata.tezosNftMetadata.description)

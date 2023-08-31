@@ -12,6 +12,7 @@ import io.ktor.http.*
 import io.ktor.util.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonPrimitive
 import org.web3j.tx.exceptions.ContractCallException
 import java.math.BigInteger
 
@@ -120,13 +121,14 @@ object VerificationService {
                 val ownership= NFTsEvmOwnershipVerification(EVMChain.valueOf(chain.toString()), contractAddress, account, BigInteger(tokenId))
                 if(ownership){
                     val metadata= NftService.getNftMetadata(EVMChain.valueOf(chain.toString()), contractAddress, BigInteger( tokenId))
-                    if(metadata!!.attributes?.filter {
-                            (it.trait_type.equals(traitType) && it.value.equals(
-                                traitValue,
-                                true
-                            )) || (traitValue == null && traitType.equals(it.trait_type))
-                        }!!.isNotEmpty()){
-                        return true
+
+                    metadata.attributes?.map {
+                        println(it.value?.content)
+                        println(traitValue)
+                        if (it.trait_type == traitType && it.value?.content.equals(traitValue)) {
+
+                            return true
+                        }
                     }
                 }
                 return false;
@@ -151,10 +153,9 @@ object VerificationService {
                 if(ownership){
                     val metadata= NftService.getNftMetadata(EVMChain.valueOf(chain.toString()), contractAddress, BigInteger( tokenId))
                     if(metadata!!.attributes?.filter {
-                            (it.trait_type.equals(traitType) && it.value.equals(
-                                traitValue,
-                                true
-                            )) || (traitValue == null && traitType.equals(it.trait_type))
+                            (it.trait_type.equals(traitType) && it.value?.equals(
+                                traitValue
+                            ) != false) || ((traitValue == null) && traitType.equals(it.trait_type))
                         }!!.isNotEmpty()){
                         return true
                     }
@@ -400,12 +401,11 @@ object VerificationService {
         }else if(compareStrings(propertyKey,"external_url")){
             return compareStrings(propertyValue, metadata.external_url)
         }else {
-            if (metadata.attributes != null && metadata.attributes.filter {
-                    (it.trait_type.equals(propertyKey) && it.value.equals(
-                        propertyValue,
-                        true
-                    )) || (propertyValue == null && propertyKey.equals(it.trait_type))
-                }.size > 0) {
+            if ((metadata.attributes != null) && metadata.attributes.filter {
+                    (it.trait_type.equals(propertyKey) && it.value?.equals(
+                        propertyValue
+                    ) != false) || ((propertyValue == null) && propertyKey.equals(it.trait_type))
+                }.isNotEmpty()) {
                 return true
             }
         }
