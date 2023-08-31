@@ -49,7 +49,7 @@ data class NftMetadata(
     @Serializable
     data class Attributes(
         val trait_type: String,
-        var value: String,
+        var value: JsonElement? = null,
         //val display_type: DisplayType?
     )
 }
@@ -488,7 +488,9 @@ object NftService {
         }else{
             metadata.attributes?.filter {
                 it.trait_type.equals(key, true)
-            }?.map { it.value= value }
+            }?.map {
+                it.value= JsonPrimitive(value)
+            }
         }
         val oldUri= getMetadatUri(chain, contractAddress, BigInteger(tokenId))
         val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(Common.getMetadataType(oldUri))
@@ -637,7 +639,7 @@ object NftService {
         var attributes: List<NftMetadata.Attributes>?=null
         if(nft.get("attributes")?.metaInfo.equals("kotlinx.serialization.json.JsonArray.class")){
             attributes= nft.get("attributes")?.jsonArray?.map {
-                NftMetadata.Attributes(it.jsonObject.get("trait_type")?.jsonPrimitive?.content ?: "", it.jsonObject.get("value")?.jsonPrimitive?.content ?: "")
+                NftMetadata.Attributes(it.jsonObject.get("trait_type")?.jsonPrimitive?.content ?: "", it.jsonObject.get("value") ?: JsonPrimitive(""))
             }
         }
         return NftMetadata(

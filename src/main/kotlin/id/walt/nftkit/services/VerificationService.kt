@@ -120,14 +120,14 @@ object VerificationService {
                 val ownership= NFTsEvmOwnershipVerification(EVMChain.valueOf(chain.toString()), contractAddress, account, BigInteger(tokenId))
                 if(ownership){
                     val metadata= NftService.getNftMetadata(EVMChain.valueOf(chain.toString()), contractAddress, BigInteger( tokenId))
-                    if(metadata!!.attributes?.filter {
-                            (it.trait_type.equals(traitType) && it.value.equals(
-                                traitValue,
-                                true
-                            )) || (traitValue == null && traitType.equals(it.trait_type))
-                        }!!.isNotEmpty()){
-                        return true
-                    }
+                   if(metadata!!.attributes?.filter {
+                                (it.trait_type.equals(traitType) && it.value?.equals(
+                                    traitValue,
+
+                                    ) == true) || (traitValue == null && traitType.equals(it.trait_type))
+                            }!!.isNotEmpty()){
+                            return true
+                        }
                 }
                 return false;
             }
@@ -151,10 +151,9 @@ object VerificationService {
                 if(ownership){
                     val metadata= NftService.getNftMetadata(EVMChain.valueOf(chain.toString()), contractAddress, BigInteger( tokenId))
                     if(metadata!!.attributes?.filter {
-                            (it.trait_type.equals(traitType) && it.value.equals(
-                                traitValue,
-                                true
-                            )) || (traitValue == null && traitType.equals(it.trait_type))
+                            (it.trait_type.equals(traitType) && it.value?.equals(
+                                traitValue
+                            ) != false) || ((traitValue == null) && traitType.equals(it.trait_type))
                         }!!.isNotEmpty()){
                         return true
                     }
@@ -400,12 +399,12 @@ object VerificationService {
         }else if(compareStrings(propertyKey,"external_url")){
             return compareStrings(propertyValue, metadata.external_url)
         }else {
-            if (metadata.attributes != null && metadata.attributes.filter {
-                    (it.trait_type.equals(propertyKey) && it.value.equals(
+            if ((metadata.attributes != null) && metadata.attributes.filter {
+                    (it.trait_type.equals(propertyKey) && it.value?.equals(
                         propertyValue,
-                        true
-                    )) || (propertyValue == null && propertyKey.equals(it.trait_type))
-                }.size > 0) {
+
+                        ) != false) || ((propertyValue == null) && propertyKey.equals(it.trait_type))
+                }.isNotEmpty()) {
                 return true
             }
         }
