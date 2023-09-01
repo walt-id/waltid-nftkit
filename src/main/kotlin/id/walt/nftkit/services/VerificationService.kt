@@ -85,7 +85,7 @@ object VerificationService {
     }
 
 
-     fun verifyNftOwnershipWithinCollection(chain: Chain, contractAddress: String, account: String): Boolean {
+    fun verifyNftOwnershipWithinCollection(chain: Chain, contractAddress: String, account: String): Boolean {
         return when{
             Common.isEVMChain(chain) -> {
                 return verifyNftOwnershipWithinCollectionEvmChain(EVMChain.valueOf(chain.toString()), contractAddress, account)
@@ -214,35 +214,34 @@ object VerificationService {
         return when{
             Common.isEVMChain(chain) -> {
                 val evmNftmetadata= NftService.getNftMetadata(EVMChain.valueOf(chain.toString()), contractAddress, BigInteger( tokenId))
-                val nftMetadata = NftMetadataWrapper(evmNftmetadata,null)
+                val nftMetadata = NftMetadataWrapper(evmNftMetadata = evmNftmetadata)
                 return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
             }
             Common.isTezosChain(chain) -> {
                 val tezosNftmetadata= TezosNftService.getNftTezosMetadata(TezosChain.valueOf(chain.toString()), contractAddress, tokenId)
-                val nftMetadata = NftMetadataWrapper(null,tezosNftmetadata)
+                val nftMetadata = NftMetadataWrapper(tezosNftMetadata = tezosNftmetadata)
                 return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
             }
             Common.isNearChain(chain) -> {
                 val nearNftmetadata= NearNftService.getTokenById( contractAddress,tokenId, NearChain.valueOf(chain.toString()))
-                val nftMetadata = NftMetadataWrapper(null,null, nearNftmetadata)
+                val nftMetadata = NftMetadataWrapper(nearNftMetadata =  nearNftmetadata)
                 return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
             }
 
 
             Common.isPolkadotParachain(chain) -> {
                 val evmNftmetadata= NftService.getNftMetadata(EVMChain.valueOf(chain.toString()), contractAddress, BigInteger( tokenId))
-                val nftMetadata = NftMetadataWrapper(evmNftmetadata,null)
+                val nftMetadata = NftMetadataWrapper(evmNftMetadata = evmNftmetadata)
                 return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
             }
 
             Common.isAlgorand(chain) -> {
                 val algorandNftmetadata= AlgorandNftService.getNftMetadata(tokenId ,AlgorandChain.valueOf(chain.toString()) )
-                val nftMetadata = NftMetadataWrapper(null,null,null,null,null , algorandNftmetadata)
+                val nftMetadata = NftMetadataWrapper(algorandNftMetadata= algorandNftmetadata)
                 return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
             }
-
             else -> {throw Exception("Chain  is not supported")}
-            }
+        }
     }
 
     fun verifyPolicyWithCollectionId(chain: UniqueNetwork, collectionId : String, tokenId: String, policyName: String): Boolean {
@@ -250,14 +249,14 @@ object VerificationService {
         if(policy == null) throw Exception("The policy doesn't exist")
         val result = PolkadotNftService.fetchUniqueNFTsMetadata(chain, collectionId, tokenId)
         val uniqueNftMetadata= PolkadotNftService.parseNftMetadataUniqueResponse(result!!)
-        val nftMetadata = NftMetadataWrapper(null,null, uniqueNftMetadata = uniqueNftMetadata)
+        val nftMetadata = NftMetadataWrapper( uniqueNftMetadata = uniqueNftMetadata)
         return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
     }
 
 
     private fun verifyNftOwnershipWithinCollectionTezosChain(chain: Chain, contractAddress: String, owner: String): Boolean {
         val result= TezosNftService.fetchAccountNFTsByTzkt(chain, owner, contractAddress).filter { Integer.parseInt(it.balance)>0 }
-        return if (result.size >= 1) true else false
+        return if (result.isNotEmpty()) true else false
     }
 
     private fun verifyNftOwnershipWithinCollectionEvmChain(chain: EVMChain, contractAddress: String, owner: String): Boolean {
@@ -267,10 +266,10 @@ object VerificationService {
 
 
     private fun verifyNftOwnershipWithinCollectionNearChain(chain: NearChain, contractAddress: String, account: String): Boolean {
-      try {
-          val result = NearNftService.getNFTforAccount(account, contractAddress , NearChain.valueOf(chain.toString()))
-          return true
-      }
+        try {
+            val result = NearNftService.getNFTforAccount(account, contractAddress , NearChain.valueOf(chain.toString()))
+            return true
+        }
         catch (e: Exception){
             return false
         }
@@ -280,18 +279,18 @@ object VerificationService {
         val polkadotNFTsSubscanResult= PolkadotNftService.fetchAccountTokensBySubscan(parachain, owner)
         if(polkadotNFTsSubscanResult.data == null) return false
         val result= polkadotNFTsSubscanResult.data?.ERC721?.filter { Integer.parseInt(it.balance)>0 && contractAddress.uppercase().equals(it.contract.uppercase())}
-        return if (result!!.size >= 1) true else false
+        return if (result!!.isNotEmpty()) true else false
     }
 
     private fun verifyNftOwnershipWithinCollectionUniqueParachain(parachain: UniqueNetwork, collectionId: String, account: String): Boolean {
         val uniqueNftsResult = PolkadotNftService.fetchUniqueNFTs(parachain, account)
-        return !(uniqueNftsResult.data == null || uniqueNftsResult.data.size == 0)
+        return !(uniqueNftsResult.data.isNullOrEmpty())
     }
 
     private suspend fun getOceanDaoContractCreationTransaction(erc721contractAddress: String,url: String, apiKey: String): InternalTransactionsResponse{
-            return NftService.client.get("https://$url/api?module=account&action=txlistinternal&address=$erc721contractAddress&page=1&offset=1&startblock=0&sort=asc&apikey=$apiKey") {
-                contentType(ContentType.Application.Json)
-            }.body()
+        return NftService.client.get("https://$url/api?module=account&action=txlistinternal&address=$erc721contractAddress&page=1&offset=1&startblock=0&sort=asc&apikey=$apiKey") {
+            contentType(ContentType.Application.Json)
+        }.body()
 
     }
     private fun NFTsEvmOwnershipVerification(chain: EVMChain, contractAddress: String, account: String, tokenId: BigInteger): Boolean{
@@ -309,7 +308,7 @@ object VerificationService {
 
     private fun NFTsTezosOwnershipVerification(chain: Chain, contractAddress: String, account: String, tokenId: String): Boolean{
         val result= TezosNftService.fetchAccountNFTsByTzkt(chain, account, contractAddress).filter { Integer.parseInt(it.balance)>0 && tokenId.equals(it.token.tokenId) }
-        return if (result.size>= 1) true else false
+        return if (result.isNotEmpty()) true else false
     }
 
     fun NFTsAlgorandOwnershipVerification(chain: AlgorandChain, account: String, assetId: String): Boolean{
@@ -340,27 +339,27 @@ object VerificationService {
             return result.id.equals(tokenId, true)
 
         }
-     catch (e: Exception){
+        catch (e: Exception){
             return false
         }
     }
 
     private fun NFTsFlowOwnershipVerificationInCollection(chain: FlowChain , contractAddress: String , account: String ,  collectionPath : String) : Boolean {
 
-       try {
-           val result = FlowNftService.getNFTinCollectionPath(account, collectionPath, FlowChain.valueOf(chain.toString()))
-           for (i in result.indices) {
+        try {
+            val result = FlowNftService.getNFTinCollectionPath(account, collectionPath, FlowChain.valueOf(chain.toString()))
+            for (i in result.indices) {
 
-               // if identifier has contract address
-               if (result[i].identifier?.contains(contractAddress.removePrefix("0x"), true) == true) {
-                   return true
-               }
+                // if identifier has contract address
+                if (result[i].identifier?.contains(contractAddress.removePrefix("0x"), true) == true) {
+                    return true
+                }
 
-           }
-           return false
-       }catch (e:Exception){
-           return false
-       }
+            }
+            return false
+        }catch (e:Exception){
+            return false
+        }
     }
 
 
@@ -383,14 +382,14 @@ object VerificationService {
         val evmErc721CollectiblesResult= PolkadotNftService.fetchEvmErc721CollectiblesBySubscan(parachain, account)
         if(evmErc721CollectiblesResult.data?.list == null) return false
         val result= evmErc721CollectiblesResult.data?.list?.filter { contractAddress.uppercase().equals(it.contract.uppercase()) && tokenId.equals(it.token_id)}
-        return if (result!!.size>= 1) true else false
+        return if (result!!.isNotEmpty()) true else false
     }
 
     private fun NFTsUniqueOwnershipVerification(parachain: UniqueNetwork, collectionId: String, account: String, tokenId: String): Boolean{
         val uniqueNftsResult = PolkadotNftService.fetchUniqueNFTs(parachain, account)
-        if(uniqueNftsResult.data == null || uniqueNftsResult.data.size == 0) return false
+        if(uniqueNftsResult.data.isNullOrEmpty()) return false
         val result= uniqueNftsResult.data.filter { collectionId.equals(it.collection_id.toString()) && tokenId.equals(it.token_id.toString()) }
-        return if (result!!.size>= 1) true else false
+        return if (result!!.isNotEmpty()) true else false
     }
 
 
