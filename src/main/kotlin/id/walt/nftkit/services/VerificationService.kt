@@ -235,6 +235,12 @@ object VerificationService {
                 return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
             }
 
+            Common.isAlgorand(chain) -> {
+                val algorandNftmetadata= AlgorandNftService.getNftMetadata(tokenId ,AlgorandChain.valueOf(chain.toString()) )
+                val nftMetadata = NftMetadataWrapper(null,null,null,null,null , algorandNftmetadata)
+                return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
+            }
+
             else -> {throw Exception("Chain  is not supported")}
             }
     }
