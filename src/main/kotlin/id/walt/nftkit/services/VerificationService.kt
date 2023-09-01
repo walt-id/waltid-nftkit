@@ -256,7 +256,7 @@ object VerificationService {
 
     private fun verifyNftOwnershipWithinCollectionTezosChain(chain: Chain, contractAddress: String, owner: String): Boolean {
         val result= TezosNftService.fetchAccountNFTsByTzkt(chain, owner, contractAddress).filter { Integer.parseInt(it.balance)>0 }
-        return if (result.isNotEmpty()) true else false
+        return result.isNotEmpty()
     }
 
     private fun verifyNftOwnershipWithinCollectionEvmChain(chain: EVMChain, contractAddress: String, owner: String): Boolean {
@@ -279,7 +279,7 @@ object VerificationService {
         val polkadotNFTsSubscanResult= PolkadotNftService.fetchAccountTokensBySubscan(parachain, owner)
         if(polkadotNFTsSubscanResult.data == null) return false
         val result= polkadotNFTsSubscanResult.data?.ERC721?.filter { Integer.parseInt(it.balance)>0 && contractAddress.uppercase().equals(it.contract.uppercase())}
-        return if (result!!.isNotEmpty()) true else false
+        return result!!.isNotEmpty()
     }
 
     private fun verifyNftOwnershipWithinCollectionUniqueParachain(parachain: UniqueNetwork, collectionId: String, account: String): Boolean {
@@ -308,7 +308,7 @@ object VerificationService {
 
     private fun NFTsTezosOwnershipVerification(chain: Chain, contractAddress: String, account: String, tokenId: String): Boolean{
         val result= TezosNftService.fetchAccountNFTsByTzkt(chain, account, contractAddress).filter { Integer.parseInt(it.balance)>0 && tokenId.equals(it.token.tokenId) }
-        return if (result.isNotEmpty()) true else false
+        return result.isNotEmpty()
     }
 
     fun NFTsAlgorandOwnershipVerification(chain: AlgorandChain, account: String, assetId: String): Boolean{
@@ -382,14 +382,14 @@ object VerificationService {
         val evmErc721CollectiblesResult= PolkadotNftService.fetchEvmErc721CollectiblesBySubscan(parachain, account)
         if(evmErc721CollectiblesResult.data?.list == null) return false
         val result= evmErc721CollectiblesResult.data?.list?.filter { contractAddress.uppercase().equals(it.contract.uppercase()) && tokenId.equals(it.token_id)}
-        return if (result!!.isNotEmpty()) true else false
+        return result!!.isNotEmpty()
     }
 
     private fun NFTsUniqueOwnershipVerification(parachain: UniqueNetwork, collectionId: String, account: String, tokenId: String): Boolean{
         val uniqueNftsResult = PolkadotNftService.fetchUniqueNFTs(parachain, account)
         if(uniqueNftsResult.data.isNullOrEmpty()) return false
         val result= uniqueNftsResult.data.filter { collectionId.equals(it.collection_id.toString()) && tokenId.equals(it.token_id.toString()) }
-        return if (result!!.isNotEmpty()) true else false
+        return result!!.isNotEmpty()
     }
 
 
