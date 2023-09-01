@@ -71,6 +71,11 @@ object DynamicPolicy {
             nftMetadata.uniqueNftMetadata.attributes?.forEach { data.put(it.name, it.value) }
 
 
+        }else if (nftMetadata.algorandNftMetadata != null){
+            data.put("name", nftMetadata.algorandNftMetadata.name)
+            data.put("description", nftMetadata.algorandNftMetadata.description)
+            data.put("image", nftMetadata.algorandNftMetadata.image)
+            data.put("unitname", nftMetadata.algorandNftMetadata.unitName)
         }
         return data
     }
