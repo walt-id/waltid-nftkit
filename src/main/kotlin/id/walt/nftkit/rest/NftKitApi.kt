@@ -312,18 +312,8 @@ object NftKitApi {
                         }
                     }
                     path("nft/verifier") {
-                        get(
-                            "chain/{chain}/verifyNftOwnership",
-                            documented(VerificationController.verifyAlgorandNftOwnershipDocs(), VerificationController::verifyAlgorandNftOwnership)
-                        )
-                        get(
-                            "chain/{chain}/verifyNftOwnershipWithTraits",
-                            documented(VerificationController.verifyAlgorandNftOwnershipWithTraitsDocs(), VerificationController::verifyAlgorandNftOwnershipWithTraits)
-                        )
-                        get(
-                            "chain/{chain}/{address}/verifyNftOwnershipBasedOnCreator/{creatorAddress}",
-                            documented(AlgorandNftController.verifyNftOwnerShipBasedOnCreatorDocs(), AlgorandNftController::verifyNftOwnerShipBasedOnCreator)
-                        )
+
+
                         get(
                             "chain/{chain}/contract/{contractAddress}/verifyNftOwnership",
                             documented(VerificationController.verifyNftOwnershipDocs(), VerificationController::verifyNftOwnership)
@@ -408,6 +398,28 @@ object NftKitApi {
                                     )
                                 )
 
+
+                        }
+                        path("algorand"){
+                            get(
+                                "chain/{chain}/verifyNftOwnership",
+                                documented(VerificationController.verifyAlgorandNftOwnershipDocs(), VerificationController::verifyAlgorandNftOwnership)
+                            )
+                            get(
+                                "chain/{chain}/verifyNftOwnershipWithTraits",
+                                documented(VerificationController.verifyAlgorandNftOwnershipWithTraitsDocs(), VerificationController::verifyAlgorandNftOwnershipWithTraits)
+                            )
+
+                            get(
+                                "chain/{chain}/{address}/verifyNftOwnershipBasedOnCreator/{creatorAddress}",
+                                documented(AlgorandNftController.verifyNftOwnerShipBasedOnCreatorDocs(), AlgorandNftController::verifyNftOwnerShipBasedOnCreator)
+                            )
+
+                            get(
+                                "chain/{chain}/token/{token id}/policy/{policyName}/verification",
+                                documented(AlgorandNftController.doVerifyPolicyOnAlgorandDocs(), AlgorandNftController::verifyPolicyOnAlgorand)
+
+                            )
 
                         }
                     }
