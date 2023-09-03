@@ -30,7 +30,7 @@ object VerificationController {
 
     fun verifyAlgorandNftOwnershipWithTraitsDocs() = document().operation {
         it.summary("NFT ownership verification on algorand with traits")
-            .operationId("verifyAlgorandNftOwnershipWithTraits").addTagsItem("NFT verification")
+            .operationId("verifyAlgorandNftOwnershipWithTraits").addTagsItem("NFT verification On Algorand")
     }.pathParam<String>("chain") {
         it.schema<AlgorandChain> { }
     }.queryParam<String>("assetId") {
@@ -52,7 +52,7 @@ object VerificationController {
 
     fun verifyAlgorandNftOwnershipDocs() = document().operation {
         it.summary("NFT ownership verification on algorand")
-            .operationId("verifyAlgorandNftOwnership").addTagsItem("NFT verification")
+            .operationId("verifyAlgorandNftOwnership").addTagsItem("NFT verification On Algorand")
     }.pathParam<String>("chain") {
         it.schema<AlgorandChain> { }
     }.queryParam<String>("assetId") {

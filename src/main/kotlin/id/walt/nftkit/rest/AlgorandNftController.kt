@@ -177,7 +177,7 @@ object AlgorandNftController{
     fun verifyNftOwnerShipBasedOnCreatorDocs()= document().operation {
         it.summary("Verifying NFT ownership based on creator ")
             .operationId("verifyNftOwnerShipBasedOnCreator")
-            .addTagsItem("NFT verification")}
+            .addTagsItem("NFT verification On Algorand")}
         .pathParam<String>("chain") {
             it.schema<AlgorandChain>{}}
         .pathParam<String>("address"){}
@@ -186,5 +186,27 @@ object AlgorandNftController{
             it.description("Algorand NFT Metadata")
         }
 
+
+    fun verifyPolicyOnAlgorand(ctx: Context){
+        val chain =ctx.pathParam("chain")
+        val tokenid = ctx.pathParam("token id")
+        val policyName = ctx.pathParam("policyName")
+
+        val result = VerificationService.verifyPolicyAlgorand(Common.getChain(chain) ,tokenid , policyName)
+        ctx.result(Json.encodeToString(result))
+
+    }
+
+    fun doVerifyPolicyOnAlgorandDocs()= document().operation {
+        it.summary("Verify an NFT metadata against a dynamic policy")
+            .operationId("verifyNftagainstPolicy")
+            .addTagsItem("NFT verification On Algorand")}
+        .pathParam<String>("chain") {
+            it.schema<AlgorandChain>{}}
+        .pathParam<String>("token id"){}
+        .pathParam<String>("policyName"){}
+        .json<String>(200.toString()) {
+            it.description("Algorand NFT Metadata")
+        }
 }
 
