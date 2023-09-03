@@ -244,6 +244,14 @@ object VerificationService {
         }
     }
 
+    fun verifyPolicyAlgorand(chain: Chain,  tokenId: String, policyName: String): Boolean {
+        val policy = PolicyRegistry.listPolicies().get(policyName)
+        if(policy == null) throw Exception("The policy doesn't exist")
+        val algorandNftmetadata= AlgorandNftService.getNftMetadata(tokenId ,AlgorandChain.valueOf(chain.toString()) )
+        val nftMetadata = NftMetadataWrapper(algorandNftMetadata= algorandNftmetadata)
+        return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)
+    }
+
     fun verifyPolicyWithCollectionId(chain: UniqueNetwork, collectionId : String, tokenId: String, policyName: String): Boolean {
         val policy = PolicyRegistry.listPolicies().get(policyName)
         if(policy == null) throw Exception("The policy doesn't exist")
