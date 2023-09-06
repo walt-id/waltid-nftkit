@@ -9,10 +9,8 @@ import id.walt.nftkit.utilis.Common
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import io.ktor.util.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonPrimitive
 import org.web3j.tx.exceptions.ContractCallException
 import java.math.BigInteger
 
@@ -43,28 +41,16 @@ object VerificationService {
     // Verify if NFT is part of a collection (contract address)
     fun  verifyNftOwnership(chain: Chain, contractAddress: String,account: String, tokenId: String): Boolean{
         return when{
-            Common.isEVMChain(chain) -> {
-                return NFTsEvmOwnershipVerification(EVMChain.valueOf(chain.toString()), contractAddress, account, BigInteger(tokenId))
-            }
-            Common.isTezosChain(chain) -> {
-                return NFTsTezosOwnershipVerification(chain, contractAddress, account, tokenId)
-            }
+            Common.isEVMChain(chain) -> NFTsEvmOwnershipVerification(EVMChain.valueOf(chain.toString()), contractAddress, account, BigInteger(tokenId))
+            Common.isTezosChain(chain) -> NFTsTezosOwnershipVerification(chain, contractAddress, account, tokenId)
 
-            Common.isNearChain(chain) -> {
-                return NFTsNearOwnershipVerification(NearChain.valueOf(chain.toString()), contractAddress, account, tokenId)
-            }
+            Common.isNearChain(chain) -> NFTsNearOwnershipVerification(NearChain.valueOf(chain.toString()), contractAddress, account, tokenId)
 
-            Common.isPolkadotParachain(chain) -> {
-                return NFTsPolkadotOwnershipVerification(PolkadotParachain.valueOf(chain.toString()), contractAddress, account, tokenId)
-            }
-            Common.isUniqueParachain(chain) -> {
-                return NFTsUniqueOwnershipVerification(UniqueNetwork.valueOf(chain.toString()), contractAddress, account, tokenId)
-            }
-            Common.isAlgorand(chain) -> {
-                return NFTsAlgorandOwnershipVerification(AlgorandChain.valueOf(chain.toString()), account, tokenId )
-            }
+            Common.isPolkadotParachain(chain) -> NFTsPolkadotOwnershipVerification(PolkadotParachain.valueOf(chain.toString()), contractAddress, account, tokenId)
+            Common.isUniqueParachain(chain) -> NFTsUniqueOwnershipVerification(UniqueNetwork.valueOf(chain.toString()), contractAddress, account, tokenId)
+            Common.isAlgorand(chain) -> NFTsAlgorandOwnershipVerification(AlgorandChain.valueOf(chain.toString()), account, tokenId )
 
-            else -> {throw Exception("Chain  is not supported")}
+            else -> throw Exception("Chain  is not supported")
         }
     }
     fun verifyNftOwnershipOnFlow( chain: Chain, contractAddress: String, account: String, tokenId: String, collectionPath: String): Boolean {
