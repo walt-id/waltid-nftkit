@@ -97,7 +97,7 @@ object Common {
             EVMChain.SEPOLIA -> Values.ETHEREUM_TESTNET_SEPOLIA_SCAN_API_URL
             EVMChain.POLYGON -> Values.POLYGON_MAINNET_SCAN_API_URL
             EVMChain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_SCAN_API_URL
-            else -> {throw Exception("${chain.toString()} is not supported")}
+            else -> {throw Exception("$chain is not supported")}
         }
     }
 
@@ -108,43 +108,31 @@ object Common {
             EVMChain.SEPOLIA -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
             EVMChain.POLYGON -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
             EVMChain.MUMBAI -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
-            else -> {throw Exception("${chain.toString()} is not supported")}
+            else -> {throw Exception("$chain is not supported")}
         }
     }
 
     fun isEVMChain(chain: Chain): Boolean{
         val EVMChains= listOf(Chain.ETHEREUM, Chain.POLYGON, Chain.GOERLI, Chain.SEPOLIA, Chain.MUMBAI)
-        if(chain in EVMChains) return true
-        return false
+        return chain in EVMChains
     }
 
     fun isTezosChain(chain: Chain): Boolean{
         val TezosChains= listOf(Chain.TEZOS, Chain.GHOSTNET)
-        if(chain in TezosChains) return true
-        return false
+        return chain in TezosChains
     }
 
     fun isNearChain(chain: Chain): Boolean{
         val NearChains= listOf(Chain.MAINNET, Chain.TESTNET)
-        if(chain in NearChains) return true
-        return false
+        return chain in NearChains
     }
 
-    fun isPolkadotParachain(chain: Chain): Boolean{
-        val polkadotParachain= listOf(Chain.ASTAR, Chain.MOONBEAM)
-        if(chain in polkadotParachain) return true
-        return false
-    }
+    fun isPolkadotParachain(chain: Chain): Boolean =
+        chain in listOf(Chain.ASTAR, Chain.MOONBEAM)
 
-    fun isUniqueParachain(chain: Chain): Boolean{
-        val uniqueParachain= listOf(Chain.UNIQUE, Chain.OPAL)
-        if(chain in uniqueParachain) return true
-        return false
-    }
-    fun isAlgorand(chain: Chain): Boolean{
-        val algorandChain= listOf(Chain.ALGORAND_MAINNET, Chain.ALGORAND_TESTNET, Chain.ALGORAND_BETANET)
-        if(chain in algorandChain) return true
-        return false
-    }
+    fun isUniqueParachain(chain: Chain): Boolean =
+        chain in listOf(Chain.UNIQUE, Chain.OPAL)
+    fun isAlgorand(chain: Chain): Boolean =
+        chain in listOf(Chain.ALGORAND_MAINNET, Chain.ALGORAND_TESTNET, Chain.ALGORAND_BETANET)
 }
 

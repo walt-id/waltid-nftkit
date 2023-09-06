@@ -9,6 +9,8 @@ import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import java.math.BigInteger
 
 
@@ -87,7 +89,7 @@ object NftController {
 
 
     fun mint(ctx: Context) {
-        val mintReq = ctx.bodyAsClass(MintRequest::class.java)
+        val mintReq = Json.decodeFromString<MintRequest>(ctx.body())
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val mintingParameter = MintingParameter(mintReq.metadataUri, mintReq.recipientAddress, mintReq.metadata)
