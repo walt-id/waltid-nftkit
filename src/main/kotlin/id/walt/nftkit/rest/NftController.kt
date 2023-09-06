@@ -16,8 +16,8 @@ import java.math.BigInteger
 
 @Serializable
 data class MintRequest(
-    val metadataUri: String?,
-    val metadata: NftMetadata?,
+    val metadataUri: String? = null,
+    val metadata: NftMetadata? = null,
     val recipientAddress: String,
     val metadataStorageType: MetadataStorageType,
     //val offChainMetadataStorageType: OffChainMetadataStorageType?,
