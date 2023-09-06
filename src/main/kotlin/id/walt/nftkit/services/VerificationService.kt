@@ -43,9 +43,7 @@ object VerificationService {
         return when{
             Common.isEVMChain(chain) -> NFTsEvmOwnershipVerification(EVMChain.valueOf(chain.toString()), contractAddress, account, BigInteger(tokenId))
             Common.isTezosChain(chain) -> NFTsTezosOwnershipVerification(chain, contractAddress, account, tokenId)
-
             Common.isNearChain(chain) -> NFTsNearOwnershipVerification(NearChain.valueOf(chain.toString()), contractAddress, account, tokenId)
-
             Common.isPolkadotParachain(chain) -> NFTsPolkadotOwnershipVerification(PolkadotParachain.valueOf(chain.toString()), contractAddress, account, tokenId)
             Common.isUniqueParachain(chain) -> NFTsUniqueOwnershipVerification(UniqueNetwork.valueOf(chain.toString()), contractAddress, account, tokenId)
             Common.isAlgorand(chain) -> NFTsAlgorandOwnershipVerification(AlgorandChain.valueOf(chain.toString()), account, tokenId )
@@ -112,7 +110,6 @@ object VerificationService {
                         println(it.value?.content)
                         println(traitValue)
                         if (it.trait_type == traitType && it.value?.content.equals(traitValue)) {
-
                             return true
                         }
                     }
@@ -148,6 +145,8 @@ object VerificationService {
                 }
                 return false
             }
+
+
             else -> {throw Exception("Chain  is not supported")}
         }
 

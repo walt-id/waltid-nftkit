@@ -108,12 +108,13 @@ object Common {
             EVMChain.SEPOLIA -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
             EVMChain.POLYGON -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
             EVMChain.MUMBAI -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
+            EVMChain.SHIMMEREVM -> WaltIdServices.loadApiKeys().apiKeys.shimmerBlockExplorer
             else -> {throw Exception("$chain is not supported")}
         }
     }
 
     fun isEVMChain(chain: Chain): Boolean{
-        val EVMChains= listOf(Chain.ETHEREUM, Chain.POLYGON, Chain.GOERLI, Chain.SEPOLIA, Chain.MUMBAI)
+        val EVMChains= listOf(Chain.ETHEREUM, Chain.POLYGON, Chain.GOERLI, Chain.SEPOLIA, Chain.MUMBAI, Chain.SHIMMEREVM)
         return chain in EVMChains
     }
 
@@ -134,5 +135,6 @@ object Common {
         chain in listOf(Chain.UNIQUE, Chain.OPAL)
     fun isAlgorand(chain: Chain): Boolean =
         chain in listOf(Chain.ALGORAND_MAINNET, Chain.ALGORAND_TESTNET, Chain.ALGORAND_BETANET)
+
 }
 
