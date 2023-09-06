@@ -14,7 +14,7 @@ data class ChainConfig(val providers: Providers, val privateKey: String)
 
 data class KeysConfig(val keys: Map<String, String>)
 
-data class ApiKeys(val ethereumBlockExplorer: String, val polygonBlockExplorer: String, val alchemy: String, val nftstorage: String, val subscan: String)
+data class ApiKeys(val ethereumBlockExplorer: String, val polygonBlockExplorer: String, val shimmerBlockExplorer:String, val alchemy: String, val nftstorage: String, val subscan: String)
 data class BlockExplorerScanApiKeyConfig(val apiKeys: ApiKeys)
 data class TezosConfig(val tezosBackendServer: String)
 data class NearConfig(val nearBackendServer: String)

@@ -95,7 +95,8 @@ enum class Chain {
     OPAL,
     ALGORAND_MAINNET,
     ALGORAND_TESTNET,
-    ALGORAND_BETANET
+    ALGORAND_BETANET,
+    SHIMMEREVM
 }
 
 enum class EVMChain {
@@ -405,6 +406,7 @@ object NftService {
     fun getAccountNFTs(chain: Chain, account: String): NFTsInfos {
         return when{
             Common.isEVMChain(chain) -> {
+
                 val result = getAccountNFTsByAlchemy(chain, account)
                 return (NFTsInfos(evmNfts = result))
             }
@@ -462,6 +464,7 @@ object NftService {
                 Chain.SEPOLIA -> Values.ETHEREUM_TESTNET_SEPOLIA_ALCHEMY_URL
                 Chain.POLYGON -> Values.POLYGON_MAINNET_ALCHEMY_URL
                 Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_ALCHEMY_URL
+                Chain.SHIMMEREVM -> Values.SHIMMEREVM_TESTNET_BLOCK_EXPLORER_URL
                 Chain.TEZOS -> throw Exception("Tezos is not supported")
                 Chain.GHOSTNET -> throw Exception("Ghostnet is not supported")
                 Chain.TESTNET  -> throw Exception("Near testnet is not supported")
