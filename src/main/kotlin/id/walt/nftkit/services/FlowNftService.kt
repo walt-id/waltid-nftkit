@@ -108,7 +108,6 @@ object FlowNftService {
                     setBody(values)
                 }.body<JsonObject>().entries.flatMap {
                     it.value.jsonArray.map {
-                        println(it)
                         FlowFormatJson.decodeFromJsonElement<FlowNFTMetadata>(it)
                     }
                 }

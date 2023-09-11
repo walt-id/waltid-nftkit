@@ -575,8 +575,6 @@ object NftService {
         return runBlocking {
             val nft = client.get(uri) {
             }.body<String>()
-            println("result")
-            println(nft)
             val jsonObject = Json.parseToJsonElement(nft).jsonObject
             val result= parseNftEvmMetadataResult(jsonObject)
             return@runBlocking result

@@ -239,8 +239,8 @@ object TezosNftService {
                     .body<String>()
             val jsonObject = Json.parseToJsonElement(nfts).jsonArray
             val result = parseNftTezosMetadataResult(jsonObject)
-            println("PARSE NFT TEZOS RESULT: $result")
-            return@runBlocking result.get(0).metadata
+
+            result[0].metadata
         }
     }
 
@@ -344,11 +344,9 @@ object TezosNftService {
             val token = nft obj "token"
             val metadata = token obj "metadata"
 
-            println("METADATA IS: " + metadata)
             if ((metadata arrOrToStr "attributes")?.metaInfo.equals("kotlinx.serialization.json.JsonArray.class")) {
                 attributes = metadata["attributes"]?.jsonArray?.map { attributeElement ->
                     val attribute = attributeElement.jsonObject
-                    println("Attribute: ${Json.encodeToString(attributeElement)}: Name: ${attribute str "name"}, Value: ${attribute str "value"}")
                     TezosNftMetadata.Attribute(
                         attribute str "name",
                         attribute str "value"

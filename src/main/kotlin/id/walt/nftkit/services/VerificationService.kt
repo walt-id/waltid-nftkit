@@ -134,7 +134,6 @@ object VerificationService {
                 val ownership = NFTsTezosOwnershipVerification(chain, contractAddress, account, tokenId)
                 if (ownership) {
                     val metadata = TezosNftService.getNftTezosMetadata(TezosChain.valueOf(chain.toString()), contractAddress, tokenId)
-                    println("ATTRIBUTES: ${metadata?.attributes}")
                     if (metadata!!.attributes?.filter {
                             (it.name.equals(traitType) && it.value.equals(
                                 traitValue,
