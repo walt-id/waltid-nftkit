@@ -122,8 +122,6 @@ object VerificationService {
                     val metadata = NftService.getNftMetadata(EVMChain.valueOf(chain.toString()), contractAddress, BigInteger(tokenId))
 
                     metadata.attributes?.map {
-                        println(it.value?.content)
-                        println(traitValue)
                         if (it.trait_type == traitType && it.value?.content.equals(traitValue)) {
                             return true
                         }
