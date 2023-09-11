@@ -1,4 +1,4 @@
-package id.walt.nftkit.tokenownersquery
+package id.walt.nftkit.graphql.tokenownersquery
 
 import com.expediagroup.graphql.client.Generated
 import kotlin.Int
@@ -8,6 +8,6 @@ import kotlinx.serialization.Serializable
 @Generated
 @Serializable
 public data class TokenOwnersDataResponse(
-  public val count: Int,
-  public val `data`: List<tokens_owners>? = null,
+    public val count: Int,
+    public val `data`: List<tokens_owners>? = null,
 )

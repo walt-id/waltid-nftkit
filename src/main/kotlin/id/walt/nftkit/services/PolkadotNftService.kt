@@ -2,10 +2,10 @@ package id.walt.nftkit.services
 
 import com.expediagroup.graphql.client.serialization.GraphQLClientKotlinxSerializer
 import com.expediagroup.graphql.client.spring.GraphQLWebClient
-import id.walt.nftkit.TokenOwnersQuery
-import id.walt.nftkit.TokensQuery
-import id.walt.nftkit.tokenownersquery.TokenOwnersDataResponse
-import id.walt.nftkit.tokensquery.TokenDataResponse
+import id.walt.nftkit.graphql.TokenOwnersQuery
+import id.walt.nftkit.graphql.TokensQuery
+import id.walt.nftkit.graphql.tokenownersquery.TokenOwnersDataResponse
+import id.walt.nftkit.graphql.tokensquery.TokenDataResponse
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -16,8 +16,10 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
 enum class PolkadotParachain {
@@ -154,30 +156,30 @@ object PolkadotNftService {
     }
 
     fun fetchUniqueNFTs(network: UniqueNetwork, account: String): TokenOwnersDataResponse = runBlocking {
-        val uniqueGraphqlClient = GraphQLWebClient(url = getUniqueNetworkIndexerUrl(network), serializer = GraphQLClientKotlinxSerializer())
+        println("--- FETCH UNIQUE NFTs")
+        val uniqueGraphqlClient = GraphQLWebClient(url = getUniqueNetworkIndexerUrl(network), serializer = PolkadotGraphQLClientKotlinxSerializer())
         val tokenOwnersQuery = TokenOwnersQuery()
         tokenOwnersQuery.query = tokenOwnersQuery.query.replace("address", account)
         uniqueGraphqlClient.execute(tokenOwnersQuery).data!!.token_owners
     }
 
-    fun fetchUniqueNFTMetadata(network: UniqueNetwork, collectionId: String, tokenId: String): TokenDataResponse? {
-        return runBlocking {
-            val uniqueGraphqlClient =
-                GraphQLWebClient(url = getUniqueNetworkIndexerUrl(network), serializer = GraphQLClientKotlinxSerializer())
-            val tokensQuery = TokensQuery()
-            tokensQuery.query = tokensQuery.query.replace("tokenId", tokenId)
-            tokensQuery.query = tokensQuery.query.replace("collectionId", collectionId)
-            uniqueGraphqlClient.execute(tokensQuery).data?.tokens
-        }
+    fun fetchUniqueNFTMetadata(network: UniqueNetwork, collectionId: String, tokenId: String): TokenDataResponse? = runBlocking {
+        println("--- FETCH UNIQUE NFT METADATA")
+        val uniqueGraphqlClient = GraphQLWebClient(url = getUniqueNetworkIndexerUrl(network), serializer = PolkadotGraphQLClientKotlinxSerializer())
+        val tokensQuery = TokensQuery()
+        tokensQuery.query = tokensQuery.query.replace("tokenId", tokenId)
+        tokensQuery.query = tokensQuery.query.replace("collectionId", collectionId)
+        uniqueGraphqlClient.execute(tokensQuery).also { println("DATA FROM QUERY IS: ${it.data}") }.data?.tokens
     }
 
     fun fetchUniqueNFTsMetadata(network: UniqueNetwork, account: String): List<UniqueNftMetadata> = runBlocking {
         val tokens = mutableListOf<UniqueNftMetadata>()
 
         fetchUniqueNFTs(network, account).data?.forEach {
-            val res = fetchUniqueNFTMetadata(network, it.collection_id.toString(), it.token_id.toString())
-            val result = parseNftMetadataUniqueResponse(res!!)
-            tokens.add(result)
+            println("Current NFT: ${it.token_id} of ${it.collection_id} on $network of $account")
+            val fetchResult = fetchUniqueNFTMetadata(network, it.collection_id.toString(), it.token_id.toString())
+            val parseResult = parseNftMetadataUniqueResponse(fetchResult!!)
+            tokens.add(parseResult)
         }
 
         tokens
@@ -186,8 +188,18 @@ object PolkadotNftService {
     fun parseNftMetadataUniqueResponse(tokens: TokenDataResponse): UniqueNftMetadata {
         val metadata = (tokens.data ?: throw IllegalArgumentException("Tokens have no data?"))[0]
 
+        println("Tokens: ${Json.encodeToString(tokens)}")
+        println("Metadata: ${Json.encodeToString(metadata)}")
+
+        /*
         val attributes = metadata.attributes?.values?.map {
             Json.decodeFromJsonElement<UniqueNftMetadata.Attribute>(it)
+        }
+         */
+
+        val attributes = metadata.attributes?.values?.map {
+            //Json.decodeFromJsonElement<UniqueNftMetadata.Attribute>()
+            UniqueNftMetadata.Attribute(it.name, it.value.content)
         }
 
         val tokenImage = metadata.image!!

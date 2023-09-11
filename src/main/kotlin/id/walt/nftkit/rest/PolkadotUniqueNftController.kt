@@ -2,7 +2,7 @@ package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
 import id.walt.nftkit.services.*
-import id.walt.nftkit.tokenownersquery.TokenOwnersDataResponse
+import id.walt.nftkit.graphql.tokenownersquery.TokenOwnersDataResponse
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document

@@ -1,8 +1,8 @@
-package id.walt.nftkit
+package id.walt.nftkit.graphql
 
 import com.expediagroup.graphql.client.Generated
 import com.expediagroup.graphql.client.types.GraphQLClientRequest
-import id.walt.nftkit.tokensquery.TokenDataResponse
+import id.walt.nftkit.graphql.tokensquery.TokenDataResponse
 import kotlin.String
 import kotlin.reflect.KClass
 import kotlinx.serialization.Required
@@ -17,7 +17,7 @@ public class TokensQuery : GraphQLClientRequest<TokensQuery.Result> {
   @Required
   public override var query: String = TOKENS_QUERY
 
-  public override fun responseType(): KClass<TokensQuery.Result> = TokensQuery.Result::class
+  public override fun responseType(): KClass<Result> = Result::class
 
   @Generated
   @Serializable
