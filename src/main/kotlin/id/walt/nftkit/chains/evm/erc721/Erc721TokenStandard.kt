@@ -1,7 +1,7 @@
 package id.walt.nftkit.chains.evm.erc721
 
 import id.walt.nftkit.Values
-import id.walt.nftkit.WaltIdGasProvider
+import id.walt.nftkit.utilis.WaltIdGasProvider
 import id.walt.nftkit.services.*
 import id.walt.nftkit.utilis.providers.*
 import org.web3j.abi.datatypes.Address

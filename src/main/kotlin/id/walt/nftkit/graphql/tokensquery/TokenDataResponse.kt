@@ -1,4 +1,4 @@
-package id.walt.nftkit.tokensquery
+package id.walt.nftkit.graphql.tokensquery
 
 import com.expediagroup.graphql.client.Generated
 import kotlin.collections.List

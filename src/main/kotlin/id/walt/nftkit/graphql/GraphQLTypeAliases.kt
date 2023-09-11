@@ -1,4 +1,4 @@
-package id.walt.nftkit
+package id.walt.nftkit.graphql
 
 import kotlin.String
 

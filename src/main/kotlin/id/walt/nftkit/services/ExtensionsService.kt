@@ -1,7 +1,7 @@
 package id.walt.nftkit.services
 
 import id.walt.nftkit.Values
-import id.walt.nftkit.WaltIdGasProvider
+import id.walt.nftkit.utilis.WaltIdGasProvider
 import id.walt.nftkit.chains.evm.erc721.Erc721TokenStandard
 import id.walt.nftkit.metadata.MetadataUri
 import id.walt.nftkit.metadata.MetadataUriFactory

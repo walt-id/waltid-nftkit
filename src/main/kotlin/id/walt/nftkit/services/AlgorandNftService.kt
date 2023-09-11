@@ -398,7 +398,7 @@ object AlgorandNftService {
             print(traitValue)
             val response = getNftMetadata(assetId, chain)
             if (response.properties != null) {
-                for (trait in response.properties!!) {
+                for (trait in response.properties) {
 
                    if (trait.key.filterIndexed { index, c -> index < traitType.length } ==traitType && trait.value.jsonPrimitive.content.equals(traitValue) ) {
                         return@runBlocking true

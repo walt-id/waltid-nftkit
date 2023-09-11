@@ -308,7 +308,7 @@ object TezosNftService {
                         it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("description")?.jsonPrimitive?.content,
                         it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("symbol")?.jsonPrimitive?.content,
                         it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("image")?.jsonPrimitive?.content,
-                        it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("creators")?.jsonArray?.map { it.jsonPrimitive?.content },
+                        it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("creators")?.jsonArray?.map { it.jsonPrimitive.content },
                         it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("decimals")?.jsonPrimitive?.content,
                         it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("displayUri")?.jsonPrimitive?.content,
                         it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("artifactUri")?.jsonPrimitive?.content,
@@ -317,7 +317,7 @@ object TezosNftService {
                         it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("isBooleanAmount")?.jsonPrimitive?.booleanOrNull,
                         it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("shouldPreferSymbol")?.jsonPrimitive?.booleanOrNull,
                         attributes,
-                        it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("tags")?.jsonArray?.map { it.jsonPrimitive?.content },
+                        it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("tags")?.jsonArray?.map { it.jsonPrimitive.content },
                         it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("category")?.jsonPrimitive?.content,
                         it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("collectionName")?.jsonPrimitive?.content,
                         it.jsonObject.get("token")?.jsonObject?.get("metadata")?.jsonObject?.get("creatorName")?.jsonPrimitive?.content,
@@ -338,8 +338,8 @@ object TezosNftService {
     private fun parseNftTezosMetadataResult(nfts: JsonArray): List<TezosNFTMetadataTzktResult>{
         return nfts.jsonArray.map {
             var attributes: List<TezosNftMetadata.Attribute>?=null
-            if( it.jsonObject?.get("metadata")?.jsonObject?.get("attributes")?.metaInfo.equals("kotlinx.serialization.json.JsonArray.class")){
-                attributes=  it.jsonObject?.get("metadata")?.jsonObject?.get("attributes")?.jsonArray?.map {
+            if( it.jsonObject.get("metadata")?.jsonObject?.get("attributes")?.metaInfo.equals("kotlinx.serialization.json.JsonArray.class")){
+                attributes=  it.jsonObject.get("metadata")?.jsonObject?.get("attributes")?.jsonArray?.map {
                     TezosNftMetadata.Attribute(it.jsonObject.get("name")?.jsonPrimitive?.content ?: "", it.jsonObject.get("value")?.jsonPrimitive?.content ?: "")
                 }
             }
@@ -353,20 +353,20 @@ object TezosNftService {
                     it.jsonObject.get("metadata")?.jsonObject?.get("description")?.jsonPrimitive?.content,
                     it.jsonObject.get("metadata")?.jsonObject?.get("symbol")?.jsonPrimitive?.content,
                     it.jsonObject.get("metadata")?.jsonObject?.get("image")?.jsonPrimitive?.content,
-                    it.jsonObject?.get("metadata")?.jsonObject?.get("creators")?.jsonArray?.map { it.jsonPrimitive?.content },
-                    it.jsonObject?.get("metadata")?.jsonObject?.get("decimals")?.jsonPrimitive?.content,
-                    it.jsonObject?.get("metadata")?.jsonObject?.get("displayUri")?.jsonPrimitive?.content,
-                    it.jsonObject?.get("metadata")?.jsonObject?.get("artifactUri")?.jsonPrimitive?.content,
-                    it.jsonObject?.get("metadata")?.jsonObject?.get("thumbnailUri")?.jsonPrimitive?.content,
-                    it.jsonObject?.get("metadata")?.jsonObject?.get("isTransferable")?.jsonPrimitive?.booleanOrNull,
-                    it.jsonObject?.get("metadata")?.jsonObject?.get("isBooleanAmount")?.jsonPrimitive?.booleanOrNull,
-                    it.jsonObject?.get("metadata")?.jsonObject?.get("shouldPreferSymbol")?.jsonPrimitive?.booleanOrNull,
+                    it.jsonObject.get("metadata")?.jsonObject?.get("creators")?.jsonArray?.map { it.jsonPrimitive.content },
+                    it.jsonObject.get("metadata")?.jsonObject?.get("decimals")?.jsonPrimitive?.content,
+                    it.jsonObject.get("metadata")?.jsonObject?.get("displayUri")?.jsonPrimitive?.content,
+                    it.jsonObject.get("metadata")?.jsonObject?.get("artifactUri")?.jsonPrimitive?.content,
+                    it.jsonObject.get("metadata")?.jsonObject?.get("thumbnailUri")?.jsonPrimitive?.content,
+                    it.jsonObject.get("metadata")?.jsonObject?.get("isTransferable")?.jsonPrimitive?.booleanOrNull,
+                    it.jsonObject.get("metadata")?.jsonObject?.get("isBooleanAmount")?.jsonPrimitive?.booleanOrNull,
+                    it.jsonObject.get("metadata")?.jsonObject?.get("shouldPreferSymbol")?.jsonPrimitive?.booleanOrNull,
                     attributes,
-                    it.jsonObject?.get("metadata")?.jsonObject?.get("tags")?.jsonArray?.map { it.jsonPrimitive?.content },
-                    it.jsonObject?.get("metadata")?.jsonObject?.get("category")?.jsonPrimitive?.content,
-                    it.jsonObject?.get("metadata")?.jsonObject?.get("collectionName")?.jsonPrimitive?.content,
-                    it.jsonObject?.get("metadata")?.jsonObject?.get("creatorName")?.jsonPrimitive?.content,
-                    it.jsonObject?.get("metadata")?.jsonObject?.get("keywords")?.jsonPrimitive?.content
+                    it.jsonObject.get("metadata")?.jsonObject?.get("tags")?.jsonArray?.map { it.jsonPrimitive.content },
+                    it.jsonObject.get("metadata")?.jsonObject?.get("category")?.jsonPrimitive?.content,
+                    it.jsonObject.get("metadata")?.jsonObject?.get("collectionName")?.jsonPrimitive?.content,
+                    it.jsonObject.get("metadata")?.jsonObject?.get("creatorName")?.jsonPrimitive?.content,
+                    it.jsonObject.get("metadata")?.jsonObject?.get("keywords")?.jsonPrimitive?.content
                 )
             )
         }
