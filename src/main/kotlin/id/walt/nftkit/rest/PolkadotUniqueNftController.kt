@@ -78,7 +78,7 @@ object PolkadotUniqueNftController {
     }.pathParam<String>("network") {
         it.schema<UniqueNetwork> {}
     }.pathParam<String>("account"){
-    }.json<TokenOwnersDataResponse>("200"){
+    }.json<UniqueNftMetadata>("200"){
         it.description("Fetched NFTs")
     }
 

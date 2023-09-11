@@ -79,7 +79,7 @@ data class UniqueNftMetadata(
     @Serializable
     data class Attribute(
         val name: String,
-        var value: JsonElement,
+        var value: String,
     )
 }
 
