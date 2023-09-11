@@ -17,7 +17,7 @@ object PolicyRegistry {
 
     fun createSavedPolicy(name: String, dynPolArg: DynamicPolicyArg): Boolean {
         if(!contains(name)) {
-            policies.put(name, dynPolArg)
+            policies[name] = dynPolArg
             return true
         }
         return false

@@ -1,6 +1,5 @@
 package id.walt.nftkit.common
 
-import id.walt.nftkit.opa.OPAPolicyEngine
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -18,7 +17,7 @@ val client = HttpClient(CIO) {
 }
 
 fun resolveContent(fileUrlContent: String): String {
-  var file = File(fileUrlContent)
+  val file = File(fileUrlContent)
   if(file.exists()) {
     return file.readText()
   }

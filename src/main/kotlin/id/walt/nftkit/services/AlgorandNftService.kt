@@ -10,7 +10,6 @@ import id.walt.nftkit.Values.ALGORAND_TESTNET_EXPLORER
 import id.walt.nftkit.metadata.IPFSMetadata
 import id.walt.nftkit.services.WaltIdServices.loadAlgorand
 import id.walt.nftkit.services.WaltIdServices.loadApiKeys
-import id.walt.nftkit.services.WaltIdServices.loadIndexers
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -161,7 +160,7 @@ object AlgorandNftService {
     val client1 = AlgodClient(ALGOD_API_ADDR, ALGOD_PORT, ALGOD_API_TOKEN, ALGOD_API_TOKEN_KEY)
 
     fun createAccount(): AlgorandAccount {
-        val account = com.algorand.algosdk.account.Account()
+        val account = Account()
         return AlgorandAccount(account.address.toString(), account.toMnemonic())
     }
 
@@ -180,8 +179,7 @@ object AlgorandNftService {
             connection.requestMethod = "POST"
             connection.doOutput = true
 
-            val data = jsonData
-            val postData = data.toByteArray(Charsets.UTF_8)
+            val postData = jsonData.toByteArray(Charsets.UTF_8)
 
             connection.setRequestProperty("Authorization", "Bearer $apiKey")
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
@@ -219,19 +217,18 @@ object AlgorandNftService {
 
         val hash = MessageDigest.getInstance("SHA-256")
 
-        val hashBytes = hash.digest(jsonData.toByteArray(StandardCharsets.UTF_8))
-        return hashBytes
+        return hash.digest(jsonData.toByteArray(StandardCharsets.UTF_8))
     }
 
     fun createAssetArc3(chain : AlgorandChain ,Name : String , UnitName : String ,  image : String , description: String , decimals: Int , properties: Map<String, String>? ) : AlgodResponse{
 
         val jsonData = """
         {
-            "name":"${Name}",
-            "description": "${description}",
-            "image": "${image}",
+            "name":"$Name",
+            "description": "$description",
+            "image": "$image",
             "decimals": ${decimals},
-            "unitName": "${UnitName}",
+            "unitName": "$UnitName",
              "image_integrity": "null",
              "image_mimetype": "null",
              "properties": ${properties?.let { Json.encodeToJsonElement(it) }}
@@ -282,9 +279,9 @@ object AlgorandNftService {
             val encodedTxBytes = Encoder.encodeToMsgPack(signedTx)
             val txResponse = client_algod.RawTransaction().rawtxn(encodedTxBytes).execute(txHeaders, txValues).body()
             return when(chain) {
-                AlgorandChain.ALGORAND_MAINNET -> AlgodResponse(txResponse.txId, "$ALGORAND_MAINNET_EXPLORER"+"tx/${txResponse.txId}")
-                AlgorandChain.ALGORAND_TESTNET -> AlgodResponse(txResponse.txId, "$ALGORAND_TESTNET_EXPLORER"+"tx/${txResponse.txId}")
-                AlgorandChain.ALGORAND_BETANET -> AlgodResponse(txResponse.txId, "$ALGORAND_BETANET_EXPLORER"+"tx/${txResponse.txId}")
+                AlgorandChain.ALGORAND_MAINNET -> AlgodResponse(txResponse.txId, ALGORAND_MAINNET_EXPLORER +"tx/${txResponse.txId}")
+                AlgorandChain.ALGORAND_TESTNET -> AlgodResponse(txResponse.txId, ALGORAND_TESTNET_EXPLORER +"tx/${txResponse.txId}")
+                AlgorandChain.ALGORAND_BETANET -> AlgodResponse(txResponse.txId, ALGORAND_BETANET_EXPLORER +"tx/${txResponse.txId}")
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -300,13 +297,13 @@ object AlgorandNftService {
                 AlgorandChain.ALGORAND_TESTNET -> "https://testnet-api.algonode.cloud"
                 AlgorandChain.ALGORAND_BETANET -> "https://betanet-api.algonode.cloud"
             }
-            val tokenParams = client.get(API_ADDR + "/v2/assets/" + assetId){
+            val tokenParams = client.get("$API_ADDR/v2/assets/$assetId"){
                 contentType(ContentType.Application.Json)
             }.body<Asset>()
-            var result = AlgorandToken()
+            val result = AlgorandToken()
 
             if (tokenParams.params?.url != null) {
-                var cid = (tokenParams.params?.url)?.substringAfter("ipfs://")
+                val cid = (tokenParams.params?.url)?.substringAfter("ipfs://")
                 try {
                     val nft =
                         IPFSMetadata.client.get("https://ipfs.io/ipfs/$cid")
@@ -328,7 +325,7 @@ object AlgorandNftService {
                 AlgorandChain.ALGORAND_TESTNET -> "https://testnet-api.algonode.cloud"
                 AlgorandChain.ALGORAND_BETANET -> "https://betanet-api.algonode.cloud"
             }
-            val asset = client.get(API_ADDR + "/v2/assets/" + assetId){
+            val asset = client.get("$API_ADDR/v2/assets/$assetId"){
                     contentType(ContentType.Application.Json)
                 }.body<Asset>()
 
@@ -339,13 +336,13 @@ object AlgorandNftService {
     fun getNftMetadata(assetId: String, chain: AlgorandChain): AlgoNftMetadata {
         return runBlocking {
             val asset: Asset = getAssetMeatadata(assetId, chain)
-            var cid = (asset.params?.url)?.substringAfter("ipfs://")
+            val cid = (asset.params?.url)?.substringAfter("ipfs://")
             var nft = AlgoNftMetadata()
            try {
             nft = IPFSMetadata.client.get("https://ipfs.algonode.xyz/ipfs/$cid")
                 { contentType(ContentType.Application.Json)}.body<AlgoNftMetadata>()
-            return@runBlocking nft;
-        }
+            return@runBlocking nft
+           }
            catch (e : Exception){
                return@runBlocking nft
            }}
@@ -384,7 +381,7 @@ object AlgorandNftService {
                 AlgorandChain.ALGORAND_BETANET -> "https://betanet-api.algonode.cloud"
             }
             val response =
-                client.get(API_ADDR+"/v2/accounts/"+address+"/assets/"+assetId){
+                client.get("$API_ADDR/v2/accounts/$address/assets/$assetId"){
                     contentType(ContentType.Application.Json)
                 }.body<AccountAssetResponse>()
             return@runBlocking response
@@ -400,7 +397,7 @@ object AlgorandNftService {
             if (response.properties != null) {
                 for (trait in response.properties) {
 
-                   if (trait.key.filterIndexed { index, c -> index < traitType.length } ==traitType && trait.value.jsonPrimitive.content.equals(traitValue) ) {
+                   if (trait.key.filterIndexed { index, c -> index < traitType.length } ==traitType && trait.value.jsonPrimitive.content == traitValue) {
                         return@runBlocking true
                     }
 

@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Generated
 @Serializable
-public data class TokenEntity(
-    public val image: JSONObject? = null,
-    public val attributes: JSONObject? = null,
+data class TokenEntity(
+    val image: JSONObject? = null,
+    val attributes: JSONObject? = null,
 )

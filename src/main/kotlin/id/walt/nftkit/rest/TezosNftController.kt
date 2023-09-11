@@ -1,7 +1,6 @@
 package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
-import id.walt.nftkit.models.NFTsInfos
 import id.walt.nftkit.services.*
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.Context

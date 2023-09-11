@@ -44,7 +44,7 @@ object ExtensionsService {
         signedAccount: String?,
         parameter: UpdateTokenURIRequest
     ): TransactionResponse {
-        var tokenUri: String?
+        val tokenUri: String?
         val oldUri= NftService.getNftMetadataUri(chain, contractAddress, BigInteger(tokenId))
         if (parameter.metadataUri != null && parameter.metadataUri != "") {
             tokenUri = parameter.metadataUri

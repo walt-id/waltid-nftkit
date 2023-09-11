@@ -1,7 +1,6 @@
 package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
-import id.walt.nftkit.services.FlowNFTMetadata
 import id.walt.nftkit.services.FlowNftService
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.Context
@@ -42,7 +41,7 @@ object FlowNftController {
         )
         ctx.json(result)
     }
-    fun getNFTbyIdDocs() = document().operation() {
+    fun getNFTbyIdDocs() = document().operation {
         it.summary("Get NFT token by id").operationId("GetNFTbyId").addTagsItem("Flow Blockchain: Non-fungible tokens(NFTs)")
     }.pathParam<String>("chain") {
         it.schema<String> { }
@@ -64,7 +63,7 @@ object FlowNftController {
         ctx.json(result)
     }
 
-    fun getNFTinCollectionDocs() = document().operation() {
+    fun getNFTinCollectionDocs() = document().operation {
         it.summary("Get NFT token in collection").operationId("GetNFTinCollection").addTagsItem("Flow Blockchain: Non-fungible tokens(NFTs)")
     }.pathParam<String>("chain") {
         it.schema<String> { }

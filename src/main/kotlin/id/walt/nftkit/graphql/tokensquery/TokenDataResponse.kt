@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 
 @Generated
 @Serializable
-public data class TokenDataResponse(
-  public val `data`: List<TokenEntity>? = null,
+data class TokenDataResponse(
+  val `data`: List<TokenEntity>? = null,
 )

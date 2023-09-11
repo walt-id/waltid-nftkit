@@ -1,7 +1,6 @@
 package id.walt.nftkit.metadata
 
 import com.beust.klaxon.Klaxon
-import id.walt.nftkit.services.NftMetadata
 import id.walt.nftkit.services.NftMetadataWrapper
 import id.walt.nftkit.services.WaltIdServices
 import io.ktor.client.*
@@ -16,12 +15,11 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.math.BigInteger
 import java.net.URI
+import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.nio.charset.StandardCharsets
 import java.util.*
-import kotlin.collections.LinkedHashMap
-import java.net.http.HttpClient
 
 
 @Serializable
@@ -86,7 +84,7 @@ object IPFSMetadata: MetadataUri {
         val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         val result = Klaxon()
             .parse<NFTStorageResult>(response.body())
-        if(result!!.ok == true){
+        if(result!!.ok){
              return result.value.url
         }else{
             throw Exception("Something wrong with IPFS")
