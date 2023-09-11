@@ -7,6 +7,7 @@ import id.walt.nftkit.utilis.Common
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
 @Serializable
 data class PolkadotUniqueDeployRequest(
@@ -70,7 +71,7 @@ object PolkadotUniqueNftController {
 
         val tokenDataResponse = PolkadotNftService.fetchUniqueNFTsMetadata(network, collectionId, tokenId)
         val result = PolkadotNftService.parseNftMetadataUniqueResponse(tokenDataResponse!!)
-        ctx.json(result)
+        ctx.result(Json.encodeToString(result))
     }
 
     fun fetchUniqueNftMetadataDocs() = document().operation {

@@ -160,7 +160,7 @@ object VerificationService {
             if(result != null && result.data != null){
                 val uniqueNftMetadata= PolkadotNftService.parseNftMetadataUniqueResponse(result)
                 if(uniqueNftMetadata!!.attributes?.filter {
-                        (it.name.equals(name) && it.value.equals(
+                        (it.name.equals(name) && it.value.toString().equals(
                             value,
                             true
                         )) || (value == null && name.equals(it.name))
