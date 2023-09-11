@@ -71,8 +71,6 @@ object PolkadotUniqueNftController {
         val network: UniqueNetwork = Common.getUniqueChain(chain.uppercase())
         val result = PolkadotNftService.fetchUniqueNFTsMetadata(network, account)
 
-        println("Result: $result")
-
         ctx.result(Json.encodeToString(result))
     }
 
