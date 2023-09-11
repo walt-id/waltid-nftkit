@@ -173,6 +173,7 @@ object PolkadotNftService {
 
     fun fetchUniqueNFTsMetadata(network: UniqueNetwork, account: String): List<UniqueNftMetadata> = runBlocking {
         val tokens = mutableListOf<UniqueNftMetadata>()
+
         fetchUniqueNFTs(network, account).data?.forEach {
             val res = fetchUniqueNFTMetadata(network, it.collection_id.toString(), it.token_id.toString())
             val result = parseNftMetadataUniqueResponse(res!!)
