@@ -14,7 +14,6 @@ import id.walt.rest.OpenAPIUtils.documentedIgnored
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.*
 import io.javalin.core.util.RouteOverviewPlugin
-import io.javalin.plugin.json.JavalinJackson
 import io.javalin.plugin.json.JsonMapper
 import io.javalin.plugin.openapi.InitialConfigurationCreator
 import io.javalin.plugin.openapi.OpenApiOptions
@@ -26,7 +25,7 @@ import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Contact
 import io.swagger.v3.oas.models.security.SecurityScheme
 import io.swagger.v3.oas.models.servers.Server
-import mu.KotlinLogging
+import mu.two.KotlinLogging
 
 object NftKitApi {
 
@@ -106,9 +105,14 @@ object NftKitApi {
                         return Klaxon().toJsonString(obj)
                     }
 
+                    /*override fun <T : Any?> fromJsonStream(json: InputStream, targetClass: Class<T>): T & Any {
+                        return JavalinJackson(mapper).fromJsonString(json, targetClass)
+                        return super.fromJsonStream(json, targetClass)
+                    }
+
                     override fun <T : Any?> fromJsonString(json: String, targetClass: Class<T>): T {
                         return JavalinJackson(mapper).fromJsonString(json, targetClass)
-                    }
+                    }*/
                 })
 
                 //addStaticFiles("/static")
