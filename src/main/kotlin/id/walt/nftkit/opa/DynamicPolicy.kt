@@ -1,81 +1,97 @@
 package id.walt.nftkit.opa
 
-import id.walt.nftkit.services.NftMetadata
 import id.walt.nftkit.services.NftMetadataWrapper
 
 object DynamicPolicy {
 
-     fun doVerify(input: Map<String, Any?>, policy: String, query: String, nftMetadata: NftMetadataWrapper): Boolean {
-         val data = getNftMetadataValues(nftMetadata)
-         return PolicyEngine.get(PolicyEngineType.OPA).validate(
-             input = input,
-             data = data,
-             policy = policy,
-             query = query
-         )
-
-        return false
+    fun doVerify(input: Map<String, Any?>, policy: String, query: String, nftMetadata: NftMetadataWrapper): Boolean {
+        val data = getNftMetadataValues(nftMetadata)
+        return PolicyEngine.get(PolicyEngineType.OPA).validate(
+            input = input,
+            data = data,
+            policy = policy,
+            query = query
+        )
     }
 
-    private fun getNftMetadataValues(nftMetadata: NftMetadataWrapper): MutableMap<String, String?> {
-        val data = mutableMapOf<String, String?>()
-        if(nftMetadata.evmNftMetadata != null){
-            data.put("name", nftMetadata.evmNftMetadata.name)
-            data.put("description", nftMetadata.evmNftMetadata.description)
-            nftMetadata.evmNftMetadata.attributes?.forEach { data.put(it.trait_type, it.value.toString()) }
-        }else if(nftMetadata.tezosNftMetadata != null){
-            data.put("name", nftMetadata.tezosNftMetadata.name)
-            data.put("description", nftMetadata.tezosNftMetadata.description)
-            data.put("symbol", nftMetadata.tezosNftMetadata.symbol)
-            data.put("decimals", nftMetadata.tezosNftMetadata.decimals)
-            data.put("displayUri", nftMetadata.tezosNftMetadata.displayUri)
-            data.put("artifactUri", nftMetadata.tezosNftMetadata.name)
-            data.put("thumbnailUri", nftMetadata.tezosNftMetadata.thumbnailUri)
-            data.put("isTransferable", nftMetadata.tezosNftMetadata.isTransferable.toString())
-            data.put("isBooleanAmount", nftMetadata.tezosNftMetadata.isBooleanAmount.toString())
-            data.put("shouldPreferSymbol", nftMetadata.tezosNftMetadata.shouldPreferSymbol.toString())
-            data.put("category", nftMetadata.tezosNftMetadata.category)
-            data.put("collectionName", nftMetadata.tezosNftMetadata.collectionName)
-            data.put("creatorName", nftMetadata.tezosNftMetadata.creatorName)
-            nftMetadata.tezosNftMetadata.attributes?.forEach { data.put(it.name, it.value) }
-        }else if(nftMetadata.nearNftMetadata != null){
-            data.put("title", nftMetadata.nearNftMetadata.metadata.title)
-            data.put("description", nftMetadata.nearNftMetadata.metadata.description)
-            data.put("media", nftMetadata.nearNftMetadata.metadata.media)
-            data.put("mediaHash", nftMetadata.nearNftMetadata.metadata.media_hash)
-            data.put("copies", nftMetadata.nearNftMetadata.metadata.copies.toString())
-            data.put("issuedAt", nftMetadata.nearNftMetadata.metadata.issued_at.toString())
-            data.put("expiresAt", nftMetadata.nearNftMetadata.metadata.expires_at.toString())
-            data.put("startsAt", nftMetadata.nearNftMetadata.metadata.starts_at.toString())
-            data.put("updatedAt", nftMetadata.nearNftMetadata.metadata.updated_at.toString())
-            data.put("reference", nftMetadata.nearNftMetadata.metadata.starts_at.toString())
-            data.put("referenceHash", nftMetadata.nearNftMetadata.metadata.reference_hash.toString())
-            data.put("extra", nftMetadata.nearNftMetadata.metadata.extra.toString())
-            data.put("royalties", nftMetadata.nearNftMetadata.royalty.toString())
-            data.put("approved_accounts", nftMetadata.nearNftMetadata.approved_account_ids.toString())
+    private fun getNftMetadataValues(nftMetadata: NftMetadataWrapper): Map<String, String?> {
+        val data: Map<String, String?> = when {
+            nftMetadata.evmNftMetadata != null -> nftMetadata.evmNftMetadata.run {
+                mapOf(
+                    "name" to name,
+                    "description" to description,
+                    *((attributes?.map { it.trait_type to it.value.toString() }) ?: emptyList()).toTypedArray()
+                )
+            }
 
+            nftMetadata.tezosNftMetadata != null -> nftMetadata.tezosNftMetadata.run {
+                mapOf(
+                    "name" to name,
+                    "description" to description,
+                    "symbol" to symbol,
+                    "decimals" to decimals,
+                    "displayUri" to displayUri,
+                    "artifactUri" to name,
+                    "thumbnailUri" to thumbnailUri,
+                    "isTransferable" to isTransferable.toString(),
+                    "isBooleanAmount" to isBooleanAmount.toString(),
+                    "shouldPreferSymbol" to shouldPreferSymbol.toString(),
+                    "category" to category,
+                    "collectionName" to collectionName,
+                    "creatorName" to creatorName,
+                    *((attributes?.map { it.name to it.value }) ?: emptyList()).toTypedArray()
+                )
+            }
 
+            nftMetadata.nearNftMetadata != null -> nftMetadata.nearNftMetadata.run {
+                mapOf(
+                    "title" to metadata.title,
+                    "description" to metadata.description,
+                    "media" to metadata.media,
+                    "mediaHash" to metadata.media_hash,
+                    "copies" to metadata.copies.toString(),
+                    "issuedAt" to metadata.issued_at.toString(),
+                    "expiresAt" to metadata.expires_at.toString(),
+                    "startsAt" to metadata.starts_at.toString(),
+                    "updatedAt" to metadata.updated_at.toString(),
+                    "reference" to metadata.starts_at.toString(),
+                    "referenceHash" to metadata.reference_hash.toString(),
+                    "extra" to metadata.extra.toString(),
+                    "royalties" to royalty.toString(),
+                    "approved_accounts" to approved_account_ids.toString()
+                )
+            }
 
-        }else if (nftMetadata.flowNftMetadata != null){
-            data.put("name", nftMetadata.flowNftMetadata.name)
-            data.put("description", nftMetadata.flowNftMetadata.description)
-            data.put("media", nftMetadata.flowNftMetadata.thumbnail)
-            data.put("owner", nftMetadata.flowNftMetadata.owner)
-            data.put("externalURL" , nftMetadata.flowNftMetadata.externalURL.toString())
-            data.put("collectionName", nftMetadata.flowNftMetadata.collectionName)
-            data.put("traits", nftMetadata.flowNftMetadata.traits?.traits.toString())
-            data.put("royalties", nftMetadata.flowNftMetadata.royalties.toString())
+            nftMetadata.flowNftMetadata != null -> nftMetadata.flowNftMetadata.run {
+                mapOf(
+                    "name" to name,
+                    "description" to description,
+                    "media" to thumbnail,
+                    "owner" to owner,
+                    "externalURL" to externalURL.toString(),
+                    "collectionName" to collectionName,
+                    "traits" to traits?.traits.toString(),
+                    "royalties" to royalties.toString()
+                )
+            }
 
-        }else if(nftMetadata.uniqueNftMetadata != null){
-            data.put("image", nftMetadata.uniqueNftMetadata.ipfsCid)
-            nftMetadata.uniqueNftMetadata.attributes?.forEach { data.put(it.name, it.value) }
+            nftMetadata.uniqueNftMetadata != null -> nftMetadata.uniqueNftMetadata.run {
+                mapOf(
+                    "image" to ipfsCid,
+                    *((attributes?.map { it.name to it.value.toString() }) ?: emptyList()).toTypedArray()
+                )
+            }
 
+            nftMetadata.algorandNftMetadata != null -> nftMetadata.algorandNftMetadata.run {
+                mapOf(
+                    "name" to name,
+                    "description" to description,
+                    "image" to image,
+                    "unitname" to unitName,
+                )
+            }
 
-        }else if (nftMetadata.algorandNftMetadata != null){
-            data.put("name", nftMetadata.algorandNftMetadata.name)
-            data.put("description", nftMetadata.algorandNftMetadata.description)
-            data.put("image", nftMetadata.algorandNftMetadata.image)
-            data.put("unitname", nftMetadata.algorandNftMetadata.unitName)
+            else -> throw IllegalArgumentException("No NFT metadata or NFT metadata not supported: $nftMetadata")
         }
         return data
     }

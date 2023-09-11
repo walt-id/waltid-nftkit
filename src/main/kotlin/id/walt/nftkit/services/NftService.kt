@@ -21,7 +21,6 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
@@ -46,12 +45,12 @@ sealed class Value {
 @Serializable
 data class NftMetadata(
 
-    var description: String?= null,
-    var name: String?=null,
-    var image: String?=null,
-    var image_data: String?=null,
-    var external_url: String?=null,
-    val attributes: List<Attributes>?=null
+    var description: String? = null,
+    var name: String? = null,
+    var image: String? = null,
+    var image_data: String? = null,
+    var external_url: String? = null,
+    val attributes: List<Attributes>? = null
 
 ) {
     @Serializable
@@ -64,13 +63,12 @@ data class NftMetadata(
 }
 
 data class NftMetadataWrapper(
-    val evmNftMetadata: NftMetadata?= null,
-    val tezosNftMetadata: TezosNftMetadata?= null,
-    val nearNftMetadata: NearNftMetadata?= null,
-    val flowNftMetadata: FlowNFTMetadata?= null,
-    val uniqueNftMetadata: UniqueNftMetadata?= null,
-    val algorandNftMetadata : AlgoNftMetadata?= null,
-
+    val evmNftMetadata: NftMetadata? = null,
+    val tezosNftMetadata: TezosNftMetadata? = null,
+    val nearNftMetadata: NearNftMetadata? = null,
+    val flowNftMetadata: FlowNFTMetadata? = null,
+    val uniqueNftMetadata: UniqueNftMetadata? = null,
+    val algorandNftMetadata: AlgoNftMetadata? = null,
 )
 
 data class TokenCollectionInfo(
@@ -243,7 +241,7 @@ data class NFTsAlchemyResult(
         val tokenUri: TokenUriByAlchemy,
         //val media: MediaByAlchemy,
         val metadata: NftMetadata?,
-       // val timeLastUpdated: String
+        // val timeLastUpdated: String
     ) {
         @Serializable
         data class ContractAddressByAlchemy(
@@ -277,7 +275,7 @@ data class NFTsAlchemyResult(
 
 
 object NftService {
-    val client = HttpClient(CIO.create{requestTimeout = 0}) {
+    val client = HttpClient(CIO.create { requestTimeout = 0 }) {
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
@@ -292,9 +290,9 @@ object NftService {
     }
 
     fun deploySmartContractToken(chain: EVMChain, parameter: DeploymentParameter, options: DeploymentOptions): DeploymentResponse {
-        return if (parameter.options.transferable){
+        return if (parameter.options.transferable) {
             Erc721TokenStandard.deployContract(chain, parameter, options)
-        }else{
+        } else {
             SoulBoundTokenStandard.deployContract(chain)
         }
     }
@@ -311,7 +309,7 @@ object NftService {
             tokenUri = parameter.metadataUri
         } else {
             val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(options.metadataStorageType)
-            val nftMetadataWrapper= NftMetadataWrapper(evmNftMetadata = parameter.metadata)
+            val nftMetadataWrapper = NftMetadataWrapper(evmNftMetadata = parameter.metadata)
             tokenUri = metadataUri.getTokenUri(nftMetadataWrapper)
         }
 
@@ -319,15 +317,15 @@ object NftService {
     }
 
 
-     fun getNftMetadata(chain: EVMChain, contractAddress: String, tokenId: BigInteger): NftMetadata {
+    fun getNftMetadata(chain: EVMChain, contractAddress: String, tokenId: BigInteger): NftMetadata {
         var uri = getMetadatUri(chain, contractAddress, tokenId)
-        if(Common.getMetadataType(uri).equals(MetadataStorageType.ON_CHAIN)){
+        if (Common.getMetadataType(uri).equals(MetadataStorageType.ON_CHAIN)) {
             val decodedUri = decBase64Str(uri.substring(29))
-            return Json{ ignoreUnknownKeys = true }.decodeFromString(decodedUri)
-        }else{
-            if(uri.contains("https://", true)){
+            return Json { ignoreUnknownKeys = true }.decodeFromString(decodedUri)
+        } else {
+            if (uri.contains("https://", true)) {
                 return getWebDocumentMetadata(uri)
-            }else{
+            } else {
                 return getIPFSMetadataUsingNFTStorage(uri)
             }
         }
@@ -344,38 +342,71 @@ object NftService {
         return BigInteger.valueOf(0)
     }
 
-    fun ownerOf(chain: EVMChain,contractAddress: String, tokenId: BigInteger): String{
+    fun ownerOf(chain: EVMChain, contractAddress: String, tokenId: BigInteger): String {
         //in the case of ERC721
-        if(isErc721Standard(chain, contractAddress) == true){
-            return Erc721TokenStandard.ownerOf(chain, contractAddress,Uint256(tokenId))
+        if (isErc721Standard(chain, contractAddress) == true) {
+            return Erc721TokenStandard.ownerOf(chain, contractAddress, Uint256(tokenId))
 
         }
         return String()
     }
 
-    fun ownerOfSoulbound( chain: EVMChain , contractAddress: String , tokenId: Uint256) : String{
+    fun ownerOfSoulbound(chain: EVMChain, contractAddress: String, tokenId: Uint256): String {
         return SoulBoundTokenStandard.ownerOf(chain, contractAddress, tokenId).toString()
     }
 
-    fun transferFrom(chain: EVMChain, contractAddress: String, from: String, to: String, tokenId: BigInteger, signedAccount: String?): TransactionResponse {
-        val transactionReceipt = Erc721TokenStandard.transferFrom(chain, contractAddress, Address(from), Address(to), Uint256(tokenId), signedAccount)
+    fun transferFrom(
+        chain: EVMChain,
+        contractAddress: String,
+        from: String,
+        to: String,
+        tokenId: BigInteger,
+        signedAccount: String?
+    ): TransactionResponse {
+        val transactionReceipt =
+            Erc721TokenStandard.transferFrom(chain, contractAddress, Address(from), Address(to), Uint256(tokenId), signedAccount)
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun safeTransferFrom(chain: EVMChain, contractAddress: String, from: String, to: String, tokenId: BigInteger, signedAccount: String?): TransactionResponse {
-        val transactionReceipt = Erc721TokenStandard.safeTransferFrom(chain, contractAddress, Address(from), Address(to), Uint256(tokenId), signedAccount)
+    fun safeTransferFrom(
+        chain: EVMChain,
+        contractAddress: String,
+        from: String,
+        to: String,
+        tokenId: BigInteger,
+        signedAccount: String?
+    ): TransactionResponse {
+        val transactionReceipt =
+            Erc721TokenStandard.safeTransferFrom(chain, contractAddress, Address(from), Address(to), Uint256(tokenId), signedAccount)
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun safeTransferFrom(chain: EVMChain, contractAddress: String, from: String, to: String, tokenId: BigInteger, data: String?, signedAccount: String?): TransactionResponse {
-        val transactionReceipt = Erc721TokenStandard.safeTransferFrom(chain, contractAddress, Address(from), Address(to), Uint256(tokenId), DynamicBytes(
-            data?.toByteArray() ?: null
-        ), signedAccount)
+    fun safeTransferFrom(
+        chain: EVMChain,
+        contractAddress: String,
+        from: String,
+        to: String,
+        tokenId: BigInteger,
+        data: String?,
+        signedAccount: String?
+    ): TransactionResponse {
+        val transactionReceipt = Erc721TokenStandard.safeTransferFrom(
+            chain, contractAddress, Address(from), Address(to), Uint256(tokenId), DynamicBytes(
+                data?.toByteArray() ?: null
+            ), signedAccount
+        )
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
-    fun setApprovalForAll(chain: EVMChain, contractAddress: String, operator: String, approved: Boolean, signedAccount: String?): TransactionResponse {
-        val transactionReceipt = Erc721TokenStandard.setApprovalForAll(chain, contractAddress, Address(operator), Bool(approved), signedAccount)
+    fun setApprovalForAll(
+        chain: EVMChain,
+        contractAddress: String,
+        operator: String,
+        approved: Boolean,
+        signedAccount: String?
+    ): TransactionResponse {
+        val transactionReceipt =
+            Erc721TokenStandard.setApprovalForAll(chain, contractAddress, Address(operator), Bool(approved), signedAccount)
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
@@ -391,6 +422,7 @@ object NftService {
     fun getApproved(chain: EVMChain, contractAddress: String, tokenId: BigInteger): String {
         return Erc721TokenStandard.getApproved(chain, contractAddress, Uint256(tokenId)).value
     }
+
     fun getTokenCollectionInfo(chain: EVMChain, contractAddress: String): TokenCollectionInfo {
         //in the case of ERC721
         if (isErc721Standard(chain, contractAddress)) {
@@ -403,40 +435,52 @@ object NftService {
     }
 
     fun getAccountNFTs(chain: Chain, account: String): NFTsInfos {
-        return when{
+        return when {
             Common.isEVMChain(chain) -> {
                 val result = getAccountNFTsByAlchemy(chain, account)
                 return (NFTsInfos(evmNfts = result))
             }
+
             Common.isTezosChain(chain) -> {
-                val result= TezosNftService.fetchAccountNFTsByTzkt(chain, account)
+                val result = TezosNftService.fetchAccountNFTsByTzkt(chain, account)
                 return (NFTsInfos(tezosNfts = result))
             }
+
             Common.isPolkadotParachain(chain) -> {
-                val evmErc721CollectiblesResult= PolkadotNftService.fetchEvmErc721CollectiblesBySubscan(
-                    PolkadotParachain.valueOf(chain.toString()), account)
-                if(evmErc721CollectiblesResult.data?.list == null) return NFTsInfos()
-                val result= evmErc721CollectiblesResult.data.list.map {
+                val evmErc721CollectiblesResult = PolkadotNftService.fetchEvmErc721CollectiblesBySubscan(
+                    PolkadotParachain.valueOf(chain.toString()), account
+                )
+                if (evmErc721CollectiblesResult.data?.list == null) return NFTsInfos()
+                val result = evmErc721CollectiblesResult.data.list.map {
                     var nftMetadata: NftMetadata? = null
                     try {
-                        nftMetadata= getNftMetadata(EVMChain.valueOf(chain.toString()), it.contract, BigInteger( it.token_id))
-                    }catch (e: Exception){}
+                        nftMetadata = getNftMetadata(EVMChain.valueOf(chain.toString()), it.contract, BigInteger(it.token_id))
+                    } catch (e: Exception) {
+                    }
                     PolkadotEvmNft(it.contract, it.token_id, nftMetadata)
                 }
                 return (NFTsInfos(polkadotEvmNft = result))
             }
+
             Common.isUniqueParachain(chain) -> {
                 val uniqueNftsResult = PolkadotNftService.fetchUniqueNFTs(UniqueNetwork.valueOf(chain.toString()), account)
-                if(uniqueNftsResult.data == null || uniqueNftsResult.data.size == 0)  return NFTsInfos()
+                if (uniqueNftsResult.data == null || uniqueNftsResult.data.size == 0) return NFTsInfos()
 
-                val result= uniqueNftsResult.data.map {
-                    val metadata= PolkadotNftService.fetchUniqueNFTsMetadata(UniqueNetwork.valueOf(chain.toString()), it.collection_id.toString(), it.token_id.toString())
-                    val uniqueNftMetadata= PolkadotNftService.parseNftMetadataUniqueResponse(metadata!!)
+                val result = uniqueNftsResult.data.map {
+                    val metadata = PolkadotNftService.fetchUniqueNFTsMetadata(
+                        UniqueNetwork.valueOf(chain.toString()),
+                        it.collection_id.toString(),
+                        it.token_id.toString()
+                    )
+                    val uniqueNftMetadata = PolkadotNftService.parseNftMetadataUniqueResponse(metadata!!)
                     PolkadotUniqueNft(it.collection_id.toString(), it.token_id.toString(), uniqueNftMetadata)
                 }
                 return (NFTsInfos(polkadotUniqueNft = result))
             }
-            else -> {throw Exception("Chain  is not supported")}
+
+            else -> {
+                throw Exception("Chain  is not supported")
+            }
         }
     }
 
@@ -464,13 +508,13 @@ object NftService {
                 Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_ALCHEMY_URL
                 Chain.TEZOS -> throw Exception("Tezos is not supported")
                 Chain.GHOSTNET -> throw Exception("Ghostnet is not supported")
-                Chain.TESTNET  -> throw Exception("Near testnet is not supported")
-                Chain.MAINNET  -> throw Exception("Near mainnet is not supported")
-                Chain.ASTAR  -> throw Exception("ASTAR is not supported")
-                Chain.MOONBEAM  -> throw Exception("MOONBEAM is not supported")
+                Chain.TESTNET -> throw Exception("Near testnet is not supported")
+                Chain.MAINNET -> throw Exception("Near mainnet is not supported")
+                Chain.ASTAR -> throw Exception("ASTAR is not supported")
+                Chain.MOONBEAM -> throw Exception("MOONBEAM is not supported")
                 Chain.UNIQUE -> throw Exception("UNIQUE is not supported")
                 Chain.OPAL -> throw Exception("OPAL is not supported")
-                else -> throw Exception ("Not supported")
+                else -> throw Exception("Not supported")
             }
 
             val result = fetchAccountNFTsTokensByAlchemy(account = account, url = url)
@@ -486,26 +530,28 @@ object NftService {
     fun updateMetadata(
         chain: EVMChain, contractAddress: String, tokenId: String, signedAccount: String?,
         key: String,
-        value: String): TransactionResponse {
-        val metadata= getNftMetadata(chain, contractAddress, BigInteger(tokenId))
-        if("name".equals(key, true)){
-            metadata.name= value
-        }else if("description".equals(key, true)){
-            metadata.description= value
-        }else if("image".equals(key, true)){
-            metadata.image= value
-        }else{
+        value: String
+    ): TransactionResponse {
+        val metadata = getNftMetadata(chain, contractAddress, BigInteger(tokenId))
+        if ("name".equals(key, true)) {
+            metadata.name = value
+        } else if ("description".equals(key, true)) {
+            metadata.description = value
+        } else if ("image".equals(key, true)) {
+            metadata.image = value
+        } else {
             metadata.attributes?.filter {
                 it.trait_type.equals(key, true)
             }?.map {
-                it.value= JsonPrimitive(value)
+                it.value = JsonPrimitive(value)
             }
         }
-        val oldUri= getMetadatUri(chain, contractAddress, BigInteger(tokenId))
+        val oldUri = getMetadatUri(chain, contractAddress, BigInteger(tokenId))
         val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(Common.getMetadataType(oldUri))
-        val nftMetadataWrapper= NftMetadataWrapper(evmNftMetadata = metadata)
+        val nftMetadataWrapper = NftMetadataWrapper(evmNftMetadata = metadata)
         val tokenUri = metadataUri.getTokenUri(nftMetadataWrapper)
-        val transactionReceipt = Erc721TokenStandard.updateTokenUri(chain, contractAddress, BigInteger(tokenId), Utf8String(tokenUri), signedAccount)
+        val transactionReceipt =
+            Erc721TokenStandard.updateTokenUri(chain, contractAddress, BigInteger(tokenId), Utf8String(tokenUri), signedAccount)
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
@@ -549,19 +595,20 @@ object NftService {
 
     fun fetchIPFSData(uri: String): String {
         return runBlocking {
-            var uriFormat= uri
-            uriFormat= uri.replace("ipfs://","", true)
+            var uriFormat = uri
+            uriFormat = uri.replace("ipfs://", "", true)
             val result = IPFSMetadata.client.get("https://nftstorage.link/ipfs/$uriFormat") {
             }.body<String>()
             return@runBlocking result
         }
     }
 
-     fun getIPFSMetadataUsingNFTStorage(uri: String): NftMetadata {
+    fun getIPFSMetadataUsingNFTStorage(uri: String): NftMetadata {
         return runBlocking {
-            var uriFormat= uri
-            if(uri.contains("ipfs://", true)){}
-            uriFormat= uri.replace("ipfs://","", true)
+            var uriFormat = uri
+            if (uri.contains("ipfs://", true)) {
+            }
+            uriFormat = uri.replace("ipfs://", "", true)
             val result = IPFSMetadata.client.get("https://nftstorage.link/ipfs/$uriFormat") {
             }.body<NftMetadata>()
             return@runBlocking result
@@ -575,10 +622,11 @@ object NftService {
             println("result")
             println(nft)
             val jsonObject = Json.parseToJsonElement(nft).jsonObject
-            val result= parseNftEvmMetadataResult(jsonObject)
+            val result = parseNftEvmMetadataResult(jsonObject)
             return@runBlocking result
         }
     }
+
     fun addFileToIpfsUsingNFTStorage(file: ByteArray): NFTStorageAddFileResult {
         return runBlocking {
             val res = IPFSMetadata.client.post("https://api.nft.storage/upload") {
@@ -596,7 +644,7 @@ object NftService {
         chain: EVMChain,
         contractAddress: String
     ): MintingResponse {
-        if (isErc721Standard(chain, contractAddress) && !isSoulBoundStandard(chain , contractAddress)) {
+        if (isErc721Standard(chain, contractAddress) && !isSoulBoundStandard(chain, contractAddress)) {
             //val erc721TokenStandard = Erc721TokenStandard()
             val recipient = Address(recipientAddress)
             val tokenUri = Utf8String(metadataUri)
@@ -610,7 +658,7 @@ object NftService {
                 TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt.transactionHash}")
             val mr = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
             return mr
-        } else if (isSoulBoundStandard(chain , contractAddress) && isErc721Standard(chain, contractAddress)){
+        } else if (isSoulBoundStandard(chain, contractAddress) && isErc721Standard(chain, contractAddress)) {
             val recipient = recipientAddress
             val tokenUri = metadataUri
             val transactionReceipt: TransactionReceipt? =
@@ -628,7 +676,6 @@ object NftService {
     }
 
 
-
     private fun getMetadatUri(chain: EVMChain, contractAddress: String, tokenId: BigInteger): String {
         if (isErc721Standard(chain, contractAddress) == true) {
             return Erc721TokenStandard.tokenURI(chain, contractAddress, Uint256(tokenId))
@@ -640,29 +687,30 @@ object NftService {
     private fun isErc721Standard(chain: EVMChain, contractAddress: String): Boolean {
         return Erc721TokenStandard.supportsInterface(chain, contractAddress)
     }
+
     private fun isSoulBoundStandard(chain: EVMChain, contractAddress: String): Boolean {
         return SoulBoundTokenStandard.supportsInterface(chain, contractAddress)
     }
 
-    private fun parseNftEvmMetadataResult(nft: JsonObject): NftMetadata{
-        var attributes: List<NftMetadata.Attributes>?=null
-        if(nft.get("attributes")?.metaInfo.equals("kotlinx.serialization.json.JsonArray.class")){
-            attributes= nft.get("attributes")?.jsonArray?.map {
-                val trait_type= it.jsonObject.get("trait_type")?.jsonPrimitive?.content
+    private fun parseNftEvmMetadataResult(nft: JsonObject): NftMetadata {
+        var attributes: List<NftMetadata.Attributes>? = null
+        if (nft.get("attributes")?.metaInfo.equals("kotlinx.serialization.json.JsonArray.class")) {
+            attributes = nft.get("attributes")?.jsonArray?.map {
+                val trait_type = it.jsonObject.get("trait_type")?.jsonPrimitive?.content
 
-                val value= it.jsonObject.get("value")?.jsonPrimitive?.content
+                val value = it.jsonObject.get("value")?.jsonPrimitive?.content
 
                 // verify is value is number
-                if(value?.toIntOrNull() != null){
+                if (value?.toIntOrNull() != null) {
                     NftMetadata.Attributes(trait_type!!, JsonPrimitive(value.toInt()))
-                }else{
+                } else {
                     NftMetadata.Attributes(trait_type!!, JsonPrimitive(value))
                 }
 
             }
         }
         return NftMetadata(
-            name= nft.get("name")?.jsonPrimitive?.content,
+            name = nft.get("name")?.jsonPrimitive?.content,
             description = nft.get("description")?.jsonPrimitive?.content,
             image = nft.get("image")?.jsonPrimitive?.content,
             image_data = nft.get("image_data")?.jsonPrimitive?.content,
@@ -692,7 +740,6 @@ object NftService {
         }
         return EventValues(indexedValues, nonIndexedValues)
     }
-
 
 
 }
