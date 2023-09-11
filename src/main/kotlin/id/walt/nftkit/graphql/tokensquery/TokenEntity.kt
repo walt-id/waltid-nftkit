@@ -10,11 +10,5 @@ import kotlinx.serialization.json.JsonPrimitive
 @Serializable
 data class TokenEntity(
     val image: JSONObject? = null,
-    val attributes: Map<String, TokenEntityAttributes>? = null,
-) {
-    @Serializable
-    data class TokenEntityAttributes(
-        val name: String,
-        val value: JsonPrimitive
-    )
-}
+    val attributes: JSONObject? = null
+)

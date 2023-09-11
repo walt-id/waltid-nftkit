@@ -17,10 +17,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.*
 
 enum class PolkadotParachain {
     ASTAR,
@@ -77,13 +74,13 @@ data class SubscanEvmErc721CollectiblesResult(
 @Serializable
 data class UniqueNftMetadata(
     val fullUrl: String,
-    val ipfsCid: String,
+    val ipfsCid: String? = null,
     val attributes: List<Attribute>? = null
 ) {
     @Serializable
     data class Attribute(
         val name: String,
-        var value: String,
+        var value: JsonElement,
     )
 }
 
@@ -157,7 +154,8 @@ object PolkadotNftService {
 
     fun fetchUniqueNFTs(network: UniqueNetwork, account: String): TokenOwnersDataResponse = runBlocking {
         println("--- FETCH UNIQUE NFTs")
-        val uniqueGraphqlClient = GraphQLWebClient(url = getUniqueNetworkIndexerUrl(network), serializer = PolkadotGraphQLClientKotlinxSerializer())
+        val uniqueGraphqlClient =
+            GraphQLWebClient(url = getUniqueNetworkIndexerUrl(network), serializer = PolkadotGraphQLClientKotlinxSerializer())
         val tokenOwnersQuery = TokenOwnersQuery()
         tokenOwnersQuery.query = tokenOwnersQuery.query.replace("address", account)
         uniqueGraphqlClient.execute(tokenOwnersQuery).data!!.token_owners
@@ -165,7 +163,8 @@ object PolkadotNftService {
 
     fun fetchUniqueNFTMetadata(network: UniqueNetwork, collectionId: String, tokenId: String): TokenDataResponse? = runBlocking {
         println("--- FETCH UNIQUE NFT METADATA")
-        val uniqueGraphqlClient = GraphQLWebClient(url = getUniqueNetworkIndexerUrl(network), serializer = PolkadotGraphQLClientKotlinxSerializer())
+        val uniqueGraphqlClient =
+            GraphQLWebClient(url = getUniqueNetworkIndexerUrl(network), serializer = PolkadotGraphQLClientKotlinxSerializer())
         val tokensQuery = TokensQuery()
         tokensQuery.query = tokensQuery.query.replace("tokenId", tokenId)
         tokensQuery.query = tokensQuery.query.replace("collectionId", collectionId)
@@ -191,22 +190,33 @@ object PolkadotNftService {
         println("Tokens: ${Json.encodeToString(tokens)}")
         println("Metadata: ${Json.encodeToString(metadata)}")
 
-        /*
-        val attributes = metadata.attributes?.values?.map {
-            Json.decodeFromJsonElement<UniqueNftMetadata.Attribute>(it)
-        }
-         */
 
-        val attributes = metadata.attributes?.values?.map {
-            //Json.decodeFromJsonElement<UniqueNftMetadata.Attribute>()
-            UniqueNftMetadata.Attribute(it.name, it.value.content)
+        val attributes = metadata.attributes?.values?.map { attributeElement ->
+            val attribute = attributeElement.jsonObject
+            println("ATTRIBUTE: $attribute")
+
+            val name = attribute["name"]!!.jsonObject["_"]!!.jsonPrimitive.content
+
+            val isArray = attribute["isArray"]?.jsonPrimitive?.booleanOrNull ?: false
+
+
+            val value: JsonElement? =
+                when {
+                    isArray -> JsonArray(attribute["value"]?.jsonArray?.map { it.jsonObject["_"]!!.jsonPrimitive } ?: throw IllegalArgumentException("Invalid value array for attribute: $name"))
+                    else -> attribute["value"]?.jsonObject?.get("_")?.jsonPrimitive
+                }
+
+            value ?: throw IllegalArgumentException("No value was provided for attribute: $name")
+
+
+            UniqueNftMetadata.Attribute(name, value)
         }
 
         val tokenImage = metadata.image!!
 
         return UniqueNftMetadata(
             fullUrl = tokenImage["fullUrl"]!!.jsonPrimitive.content,
-            ipfsCid = tokenImage["ipfsCid"]!!.jsonPrimitive.content,
+            ipfsCid = tokenImage["ipfsCid"]?.jsonPrimitive?.content,
             attributes
         )
     }

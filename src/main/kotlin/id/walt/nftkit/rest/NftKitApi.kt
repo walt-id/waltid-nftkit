@@ -514,14 +514,17 @@ object NftKitApi {
             }
 
         }.exception(InvalidFormatException::class.java) { e, ctx ->
+            e.printStackTrace()
             log.error(e.stackTraceToString())
             ctx.json(ErrorResponse(e.message ?: " Unknown application error", 400))
             ctx.status(400)
         }.exception(IllegalArgumentException::class.java) { e, ctx ->
+            e.printStackTrace()
             log.error(e.stackTraceToString())
             ctx.json(ErrorResponse(e.message ?: " Unknown application error", 400))
             ctx.status(400)
         }.exception(Exception::class.java) { e, ctx ->
+            e.printStackTrace()
             log.error(e.stackTraceToString())
             ctx.json(ErrorResponse(e.message ?: " Unknown server error", 500))
             ctx.status(500)
