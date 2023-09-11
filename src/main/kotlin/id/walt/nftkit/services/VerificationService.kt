@@ -156,11 +156,11 @@ object VerificationService {
     fun verifyNftOwnershipWithTraitsWithCollectionId(chain: UniqueNetwork, collectionId: String, account: String, tokenId: String, name: String, value: String? = null): Boolean {
         val ownership= NFTsUniqueOwnershipVerification(chain, collectionId, account, tokenId)
         if(ownership){
-            val result = PolkadotNftService.fetchUniqueNFTsMetadata(chain, collectionId, tokenId)
+            val result = PolkadotNftService.fetchUniqueNFTMetadata(chain, collectionId, tokenId)
             if(result != null && result.data != null){
                 val uniqueNftMetadata= PolkadotNftService.parseNftMetadataUniqueResponse(result)
                 if(uniqueNftMetadata!!.attributes?.filter {
-                        (it.name.equals(name) && it.value.equals(
+                        (it.name.equals(name) && it.value.toString().equals(
                             value,
                             true
                         )) || (value == null && name.equals(it.name))
@@ -240,7 +240,7 @@ object VerificationService {
     fun verifyPolicyWithCollectionId(chain: UniqueNetwork, collectionId : String, tokenId: String, policyName: String): Boolean {
         val policy = PolicyRegistry.listPolicies().get(policyName)
         if(policy == null) throw Exception("The policy doesn't exist")
-        val result = PolkadotNftService.fetchUniqueNFTsMetadata(chain, collectionId, tokenId)
+        val result = PolkadotNftService.fetchUniqueNFTMetadata(chain, collectionId, tokenId)
         val uniqueNftMetadata= PolkadotNftService.parseNftMetadataUniqueResponse(result!!)
         val nftMetadata = NftMetadataWrapper( uniqueNftMetadata = uniqueNftMetadata)
         return DynamicPolicy.doVerify(policy!!.input, policy.policy, policy.policyQuery, nftMetadata)

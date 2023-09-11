@@ -16,9 +16,8 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json.Default.decodeFromJsonElement
 
 enum class PolkadotParachain {
     ASTAR,
@@ -80,7 +79,7 @@ data class UniqueNftMetadata(
     @Serializable
     data class Attribute(
         val name: String,
-        var value: String,
+        var value: JsonElement,
     )
 }
 
@@ -160,7 +159,7 @@ object PolkadotNftService {
         }
     }
 
-    fun fetchUniqueNFTsMetadata(network: UniqueNetwork, collectionId: String, tokenId: String): TokenDataResponse? {
+    fun fetchUniqueNFTMetadata(network: UniqueNetwork, collectionId: String, tokenId: String): TokenDataResponse? {
         return runBlocking {
             val uniqueGraphqlClient = GraphQLWebClient(url = getUniqueNetworkIndexerUrl(network),serializer = GraphQLClientKotlinxSerializer())
             val tokensQuery = TokensQuery()
@@ -170,19 +169,35 @@ object PolkadotNftService {
         }
     }
 
-    fun parseNftMetadataUniqueResponse(tokens: TokenDataResponse): UniqueNftMetadata {
-        val attributes = tokens.data?.get(0)!!.attributes!!.values.map {
-            UniqueNftMetadata.Attribute(
-                it.jsonObject["name"]!!.jsonObject["_"]!!.jsonPrimitive.content,
-                it.jsonObject["value"]!!.jsonObject["_"]!!.jsonPrimitive.content
-            )
-
+    fun fetchUniqueNFTsMetadata(network: UniqueNetwork, account: String):List<UniqueNftMetadata>{
+        return runBlocking {
+            var tokens = mutableListOf<UniqueNftMetadata>()
+            fetchUniqueNFTs(network,account).data?.forEach {
+                var res = fetchUniqueNFTMetadata(network, it.collection_id.toString(), it.token_id.toString())
+                var result = parseNftMetadataUniqueResponse(res!!)
+                 tokens.add(result)
+            }
+            return@runBlocking tokens
         }
+
+    }
+
+    fun parseNftMetadataUniqueResponse(tokens: TokenDataResponse): UniqueNftMetadata {
+        val metadata = (tokens.data ?: throw IllegalArgumentException("Tokens have no data?"))[0]
+
+        val attributes = metadata.attributes?.values?.map {
+            Json.decodeFromJsonElement<UniqueNftMetadata.Attribute>(it)
+        }
+
+        val tokenImage = metadata.image!!
+
         return UniqueNftMetadata(
-            tokens.data[0].image!!.jsonObject["fullUrl"]!!.jsonPrimitive.content,
-            tokens.data[0].image!!.jsonObject["ipfsCid"]!!.jsonPrimitive.content, attributes
+            fullUrl = tokenImage["fullUrl"]!!.jsonPrimitive.content,
+            ipfsCid = tokenImage["ipfsCid"]!!.jsonPrimitive.content,
+            attributes
         )
     }
+
 
     private fun getUniqueNetworkIndexerUrl(uniqueNetwork: UniqueNetwork): String {
         return when(uniqueNetwork){

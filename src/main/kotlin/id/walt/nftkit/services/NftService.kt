@@ -432,7 +432,7 @@ object NftService {
                 if(uniqueNftsResult.data == null || uniqueNftsResult.data.size == 0)  return NFTsInfos()
 
                 val result= uniqueNftsResult.data.map {
-                    val metadata= PolkadotNftService.fetchUniqueNFTsMetadata(UniqueNetwork.valueOf(chain.toString()), it.collection_id.toString(), it.token_id.toString())
+                    val metadata= PolkadotNftService.fetchUniqueNFTMetadata(UniqueNetwork.valueOf(chain.toString()), it.collection_id.toString(), it.token_id.toString())
                     val uniqueNftMetadata= PolkadotNftService.parseNftMetadataUniqueResponse(metadata!!)
                     PolkadotUniqueNft(it.collection_id.toString(), it.token_id.toString(), uniqueNftMetadata)
                 }

@@ -68,7 +68,7 @@ object DynamicPolicy {
 
         }else if(nftMetadata.uniqueNftMetadata != null){
             data.put("image", nftMetadata.uniqueNftMetadata.ipfsCid)
-            nftMetadata.uniqueNftMetadata.attributes?.forEach { data.put(it.name, it.value) }
+            nftMetadata.uniqueNftMetadata.attributes?.forEach { data.put(it.name, it.value.toString()) }
 
 
         }else if (nftMetadata.algorandNftMetadata != null){

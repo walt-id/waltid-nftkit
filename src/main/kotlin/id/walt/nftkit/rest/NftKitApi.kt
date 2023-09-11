@@ -261,10 +261,16 @@ object NftKitApi {
                                     PolkadotUniqueNftController.fetchUniqueNftsDocs(),
                                     PolkadotUniqueNftController::fetchUniqueNfts)
                             )
+
                             get("chain/{chain}/collection/{collectionId}/token/{tokenId}/metadata",
                                 documented(
                                     PolkadotUniqueNftController.fetchUniqueNftMetadataDocs(),
                                     PolkadotUniqueNftController::fetchUniqueNftMetadata)
+                            )
+                            get("chain/{network}/account/{account}/metadata/all",
+                                documented(
+                                    PolkadotUniqueNftController.fetchUniqueNftsMetadataDocs(),
+                                    PolkadotUniqueNftController::fetchUniqueNftsMetadata)
                             )
                         }
                         path("parachain") {

@@ -63,12 +63,33 @@ object PolkadotUniqueNftController {
         it.description("Fetched NFTs")
     }
 
+    fun fetchUniqueNftsMetadata(ctx: Context) {
+        val chain = ctx.pathParam("network")
+        val account = ctx.pathParam("account")
+        val network: UniqueNetwork = Common.getUniqueChain(chain.uppercase())
+        val result = PolkadotNftService.fetchUniqueNFTsMetadata(network, account)
+        ctx.json(result)
+    }
+
+    fun fetchUniqueNftsMetadataDocs() = document().operation {
+        it.summary("Fetching NFTs on Unique Network")
+            .operationId("fetchUniqueNftsMetadata")
+            .addTagsItem(TAG)
+    }.pathParam<String>("network") {
+        it.schema<UniqueNetwork> {}
+    }.pathParam<String>("account"){
+    }.json<TokenOwnersDataResponse>("200"){
+        it.description("Fetched NFTs")
+    }
+
+
+
     fun fetchUniqueNftMetadata(ctx: Context) {
         val network: UniqueNetwork = Common.getUniqueChain(ctx.pathParam("chain").uppercase())
         val collectionId: String = ctx.pathParam("collectionId")
         val tokenId: String = ctx.pathParam("tokenId")
 
-        val tokenDataResponse = PolkadotNftService.fetchUniqueNFTsMetadata(network, collectionId, tokenId)
+        val tokenDataResponse = PolkadotNftService.fetchUniqueNFTMetadata(network, collectionId, tokenId)
         val result = PolkadotNftService.parseNftMetadataUniqueResponse(tokenDataResponse!!)
         ctx.json(result)
     }
