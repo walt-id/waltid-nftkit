@@ -123,7 +123,7 @@ object TezosNftController {
         val contractAddress = ctx.pathParam("contractAddress")
         val result =
             TezosNftService.getContractMetadata(Common.getTezosChain(chain.uppercase()), contractAddress)
-        result?.let {
+        result.let {
             ctx.json(
                 it
             )

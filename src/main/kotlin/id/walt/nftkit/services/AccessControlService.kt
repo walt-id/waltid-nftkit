@@ -1,7 +1,7 @@
 package id.walt.nftkit.services
 
 import id.walt.nftkit.Values
-import id.walt.nftkit.WaltIdGasProvider
+import id.walt.nftkit.utilis.WaltIdGasProvider
 import id.walt.nftkit.utilis.Common.getTransactionResponse
 import id.walt.nftkit.utilis.providers.ProviderFactory
 import org.bouncycastle.util.encoders.Hex

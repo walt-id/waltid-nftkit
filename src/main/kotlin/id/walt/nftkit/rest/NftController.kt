@@ -181,7 +181,7 @@ object NftController {
         val tokenId = ctx.pathParam("tokenId")
         val result = NftService.ownerOf(Common.getEVMChain(chain.uppercase()), contractAddress, BigInteger(tokenId))
         ctx.json(
-            result!!
+            result
         )
     }
 

@@ -2,10 +2,10 @@ package id.walt.nftkit.services
 
 import com.expediagroup.graphql.client.serialization.GraphQLClientKotlinxSerializer
 import com.expediagroup.graphql.client.spring.GraphQLWebClient
-import id.walt.nftkit.TokenOwnersQuery
-import id.walt.nftkit.TokensQuery
-import id.walt.nftkit.tokenownersquery.TokenOwnersDataResponse
-import id.walt.nftkit.tokensquery.TokenDataResponse
+import id.walt.nftkit.graphql.TokenOwnersQuery
+import id.walt.nftkit.graphql.TokensQuery
+import id.walt.nftkit.graphql.tokenownersquery.TokenOwnersDataResponse
+import id.walt.nftkit.graphql.tokensquery.TokenDataResponse
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*

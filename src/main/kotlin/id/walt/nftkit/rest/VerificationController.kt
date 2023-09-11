@@ -24,7 +24,9 @@ object VerificationController {
         val account = ctx.queryParam("account") ?: throw  BadRequestResponse("Account not specified")
         val traitType = ctx.queryParam("trait") ?: throw  BadRequestResponse("Trait not specified")
         val traitValue = ctx.queryParam("value") ?: throw  BadRequestResponse("Trait value not specified")
-        val result = VerificationService.NFTAlgorandOwnershipVerificationWithTraits(AlgorandChain.valueOf(chain.uppercase()),  account!!, assetId!!, traitType!! , traitValue!!)
+        val result = VerificationService.NFTAlgorandOwnershipVerificationWithTraits(AlgorandChain.valueOf(chain.uppercase()),
+            account, assetId, traitType, traitValue
+        )
         ctx.json(result)
     }
 
@@ -46,7 +48,7 @@ object VerificationController {
         val chain = ctx.pathParam("chain")
         val assetId = ctx.queryParam("assetId") ?: throw  BadRequestResponse("Account not specified")
         val account = ctx.queryParam("account") ?: throw  BadRequestResponse("Account not specified")
-        val result = VerificationService.NFTsAlgorandOwnershipVerification(AlgorandChain.valueOf(chain.uppercase()),  account!!, assetId!!)
+        val result = VerificationService.NFTsAlgorandOwnershipVerification(AlgorandChain.valueOf(chain.uppercase()), account, assetId)
         ctx.json(result)
     }
 
@@ -65,7 +67,7 @@ object VerificationController {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val account = ctx.queryParam("account") ?: throw  BadRequestResponse("Account not specified")
-        val result = VerificationService.verifyNftOwnershipWithinCollection(Common.getChain(chain.uppercase()), contractAddress, account!!)
+        val result = VerificationService.verifyNftOwnershipWithinCollection(Common.getChain(chain.uppercase()), contractAddress, account)
         ctx.json(result)
     }
 
@@ -83,7 +85,9 @@ object VerificationController {
         val chain = ctx.pathParam("chain")
         val collectionId = ctx.pathParam("collectionId")
         val account = ctx.queryParam("account") ?: throw  BadRequestResponse("Account not specified")
-        val result = VerificationService.verifyNftOwnershipWithinCollectionWithCollectionId(UniqueNetwork.valueOf(chain.uppercase()), collectionId, account!!)
+        val result = VerificationService.verifyNftOwnershipWithinCollectionWithCollectionId(UniqueNetwork.valueOf(chain.uppercase()), collectionId,
+            account
+        )
         ctx.json(result)
     }
 
@@ -254,7 +258,7 @@ object VerificationController {
         val contractAddress = ctx.pathParam("contractAddress")
         val tokenId = ctx.pathParam("tokenId")
         val policyName = ctx.pathParam("policyName")
-        val result= policyName?.let { VerificationService.verifyPolicy(Common.getChain(chain), contractAddress, tokenId, it) }
+        val result= policyName.let { VerificationService.verifyPolicy(Common.getChain(chain), contractAddress, tokenId, it) }
         if (result != null) {
             ctx.json(result)
         }
@@ -346,7 +350,7 @@ object VerificationController {
             val collectionId = ctx.pathParam("collectionId")
             val tokenId = ctx.pathParam("tokenId")
             val policyName = ctx.pathParam("policyName")
-            val result = policyName?.let {
+            val result = policyName.let {
                 VerificationService.verifyPolicyWithCollectionId(
                     UniqueNetwork.valueOf(chain.uppercase()),
                     collectionId,

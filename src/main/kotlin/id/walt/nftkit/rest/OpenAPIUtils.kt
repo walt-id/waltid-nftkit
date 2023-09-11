@@ -1,4 +1,4 @@
-package id.walt.rest
+package id.walt.nftkit.rest
 
 import io.javalin.plugin.openapi.dsl.document
 
