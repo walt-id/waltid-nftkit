@@ -304,7 +304,7 @@ object NftService {
         parameter: MintingParameter,
         options: MintingOptions
     ): MintingResponse {
-        var tokenUri: String?
+        val tokenUri: String?
         if (parameter.metadataUri != null && parameter.metadataUri != "") {
             tokenUri = parameter.metadataUri
         } else {
@@ -318,8 +318,8 @@ object NftService {
 
 
     fun getNftMetadata(chain: EVMChain, contractAddress: String, tokenId: BigInteger): NftMetadata {
-        var uri = getMetadatUri(chain, contractAddress, tokenId)
-        if (Common.getMetadataType(uri).equals(MetadataStorageType.ON_CHAIN)) {
+        val uri = getMetadatUri(chain, contractAddress, tokenId)
+        if (Common.getMetadataType(uri) == MetadataStorageType.ON_CHAIN) {
             val decodedUri = decBase64Str(uri.substring(29))
             return Json { ignoreUnknownKeys = true }.decodeFromString(decodedUri)
         } else {
@@ -344,7 +344,7 @@ object NftService {
 
     fun ownerOf(chain: EVMChain, contractAddress: String, tokenId: BigInteger): String {
         //in the case of ERC721
-        if (isErc721Standard(chain, contractAddress) == true) {
+        if (isErc721Standard(chain, contractAddress)) {
             return Erc721TokenStandard.ownerOf(chain, contractAddress, Uint256(tokenId))
 
         }
@@ -428,8 +428,7 @@ object NftService {
         if (isErc721Standard(chain, contractAddress)) {
             val name = Erc721TokenStandard.name(chain, contractAddress)
             val symbol = Erc721TokenStandard.symbol(chain, contractAddress)
-            val tokenCollectionInfo = TokenCollectionInfo(name, symbol)
-            return tokenCollectionInfo
+            return TokenCollectionInfo(name, symbol)
         }
         return TokenCollectionInfo("", "")
     }
@@ -464,7 +463,7 @@ object NftService {
 
             Common.isUniqueParachain(chain) -> {
                 val uniqueNftsResult = PolkadotNftService.fetchUniqueNFTs(UniqueNetwork.valueOf(chain.toString()), account)
-                if (uniqueNftsResult.data == null || uniqueNftsResult.data.size == 0) return NFTsInfos()
+                if (uniqueNftsResult.data == null || uniqueNftsResult.data.isEmpty()) return NFTsInfos()
 
                 val result = uniqueNftsResult.data.map {
                     val metadata = PolkadotNftService.fetchUniqueNFTsMetadata(
@@ -490,11 +489,10 @@ object NftService {
             val apiKey = Common.getNetworkBlockExplorerApiKey(chain)
 
             val events = fetchAccountNFTsTokens(address, 1, url, apiKey)
-            val result = events.groupBy { Pair(it.contractAddress, it.tokenID) }
-                .map { it.value.maxByOrNull { it.timeStamp } }
-                .filter { address.equals(it?.to, ignoreCase = true) }
 
-            return@runBlocking result
+            return@runBlocking events.groupBy<Token, Pair<String, String>> { Pair<String, String>(it.contractAddress, it.tokenID) }
+                .map<Pair<String, String>, List<Token>, Token?> { it.value.maxByOrNull<Token, Long> { it.timeStamp } }
+                .filter<Token?> { address.equals(it?.to, ignoreCase = true) }
         }
     }
 
@@ -622,8 +620,7 @@ object NftService {
             println("result")
             println(nft)
             val jsonObject = Json.parseToJsonElement(nft).jsonObject
-            val result = parseNftEvmMetadataResult(jsonObject)
-            return@runBlocking result
+            return@runBlocking parseNftEvmMetadataResult(jsonObject)
         }
     }
 
@@ -656,28 +653,24 @@ object NftService {
             val url = WaltIdServices.getBlockExplorerUrl(chain)
             val ts =
                 TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt.transactionHash}")
-            val mr = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
-            return mr
+            return MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
         } else if (isSoulBoundStandard(chain, contractAddress) && isErc721Standard(chain, contractAddress)) {
-            val recipient = recipientAddress
-            val tokenUri = metadataUri
             val transactionReceipt: TransactionReceipt? =
-                SoulBoundTokenStandard.safeMint(chain, contractAddress, recipient, tokenUri)
+                SoulBoundTokenStandard.safeMint(chain, contractAddress, recipientAddress, metadataUri)
             val eventValues: EventValues? =
                 staticExtractEventParameters(Erc721OnchainCredentialWrapper.TRANSFER_EVENT, transactionReceipt?.logs?.get(0))
 
             val url = WaltIdServices.getBlockExplorerUrl(chain)
             val ts =
                 TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt.transactionHash}")
-            val mr = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
-            return mr
+            return MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
         }
         return MintingResponse(null, null)
     }
 
 
     private fun getMetadatUri(chain: EVMChain, contractAddress: String, tokenId: BigInteger): String {
-        if (isErc721Standard(chain, contractAddress) == true) {
+        if (isErc721Standard(chain, contractAddress)) {
             return Erc721TokenStandard.tokenURI(chain, contractAddress, Uint256(tokenId))
         }
         return ""
@@ -724,10 +717,10 @@ object NftService {
     ): EventValues? {
         val topics: List<String> = log!!.topics
         val encodedEventSignature = EventEncoder.encode(event)
-        if (topics == null || topics.size == 0 || topics[0] != encodedEventSignature) {
+        if (topics == null || topics.isEmpty() || topics[0] != encodedEventSignature) {
             return null
         }
-        val indexedValues: MutableList<Type<*>?> = ArrayList<Type<*>?>()
+        val indexedValues: MutableList<Type<*>?> = ArrayList()
         val nonIndexedValues: List<Type<*>?>? = FunctionReturnDecoder.decode(
             log.data, event.nonIndexedParameters
         )

@@ -82,12 +82,9 @@ object Common {
         }
     }
 
-    fun getMetadataType(uri: String): MetadataStorageType {
-        if(uri.contains("data:application/json;base64", true)){
-            return MetadataStorageType.ON_CHAIN
-        }else{
-            return MetadataStorageType.OFF_CHAIN
-        }
+    fun getMetadataType(uri: String): MetadataStorageType = when {
+        uri.contains("data:application/json;base64", true) -> MetadataStorageType.ON_CHAIN
+        else -> MetadataStorageType.OFF_CHAIN
     }
 
     fun getNetworkBlockExplorerApiUrl(chain: EVMChain): String{

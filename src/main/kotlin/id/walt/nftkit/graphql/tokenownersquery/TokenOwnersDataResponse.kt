@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 
 @Generated
 @Serializable
-public data class TokenOwnersDataResponse(
-    public val count: Int,
-    public val `data`: List<tokens_owners>? = null,
+data class TokenOwnersDataResponse(
+    val count: Int,
+    val `data`: List<tokens_owners>? = null,
 )

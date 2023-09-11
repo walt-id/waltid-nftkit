@@ -272,7 +272,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
 
         val privateKey: String
-        if(signedAccount == null || "".equals(signedAccount)){
+        if(signedAccount == null || "" == signedAccount){
             privateKey= WaltIdServices.loadChainConfig().privateKey
         }else{
             val lowercaseAddress= WaltIdServices.loadAccountKeysConfig().keys.mapKeys { it.key.lowercase() }

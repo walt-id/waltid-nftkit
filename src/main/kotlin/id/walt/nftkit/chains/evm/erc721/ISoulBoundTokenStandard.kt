@@ -1,14 +1,10 @@
 package id.walt.nftkit.chains.evm.erc721
-import id.walt.nftkit.services.Chain
 import id.walt.nftkit.services.EVMChain
 import org.web3j.abi.datatypes.Address
-import org.web3j.abi.datatypes.Bool
-import org.web3j.abi.datatypes.DynamicBytes
-import org.web3j.abi.datatypes.Utf8String
 import org.web3j.abi.datatypes.generated.Uint256
-import org.web3j.protocol.core.RemoteFunctionCall
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 import java.math.BigInteger
+
 interface ISoulBoundTokenStandard {
 
     fun safeMint(chain: EVMChain, contractAddress: String,to: String, uri: String): TransactionReceipt?

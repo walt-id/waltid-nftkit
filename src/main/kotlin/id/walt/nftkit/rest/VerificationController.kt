@@ -1,7 +1,6 @@
 package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
-import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
 import id.walt.nftkit.opa.DynamicPolicyArg
 import id.walt.nftkit.opa.PolicyRegistry
@@ -12,7 +11,6 @@ import io.javalin.http.Context
 import io.javalin.http.HttpCode
 import io.javalin.plugin.openapi.dsl.document
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.Serializable
 
 
 object VerificationController {

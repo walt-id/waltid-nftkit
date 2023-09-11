@@ -2,7 +2,6 @@ package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
 import id.walt.nftkit.services.AccessControlService
-import id.walt.nftkit.services.Chain
 import id.walt.nftkit.services.EVMChain
 import id.walt.nftkit.services.TransactionResponse
 import id.walt.nftkit.utilis.Common

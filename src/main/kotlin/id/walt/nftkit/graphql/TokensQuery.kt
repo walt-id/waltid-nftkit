@@ -8,20 +8,20 @@ import kotlin.reflect.KClass
 import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 
-public const val TOKENS_QUERY: String =
+const val TOKENS_QUERY: String =
     "{\n    tokens(where: {_and: {token_id:{_eq:tokenId}, collection_id:{_eq: collectionId}}} )\n        {\n            data{\n                image\n                attributes\n            }\n        }\n}"
 
 @Generated
 @Serializable
-public class TokensQuery : GraphQLClientRequest<TokensQuery.Result> {
+class TokensQuery : GraphQLClientRequest<TokensQuery.Result> {
   @Required
-  public override var query: String = TOKENS_QUERY
+  override var query: String = TOKENS_QUERY
 
-  public override fun responseType(): KClass<Result> = Result::class
+  override fun responseType(): KClass<Result> = Result::class
 
   @Generated
   @Serializable
-  public data class Result(
-      public val tokens: TokenDataResponse,
+  data class Result(
+      val tokens: TokenDataResponse,
   )
 }

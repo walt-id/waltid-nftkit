@@ -1,6 +1,5 @@
 package id.walt.nftkit.chains.evm.erc721
 
-import id.walt.nftkit.services.Chain
 import id.walt.nftkit.services.EVMChain
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.Bool

@@ -1,8 +1,8 @@
 package id.walt.nftkit.services
 
 import id.walt.nftkit.Values
-import id.walt.nftkit.utilis.WaltIdGasProvider
 import id.walt.nftkit.utilis.Common.getTransactionResponse
+import id.walt.nftkit.utilis.WaltIdGasProvider
 import id.walt.nftkit.utilis.providers.ProviderFactory
 import org.bouncycastle.util.encoders.Hex
 import org.web3j.abi.datatypes.Address
@@ -34,8 +34,7 @@ object AccessControlService {
 
     fun owner(chain: EVMChain, contractAddress: String): String {
         val ownableWrapper = loadOwnableContract(chain, contractAddress)
-        val owner = ownableWrapper.owner().send().value
-        return owner
+        return ownableWrapper.owner().send().value
     }
 
     fun grantRole(chain: EVMChain, contractAddress: String, role: String, account: String): TransactionResponse {
@@ -82,30 +81,28 @@ object AccessControlService {
 
 
     private fun loadOwnableContract(chain: EVMChain, address: String): Ownable {
-        val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
+        val web3j = ProviderFactory.getProvider(chain).getWeb3j()
 
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
 
         val gasProvider: ContractGasProvider = WaltIdGasProvider
 
-        if (chain == EVMChain.POLYGON || chain == EVMChain.MUMBAI) {
-            val chainId: Long
-            if (chain == EVMChain.POLYGON) {
-                chainId = Values.POLYGON_MAINNET_CHAIN_ID
-            } else {
-                chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
+        return if (chain == EVMChain.POLYGON || chain == EVMChain.MUMBAI) {
+            val chainId = when (chain) {
+                EVMChain.POLYGON -> Values.POLYGON_MAINNET_CHAIN_ID
+                else -> Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
             }
             val transactionManager: TransactionManager = RawTransactionManager(
                 web3j, credentials, chainId
             )
-            return Ownable.load(address, web3j, transactionManager, gasProvider)
+            Ownable.load(address, web3j, transactionManager, gasProvider)
         } else {
-            return Ownable.load(address, web3j, credentials, gasProvider)
+            Ownable.load(address, web3j, credentials, gasProvider)
         }
     }
 
     private fun loadRbacContract(chain: EVMChain, address: String): AccessControl {
-        val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
+        val web3j = ProviderFactory.getProvider(chain).getWeb3j()
 
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
 
@@ -121,9 +118,9 @@ object AccessControlService {
             val transactionManager: TransactionManager = RawTransactionManager(
                 web3j, credentials, chainId
             )
-            return smart_contract_wrapper.AccessControl.load(address, web3j, transactionManager, gasProvider)
+            return AccessControl.load(address, web3j, transactionManager, gasProvider)
         } else {
-            return smart_contract_wrapper.AccessControl.load(address, web3j, credentials, gasProvider)
+            return AccessControl.load(address, web3j, credentials, gasProvider)
         }
     }
 

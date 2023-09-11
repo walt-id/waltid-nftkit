@@ -214,7 +214,7 @@ class Erc721OnchainCredentialWrapper : Contract {
     fun approve(to: Address, tokenId: Uint256): RemoteFunctionCall<TransactionReceipt> {
         val function = Function(
             FUNC_APPROVE,
-            Arrays.asList<Type<*>>(to, tokenId), emptyList()
+            listOf<Type<*>>(to, tokenId), emptyList()
         )
         return executeRemoteCallTransaction(function)
     }
@@ -222,8 +222,8 @@ class Erc721OnchainCredentialWrapper : Contract {
     fun balanceOf(owner: Address): RemoteFunctionCall<Uint256> {
         val function = Function(
             FUNC_BALANCEOF,
-            Arrays.asList<Type<*>>(owner),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Uint256?>() {})
+            listOf<Type<*>>(owner),
+            listOf<TypeReference<*>>(object : TypeReference<Uint256?>() {})
         )
         return executeRemoteCallSingleValueReturn(function)
     }
@@ -231,8 +231,8 @@ class Erc721OnchainCredentialWrapper : Contract {
     fun getApproved(tokenId: Uint256): RemoteFunctionCall<Address> {
         val function = Function(
             FUNC_GETAPPROVED,
-            Arrays.asList<Type<*>>(tokenId),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Address?>() {})
+            listOf<Type<*>>(tokenId),
+            listOf<TypeReference<*>>(object : TypeReference<Address?>() {})
         )
         return executeRemoteCallSingleValueReturn(function)
     }
@@ -240,8 +240,8 @@ class Erc721OnchainCredentialWrapper : Contract {
     fun isApprovedForAll(owner: Address, operator: Address): RemoteFunctionCall<Bool> {
         val function = Function(
             FUNC_ISAPPROVEDFORALL,
-            Arrays.asList<Type<*>>(owner, operator),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Bool?>() {})
+            listOf<Type<*>>(owner, operator),
+            listOf<TypeReference<*>>(object : TypeReference<Bool?>() {})
         )
         return executeRemoteCallSingleValueReturn(function)
     }
@@ -249,7 +249,7 @@ class Erc721OnchainCredentialWrapper : Contract {
     fun mintTo(_recipient: Address, tokenURI: Utf8String): RemoteFunctionCall<TransactionReceipt> {
         val function = Function(
             FUNC_MINTTO,
-            Arrays.asList<Type<*>>(_recipient, tokenURI), emptyList()
+            listOf<Type<*>>(_recipient, tokenURI), emptyList()
         )
         return executeRemoteCallTransaction(function)
     }
@@ -257,8 +257,8 @@ class Erc721OnchainCredentialWrapper : Contract {
     fun name(): RemoteFunctionCall<Utf8String> {
         val function = Function(
             FUNC_NAME,
-            Arrays.asList(),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Utf8String?>() {})
+            listOf(),
+            listOf<TypeReference<*>>(object : TypeReference<Utf8String?>() {})
         )
         return executeRemoteCallSingleValueReturn(function)
     }
@@ -266,8 +266,8 @@ class Erc721OnchainCredentialWrapper : Contract {
     fun owner(): RemoteFunctionCall<Address> {
         val function = Function(
             FUNC_OWNER,
-            Arrays.asList(),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Address?>() {})
+            listOf(),
+            listOf<TypeReference<*>>(object : TypeReference<Address?>() {})
         )
         return executeRemoteCallSingleValueReturn(function)
     }
@@ -275,8 +275,8 @@ class Erc721OnchainCredentialWrapper : Contract {
     fun ownerOf(tokenId: Uint256): RemoteFunctionCall<Address> {
         val function = Function(
             FUNC_OWNEROF,
-            Arrays.asList<Type<*>>(tokenId),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Address?>() {})
+            listOf<Type<*>>(tokenId),
+            listOf<TypeReference<*>>(object : TypeReference<Address?>() {})
         )
         return executeRemoteCallSingleValueReturn(function)
     }
@@ -284,7 +284,7 @@ class Erc721OnchainCredentialWrapper : Contract {
     fun renounceOwnership(): RemoteFunctionCall<TransactionReceipt> {
         val function = Function(
             FUNC_RENOUNCEOWNERSHIP,
-            Arrays.asList(), emptyList()
+            listOf(), emptyList()
         )
         return executeRemoteCallTransaction(function)
     }
@@ -292,7 +292,7 @@ class Erc721OnchainCredentialWrapper : Contract {
     fun safeTransferFrom(from: Address, to: Address, tokenId: Uint256): RemoteFunctionCall<TransactionReceipt> {
         val function = Function(
             FUNC_safeTransferFrom,
-            Arrays.asList<Type<*>>(from, to, tokenId), emptyList()
+            listOf<Type<*>>(from, to, tokenId), emptyList()
         )
         return executeRemoteCallTransaction(function)
     }
@@ -305,7 +305,7 @@ class Erc721OnchainCredentialWrapper : Contract {
     ): RemoteFunctionCall<TransactionReceipt> {
         val function = Function(
             FUNC_safeTransferFrom,
-            Arrays.asList<Type<*>>(from, to, tokenId, _data), emptyList()
+            listOf<Type<*>>(from, to, tokenId, _data), emptyList()
         )
         return executeRemoteCallTransaction(function)
     }
@@ -313,7 +313,7 @@ class Erc721OnchainCredentialWrapper : Contract {
     fun setApprovalForAll(operator: Address, approved: Bool): RemoteFunctionCall<TransactionReceipt> {
         val function = Function(
             FUNC_SETAPPROVALFORALL,
-            Arrays.asList<Type<*>>(operator, approved), emptyList()
+            listOf<Type<*>>(operator, approved), emptyList()
         )
         return executeRemoteCallTransaction(function)
     }
@@ -321,8 +321,8 @@ class Erc721OnchainCredentialWrapper : Contract {
     fun supportsInterface(interfaceId: Bytes4): RemoteFunctionCall<Bool> {
         val function = Function(
             FUNC_SUPPORTSINTERFACE,
-            Arrays.asList<Type<*>>(interfaceId),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Bool?>() {})
+            listOf<Type<*>>(interfaceId),
+            listOf<TypeReference<*>>(object : TypeReference<Bool?>() {})
         )
         return executeRemoteCallSingleValueReturn(function)
     }
@@ -330,8 +330,8 @@ class Erc721OnchainCredentialWrapper : Contract {
     fun symbol(): RemoteFunctionCall<Utf8String> {
         val function = Function(
             FUNC_SYMBOL,
-            Arrays.asList(),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Utf8String?>() {})
+            listOf(),
+            listOf<TypeReference<*>>(object : TypeReference<Utf8String?>() {})
         )
         return executeRemoteCallSingleValueReturn(function)
     }
@@ -339,8 +339,8 @@ class Erc721OnchainCredentialWrapper : Contract {
     fun tokenURI(tokenId: Uint256): RemoteFunctionCall<Utf8String> {
         val function = Function(
             FUNC_TOKENURI,
-            Arrays.asList<Type<*>>(tokenId),
-            Arrays.asList<TypeReference<*>>(object : TypeReference<Utf8String?>() {})
+            listOf<Type<*>>(tokenId),
+            listOf<TypeReference<*>>(object : TypeReference<Utf8String?>() {})
         )
         return executeRemoteCallSingleValueReturn(function)
     }
@@ -348,7 +348,7 @@ class Erc721OnchainCredentialWrapper : Contract {
     fun transferFrom(from: Address, to: Address, tokenId: Uint256): RemoteFunctionCall<TransactionReceipt> {
         val function = Function(
             FUNC_TRANSFERFROM,
-            Arrays.asList<Type<*>>(from, to, tokenId), emptyList()
+            listOf<Type<*>>(from, to, tokenId), emptyList()
         )
         return executeRemoteCallTransaction(function)
     }
@@ -356,7 +356,7 @@ class Erc721OnchainCredentialWrapper : Contract {
     fun transferOwnership(newOwner: Address): RemoteFunctionCall<TransactionReceipt> {
         val function = Function(
             FUNC_TRANSFEROWNERSHIP,
-            Arrays.asList<Type<*>>(newOwner), emptyList()
+            listOf<Type<*>>(newOwner), emptyList()
         )
         return executeRemoteCallTransaction(function)
     }
@@ -405,27 +405,27 @@ class Erc721OnchainCredentialWrapper : Contract {
         const val FUNC_TRANSFEROWNERSHIP = "transferOwnership"
         val APPROVAL_EVENT = Event(
             "Approval",
-            Arrays.asList<TypeReference<*>>(
+            listOf<TypeReference<*>>(
                 object : TypeReference<Address?>(true) {},
                 object : TypeReference<Address?>(true) {},
                 object : TypeReference<Uint256?>(true) {})
         )
         val APPROVALFORALL_EVENT = Event(
             "ApprovalForAll",
-            Arrays.asList<TypeReference<*>>(
+            listOf<TypeReference<*>>(
                 object : TypeReference<Address?>(true) {},
                 object : TypeReference<Address?>(true) {},
                 object : TypeReference<Bool?>() {})
         )
         val OWNERSHIPTRANSFERRED_EVENT = Event(
             "OwnershipTransferred",
-            Arrays.asList<TypeReference<*>>(
+            listOf<TypeReference<*>>(
                 object : TypeReference<Address?>(true) {},
                 object : TypeReference<Address?>(true) {})
         )
         val TRANSFER_EVENT = Event(
             "Transfer",
-            Arrays.asList<TypeReference<*>>(
+            listOf<TypeReference<*>>(
                 object : TypeReference<Address?>(true) {},
                 object : TypeReference<Address?>(true) {},
                 object : TypeReference<Uint256?>(true) {})

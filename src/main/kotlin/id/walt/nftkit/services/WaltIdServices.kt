@@ -105,7 +105,7 @@ object WaltIdServices {
             EVMChain.POLYGON -> Values.POLYGON_MAINNET_BLOCK_EXPLORER_URL
             EVMChain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_BLOCK_EXPLORER_URL
             EVMChain.SHIMMEREVM -> Values.SHIMMEREVM_TESTNET_BLOCK_EXPLORER_URL
-            else -> {throw Exception("${chain.toString()} is not supported")}
+            else -> {throw Exception("$chain is not supported")}
         }
     }
 }

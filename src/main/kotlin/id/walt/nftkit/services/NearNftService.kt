@@ -213,17 +213,14 @@ object NearNftService {
         }
     }
 
-    fun getNftNearMetadata(contract_id: String , chain: NearChain ): Any{
-        var url = "" ;
-        if (NearChain.TESTNET.toString().lowercase() == chain.toString())
-        {
+    fun getNftNearMetadata(contract_id: String, chain: NearChain): Any {
+        var url = ""
+        if (NearChain.TESTNET.toString().lowercase() == chain.toString()) {
             url = "archival-rpc.testnet.near.org"
-        }
-        else
-        {
+        } else {
             url = "archival-rpc.mainnet.near.org"
         }
-       val nearClient = NearService.usingPeer(url);
+        val nearClient = NearService.usingPeer(url)
 
         val nftMetadataCall = nearClient
             .callContractFunction(
@@ -233,31 +230,26 @@ object NearNftService {
                 "e30=",
             )
 
-        val nftMetadata =nftMetadataCall.result
+        val nftMetadata = nftMetadataCall.result
 
 
         val stringArray = nftMetadata.map { it.toChar() }.toTypedArray()
-        val jsonString =  stringArray.joinToString("")
-//
+        //
 ////        val test =   nftMetadata.forEach {
 ////            val fin = it.toChar()
 ////            print(fin)
 ////        }
 //
-        return jsonString
+        return stringArray.joinToString("")
     }
-    fun getNFTforAccount(account_id: String , contract_id: String ,chain: NearChain) : List<NearNftMetadata> {
-        var url = "" ;
-        if (NearChain.TESTNET.toString() == chain.toString())
-
-        {
+    fun getNFTforAccount(account_id: String, contract_id: String, chain: NearChain): List<NearNftMetadata> {
+        var url = ""
+        if (NearChain.TESTNET.toString() == chain.toString()) {
             url = "archival-rpc.testnet.near.org"
-        }
-        else
-        {
+        } else {
             url = "archival-rpc.mainnet.near.org"
         }
-        val nearClient = NearService.usingPeer(url);
+        val nearClient = NearService.usingPeer(url)
 
         val accountId = Base64.getEncoder().encodeToString("{\"account_id\":\"${account_id}\"}".toByteArray())
         val accountsNftCall = nearClient
@@ -269,8 +261,7 @@ object NearNftService {
             )
         val accountNft = accountsNftCall.result
         val resultNfts = accountNft.map { it.toChar() }.joinToString(separator = "")
-        val nfts = Json.decodeFromString<List<NearNftMetadata>>(resultNfts)
-        return nfts
+        return Json.decodeFromString<List<NearNftMetadata>>(resultNfts)
     }
 
     fun createSubAccount (account_id: String , newAccountId: String , amount : String , chain: NearChain) : OperationResult {
@@ -302,14 +293,14 @@ object NearNftService {
     }
 
     fun getTokenById(contract_id: String, token_id: String , chain: NearChain): NearNftMetadata{
-        var url = "";
+        var url = ""
         if (NearChain.TESTNET.toString() == chain.toString()) {
             url = "archival-rpc.testnet.near.org"
         } else {
             url = "archival-rpc.mainnet.near.org"
         }
         try {
-            val nearClient = NearService.usingPeer(url);
+            val nearClient = NearService.usingPeer(url)
             val token_id = Base64.getEncoder().encodeToString("{\"token_id\":\"${token_id}\"}".toByteArray())
             val accountsNftCall = nearClient
                 .callContractFunction(
@@ -320,11 +311,12 @@ object NearNftService {
                 )
             val accountNft = accountsNftCall.result
             val resultNfts = accountNft.map { it.toChar() }.joinToString(separator = "")
-            val nfts = Json.decodeFromString<NearNftMetadata>(resultNfts)
-            return nfts
+            return Json.decodeFromString<NearNftMetadata>(resultNfts)
         } catch (e: Exception) {
-            return  NearNftMetadata("","",
-                NearTokenMetadata("" , "", "","" ,), ApprovedAccount(),Royalty())
+            return NearNftMetadata(
+                "", "",
+                NearTokenMetadata("", "", "", ""), ApprovedAccount(), Royalty()
+            )
         }
     }
 }
