@@ -246,7 +246,7 @@ object VerificationService {
     }
 
     fun verifyPolicy(chain: Chain, contractAddress: String, tokenId: String, policyName: String): Boolean {
-        val policy = PolicyRegistry.listPolicies().get(policyName) ?: throw Exception("The policy doesn't exist")
+        val policy = PolicyRegistry.listPolicies()[policyName] ?: throw Exception("The policy doesn't exist")
         return when {
             Common.isEVMChain(chain) -> {
                 val evmNftmetadata = NftService.getNftMetadata(EVMChain.valueOf(chain.toString()), contractAddress, BigInteger(tokenId))
@@ -286,14 +286,14 @@ object VerificationService {
     }
 
     fun verifyPolicyAlgorand(chain: Chain, tokenId: String, policyName: String): Boolean {
-        val policy = PolicyRegistry.listPolicies().get(policyName) ?: throw Exception("The policy doesn't exist")
+        val policy = PolicyRegistry.listPolicies()[policyName] ?: throw Exception("The policy doesn't exist")
         val algorandNftmetadata = AlgorandNftService.getNftMetadata(tokenId, AlgorandChain.valueOf(chain.toString()))
         val nftMetadata = NftMetadataWrapper(algorandNftMetadata = algorandNftmetadata)
         return DynamicPolicy.doVerify(policy.input, policy.policy, policy.policyQuery, nftMetadata)
     }
 
     fun verifyPolicyWithCollectionId(chain: UniqueNetwork, collectionId: String, tokenId: String, policyName: String): Boolean {
-        val policy = PolicyRegistry.listPolicies().get(policyName) ?: throw Exception("The policy doesn't exist")
+        val policy = PolicyRegistry.listPolicies()[policyName] ?: throw Exception("The policy doesn't exist")
         val result = PolkadotNftService.fetchUniqueNFTsMetadata(chain, collectionId, tokenId)
         val uniqueNftMetadata = PolkadotNftService.parseNftMetadataUniqueResponse(result!!)
         val nftMetadata = NftMetadataWrapper(uniqueNftMetadata = uniqueNftMetadata)
@@ -445,7 +445,7 @@ object VerificationService {
         policyName: String,
         account: String
     ): Boolean {
-        val policy = PolicyRegistry.listPolicies().get(policyName) ?: throw Exception("The policy doesn't exist")
+        val policy = PolicyRegistry.listPolicies()[policyName] ?: throw Exception("The policy doesn't exist")
 
         if (policy.input == null) throw Exception("The policy doesn't have input")
         if (policy.policy == null) throw Exception("The policy doesn't have policy")

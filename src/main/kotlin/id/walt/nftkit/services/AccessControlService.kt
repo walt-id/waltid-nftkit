@@ -108,19 +108,17 @@ object AccessControlService {
 
         val gasProvider: ContractGasProvider = WaltIdGasProvider
 
-        if (chain == EVMChain.POLYGON || chain == EVMChain.MUMBAI) {
-            val chainId: Long
-            if (chain == EVMChain.POLYGON) {
-                chainId = Values.POLYGON_MAINNET_CHAIN_ID
-            } else {
-                chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
+        return when (chain) {
+            EVMChain.POLYGON, EVMChain.MUMBAI -> {
+                val chainId = when (chain) {
+                    EVMChain.POLYGON -> Values.POLYGON_MAINNET_CHAIN_ID
+                    else -> Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
+                }
+                val transactionManager: TransactionManager = RawTransactionManager(web3j, credentials, chainId)
+                AccessControl.load(address, web3j, transactionManager, gasProvider)
             }
-            val transactionManager: TransactionManager = RawTransactionManager(
-                web3j, credentials, chainId
-            )
-            return AccessControl.load(address, web3j, transactionManager, gasProvider)
-        } else {
-            return AccessControl.load(address, web3j, credentials, gasProvider)
+
+            else -> AccessControl.load(address, web3j, credentials, gasProvider)
         }
     }
 

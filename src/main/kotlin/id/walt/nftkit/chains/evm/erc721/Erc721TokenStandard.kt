@@ -282,7 +282,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
             privateKey = WaltIdServices.loadChainConfig().privateKey
         } else {
             val lowercaseAddress = WaltIdServices.loadAccountKeysConfig().keys.mapKeys { it.key.lowercase() }
-            privateKey = lowercaseAddress.get(signedAccount.lowercase())!!
+            privateKey = lowercaseAddress[signedAccount.lowercase()]!!
             if (privateKey == null) {
                 throw Exception("Account not found")
             }

@@ -463,7 +463,7 @@ object NftService {
 
             Common.isUniqueParachain(chain) -> {
                 val uniqueNftsResult = PolkadotNftService.fetchUniqueNFTs(UniqueNetwork.valueOf(chain.toString()), account)
-                if (uniqueNftsResult.data == null || uniqueNftsResult.data.isEmpty()) return NFTsInfos()
+                if (uniqueNftsResult.data.isNullOrEmpty()) return NFTsInfos()
 
                 val result = uniqueNftsResult.data.map {
                     val metadata = PolkadotNftService.fetchUniqueNFTsMetadata(
@@ -687,11 +687,11 @@ object NftService {
 
     private fun parseNftEvmMetadataResult(nft: JsonObject): NftMetadata {
         var attributes: List<NftMetadata.Attributes>? = null
-        if (nft.get("attributes")?.metaInfo.equals("kotlinx.serialization.json.JsonArray.class")) {
-            attributes = nft.get("attributes")?.jsonArray?.map {
-                val trait_type = it.jsonObject.get("trait_type")?.jsonPrimitive?.content
+        if (nft["attributes"]?.metaInfo.equals("kotlinx.serialization.json.JsonArray.class")) {
+            attributes = nft["attributes"]?.jsonArray?.map {
+                val trait_type = it.jsonObject["trait_type"]?.jsonPrimitive?.content
 
-                val value = it.jsonObject.get("value")?.jsonPrimitive?.content
+                val value = it.jsonObject["value"]?.jsonPrimitive?.content
 
                 // verify is value is number
                 if (value?.toIntOrNull() != null) {
@@ -703,11 +703,11 @@ object NftService {
             }
         }
         return NftMetadata(
-            name = nft.get("name")?.jsonPrimitive?.content,
-            description = nft.get("description")?.jsonPrimitive?.content,
-            image = nft.get("image")?.jsonPrimitive?.content,
-            image_data = nft.get("image_data")?.jsonPrimitive?.content,
-            external_url = nft.get("external_url")?.jsonPrimitive?.content,
+            name = nft["name"]?.jsonPrimitive?.content,
+            description = nft["description"]?.jsonPrimitive?.content,
+            image = nft["image"]?.jsonPrimitive?.content,
+            image_data = nft["image_data"]?.jsonPrimitive?.content,
+            external_url = nft["external_url"]?.jsonPrimitive?.content,
             attributes = attributes
         )
     }
