@@ -37,30 +37,34 @@ data class TraitUpdateRequest(
     val key: String,
     val value: String,
 )
+
 @Serializable
 data class NFTTokenTransferRequest(
     val from: String,
     val to: String
 )
+
 @Serializable
 data class NFTTokenTransferRequestWithData(
     val from: String,
     val to: String,
-    val data: String?= null
+    val data: String? = null
 )
+
 @Serializable
 data class SetApprovalForAllRequest(
     val operator: String,
     val approved: Boolean
 )
+
 @Serializable
 data class ApproveRequest(
     val to: String
 )
 
 object NftController {
-    val TAG1 ="EVM based Blockchain"
-    val TAG2 ="General"
+    val TAG1 = "EVM based Blockchain"
+    val TAG2 = "General"
     fun deploy(ctx: Context) {
         val deployReq = ctx.bodyAsClass(DeployRequest::class.java)
         val chain = ctx.pathParam("chain")
@@ -81,11 +85,6 @@ object NftController {
     }.body<DeployRequest> {
         it.description("")
     }.json<DeploymentResponse>("200") { it.description("Transaction ID and smart contract address") }
-
-
-
-
-
 
 
     fun mint(ctx: Context) {
@@ -235,8 +234,10 @@ object NftController {
         val tokenId = ctx.pathParam("tokenId")
         val signedAccount = ctx.queryParam("signedAccount")
         val traitUpdateRequest = ctx.bodyAsClass(TraitUpdateRequest::class.java)
-        val result = NftService.updateMetadata(Common.getEVMChain(chain.uppercase()), contractAddress, tokenId,
-            signedAccount,traitUpdateRequest.key, traitUpdateRequest.value)
+        val result = NftService.updateMetadata(
+            Common.getEVMChain(chain.uppercase()), contractAddress, tokenId,
+            signedAccount, traitUpdateRequest.key, traitUpdateRequest.value
+        )
         ctx.json(
             result
         )
@@ -246,24 +247,24 @@ object NftController {
         it.summary("Metadata update")
             .operationId("updateMetadata").addTagsItem(TAG1)
     }.pathParam<String>("chain") {
-        it.schema<EVMChain> {  }
+        it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.pathParam<String>("tokenId") {
     }.queryParam<String>("signedAccount") {
         it.required(false)
     }.body<TraitUpdateRequest> {
         it.description("")
-    }.json<TransactionResponse>("200") {  }
+    }.json<TransactionResponse>("200") { }
 
 
     fun uploadFileToIpfs(ctx: Context) {
-         ctx.uploadedFiles().forEach { (contentType, content, name, extension) ->
+        ctx.uploadedFiles().forEach { (contentType, content, name, extension) ->
             //FileUtils.copyInputStreamToFile(content, File("upload/" + name))
             val fileData = contentType.readAllBytes()
-            val result= NftService.addFileToIpfsUsingNFTStorage(fileData)
-             ctx.json(
-                 result
-             )
+            val result = NftService.addFileToIpfsUsingNFTStorage(fileData)
+            ctx.json(
+                result
+            )
         }
     }
 
@@ -282,7 +283,14 @@ object NftController {
         val tokenId = ctx.pathParam("tokenId")
         val signedAccount = ctx.queryParam("signedAccount")
         val tokenTransferRequest = ctx.bodyAsClass(NFTTokenTransferRequest::class.java)
-        val result= NftService.transferFrom(Common.getEVMChain(chain.uppercase()), contractAddress, tokenTransferRequest.from, tokenTransferRequest.to, BigInteger.valueOf(tokenId.toLong()), signedAccount)
+        val result = NftService.transferFrom(
+            Common.getEVMChain(chain.uppercase()),
+            contractAddress,
+            tokenTransferRequest.from,
+            tokenTransferRequest.to,
+            BigInteger.valueOf(tokenId.toLong()),
+            signedAccount
+        )
         ctx.json(result)
     }
 
@@ -295,7 +303,7 @@ object NftController {
     }.pathParam<String>("tokenId") {
     }.queryParam<String>("signedAccount") {
     }.body<NFTTokenTransferRequest> {
-    }.json<TransactionResponse>("200") {  }
+    }.json<TransactionResponse>("200") { }
 
     fun safeTransferFrom(ctx: Context) {
         val chain = ctx.pathParam("chain")
@@ -303,7 +311,14 @@ object NftController {
         val tokenId = ctx.pathParam("tokenId")
         val signedAccount = ctx.queryParam("signedAccount")
         val tokenTransferRequest = ctx.bodyAsClass(NFTTokenTransferRequest::class.java)
-        val result= NftService.safeTransferFrom(Common.getEVMChain(chain.uppercase()), contractAddress, tokenTransferRequest.from, tokenTransferRequest.to, BigInteger.valueOf(tokenId.toLong()), signedAccount)
+        val result = NftService.safeTransferFrom(
+            Common.getEVMChain(chain.uppercase()),
+            contractAddress,
+            tokenTransferRequest.from,
+            tokenTransferRequest.to,
+            BigInteger.valueOf(tokenId.toLong()),
+            signedAccount
+        )
         ctx.json(result)
     }
 
@@ -316,7 +331,7 @@ object NftController {
     }.pathParam<String>("tokenId") {
     }.queryParam<String>("signedAccount") {
     }.body<NFTTokenTransferRequest> {
-    }.json<TransactionResponse>("200") {  }
+    }.json<TransactionResponse>("200") { }
 
     fun safeTransferFromWithData(ctx: Context) {
         val chain = ctx.pathParam("chain")
@@ -324,7 +339,15 @@ object NftController {
         val tokenId = ctx.pathParam("tokenId")
         val signedAccount = ctx.queryParam("signedAccount")
         val tokenTransferRequest = ctx.bodyAsClass(NFTTokenTransferRequestWithData::class.java)
-        val result= NftService.safeTransferFrom(Common.getEVMChain(chain.uppercase()), contractAddress, tokenTransferRequest.from, tokenTransferRequest.to, BigInteger.valueOf(tokenId.toLong()), tokenTransferRequest.data, signedAccount)
+        val result = NftService.safeTransferFrom(
+            Common.getEVMChain(chain.uppercase()),
+            contractAddress,
+            tokenTransferRequest.from,
+            tokenTransferRequest.to,
+            BigInteger.valueOf(tokenId.toLong()),
+            tokenTransferRequest.data,
+            signedAccount
+        )
         ctx.json(result)
     }
 
@@ -337,14 +360,20 @@ object NftController {
     }.pathParam<String>("tokenId") {
     }.queryParam<String>("signedAccount") {
     }.body<NFTTokenTransferRequestWithData> {
-    }.json<TransactionResponse>("200") {  }
+    }.json<TransactionResponse>("200") { }
 
     fun setApprovalForAll(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val signedAccount = ctx.queryParam("signedAccount")
         val setApprovalForAllRequest = ctx.bodyAsClass(SetApprovalForAllRequest::class.java)
-        val result= NftService.setApprovalForAll(Common.getEVMChain(chain.uppercase()), contractAddress, setApprovalForAllRequest.operator, setApprovalForAllRequest.approved, signedAccount)
+        val result = NftService.setApprovalForAll(
+            Common.getEVMChain(chain.uppercase()),
+            contractAddress,
+            setApprovalForAllRequest.operator,
+            setApprovalForAllRequest.approved,
+            signedAccount
+        )
         ctx.json(result)
     }
 
@@ -356,14 +385,14 @@ object NftController {
     }.pathParam<String>("contractAddress") {
     }.queryParam<String>("signedAccount") {
     }.body<SetApprovalForAllRequest> {
-    }.json<TransactionResponse>("200") {  }
+    }.json<TransactionResponse>("200") { }
 
     fun isApprovedForAll(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val owner = ctx.queryParam("owner") ?: throw  BadRequestResponse("Owner not specified")
-        val operator = ctx.queryParam("operator") ?: throw  BadRequestResponse("Operator not specified")
-        val result= NftService.isApprovedForAll(Common.getEVMChain(chain.uppercase()), contractAddress, owner, operator)
+        val owner = ctx.queryParam("owner") ?: throw BadRequestResponse("Owner not specified")
+        val operator = ctx.queryParam("operator") ?: throw BadRequestResponse("Operator not specified")
+        val result = NftService.isApprovedForAll(Common.getEVMChain(chain.uppercase()), contractAddress, owner, operator)
         ctx.json(result)
     }
 
@@ -375,7 +404,7 @@ object NftController {
     }.pathParam<String>("contractAddress") {
     }.queryParam<String>("owner") {
     }.queryParam<String>("operator") {
-    }.json<Boolean>("200") {  }
+    }.json<Boolean>("200") { }
 
     fun approve(ctx: Context) {
         val chain = ctx.pathParam("chain")
@@ -383,7 +412,13 @@ object NftController {
         val tokenId = ctx.pathParam("tokenId")
         val signedAccount = ctx.queryParam("signedAccount")
         val approveRequest = ctx.bodyAsClass(ApproveRequest::class.java)
-        val result= NftService.approve(Common.getEVMChain(chain.uppercase()), contractAddress, approveRequest.to, BigInteger.valueOf(tokenId.toLong()), signedAccount)
+        val result = NftService.approve(
+            Common.getEVMChain(chain.uppercase()),
+            contractAddress,
+            approveRequest.to,
+            BigInteger.valueOf(tokenId.toLong()),
+            signedAccount
+        )
         ctx.json(result)
     }
 
@@ -396,13 +431,13 @@ object NftController {
     }.pathParam<String>("tokenId") {
     }.queryParam<String>("signedAccount") {
     }.body<ApproveRequest> {
-    }.json<TransactionResponse>("200") {  }
+    }.json<TransactionResponse>("200") { }
 
     fun getApproved(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
         val tokenId = ctx.pathParam("tokenId")
-        val result= NftService.getApproved(Common.getEVMChain(chain.uppercase()), contractAddress, BigInteger.valueOf(tokenId.toLong()))
+        val result = NftService.getApproved(Common.getEVMChain(chain.uppercase()), contractAddress, BigInteger.valueOf(tokenId.toLong()))
         ctx.json(result)
     }
 
@@ -413,7 +448,7 @@ object NftController {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
     }.pathParam<String>("tokenId") {
-    }.json<String>("200") {  }
+    }.json<String>("200") { }
 
 
 }

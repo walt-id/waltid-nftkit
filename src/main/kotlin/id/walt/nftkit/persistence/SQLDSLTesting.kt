@@ -17,7 +17,7 @@ fun main() {
     transaction {
         addLogger(StdOutSqlLogger)
 
-        SchemaUtils.create (CityTable, UserTable)
+        SchemaUtils.create(CityTable, UserTable)
 
         val saintPetersburgId = CityTable.insert {
             it[name] = "St. Petersburg"
@@ -64,11 +64,11 @@ fun main() {
             it[cityId] = null
         }
 
-        UserTable.update({ UserTable.id eq "alex"}) {
+        UserTable.update({ UserTable.id eq "alex" }) {
             it[name] = "Alexey"
         }
 
-        UserTable.deleteWhere{ UserTable.name like "%thing"}
+        UserTable.deleteWhere { UserTable.name like "%thing" }
 
         println("All cities:")
 
@@ -77,19 +77,19 @@ fun main() {
         }
 
         println("Manual join:")
-        (UserTable innerJoin CityTable).slice(UserTable.name, CityTable.name).
-        select {(UserTable.id.eq("andrey") or UserTable.name.eq("Sergey")) and
-                UserTable.id.eq("sergey") and UserTable.cityId.eq(CityTable.id)}.forEach {
+        (UserTable innerJoin CityTable).slice(UserTable.name, CityTable.name).select {
+            (UserTable.id.eq("andrey") or UserTable.name.eq("Sergey")) and
+                    UserTable.id.eq("sergey") and UserTable.cityId.eq(CityTable.id)
+        }.forEach {
             println("${it[UserTable.name]} lives in ${it[CityTable.name]}")
         }
 
         println("Join with foreign key:")
-        (UserTable innerJoin CityTable).slice(UserTable.name, UserTable.cityId, CityTable.name).
-        select { CityTable.name.eq("St. Petersburg") or UserTable.cityId.isNull()}.forEach {
+        (UserTable innerJoin CityTable).slice(UserTable.name, UserTable.cityId, CityTable.name)
+            .select { CityTable.name.eq("St. Petersburg") or UserTable.cityId.isNull() }.forEach {
             if (it[UserTable.cityId] != null) {
                 println("${it[UserTable.name]} lives in ${it[CityTable.name]}")
-            }
-            else {
+            } else {
                 println("${it[UserTable.name]} lives nowhere")
             }
         }
@@ -106,6 +106,6 @@ fun main() {
             }
         }
 
-        SchemaUtils.drop (UserTable, CityTable)
+        SchemaUtils.drop(UserTable, CityTable)
     }
 }

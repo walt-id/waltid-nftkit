@@ -9,8 +9,8 @@ import com.beust.klaxon.Klaxon
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import id.walt.nftkit.Values
-import id.walt.nftkit.rest.RootController.healthDocs
 import id.walt.nftkit.rest.OpenAPIUtils.documentedIgnored
+import id.walt.nftkit.rest.RootController.healthDocs
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.*
 import io.javalin.core.util.RouteOverviewPlugin
@@ -37,6 +37,7 @@ object NftKitApi {
     internal const val DEFAULT_BIND_ADDRESS = "0.0.0.0"
 
     const val apiTitle = "walt.id NFT Kit API"
+
     /**
      * Currently used instance of the NFT Kit API server
      */
@@ -194,7 +195,7 @@ object NftKitApi {
                             "chain/{chain}/contract/{contractAddress}/token/{tokenId}/getapproved",
                             documented(NftController.getApprovedDocs(), NftController::getApproved)
                         )
-                        path("tezos"){
+                        path("tezos") {
                             post(
                                 "chain/{chain}/contract/deploy",
                                 documented(TezosNftController.deployDocs(), TezosNftController::deploy)
@@ -216,77 +217,95 @@ object NftKitApi {
                                 documented(TezosNftController.getContractMetadataDocs(), TezosNftController::getContractMetadata)
                             )
                         }
-                        path("near"){
-                            post("chain/{chain}/account/create",
+                        path("near") {
+                            post(
+                                "chain/{chain}/account/create",
                                 documented(NearNftController.createSubAccountDocs(), NearNftController::createSubAccount)
                             )
-                            post("/chain/{chain}/contract/account/{account_id}/deploy/default",
+                            post(
+                                "/chain/{chain}/contract/account/{account_id}/deploy/default",
                                 documented(NearNftController.deployDefaultContractDocs(), NearNftController::deployDefaultContract)
                             )
-                            post("/chain/{chain}/account/{account_id}/deploy",
+                            post(
+                                "/chain/{chain}/account/{account_id}/deploy",
                                 documented(NearNftController.deployCustomContractDocs(), NearNftController::deployCustomContract)
                             )
                             post(
                                 "/chain/{chain}/contract/{contract_id}/mint",
                                 documented(NearNftController.mintDocs(), NearNftController::mint)
                             )
-                            get("chain/{chain}/contract/{contract_id}/account/{account_id}/NFTS",
+                            get(
+                                "chain/{chain}/contract/{contract_id}/account/{account_id}/NFTS",
                                 documented(NearNftController.getNftTokenDocs(), NearNftController::getNftToken)
                             )
-                            get("chain/{chain}/contract/{contract_id}/NFT/{token_id}",
+                            get(
+                                "chain/{chain}/contract/{contract_id}/NFT/{token_id}",
                                 documented(NearNftController.getNFTTokenMetadataDocs(), NearNftController::getNFTTokenMetadata)
                             )
-                            get("/chain/{chain}/contract/{contract_id}/NFT/metadata",
+                            get(
+                                "/chain/{chain}/contract/{contract_id}/NFT/metadata",
                                 documented(NearNftController.getNFTContractMetadataDocs(), NearNftController::getNFTContractMetadata)
                             )
 
                         }
 
-                        path("flow"){
-                            post("chain/{chain}/account/{account_id}/AllNFTs",
-                                documented(FlowNftController.getAllNFTsDocs() , FlowNftController::getAllNFTs)
+                        path("flow") {
+                            post(
+                                "chain/{chain}/account/{account_id}/AllNFTs",
+                                documented(FlowNftController.getAllNFTsDocs(), FlowNftController::getAllNFTs)
                             )
-                            post("chain/{chain}/account/{account_id}/{contractAddress}/{collectionPublicPath}/{token_id}/getNFTById",
-                                documented(FlowNftController.getNFTbyIdDocs() , FlowNftController::getNFTbyId)
+                            post(
+                                "chain/{chain}/account/{account_id}/{contractAddress}/{collectionPublicPath}/{token_id}/getNFTById",
+                                documented(FlowNftController.getNFTbyIdDocs(), FlowNftController::getNFTbyId)
                             )
-                            post("chain/{chain}/account/{account_id}/{collectionPath}/getNFTinCollection",
-                                documented(FlowNftController.getNFTinCollectionDocs() , FlowNftController::getNFTinCollection)
+                            post(
+                                "chain/{chain}/account/{account_id}/{collectionPath}/getNFTinCollection",
+                                documented(FlowNftController.getNFTinCollectionDocs(), FlowNftController::getNFTinCollection)
                             )
-                                 }
+                        }
 
                         path("unique") {
                             get(
                                 "chain/{network}/account/{account}/",
                                 documented(
                                     PolkadotUniqueNftController.fetchUniqueNftsDocs(),
-                                    PolkadotUniqueNftController::fetchUniqueNfts)
+                                    PolkadotUniqueNftController::fetchUniqueNfts
+                                )
                             )
-                            get("chain/{chain}/collection/{collectionId}/token/{tokenId}/metadata",
+                            get(
+                                "chain/{chain}/collection/{collectionId}/token/{tokenId}/metadata",
                                 documented(
                                     PolkadotUniqueNftController.fetchUniqueNftMetadataDocs(),
-                                    PolkadotUniqueNftController::fetchUniqueNftMetadata)
+                                    PolkadotUniqueNftController::fetchUniqueNftMetadata
+                                )
                             )
                         }
                         path("parachain") {
-                            get("{chain}/account/{account}/subscan",
+                            get(
+                                "{chain}/account/{account}/subscan",
                                 documented(
                                     PolkadotParaChainNftController.fetchParachainNFTsDocs(),
-                                    PolkadotParaChainNftController::fetchParachainNFTs)
+                                    PolkadotParaChainNftController::fetchParachainNFTs
+                                )
                             )
-                            get("{chain}/account/{account}/EvmErc721/subscan",
+                            get(
+                                "{chain}/account/{account}/EvmErc721/subscan",
                                 documented(
                                     PolkadotParaChainNftController.fetchEvmErc721CollectiblesBySubscanDocs(),
-                                    PolkadotParaChainNftController::fetchEvmErc721CollectiblesBySubscan)
+                                    PolkadotParaChainNftController::fetchEvmErc721CollectiblesBySubscan
+                                )
 
                             )
                         }
 
-                        path("Algorand"){
+                        path("Algorand") {
 
-                            post("account/create/",
+                            post(
+                                "account/create/",
                                 documented(AlgorandNftController.accountCreationDocs(), AlgorandNftController::accountCreation)
                             )
-                            post("chain/{chain}/asset/create/",
+                            post(
+                                "chain/{chain}/asset/create/",
                                 documented(AlgorandNftController.assetCreationDocs(), AlgorandNftController::assetCreation)
                             )
 
@@ -308,7 +327,6 @@ object NftKitApi {
                             )
 
 
-
                         }
                     }
                     path("nft/verifier") {
@@ -320,15 +338,24 @@ object NftKitApi {
                         )
                         get(
                             "chain/{chain}/collection/{collectionId}/verifyNftOwnership",
-                            documented(VerificationController.verifyNftOwnershipWithCollectionIdDocs(), VerificationController::verifyNftOwnershipWithCollectionId)
+                            documented(
+                                VerificationController.verifyNftOwnershipWithCollectionIdDocs(),
+                                VerificationController::verifyNftOwnershipWithCollectionId
+                            )
                         )
                         get(
                             "chain/{chain}/contract/{contractAddress}/verifyNftOwnershipWithinCollection",
-                            documented(VerificationController.verifyNftOwnershipWithinCollectionDocs(), VerificationController::verifyNftOwnershipWithinCollection)
+                            documented(
+                                VerificationController.verifyNftOwnershipWithinCollectionDocs(),
+                                VerificationController::verifyNftOwnershipWithinCollection
+                            )
                         )
                         get(
                             "chain/{chain}/collection/{collectionId}/verifyNftOwnershipWithinCollection",
-                            documented(VerificationController.verifyNftOwnershipWithinCollectionWithCollectionIdDocs(), VerificationController::verifyNftOwnershipWithinCollectionWithCollectionId)
+                            documented(
+                                VerificationController.verifyNftOwnershipWithinCollectionWithCollectionIdDocs(),
+                                VerificationController::verifyNftOwnershipWithinCollectionWithCollectionId
+                            )
                         )
                         get(
                             "chain/{chain}/contract/{contractAddress}/verifyNftOwnershipWithTraits",
@@ -380,44 +407,62 @@ object NftKitApi {
                             )
                         )
 
-                        path("flow"){
+                        path("flow") {
 
-                                get(
-                                    "chain/{chain}/contract/{contractAddress}/verifyNftOwnership/Flow",
-                                    documented(VerificationController.verifyNftOwnershipOnFlowDocs(), VerificationController::verifyNftOwnershipOnFlow)
+                            get(
+                                "chain/{chain}/contract/{contractAddress}/verifyNftOwnership/Flow",
+                                documented(
+                                    VerificationController.verifyNftOwnershipOnFlowDocs(),
+                                    VerificationController::verifyNftOwnershipOnFlow
                                 )
-                                get(
-                                    "chain/{chain}/contract/{contractAddress}/verifyNftOwnershipWithinCollection/Flow",
-                                    documented(VerificationController.verifyNftOwnershipInCollectionOnFlowDocs(), VerificationController::verifyNftOwnershipInCollectionOnFlow)
+                            )
+                            get(
+                                "chain/{chain}/contract/{contractAddress}/verifyNftOwnershipWithinCollection/Flow",
+                                documented(
+                                    VerificationController.verifyNftOwnershipInCollectionOnFlowDocs(),
+                                    VerificationController::verifyNftOwnershipInCollectionOnFlow
                                 )
-                                get(
-                                    "chain/{chain}/contract/{contractAddress}/collectionPath/{collectionPath}/token/{tokenId}/policy/{policyName}/verification",
-                                    documented(
-                                        VerificationController.verifyNftPolicyFlowDocs(),
-                                        VerificationController::verifyNftPolicyFlow
-                                    )
+                            )
+                            get(
+                                "chain/{chain}/contract/{contractAddress}/collectionPath/{collectionPath}/token/{tokenId}/policy/{policyName}/verification",
+                                documented(
+                                    VerificationController.verifyNftPolicyFlowDocs(),
+                                    VerificationController::verifyNftPolicyFlow
                                 )
+                            )
 
 
                         }
-                        path("algorand"){
+                        path("algorand") {
                             get(
                                 "chain/{chain}/verifyNftOwnership",
-                                documented(VerificationController.verifyAlgorandNftOwnershipDocs(), VerificationController::verifyAlgorandNftOwnership)
+                                documented(
+                                    VerificationController.verifyAlgorandNftOwnershipDocs(),
+                                    VerificationController::verifyAlgorandNftOwnership
+                                )
                             )
                             get(
                                 "chain/{chain}/verifyNftOwnershipWithTraits",
-                                documented(VerificationController.verifyAlgorandNftOwnershipWithTraitsDocs(), VerificationController::verifyAlgorandNftOwnershipWithTraits)
+                                documented(
+                                    VerificationController.verifyAlgorandNftOwnershipWithTraitsDocs(),
+                                    VerificationController::verifyAlgorandNftOwnershipWithTraits
+                                )
                             )
 
                             get(
                                 "chain/{chain}/{address}/verifyNftOwnershipBasedOnCreator/{creatorAddress}",
-                                documented(AlgorandNftController.verifyNftOwnerShipBasedOnCreatorDocs(), AlgorandNftController::verifyNftOwnerShipBasedOnCreator)
+                                documented(
+                                    AlgorandNftController.verifyNftOwnerShipBasedOnCreatorDocs(),
+                                    AlgorandNftController::verifyNftOwnerShipBasedOnCreator
+                                )
                             )
 
                             get(
                                 "chain/{chain}/token/{token id}/policy/{policyName}/verification",
-                                documented(AlgorandNftController.doVerifyPolicyOnAlgorandDocs(), AlgorandNftController::verifyPolicyOnAlgorand)
+                                documented(
+                                    AlgorandNftController.doVerifyPolicyOnAlgorandDocs(),
+                                    AlgorandNftController::verifyPolicyOnAlgorand
+                                )
 
                             )
 

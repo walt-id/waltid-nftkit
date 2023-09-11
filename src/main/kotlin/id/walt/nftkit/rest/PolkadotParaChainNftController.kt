@@ -1,10 +1,8 @@
 package id.walt.nftkit.rest
 
+import cc.vileda.openapi.dsl.schema
 import id.walt.nftkit.services.PolkadotNftService
 import id.walt.nftkit.services.PolkadotParachain
-
-import cc.vileda.openapi.dsl.schema
-
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
 

@@ -6,8 +6,8 @@ import id.walt.nftkit.services.PolkadotUniqueNft
 import id.walt.nftkit.services.TezosNFTsTzktResult
 
 class NFTsInfos(
-    val evmNfts: List<NFTsAlchemyResult.NftTokenByAlchemy>?= null,
-    val tezosNfts: List<TezosNFTsTzktResult>?= null,
-    val polkadotEvmNft: List<PolkadotEvmNft>?= null,
-    val polkadotUniqueNft: List<PolkadotUniqueNft>?= null
+    val evmNfts: List<NFTsAlchemyResult.NftTokenByAlchemy>? = null,
+    val tezosNfts: List<TezosNFTsTzktResult>? = null,
+    val polkadotEvmNft: List<PolkadotEvmNft>? = null,
+    val polkadotUniqueNft: List<PolkadotUniqueNft>? = null
 )

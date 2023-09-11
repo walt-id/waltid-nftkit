@@ -13,7 +13,7 @@ object Values {
     const val ASTAR_MAINNET_CHAIN_ID: Long = 592
     const val SHIMMEREVM_TESTNET_CHAIN_ID: Long = 1072
 
-    const val ETHEREUM_MAINNET_SCAN_API_URL= "api.etherscan.io"
+    const val ETHEREUM_MAINNET_SCAN_API_URL = "api.etherscan.io"
     const val ETHEREUM_TESTNET_GOERLI_SCAN_API_URL = "api-goerli.etherscan.io"
     const val ETHEREUM_TESTNET_SEPOLIA_SCAN_API_URL = "api-sepolia.etherscan.io"
     const val POLYGON_MAINNET_SCAN_API_URL = "api.polygonscan.com"
@@ -36,7 +36,7 @@ object Values {
     const val TEZOS_GHOSTNET_BETTER_CALL_DEV = "https://better-call.dev/ghostnet"
 
 
-    const val NEAR_MAINNET_EXPLORER= "https://explorer.near.org"
+    const val NEAR_MAINNET_EXPLORER = "https://explorer.near.org"
     const val NEAR_TESTNET_EXPLORER = "https://explorer.testnet.near.org"
 
     const val POLKADOT_UNIQUE_EXPLORER = "https://unique.subscan.io/"
@@ -44,8 +44,8 @@ object Values {
 
 
     //algorand values
-    const val ALGORAND_INDEXER_TESTNET= "https://testnet-algorand.api.purestake.io/idx2"
-    const val ALGORAND_INDEXER_MAINNET= "https://mainnet-algorand.api.purestake.io/idx2"
+    const val ALGORAND_INDEXER_TESTNET = "https://testnet-algorand.api.purestake.io/idx2"
+    const val ALGORAND_INDEXER_MAINNET = "https://mainnet-algorand.api.purestake.io/idx2"
 
     const val ALGORAND_ALGOD_TESTNET = "https://testnet-algorand.api.purestake.io/ps2"
     const val ALGORAND_ALGOD_MAINNET = "https://mainnet-algorand.api.purestake.io/ps2"

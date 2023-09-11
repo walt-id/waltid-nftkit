@@ -1,8 +1,6 @@
 package id.walt.nftkit.graphql.tokenownersquery
 
 import com.expediagroup.graphql.client.Generated
-import kotlin.Int
-import kotlin.collections.List
 import kotlinx.serialization.Serializable
 
 @Generated

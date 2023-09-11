@@ -12,10 +12,8 @@ data class GrantRevokeRoleRequest(val role: String, val account: String)
 data class OwneTransferrRequest(val account: String)
 
 
-
-
 object AccessControlController {
-    val TAG1 ="EVM based Blockchain"
+    val TAG1 = "EVM based Blockchain"
 
     fun owner(ctx: Context) {
         val chain = ctx.pathParam("chain")

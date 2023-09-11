@@ -1,8 +1,11 @@
 package id.walt.nftkit.chains.evm.erc721
 
 import id.walt.nftkit.Values
+import id.walt.nftkit.services.DeploymentResponse
+import id.walt.nftkit.services.EVMChain
+import id.walt.nftkit.services.TransactionResponse
+import id.walt.nftkit.services.WaltIdServices
 import id.walt.nftkit.utilis.WaltIdGasProvider
-import id.walt.nftkit.services.*
 import id.walt.nftkit.utilis.providers.ProviderFactory
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.generated.Bytes4
@@ -17,27 +20,23 @@ import org.web3j.utils.Numeric
 import smart_contract_wrapper.SoulBoundTest
 import java.math.BigInteger
 
-object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
+object SoulBoundTokenStandard : ISoulBoundTokenStandard {
 
 
+    private fun loadContract(chain: EVMChain, address: String, signedAccount: String? = ""): SoulBoundTest {
+        val web3j = ProviderFactory.getProvider(chain).getWeb3j()
 
-
-
-
-    private fun loadContract(chain: EVMChain, address: String, signedAccount: String? ="") : SoulBoundTest {
-        val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
-
-        val privateKey: String = if(signedAccount == null || "" == (signedAccount)){
+        val privateKey: String = if (signedAccount == null || "" == (signedAccount)) {
             WaltIdServices.loadChainConfig().privateKey
-        }else{
-            val lowercaseAddress= WaltIdServices.loadAccountKeysConfig().keys.mapKeys { it.key.lowercase() }
+        } else {
+            val lowercaseAddress = WaltIdServices.loadAccountKeysConfig().keys.mapKeys { it.key.lowercase() }
             lowercaseAddress[signedAccount.lowercase()]!!
         }
 
         val credentials: Credentials = Credentials.create(privateKey)
 
         val gasProvider: ContractGasProvider = WaltIdGasProvider
-        val chainId= when(chain){
+        val chainId = when (chain) {
             EVMChain.ETHEREUM -> Values.ETHEREUM_MAINNET_CHAIN_ID
             EVMChain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_CHAIN_ID
             EVMChain.SEPOLIA -> Values.ETHEREUM_TESTNET_SEPOLIA_CHAIN_ID
@@ -50,7 +49,7 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
         val transactionManager: TransactionManager = RawTransactionManager(
             web3j, credentials, chainId
         )
-        return  SoulBoundTest.load(address, web3j,transactionManager,gasProvider)
+        return SoulBoundTest.load(address, web3j, transactionManager, gasProvider)
 
     }
 
@@ -92,8 +91,8 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
     }
 
 
-    fun deployContract(chain: EVMChain) : DeploymentResponse {
-        val chainId= when(chain){
+    fun deployContract(chain: EVMChain): DeploymentResponse {
+        val chainId = when (chain) {
             EVMChain.ETHEREUM -> Values.ETHEREUM_MAINNET_CHAIN_ID
             EVMChain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_CHAIN_ID
             EVMChain.SEPOLIA -> Values.ETHEREUM_TESTNET_SEPOLIA_CHAIN_ID
@@ -104,7 +103,7 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
             EVMChain.SHIMMEREVM -> Values.SHIMMEREVM_TESTNET_CHAIN_ID
         }
 
-        val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
+        val web3j = ProviderFactory.getProvider(chain).getWeb3j()
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
         val gasProvider: ContractGasProvider = WaltIdGasProvider
         val remotCall: RemoteCall<SoulBoundTest>
@@ -124,7 +123,7 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
     }
 
 
-    override fun supportsInterface(chain: EVMChain, contractAddress: String) : Boolean {
+    override fun supportsInterface(chain: EVMChain, contractAddress: String): Boolean {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress)
         val data = Numeric.hexStringToByteArray("0x5b5e139f") // ERC721 interface id
         val interfaceId = Bytes4(data)

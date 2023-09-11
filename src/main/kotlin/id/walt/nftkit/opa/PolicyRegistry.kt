@@ -4,7 +4,7 @@ object PolicyRegistry {
     private var _policies: LinkedHashMap<String, DynamicPolicyArg>? = null
     private val policies: LinkedHashMap<String, DynamicPolicyArg>
         get() {
-            if(_policies == null) {
+            if (_policies == null) {
                 initPolicies()
             }
             return _policies!!
@@ -16,7 +16,7 @@ object PolicyRegistry {
 
 
     fun createSavedPolicy(name: String, dynPolArg: DynamicPolicyArg): Boolean {
-        if(!contains(name)) {
+        if (!contains(name)) {
             policies[name] = dynPolArg
             return true
         }

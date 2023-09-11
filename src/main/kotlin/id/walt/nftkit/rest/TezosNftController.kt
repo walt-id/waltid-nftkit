@@ -12,6 +12,7 @@ data class TezosDeployRequest(
     val owner: String,
     val type: String,
 )
+
 @Serializable
 data class TezosSCDeploymentResponse(
     val contractAddress: String,
@@ -44,7 +45,11 @@ object TezosNftController {
         val deployReq = ctx.bodyAsClass(TezosDeployRequest::class.java)
         val chain = ctx.pathParam("chain")
         val result =
-            TezosNftService.deploySmartContract(Common.getTezosChain(chain.uppercase()), deployReq.owner, Common.getFa2SmartContractType(deployReq.type))
+            TezosNftService.deploySmartContract(
+                Common.getTezosChain(chain.uppercase()),
+                deployReq.owner,
+                Common.getFa2SmartContractType(deployReq.type)
+            )
 
         ctx.json(result)
     }
@@ -62,8 +67,9 @@ object TezosNftController {
         val mintReq = ctx.bodyAsClass(TezosMintRequest::class.java)
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val parameter = TezosMintingParameter(mintReq.metadataUri, mintReq.recipientAddress, mintReq.tokenId, mintReq.amount, mintReq.metadata)
-        val result= TezosNftService.mintNftToken(Common.getTezosChain(chain.uppercase()), contractAddress, parameter)
+        val parameter =
+            TezosMintingParameter(mintReq.metadataUri, mintReq.recipientAddress, mintReq.tokenId, mintReq.amount, mintReq.metadata)
+        val result = TezosNftService.mintNftToken(Common.getTezosChain(chain.uppercase()), contractAddress, parameter)
         ctx.json(result)
     }
 
@@ -81,7 +87,7 @@ object TezosNftController {
         val minterReq = ctx.bodyAsClass(TezosAddMinterRequest::class.java)
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
-        val result= TezosNftService.addMinter(Common.getTezosChain(chain.uppercase()), contractAddress, minterReq.minterAddress)
+        val result = TezosNftService.addMinter(Common.getTezosChain(chain.uppercase()), contractAddress, minterReq.minterAddress)
         ctx.json(result)
     }
 

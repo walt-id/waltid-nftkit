@@ -1,9 +1,9 @@
 package id.walt.nftkit.chains.evm.erc721
 
 import id.walt.nftkit.Values
-import id.walt.nftkit.utilis.WaltIdGasProvider
 import id.walt.nftkit.services.*
-import id.walt.nftkit.utilis.providers.*
+import id.walt.nftkit.utilis.WaltIdGasProvider
+import id.walt.nftkit.utilis.providers.ProviderFactory
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.Bool
 import org.web3j.abi.datatypes.DynamicBytes
@@ -128,7 +128,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
         signedAccount: String?
     ): TransactionReceipt {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress, signedAccount)
-        return  erc721URIStorageWrapper.safeTransferFrom(from, to, tokenId).send()
+        return erc721URIStorageWrapper.safeTransferFrom(from, to, tokenId).send()
     }
 
     override fun safeTransferFrom(
@@ -160,7 +160,13 @@ object Erc721TokenStandard : IErc721TokenStandard {
         return erc721URIStorageWrapper.isApprovedForAll(owner, operator).send()
     }
 
-    override fun approve(chain: EVMChain, contractAddress: String, to: Address, tokenId: Uint256, signedAccount: String?): TransactionReceipt {
+    override fun approve(
+        chain: EVMChain,
+        contractAddress: String,
+        to: Address,
+        tokenId: Uint256,
+        signedAccount: String?
+    ): TransactionReceipt {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress, signedAccount)
         return erc721URIStorageWrapper.approve(to, tokenId).send()
     }
@@ -170,7 +176,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
         return erc721URIStorageWrapper.getApproved(tokenId).send()
     }
 
-    override fun supportsInterface(chain: EVMChain, contractAddress: String) : Boolean {
+    override fun supportsInterface(chain: EVMChain, contractAddress: String): Boolean {
         val erc721URIStorageWrapper = loadContract(chain, contractAddress)
         val data = Numeric.hexStringToByteArray("0x5b5e139f") // ERC721 interface id
         val interfaceId = Bytes4(data)
@@ -178,7 +184,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
     }
 
     fun deployOwnableContract(chain: EVMChain, parameter: DeploymentParameter, options: DeploymentOptions): DeploymentResponse {
-        val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
+        val web3j = ProviderFactory.getProvider(chain).getWeb3j()
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
         val gasProvider: ContractGasProvider = WaltIdGasProvider
         val remotCall: RemoteCall<CustomOwnableERC721>
@@ -224,7 +230,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
     }
 
     fun deployRBACContract(chain: EVMChain, parameter: DeploymentParameter, options: DeploymentOptions): DeploymentResponse {
-        val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
+        val web3j = ProviderFactory.getProvider(chain).getWeb3j()
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
         val gasProvider: ContractGasProvider = WaltIdGasProvider
         val remotCall: RemoteCall<CustomAccessControlERC721>
@@ -268,16 +274,16 @@ object Erc721TokenStandard : IErc721TokenStandard {
         return DeploymentResponse(ts, contract.contractAddress, "$url/address/${contract.contractAddress}")
     }
 
-    private fun loadContract(chain: EVMChain, address: String, signedAccount: String? ="") : CustomOwnableERC721 {
-        val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
+    private fun loadContract(chain: EVMChain, address: String, signedAccount: String? = ""): CustomOwnableERC721 {
+        val web3j = ProviderFactory.getProvider(chain).getWeb3j()
 
         val privateKey: String
-        if(signedAccount == null || "" == signedAccount){
-            privateKey= WaltIdServices.loadChainConfig().privateKey
-        }else{
-            val lowercaseAddress= WaltIdServices.loadAccountKeysConfig().keys.mapKeys { it.key.lowercase() }
-            privateKey= lowercaseAddress.get(signedAccount.lowercase())!!
-            if(privateKey == null){
+        if (signedAccount == null || "" == signedAccount) {
+            privateKey = WaltIdServices.loadChainConfig().privateKey
+        } else {
+            val lowercaseAddress = WaltIdServices.loadAccountKeysConfig().keys.mapKeys { it.key.lowercase() }
+            privateKey = lowercaseAddress.get(signedAccount.lowercase())!!
+            if (privateKey == null) {
                 throw Exception("Account not found")
             }
         }
@@ -285,7 +291,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
         val credentials: Credentials = Credentials.create(privateKey)
 
         val gasProvider: ContractGasProvider = WaltIdGasProvider
-        val chainId= when(chain){
+        val chainId = when (chain) {
             EVMChain.ETHEREUM -> Values.ETHEREUM_MAINNET_CHAIN_ID
             EVMChain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_CHAIN_ID
             EVMChain.SEPOLIA -> Values.ETHEREUM_TESTNET_SEPOLIA_CHAIN_ID
@@ -298,7 +304,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
         val transactionManager: TransactionManager = RawTransactionManager(
             web3j, credentials, chainId
         )
-        return  CustomOwnableERC721.load(address, web3j,transactionManager,gasProvider)
+        return CustomOwnableERC721.load(address, web3j, transactionManager, gasProvider)
         /*if (chain == EVMChain.POLYGON || chain == EVMChain.MUMBAI) {
             val chainId: Long
             if (chain == EVMChain.POLYGON) {

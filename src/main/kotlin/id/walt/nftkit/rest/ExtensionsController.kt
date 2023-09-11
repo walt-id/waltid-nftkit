@@ -1,7 +1,10 @@
 package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
-import id.walt.nftkit.services.*
+import id.walt.nftkit.services.EVMChain
+import id.walt.nftkit.services.ExtensionsService
+import id.walt.nftkit.services.NftMetadata
+import id.walt.nftkit.services.TransactionResponse
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
@@ -19,7 +22,7 @@ data class BurnableRequest(val burnable: Boolean)
 
 
 object ExtensionsController {
-val TAG1 = "EVM based Blockchain"
+    val TAG1 = "EVM based Blockchain"
     fun paused(ctx: Context) {
         val chain = ctx.pathParam("chain")
         val contractAddress = ctx.pathParam("contractAddress")
@@ -78,7 +81,7 @@ val TAG1 = "EVM based Blockchain"
         val tokenId = ctx.pathParam("tokenId")
         val signedAccount = ctx.queryParam("signedAccount")
         val result =
-            ExtensionsService.setTokenURI(Common.getEVMChain(chain.uppercase()), contractAddress, tokenId, signedAccount,updateTokenURIReq)
+            ExtensionsService.setTokenURI(Common.getEVMChain(chain.uppercase()), contractAddress, tokenId, signedAccount, updateTokenURIReq)
         ctx.json(
             result
         )

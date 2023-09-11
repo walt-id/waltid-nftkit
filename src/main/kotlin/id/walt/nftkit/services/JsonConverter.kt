@@ -33,6 +33,7 @@ object JsonConverter {
             is JsonObject -> element.keys.associateWith {
                 fromJsonElement(element[it] ?: JsonNull)
             }
+
             else -> throw IllegalArgumentException("Invalid JSON element \"${element::class.jvmName}\": $element")
         }
     }

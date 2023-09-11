@@ -33,6 +33,7 @@ data class NFTStorageResult(
         val url: String,
     )
 }
+
 @Serializable
 data class NFTStorageAddFileResult(
     val ok: Boolean,
@@ -45,9 +46,9 @@ data class NFTStorageAddFileResult(
 }
 
 
-object IPFSMetadata: MetadataUri {
+object IPFSMetadata : MetadataUri {
 
-    val client = HttpClient(CIO.create{requestTimeout = 0}) {
+    val client = HttpClient(CIO.create { requestTimeout = 0 }) {
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
@@ -68,10 +69,14 @@ object IPFSMetadata: MetadataUri {
         }
         expectSuccess = false
     }
+
     override fun getTokenUri(nftMetadataWrapper: NftMetadataWrapper): String {
 
         val data: MutableMap<String, Any> = LinkedHashMap()
-        val metadata= if (nftMetadataWrapper.evmNftMetadata != null) Json.encodeToString(nftMetadataWrapper.evmNftMetadata) else Json.encodeToString(nftMetadataWrapper.tezosNftMetadata)
+        val metadata =
+            if (nftMetadataWrapper.evmNftMetadata != null) Json.encodeToString(nftMetadataWrapper.evmNftMetadata) else Json.encodeToString(
+                nftMetadataWrapper.tezosNftMetadata
+            )
         data["meta"] = metadata
         val boundary: String = BigInteger(35, Random()).toString()
 
@@ -80,13 +85,13 @@ object IPFSMetadata: MetadataUri {
             .header("Authorization", "Bearer ${WaltIdServices.loadApiKeys().apiKeys.nftstorage}")
             .postMultipartFormData(boundary, data)
             .build()
-         val httpClient: HttpClient = HttpClient.newHttpClient()
+        val httpClient: HttpClient = HttpClient.newHttpClient()
         val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         val result = Klaxon()
             .parse<NFTStorageResult>(response.body())
-        if(result!!.ok){
-             return result.value.url
-        }else{
+        if (result!!.ok) {
+            return result.value.url
+        } else {
             throw Exception("Something wrong with IPFS")
         }
     }

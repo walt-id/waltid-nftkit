@@ -35,14 +35,52 @@ interface IErc721TokenStandard {
 
     fun supportsInterface(chain: EVMChain, contractAddress: String): Boolean
 
-    fun updateTokenUri(chain: EVMChain, contractAddress: String, token: BigInteger, tokenURI: Utf8String, signedAccount: String?) : TransactionReceipt?
+    fun updateTokenUri(
+        chain: EVMChain,
+        contractAddress: String,
+        token: BigInteger,
+        tokenURI: Utf8String,
+        signedAccount: String?
+    ): TransactionReceipt?
 
-    fun transferFrom(chain: EVMChain, contractAddress: String, from: Address, to: Address, tokenId: Uint256, signedAccount: String?): TransactionReceipt
-    fun safeTransferFrom(chain: EVMChain, contractAddress: String, from: Address, to: Address, tokenId: Uint256, signedAccount: String?): TransactionReceipt
-    fun safeTransferFrom(chain: EVMChain, contractAddress: String, from: Address, to: Address, tokenId: Uint256, data: DynamicBytes, signedAccount: String?): TransactionReceipt
-    fun setApprovalForAll(chain: EVMChain, contractAddress: String, operator: Address, approved: Bool, signedAccount: String?): TransactionReceipt
+    fun transferFrom(
+        chain: EVMChain,
+        contractAddress: String,
+        from: Address,
+        to: Address,
+        tokenId: Uint256,
+        signedAccount: String?
+    ): TransactionReceipt
+
+    fun safeTransferFrom(
+        chain: EVMChain,
+        contractAddress: String,
+        from: Address,
+        to: Address,
+        tokenId: Uint256,
+        signedAccount: String?
+    ): TransactionReceipt
+
+    fun safeTransferFrom(
+        chain: EVMChain,
+        contractAddress: String,
+        from: Address,
+        to: Address,
+        tokenId: Uint256,
+        data: DynamicBytes,
+        signedAccount: String?
+    ): TransactionReceipt
+
+    fun setApprovalForAll(
+        chain: EVMChain,
+        contractAddress: String,
+        operator: Address,
+        approved: Bool,
+        signedAccount: String?
+    ): TransactionReceipt
+
     fun isApprovedForAll(chain: EVMChain, contractAddress: String, owner: Address, operator: Address): Bool
-    fun approve(chain: EVMChain, contractAddress: String, to: Address, tokenId: Uint256, signedAccount: String?):TransactionReceipt
+    fun approve(chain: EVMChain, contractAddress: String, to: Address, tokenId: Uint256, signedAccount: String?): TransactionReceipt
     fun getApproved(chain: EVMChain, contractAddress: String, tokenId: Uint256): Address
 
 

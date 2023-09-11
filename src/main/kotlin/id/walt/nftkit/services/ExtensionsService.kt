@@ -1,12 +1,12 @@
 package id.walt.nftkit.services
 
 import id.walt.nftkit.Values
-import id.walt.nftkit.utilis.WaltIdGasProvider
 import id.walt.nftkit.chains.evm.erc721.Erc721TokenStandard
 import id.walt.nftkit.metadata.MetadataUri
 import id.walt.nftkit.metadata.MetadataUriFactory
 import id.walt.nftkit.rest.UpdateTokenURIRequest
 import id.walt.nftkit.utilis.Common
+import id.walt.nftkit.utilis.WaltIdGasProvider
 import id.walt.nftkit.utilis.providers.ProviderFactory
 import org.web3j.abi.datatypes.Bool
 import org.web3j.abi.datatypes.Utf8String
@@ -45,15 +45,16 @@ object ExtensionsService {
         parameter: UpdateTokenURIRequest
     ): TransactionResponse {
         val tokenUri: String?
-        val oldUri= NftService.getNftMetadataUri(chain, contractAddress, BigInteger(tokenId))
+        val oldUri = NftService.getNftMetadataUri(chain, contractAddress, BigInteger(tokenId))
         if (parameter.metadataUri != null && parameter.metadataUri != "") {
             tokenUri = parameter.metadataUri
         } else {
             val metadataUri: MetadataUri = MetadataUriFactory.getMetadataUri(Common.getMetadataType(oldUri))
-            val nftMetadataWrapper= NftMetadataWrapper(evmNftMetadata = parameter.metadata)
+            val nftMetadataWrapper = NftMetadataWrapper(evmNftMetadata = parameter.metadata)
             tokenUri = metadataUri.getTokenUri(nftMetadataWrapper)
         }
-        val transactionReceipt = Erc721TokenStandard.updateTokenUri(chain, contractAddress, BigInteger(tokenId), Utf8String(tokenUri), signedAccount)
+        val transactionReceipt =
+            Erc721TokenStandard.updateTokenUri(chain, contractAddress, BigInteger(tokenId), Utf8String(tokenUri), signedAccount)
         return Common.getTransactionResponse(chain, transactionReceipt)
     }
 
@@ -87,7 +88,7 @@ object ExtensionsService {
     }
 
     private fun loadOwnableContract(chain: EVMChain, address: String): CustomAccessControlERC721 {
-        val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
+        val web3j = ProviderFactory.getProvider(chain).getWeb3j()
 
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
 

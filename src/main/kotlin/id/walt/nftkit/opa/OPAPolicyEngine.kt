@@ -31,15 +31,15 @@ object OPAPolicyEngine : PolicyEngine {
             log.debug("rego eval output: {}", output)
             return Klaxon().parseArray<Boolean>(output)?.all { it } ?: false
         } finally {
-            if(regoFile.exists() && regoFile.name.startsWith(TEMP_PREFIX)) {
-              regoFile.delete()
+            if (regoFile.exists() && regoFile.name.startsWith(TEMP_PREFIX)) {
+                regoFile.delete()
             }
-            if(dataFile.exists()) {
+            if (dataFile.exists()) {
                 dataFile.delete()
             }
         }
     }
-    
+
 
     override val type: PolicyEngineType = PolicyEngineType.OPA
 }

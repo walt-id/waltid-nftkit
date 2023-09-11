@@ -30,49 +30,51 @@ data class NearContractMetadata(
     val spec: String, // required, essentially a version like "nft-2.0.0", replacing "2.0.0" with the implemented version of NEP-177
     val name: String, // required, ex. "Mochi Rising — Digital Edition" or "Metaverse 3"
     val symbol: String, // required, ex. "MOCHI"
-    val icon: String?= null, // Data URL
-    val base_uri: String?= null, // Centralized gateway known to have reliable access to decentralized storage assets referenced by `reference` or `media` URLs
-    val reference: String?= null, // URL to a JSON file with more info
-    val reference_hash: String?= null, // Base64-encoded sha256 hash of JSON from reference field. Required if `reference` is included.
+    val icon: String? = null, // Data URL
+    val base_uri: String? = null, // Centralized gateway known to have reliable access to decentralized storage assets referenced by `reference` or `media` URLs
+    val reference: String? = null, // URL to a JSON file with more info
+    val reference_hash: String? = null, // Base64-encoded sha256 hash of JSON from reference field. Required if `reference` is included.
 
 )
 
 @Serializable
 data class NearTokenMetadata(
     val title: String,
-    val description: String?= null,
+    val description: String? = null,
     val media: String,
-    val media_hash: String?= null,
-    val copies: Int?= null,
-    val issued_at: String?= null,
-    val expires_at: String?= null,
-    val starts_at: String?= null,
-    val updated_at: String?= null,
-    val extra: String?= null,
-    val reference: String?= null,
-    val reference_hash: String?= null,
-    )
+    val media_hash: String? = null,
+    val copies: Int? = null,
+    val issued_at: String? = null,
+    val expires_at: String? = null,
+    val starts_at: String? = null,
+    val updated_at: String? = null,
+    val extra: String? = null,
+    val reference: String? = null,
+    val reference_hash: String? = null,
+)
 
 @Serializable
 data class ApprovedAccount(
-    val account_id: String?= null,
-    val approval_id: String?= null,
+    val account_id: String? = null,
+    val approval_id: String? = null,
 
-)
+    )
+
 @Serializable
 data class Royalty(
-    val account_id: String?= null,
-    val value: String?= null,
+    val account_id: String? = null,
+    val value: String? = null,
 )
+
 @Serializable
-data class  NearNftMetadata(
+data class NearNftMetadata(
     val token_id: String,
     val owner_id: String,
     val metadata: NearTokenMetadata,
-    val approved_account_ids:ApprovedAccount?= null,
-    val royalty: Royalty?= null,
+    val approved_account_ids: ApprovedAccount? = null,
+    val royalty: Royalty? = null,
 
-)
+    )
 
 
 @Serializable
@@ -91,17 +93,17 @@ data class NearMintingParameter(
     val receiver_id: String,
     val token_id: String,
     val title: String,
-    val description: String?= null,
+    val description: String? = null,
     val media: String,
-    val media_hash: String?= null,
-    val reference: String?= null,
-    val reference_hash: String?= null,
+    val media_hash: String? = null,
+    val reference: String? = null,
+    val reference_hash: String? = null,
 )
 
 
 object NearNftService {
 
-    val client = HttpClient(CIO.create{requestTimeout = 0}) {
+    val client = HttpClient(CIO.create { requestTimeout = 0 }) {
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
@@ -116,10 +118,11 @@ object NearNftService {
     }
 
     fun mintNftToken(
-        account_id:String,
+        account_id: String,
         contract_id: String,
         token_id: String, title: String, description: String, media: String, media_hash: String,
-        reference: String, reference_hash: String?, receiver_id: String,chain: NearChain): OperationResult {
+        reference: String, reference_hash: String?, receiver_id: String, chain: NearChain
+    ): OperationResult {
         return runBlocking {
             val values = mapOf(
                 "account_id" to account_id,
@@ -155,31 +158,43 @@ object NearNftService {
         }
     }
 
-    fun deployContractDefault(account_id :String , chain: NearChain): OperationResult {
+    fun deployContractDefault(account_id: String, chain: NearChain): OperationResult {
         return runBlocking {
             val values = mapOf(
                 "account_id" to account_id,
                 "chain" to chain.toString().lowercase()
-                )
-            val nearOperationResult = NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/contract/deploywithdefaultmetadata") {
-                contentType(ContentType.Application.Json)
-                setBody(
-                    values
-                )
-            }
-                .body<nearOperationResult>()
+            )
+            val nearOperationResult =
+                NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/contract/deploywithdefaultmetadata") {
+                    contentType(ContentType.Application.Json)
+                    setBody(
+                        values
+                    )
+                }
+                    .body<nearOperationResult>()
             val contractExternalUrl = when (Common.getNearChain(chain.toString())) {
                 NearChain.MAINNET -> Values.NEAR_MAINNET_EXPLORER
                 NearChain.TESTNET -> Values.NEAR_TESTNET_EXPLORER
             }
             return@runBlocking OperationResult(
-                 nearOperationResult.hash,
+                nearOperationResult.hash,
                 "$contractExternalUrl/transactions/${nearOperationResult.hash}"
             )
         }
     }
 
-    fun deployContractWithCustomMetadata(account_id :String , owner_id: String , spec: String , name: String , symbol: String , icon: String , base_uri: String , reference: String , reference_hash: String,chain: NearChain): OperationResult {
+    fun deployContractWithCustomMetadata(
+        account_id: String,
+        owner_id: String,
+        spec: String,
+        name: String,
+        symbol: String,
+        icon: String,
+        base_uri: String,
+        reference: String,
+        reference_hash: String,
+        chain: NearChain
+    ): OperationResult {
         return runBlocking {
             val values = mapOf(
                 "account_id" to account_id,
@@ -193,15 +208,16 @@ object NearNftService {
                 "reference_hash" to reference_hash,
                 "chain" to chain.toString().lowercase()
 
-                )
-            val nearOperationResult = NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/contract/deploywithcustommetadata") {
-                contentType(ContentType.Application.Json)
+            )
+            val nearOperationResult =
+                NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/contract/deploywithcustommetadata") {
+                    contentType(ContentType.Application.Json)
 
-                setBody(
-                    values
-                )
-            }
-                .body<nearOperationResult>()
+                    setBody(
+                        values
+                    )
+                }
+                    .body<nearOperationResult>()
             val contractExternalUrl = when (Common.getNearChain(chain.toString())) {
                 NearChain.MAINNET -> Values.NEAR_MAINNET_EXPLORER
                 NearChain.TESTNET -> Values.NEAR_TESTNET_EXPLORER
@@ -242,6 +258,7 @@ object NearNftService {
 //
         return stringArray.joinToString("")
     }
+
     fun getNFTforAccount(account_id: String, contract_id: String, chain: NearChain): List<NearNftMetadata> {
         var url = ""
         if (NearChain.TESTNET.toString() == chain.toString()) {
@@ -264,7 +281,7 @@ object NearNftService {
         return Json.decodeFromString<List<NearNftMetadata>>(resultNfts)
     }
 
-    fun createSubAccount (account_id: String , newAccountId: String , amount : String , chain: NearChain) : OperationResult {
+    fun createSubAccount(account_id: String, newAccountId: String, amount: String, chain: NearChain): OperationResult {
         return runBlocking {
             val values = mapOf(
                 "account_id" to account_id,
@@ -272,13 +289,14 @@ object NearNftService {
                 "amount" to amount,
                 "chain" to chain.toString().lowercase()
             )
-            val nearOperationResult = NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/sub-account/create") {
-                contentType(ContentType.Application.Json)
-                setBody(
-                    values
-                )
-            }
-                .body<nearOperationResult>()
+            val nearOperationResult =
+                NftService.client.post("${WaltIdServices.loadTezosConfig().tezosBackendServer}/near/sub-account/create") {
+                    contentType(ContentType.Application.Json)
+                    setBody(
+                        values
+                    )
+                }
+                    .body<nearOperationResult>()
             val contractExternalUrl = when (Common.getNearChain(chain.toString().lowercase())) {
                 NearChain.MAINNET -> Values.NEAR_MAINNET_EXPLORER
                 NearChain.TESTNET -> Values.NEAR_TESTNET_EXPLORER
@@ -292,7 +310,7 @@ object NearNftService {
 
     }
 
-    fun getTokenById(contract_id: String, token_id: String , chain: NearChain): NearNftMetadata{
+    fun getTokenById(contract_id: String, token_id: String, chain: NearChain): NearNftMetadata {
         var url = ""
         if (NearChain.TESTNET.toString() == chain.toString()) {
             url = "archival-rpc.testnet.near.org"

@@ -8,13 +8,31 @@ import java.io.File
 import java.util.*
 
 
-data class Providers(val ethereum: String, val goerli: String, val sepolia: String, val polygon: String, val mumbai: String, val astar: String, val moonbeam: String, val opal: String, val unique: String , val shimmerevm: String)
+data class Providers(
+    val ethereum: String,
+    val goerli: String,
+    val sepolia: String,
+    val polygon: String,
+    val mumbai: String,
+    val astar: String,
+    val moonbeam: String,
+    val opal: String,
+    val unique: String,
+    val shimmerevm: String
+)
 
 data class ChainConfig(val providers: Providers, val privateKey: String)
 
 data class KeysConfig(val keys: Map<String, String>)
 
-data class ApiKeys(val ethereumBlockExplorer: String, val polygonBlockExplorer: String, val alchemy: String, val nftstorage: String, val subscan: String)
+data class ApiKeys(
+    val ethereumBlockExplorer: String,
+    val polygonBlockExplorer: String,
+    val alchemy: String,
+    val nftstorage: String,
+    val subscan: String
+)
+
 data class BlockExplorerScanApiKeyConfig(val apiKeys: ApiKeys)
 data class TezosConfig(val tezosBackendServer: String)
 data class NearConfig(val nearBackendServer: String)
@@ -22,18 +40,16 @@ data class NearConfig(val nearBackendServer: String)
 data class PolkadotConfig(val polkadotAccounts: Map<String, String>)
 
 data class IndexersUrl(val uniqueUrl: String, val opalUrl: String)
-data class Indexers(val indexersUrl : IndexersUrl)
+data class Indexers(val indexersUrl: IndexersUrl)
 
-data class algorandSeedMnemonic(val algorand_seed_Mnemonic : String)
-data class Algorand(val algorandConfig : algorandSeedMnemonic)
-
-
+data class algorandSeedMnemonic(val algorand_seed_Mnemonic: String)
+data class Algorand(val algorandConfig: algorandSeedMnemonic)
 
 
 val WALTID_CONFIG_PATH = System.getenv("WALTID_CONFIG_PATH") ?: "."
 
 object WaltIdServices {
-    const val default_yaml_path= "/walt-default.yaml"
+    const val default_yaml_path = "/walt-default.yaml"
     fun encBase64Str(data: String): String = String(Base64.getEncoder().encode(data.toByteArray()))
 
     fun decBase64Str(base64: String): String = String(Base64.getDecoder().decode(base64))
@@ -96,7 +112,6 @@ object WaltIdServices {
         .loadConfigOrThrow<Algorand>()
 
 
-
     fun getBlockExplorerUrl(chain: EVMChain): String {
         return when (chain) {
             EVMChain.ETHEREUM -> Values.ETHEREUM_MAINNET_BLOCK_EXPLORER_URL
@@ -105,7 +120,9 @@ object WaltIdServices {
             EVMChain.POLYGON -> Values.POLYGON_MAINNET_BLOCK_EXPLORER_URL
             EVMChain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_BLOCK_EXPLORER_URL
             EVMChain.SHIMMEREVM -> Values.SHIMMEREVM_TESTNET_BLOCK_EXPLORER_URL
-            else -> {throw Exception("$chain is not supported")}
+            else -> {
+                throw Exception("$chain is not supported")
+            }
         }
     }
 }

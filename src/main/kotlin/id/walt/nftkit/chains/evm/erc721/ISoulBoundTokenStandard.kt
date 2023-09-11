@@ -1,4 +1,5 @@
 package id.walt.nftkit.chains.evm.erc721
+
 import id.walt.nftkit.services.EVMChain
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.generated.Uint256
@@ -7,8 +8,8 @@ import java.math.BigInteger
 
 interface ISoulBoundTokenStandard {
 
-    fun safeMint(chain: EVMChain, contractAddress: String,to: String, uri: String): TransactionReceipt?
-    fun ownerOf(chain: EVMChain, contractAddress: String, tokenId: Uint256):String?
+    fun safeMint(chain: EVMChain, contractAddress: String, to: String, uri: String): TransactionReceipt?
+    fun ownerOf(chain: EVMChain, contractAddress: String, tokenId: Uint256): String?
 
     fun name(chain: EVMChain, contractAddress: String): String?
 
@@ -18,7 +19,14 @@ interface ISoulBoundTokenStandard {
 
     fun balanceOf(chain: EVMChain, contractAddress: String, owner: Address): BigInteger?
 
-    fun safeTransferFrom(chain: EVMChain, contractAddress: String, from: Address, to: Address, tokenId: Uint256, signedAccount: String?): TransactionReceipt
+    fun safeTransferFrom(
+        chain: EVMChain,
+        contractAddress: String,
+        from: Address,
+        to: Address,
+        tokenId: Uint256,
+        signedAccount: String?
+    ): TransactionReceipt
 
     fun supportsInterface(chain: EVMChain, contractAddress: String): Boolean
 

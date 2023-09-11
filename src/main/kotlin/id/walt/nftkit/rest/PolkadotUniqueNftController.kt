@@ -1,8 +1,10 @@
 package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
-import id.walt.nftkit.services.*
 import id.walt.nftkit.graphql.tokenownersquery.TokenOwnersDataResponse
+import id.walt.nftkit.services.PolkadotNftService
+import id.walt.nftkit.services.UniqueNetwork
+import id.walt.nftkit.services.UniqueNftMetadata
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
@@ -56,10 +58,10 @@ object PolkadotUniqueNftController {
         it.summary("Fetching NFTs on Unique Network")
             .operationId("fetchUniqueNfts")
             .addTagsItem(TAG)
-        }.pathParam<String>("network") {
+    }.pathParam<String>("network") {
         it.schema<UniqueNetwork> {}
-    }.pathParam<String>("account"){
-    }.json<TokenOwnersDataResponse>("200"){
+    }.pathParam<String>("account") {
+    }.json<TokenOwnersDataResponse>("200") {
         it.description("Fetched NFTs")
     }
 
@@ -77,11 +79,11 @@ object PolkadotUniqueNftController {
         it.summary("Fetching NFTs metadata on Unique Network")
             .operationId("fetchUniqueNftMetadata")
             .addTagsItem(TAG)
-    }.pathParam<String>("chain"){
+    }.pathParam<String>("chain") {
         it.schema<UniqueNetwork> {}
-    }.pathParam<String>("collectionId"){
-    }.pathParam<String>("tokenId"){
-    }.json<UniqueNftMetadata>("200"){
+    }.pathParam<String>("collectionId") {
+    }.pathParam<String>("tokenId") {
+    }.json<UniqueNftMetadata>("200") {
         it.description("Fetched NFT metadata")
     }
 
