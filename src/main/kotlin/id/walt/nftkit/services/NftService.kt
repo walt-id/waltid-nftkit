@@ -597,7 +597,7 @@ object NftService {
         chain: EVMChain,
         contractAddress: String
     ): MintingResponse {
-        if (isErc721Standard(chain, contractAddress) && !isSoulBoundStandard(chain , contractAddress)) {
+//        if (isErc721Standard(chain, contractAddress) && !isSoulBoundStandard(chain , contractAddress)) {
             //val erc721TokenStandard = Erc721TokenStandard()
             val recipient = Address(recipientAddress)
             val tokenUri = Utf8String(metadataUri)
@@ -611,20 +611,20 @@ object NftService {
                 TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt.transactionHash}")
             val mr = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
             return mr
-        } else if (isSoulBoundStandard(chain , contractAddress) && isErc721Standard(chain, contractAddress)){
-            val recipient = recipientAddress
-            val tokenUri = metadataUri
-            val transactionReceipt: TransactionReceipt? =
-                SoulBoundTokenStandard.safeMint(chain, contractAddress, recipient, tokenUri)
-            val eventValues: EventValues? =
-                staticExtractEventParameters(Erc721OnchainCredentialWrapper.TRANSFER_EVENT, transactionReceipt?.logs?.get(0))
-
-            val url = WaltIdServices.getBlockExplorerUrl(chain)
-            val ts =
-                TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt.transactionHash}")
-            val mr = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
-            return mr
-        }
+//        } else if (isSoulBoundStandard(chain , contractAddress) && isErc721Standard(chain, contractAddress)){
+//            val recipient = recipientAddress
+//            val tokenUri = metadataUri
+//            val transactionReceipt: TransactionReceipt? =
+//                SoulBoundTokenStandard.safeMint(chain, contractAddress, recipient, tokenUri)
+//            val eventValues: EventValues? =
+//                staticExtractEventParameters(Erc721OnchainCredentialWrapper.TRANSFER_EVENT, transactionReceipt?.logs?.get(0))
+//
+//            val url = WaltIdServices.getBlockExplorerUrl(chain)
+//            val ts =
+//                TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt.transactionHash}")
+//            val mr = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
+//            return mr
+//        }
         return MintingResponse(null, null)
     }
 
