@@ -1,13 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "1.9.10"
     // id("org.web3j") version "4.9.0"
-    kotlin("plugin.serialization") version "1.6.10"
+    kotlin("plugin.serialization") version "1.9.10"
     application
     `maven-publish`
-    id("com.expediagroup.graphql") version "6.4.0"
-
+    id("com.expediagroup.graphql") version "6.5.3"
 }
 
 group = "id.walt"
@@ -25,68 +24,65 @@ dependencies {
     implementation(kotlin("stdlib"))
 
     // Ethereum: Web3j
-    implementation ("org.web3j:core:5.0.0")
+    implementation("org.web3j:core:4.10.3") // 5.0.0 is an invalid old version
 
     // JSON
     implementation("com.beust:klaxon:5.6")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.0")
 
     // Logging
-    implementation("org.slf4j:slf4j-api:2.0.0-alpha7")
-    implementation("org.slf4j:slf4j-simple:2.0.0-alpha7")
-    implementation("io.github.microutils:kotlin-logging:2.1.21")
+    implementation("org.slf4j:slf4j-api:2.0.9")
+    implementation("org.slf4j:slf4j-simple:2.0.9")
+    implementation("io.github.microutils:kotlin-logging:4.0.0-beta-2")
 
     // Config: Hoplite
-    implementation("com.sksamuel.hoplite:hoplite-core:2.6.5")
-    implementation("com.sksamuel.hoplite:hoplite-yaml:2.6.5")
-    implementation("com.sksamuel.hoplite:hoplite-hikaricp:2.6.5")
+    implementation("com.sksamuel.hoplite:hoplite-core:2.8.0.RC2")
+    implementation("com.sksamuel.hoplite:hoplite-yaml:2.8.0.RC2")
+    implementation("com.sksamuel.hoplite:hoplite-hikaricp:2.8.0.RC2")
 
     // HTTP / Server: Javalin
-    implementation("io.javalin:javalin-bundle:4.4.0")
+    implementation("io.javalin:javalin-bundle:4.6.8")
 
     // HTTP / Client: ktor
-    implementation("io.ktor:ktor-client-core:2.1.3")
-    implementation("io.ktor:ktor-client-content-negotiation:2.1.3")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.1.3")
-    implementation("io.ktor:ktor-client-cio:2.1.3")
-    implementation("io.ktor:ktor-client-logging:2.1.3")
-    implementation("io.ktor:ktor-client-auth:2.1.3")
+    implementation("io.ktor:ktor-client-core:2.3.4")
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.4")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.4")
+    implementation("io.ktor:ktor-client-cio:2.3.4")
+    implementation("io.ktor:ktor-client-logging:2.3.4")
+    implementation("io.ktor:ktor-client-auth:2.3.4")
 
 
 
     // Persistence
-    implementation("org.jetbrains.exposed:exposed-core:0.38.2")
-    implementation("org.jetbrains.exposed:exposed-dao:0.38.2")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.38.2")
-    implementation("org.xerial:sqlite-jdbc:3.36.0.3")
+    /*implementation("org.jetbrains.exposed:exposed-core:0.43.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.43.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.43.0")
+    implementation("org.xerial:sqlite-jdbc:3.42.0.1")*/
 
     // Testing
     //testImplementation(kotlin("test-junit"))
     //testImplementation("io.mockk:mockk:1.12.4")
 
-    testImplementation("io.kotest:kotest-runner-junit5:5.3.1")
-    testImplementation("io.kotest:kotest-assertions-core:5.3.1")
-    testImplementation("io.kotest:kotest-assertions-json:5.3.1")
+    testImplementation("io.kotest:kotest-runner-junit5:5.7.2")
+    testImplementation("io.kotest:kotest-assertions-core:5.7.2")
+    testImplementation("io.kotest:kotest-assertions-json:5.7.2")
 
     //near
     implementation ("com.syntifi.near:near-java-api:0.1.0")
 
     // unique
-    implementation ("network.unique:unique-sdk-jvm:0.0.1")
+    implementation ("network.unique:unique-sdk-jvm:0.0.3")
 
     // algorand
     implementation ("com.algorand:algosdk:2.2.0")
 
     // expediagroup graphql
-    implementation("com.expediagroup:graphql-kotlin-spring-client:6.4.0")
-    implementation("com.expediagroup", "graphql-kotlin-client-serialization", "6.4.0")
+    implementation("com.expediagroup", "graphql-kotlin-client-serialization", "6.5.3")
 
-    implementation("com.expediagroup", "graphql-kotlin-spring-client","6.4.0") {
-    exclude("com.expediagroup", "graphql-kotlin-client-jackson")
-}
-    implementation("com.expediagroup", "graphql-kotlin-client-serialization","6.4.0")
-
-
+    implementation("com.expediagroup", "graphql-kotlin-spring-client","6.5.3") {
+        exclude("com.expediagroup", "graphql-kotlin-client-jackson")
+    }
+    implementation("com.expediagroup", "graphql-kotlin-client-serialization","6.5.3")
 }
 
 tasks.withType<Test> {
@@ -99,8 +95,14 @@ tasks.withType<Test> {
     }
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "16"
+    kotlinOptions.jvmTarget = "17"
 }
 
 application {

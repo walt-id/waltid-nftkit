@@ -4,7 +4,7 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
 import com.beust.klaxon.Parser
 import id.walt.nftkit.common.resolveContentToFile
-import mu.KotlinLogging
+import mu.two.KotlinLogging
 import java.io.File
 
 object OPAPolicyEngine : PolicyEngine {
@@ -39,7 +39,7 @@ object OPAPolicyEngine : PolicyEngine {
             }
         }
     }
-    
+
 
     override val type: PolicyEngineType = PolicyEngineType.OPA
 }

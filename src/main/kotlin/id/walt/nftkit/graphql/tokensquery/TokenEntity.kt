@@ -1,12 +1,14 @@
-package id.walt.nftkit.tokensquery
+package id.walt.nftkit.graphql.tokensquery
 
 import com.expediagroup.graphql.client.Generated
-import id.walt.nftkit.JSONObject
+import id.walt.nftkit.graphql.JSONObject
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonPrimitive
 
 @Generated
 @Serializable
-public data class TokenEntity(
-  public val image: JSONObject? = null,
-  public val attributes: JSONObject? = null,
+data class TokenEntity(
+    val image: JSONObject? = null,
+    val attributes: JSONObject? = null
 )

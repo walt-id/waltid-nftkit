@@ -14,7 +14,6 @@ import id.walt.rest.OpenAPIUtils.documentedIgnored
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.*
 import io.javalin.core.util.RouteOverviewPlugin
-import io.javalin.plugin.json.JavalinJackson
 import io.javalin.plugin.json.JsonMapper
 import io.javalin.plugin.openapi.InitialConfigurationCreator
 import io.javalin.plugin.openapi.OpenApiOptions
@@ -26,7 +25,7 @@ import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Contact
 import io.swagger.v3.oas.models.security.SecurityScheme
 import io.swagger.v3.oas.models.servers.Server
-import mu.KotlinLogging
+import mu.two.KotlinLogging
 
 object NftKitApi {
 
@@ -106,9 +105,14 @@ object NftKitApi {
                         return Klaxon().toJsonString(obj)
                     }
 
+                    /*override fun <T : Any?> fromJsonStream(json: InputStream, targetClass: Class<T>): T & Any {
+                        return JavalinJackson(mapper).fromJsonString(json, targetClass)
+                        return super.fromJsonStream(json, targetClass)
+                    }
+
                     override fun <T : Any?> fromJsonString(json: String, targetClass: Class<T>): T {
                         return JavalinJackson(mapper).fromJsonString(json, targetClass)
-                    }
+                    }*/
                 })
 
                 //addStaticFiles("/static")
@@ -261,10 +265,16 @@ object NftKitApi {
                                     PolkadotUniqueNftController.fetchUniqueNftsDocs(),
                                     PolkadotUniqueNftController::fetchUniqueNfts)
                             )
+
                             get("chain/{chain}/collection/{collectionId}/token/{tokenId}/metadata",
                                 documented(
                                     PolkadotUniqueNftController.fetchUniqueNftMetadataDocs(),
                                     PolkadotUniqueNftController::fetchUniqueNftMetadata)
+                            )
+                            get("chain/{network}/account/{account}/metadata/all",
+                                documented(
+                                    PolkadotUniqueNftController.fetchUniqueNftsMetadataDocs(),
+                                    PolkadotUniqueNftController::fetchUniqueNftsMetadata)
                             )
                         }
                         path("parachain") {
@@ -504,14 +514,17 @@ object NftKitApi {
             }
 
         }.exception(InvalidFormatException::class.java) { e, ctx ->
+            e.printStackTrace()
             log.error(e.stackTraceToString())
             ctx.json(ErrorResponse(e.message ?: " Unknown application error", 400))
             ctx.status(400)
         }.exception(IllegalArgumentException::class.java) { e, ctx ->
+            e.printStackTrace()
             log.error(e.stackTraceToString())
             ctx.json(ErrorResponse(e.message ?: " Unknown application error", 400))
             ctx.status(400)
         }.exception(Exception::class.java) { e, ctx ->
+            e.printStackTrace()
             log.error(e.stackTraceToString())
             ctx.json(ErrorResponse(e.message ?: " Unknown server error", 500))
             ctx.status(500)

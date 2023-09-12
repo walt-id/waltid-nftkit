@@ -2,11 +2,13 @@ package id.walt.nftkit.rest
 
 import cc.vileda.openapi.dsl.schema
 import id.walt.nftkit.services.*
-import id.walt.nftkit.tokenownersquery.TokenOwnersDataResponse
+import id.walt.nftkit.graphql.tokenownersquery.TokenOwnersDataResponse
 import id.walt.nftkit.utilis.Common
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.dsl.document
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 @Serializable
 data class PolkadotUniqueDeployRequest(
@@ -63,12 +65,34 @@ object PolkadotUniqueNftController {
         it.description("Fetched NFTs")
     }
 
+    fun fetchUniqueNftsMetadata(ctx: Context) {
+        val chain = ctx.pathParam("network")
+        val account = ctx.pathParam("account")
+        val network: UniqueNetwork = Common.getUniqueChain(chain.uppercase())
+        val result = PolkadotNftService.fetchUniqueNFTsMetadata(network, account)
+
+        ctx.result(Json.encodeToString(result))
+    }
+
+    fun fetchUniqueNftsMetadataDocs() = document().operation {
+        it.summary("Fetching NFTs on Unique Network")
+            .operationId("fetchUniqueNftsMetadata")
+            .addTagsItem(TAG)
+    }.pathParam<String>("network") {
+        it.schema<UniqueNetwork> {}
+    }.pathParam<String>("account"){
+    }.json<UniqueNftMetadata>("200"){
+        it.description("Fetched NFTs")
+    }
+
+
+
     fun fetchUniqueNftMetadata(ctx: Context) {
         val network: UniqueNetwork = Common.getUniqueChain(ctx.pathParam("chain").uppercase())
         val collectionId: String = ctx.pathParam("collectionId")
         val tokenId: String = ctx.pathParam("tokenId")
 
-        val tokenDataResponse = PolkadotNftService.fetchUniqueNFTsMetadata(network, collectionId, tokenId)
+        val tokenDataResponse = PolkadotNftService.fetchUniqueNFTMetadata(network, collectionId, tokenId)
         val result = PolkadotNftService.parseNftMetadataUniqueResponse(tokenDataResponse!!)
         ctx.json(result)
     }
