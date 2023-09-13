@@ -14,6 +14,7 @@ import id.walt.rest.OpenAPIUtils.documentedIgnored
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.*
 import io.javalin.core.util.RouteOverviewPlugin
+import io.javalin.plugin.json.JavalinJackson
 import io.javalin.plugin.json.JsonMapper
 import io.javalin.plugin.openapi.InitialConfigurationCreator
 import io.javalin.plugin.openapi.OpenApiOptions
@@ -104,6 +105,10 @@ object NftKitApi {
                     override fun toJsonString(obj: Any): String {
                         return Klaxon().toJsonString(obj)
                     }
+                    override fun <T : Any?> fromJsonString(json: String, targetClass: Class<T>): T & Any {
+                        return JavalinJackson(mapper).fromJsonString(json, targetClass)!!
+                    }
+
 
                     /*override fun <T : Any?> fromJsonStream(json: InputStream, targetClass: Class<T>): T & Any {
                         return JavalinJackson(mapper).fromJsonString(json, targetClass)
