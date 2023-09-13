@@ -10,5 +10,4 @@ class NFTsInfos(
     val tezosNfts: List<TezosNFTsTzktResult>?= null,
     val polkadotEvmNft: List<PolkadotEvmNft>?= null,
     val polkadotUniqueNft: List<PolkadotUniqueNft>?= null
-) {
-}
+)

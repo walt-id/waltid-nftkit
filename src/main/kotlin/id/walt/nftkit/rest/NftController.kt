@@ -227,7 +227,7 @@ object NftController {
     }.pathParam<String>("chain") {
         it.schema<Chain> { }
     }.pathParam<String>("ownerAddress") {
-    }.json<NFTsInfos>("200") { it.description("NFTs list") }
+    }.json<String>("200") { it.description("NFTs list: evmNfts: [NftTokenByAlchemy], tezosNfts: [TezosNFTsTzktResult], val polkadotEvmNft: [PolkadotEvmNft], polkadotUniqueNft: [PolkadotUniqueNft]") }
 
     fun updateMetadata(ctx: Context) {
         val chain = ctx.pathParam("chain")

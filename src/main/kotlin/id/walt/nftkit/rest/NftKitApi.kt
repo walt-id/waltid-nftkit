@@ -316,9 +316,6 @@ object NftKitApi {
                                 "chain/{chain}/assets/account/{address}/",
                                 documented(AlgorandNftController.fetchAccountAssetsDocs(), AlgorandNftController::fetchAccountAssets)
                             )
-
-
-
                         }
                     }
                     path("nft/verifier") {
