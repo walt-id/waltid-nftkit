@@ -81,8 +81,8 @@ object PolkadotUniqueNftController {
     }.pathParam<String>("network") {
         it.schema<UniqueNetwork> {}
     }.pathParam<String>("account"){
-    }.json<UniqueNftMetadata>("200"){
-        it.description("Fetched NFTs")
+    }.json<String>("200"){
+        it.description("Fetched NFTs: {fullUrl: String, ipfsCid: String?, attributes: [{name: String, value: JsonElement}, ...]}")
     }
 
 
@@ -105,8 +105,8 @@ object PolkadotUniqueNftController {
         it.schema<UniqueNetwork> {}
     }.pathParam<String>("collectionId"){
     }.pathParam<String>("tokenId"){
-    }.json<UniqueNftMetadata>("200"){
-        it.description("Fetched NFT metadata")
+    }.json<String>("200"){
+        it.description("Fetched NFT metadata: {fullUrl: String, ipfsCid: String?, attributes: [{name: String, value: JsonElement}, ...]}")
     }
 
 }
