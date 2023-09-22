@@ -94,8 +94,9 @@ object NftController {
         val contractAddress = ctx.pathParam("contractAddress")
         val mintingParameter = MintingParameter(mintReq.metadataUri, mintReq.recipientAddress, mintReq.metadata)
         val mintingOptions = MintingOptions(mintReq.metadataStorageType)
+        val isSoulbound =  ctx.queryParam("isSoulbound")?.toBoolean() ?: false
         val result =
-            NftService.mintToken(Common.getEVMChain(chain.uppercase()), contractAddress, mintingParameter, mintingOptions)
+            NftService.mintToken(Common.getEVMChain(chain.uppercase()), contractAddress, mintingParameter, mintingOptions , isSoulbound )
         ctx.json(
             result
         )
@@ -107,7 +108,11 @@ object NftController {
     }.pathParam<String>("chain") {
         it.schema<EVMChain> { }
     }.pathParam<String>("contractAddress") {
-    }.body<MintRequest> {
+    }
+        .queryParam<Boolean>("isSoulbound") {
+            it.required(true)
+        }
+        .body<MintRequest> {
         it.description("")
     }.json<MintingResponse>("200") { it.description("Transaction ID and token ID") }
 
