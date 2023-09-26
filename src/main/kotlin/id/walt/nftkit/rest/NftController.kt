@@ -110,7 +110,8 @@ object NftController {
     }.pathParam<String>("contractAddress") {
     }
         .queryParam<Boolean>("isSoulbound") {
-            it.required(true)
+            it.required(false)
+
         }
         .body<MintRequest> {
         it.description("")
