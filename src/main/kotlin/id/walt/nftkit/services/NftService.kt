@@ -21,9 +21,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
 import org.web3j.abi.EventEncoder
 import org.web3j.abi.EventValues
@@ -614,10 +612,8 @@ object NftService {
             val mr = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
             return mr
         } else if (isSoulBound){
-            val recipient = recipientAddress
-            val tokenUri = metadataUri
             val transactionReceipt: TransactionReceipt? =
-                SoulBoundTokenStandard.safeMint(chain, contractAddress, recipient, tokenUri)
+                SoulBoundTokenStandard.safeMint(chain, contractAddress, recipientAddress, metadataUri)
             val eventValues: EventValues? =
                 staticExtractEventParameters(Erc721OnchainCredentialWrapper.TRANSFER_EVENT, transactionReceipt?.logs?.get(0))
 
