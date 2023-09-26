@@ -66,7 +66,7 @@ class EvmBasedSCExtensions : StringSpec({
         val nftMetaData = NftMetadata("To burn", "To burn", "string", "string","string")
         val mintingParametre = MintingParameter(metadataUri = "", recipientAddress="0xaf87c5ce7a1fb6bd5aadb6dd9c0b8ef51ef1bc31", metadata = nftMetaData )
         val mintingOption = MintingOptions(MetadataStorageType.ON_CHAIN)
-        val newNftId = NftService.mintToken(EVMChain.MUMBAI, contractAddress = "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517",mintingParametre, mintingOption).tokenId
+        val newNftId = NftService.mintToken(EVMChain.MUMBAI, contractAddress = "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517",mintingParametre, mintingOption ,false).tokenId
         if (!(ExtensionsService.getBurnable(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")))
         {ExtensionsService.setBurnable(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", true) }
             val result = newNftId?.let {

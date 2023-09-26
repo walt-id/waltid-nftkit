@@ -21,9 +21,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
 import org.web3j.abi.EventEncoder
 import org.web3j.abi.EventValues
@@ -305,7 +303,8 @@ object NftService {
         chain: EVMChain,
         contractAddress: String,
         parameter: MintingParameter,
-        options: MintingOptions
+        options: MintingOptions,
+        isSoulBound: Boolean
     ): MintingResponse {
         var tokenUri: String?
         if (parameter.metadataUri != null && parameter.metadataUri != "") {
@@ -316,7 +315,7 @@ object NftService {
             tokenUri = metadataUri.getTokenUri(nftMetadataWrapper)
         }
 
-        return mintNewToken(parameter.recipientAddress, tokenUri, chain, contractAddress)
+        return mintNewToken(parameter.recipientAddress, tokenUri, chain, contractAddress , isSoulBound )
     }
 
 
@@ -595,10 +594,11 @@ object NftService {
         recipientAddress: String,
         metadataUri: String,
         chain: EVMChain,
-        contractAddress: String
+        contractAddress: String,
+        isSoulBound : Boolean
     ): MintingResponse {
-        if (isErc721Standard(chain, contractAddress) && !isSoulBoundStandard(chain , contractAddress)) {
-            //val erc721TokenStandard = Erc721TokenStandard()
+        if (!isSoulBound) {
+
             val recipient = Address(recipientAddress)
             val tokenUri = Utf8String(metadataUri)
             val transactionReceipt: TransactionReceipt? =
@@ -611,11 +611,9 @@ object NftService {
                 TransactionResponse(transactionReceipt!!.transactionHash, "$url/tx/${transactionReceipt.transactionHash}")
             val mr = MintingResponse(ts, eventValues?.indexedValues?.get(2)?.value as BigInteger)
             return mr
-        } else if (isSoulBoundStandard(chain , contractAddress) && isErc721Standard(chain, contractAddress)){
-            val recipient = recipientAddress
-            val tokenUri = metadataUri
+        } else if (isSoulBound){
             val transactionReceipt: TransactionReceipt? =
-                SoulBoundTokenStandard.safeMint(chain, contractAddress, recipient, tokenUri)
+                SoulBoundTokenStandard.safeMint(chain, contractAddress, recipientAddress, metadataUri)
             val eventValues: EventValues? =
                 staticExtractEventParameters(Erc721OnchainCredentialWrapper.TRANSFER_EVENT, transactionReceipt?.logs?.get(0))
 
@@ -638,10 +636,10 @@ object NftService {
     }
 
 
-    private fun isErc721Standard(chain: EVMChain, contractAddress: String): Boolean {
+     fun isErc721Standard(chain: EVMChain, contractAddress: String): Boolean {
         return Erc721TokenStandard.supportsInterface(chain, contractAddress)
     }
-    private fun isSoulBoundStandard(chain: EVMChain, contractAddress: String): Boolean {
+     fun isSoulBoundStandard(chain: EVMChain, contractAddress: String): Boolean {
         return SoulBoundTokenStandard.supportsInterface(chain, contractAddress)
     }
 
