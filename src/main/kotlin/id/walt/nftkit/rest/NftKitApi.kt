@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import id.walt.nftkit.Values
 import id.walt.nftkit.rest.RootController.healthDocs
 import id.walt.rest.OpenAPIUtils.documentedIgnored
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.*
 import io.javalin.core.util.RouteOverviewPlugin
@@ -26,8 +27,6 @@ import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Contact
 import io.swagger.v3.oas.models.security.SecurityScheme
 import io.swagger.v3.oas.models.servers.Server
-import mu.two.KotlinLogging
-
 object NftKitApi {
 
     private val log = KotlinLogging.logger {}

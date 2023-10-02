@@ -7,6 +7,8 @@ plugins {
     application
     `maven-publish`
     id("com.expediagroup.graphql") version "6.5.3"
+
+    id("com.github.ben-manes.versions") version "0.48.0"
 }
 
 group = "id.walt"
@@ -33,12 +35,12 @@ dependencies {
     // Logging
     implementation("org.slf4j:slf4j-api:2.0.9")
     implementation("org.slf4j:slf4j-simple:2.0.9")
-    implementation("io.github.microutils:kotlin-logging:4.0.0-beta-2")
+    implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
 
     // Config: Hoplite
-    implementation("com.sksamuel.hoplite:hoplite-core:2.8.0.RC2")
-    implementation("com.sksamuel.hoplite:hoplite-yaml:2.8.0.RC2")
-    implementation("com.sksamuel.hoplite:hoplite-hikaricp:2.8.0.RC2")
+    implementation("com.sksamuel.hoplite:hoplite-core:2.8.0.RC3")
+    implementation("com.sksamuel.hoplite:hoplite-yaml:2.8.0.RC3")
+    implementation("com.sksamuel.hoplite:hoplite-hikaricp:2.8.0.RC3")
 
     // HTTP / Server: Javalin
     implementation("io.javalin:javalin-bundle:4.6.8")
