@@ -627,6 +627,11 @@ object NftService {
     }
 
 
+    fun revokeToken(chain: EVMChain, contractAddress: String, tokenId: BigInteger, signedAccount: String?): TransactionResponse {
+        val transactionReceipt = SoulBoundTokenStandard.revoke(chain, contractAddress, Uint256(tokenId), signedAccount)
+        return Common.getTransactionResponse(chain, transactionReceipt)
+
+    }
 
     private fun getMetadatUri(chain: EVMChain, contractAddress: String, tokenId: BigInteger): String {
         if (isErc721Standard(chain, contractAddress) == true) {
