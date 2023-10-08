@@ -26,4 +26,7 @@ interface ISoulBoundTokenStandard {
 
     fun supportsInterface(chain: EVMChain, contractAddress: String): Boolean
 
+    fun revoke(chain: EVMChain, contractAddress: String, tokenId: Uint256, signedAccount: String?): TransactionReceipt
+
+    fun unequip(chain: EVMChain, contractAddress: String, tokenId: Uint256, signedAccount: String?): TransactionReceipt
 }
