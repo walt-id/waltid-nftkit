@@ -149,18 +149,18 @@ publishing {
     }
 }
 
-graphql {
-    client {
-        endpoint = "https://scan-api.opal.uniquenetwork.dev/v1/graphql/"
-        packageName = "id.walt.nftkit"
-        customScalars = listOf(
-            com.expediagroup.graphql.plugin.gradle.config.GraphQLScalar(
-                "_Any",
-                "kotlinx.serialization.json.JsonObject",
-                "com.expediagroup.graphql.examples.client.gradle.AnyScalarConverter"
-            ),
-        )
-        serializer = com.expediagroup.graphql.plugin.gradle.config.GraphQLSerializer.KOTLINX
-    }
-}
-
+//graphql {
+//    client {
+//        endpoint = "https://scan-api.opal.uniquenetwork.dev/v1/graphql/"
+//        packageName = "id.walt.nftkit"
+//        customScalars = listOf(
+//            com.expediagroup.graphql.plugin.gradle.config.GraphQLScalar(
+//                "_Any",
+//                "kotlinx.serialization.json.JsonObject",
+//                "com.expediagroup.graphql.examples.client.gradle.AnyScalarConverter"
+//            ),
+//        )
+//        serializer = com.expediagroup.graphql.plugin.gradle.config.GraphQLSerializer.KOTLINX
+//    }
+//}
+//
