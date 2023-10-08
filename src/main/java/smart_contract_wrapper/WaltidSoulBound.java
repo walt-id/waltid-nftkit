@@ -9,10 +9,8 @@ import java.util.Collections;
 import java.util.List;
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.Address;
-import org.web3j.abi.datatypes.Bool;
-import org.web3j.abi.datatypes.Event;
-import org.web3j.abi.datatypes.Type;
+import org.web3j.abi.datatypes.*;
+import org.web3j.abi.datatypes.generated.Bytes4;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
@@ -257,12 +255,12 @@ public class WaltidSoulBound extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteFunctionCall<TransactionReceipt> balanceOf(String owner) {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
-                FUNC_BALANCEOF, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, owner)), 
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
+    public RemoteFunctionCall<Uint256> balanceOf(Address owner) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_BALANCEOF,
+                Arrays.asList(owner),
+                Arrays.asList(new TypeReference<Uint256>() {
+                }));
+        return executeRemoteCallSingleValueReturn(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> getApproved(BigInteger tokenId) {
@@ -282,13 +280,14 @@ public class WaltidSoulBound extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteFunctionCall<TransactionReceipt> name() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
-                FUNC_NAME, 
-                Arrays.<Type>asList(), 
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
+    public RemoteFunctionCall<Utf8String> name() {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_NAME,
+                Arrays.asList(),
+                Arrays.asList(new TypeReference<Utf8String>() {
+                }));
+        return executeRemoteCallSingleValueReturn(function);
     }
+
 
     public RemoteFunctionCall<TransactionReceipt> owner() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
@@ -298,12 +297,12 @@ public class WaltidSoulBound extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteFunctionCall<TransactionReceipt> ownerOf(BigInteger tokenId) {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
-                FUNC_OWNEROF, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(tokenId)), 
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
+    public RemoteFunctionCall<Address> ownerOf(Uint256 tokenId) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_OWNEROF,
+                Arrays.asList(tokenId),
+                Arrays.asList(new TypeReference<Address>() {
+                }));
+        return executeRemoteCallSingleValueReturn(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> renounceOwnership() {
@@ -314,10 +313,10 @@ public class WaltidSoulBound extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteFunctionCall<TransactionReceipt> revoke(BigInteger tokenId) {
+    public RemoteFunctionCall<TransactionReceipt> revoke(Uint256 tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
-                FUNC_REVOKE, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(tokenId)), 
+                FUNC_REVOKE,
+                Arrays.<Type>asList(tokenId),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -361,28 +360,29 @@ public class WaltidSoulBound extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteFunctionCall<TransactionReceipt> supportsInterface(byte[] interfaceId) {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
-                FUNC_SUPPORTSINTERFACE, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes4(interfaceId)), 
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
+    public RemoteFunctionCall<Bool> supportsInterface(Bytes4 interfaceId) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_SUPPORTSINTERFACE,
+                Arrays.asList(interfaceId),
+                Arrays.asList(new TypeReference<Bool>() {
+                }));
+        return executeRemoteCallSingleValueReturn(function);
     }
 
-    public RemoteFunctionCall<TransactionReceipt> symbol() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
-                FUNC_SYMBOL, 
-                Arrays.<Type>asList(), 
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
+    public RemoteFunctionCall<Utf8String> symbol() {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_SYMBOL,
+                Arrays.asList(),
+                Arrays.asList(new TypeReference<Utf8String>() {
+                }));
+        return executeRemoteCallSingleValueReturn(function);
     }
 
-    public RemoteFunctionCall<TransactionReceipt> tokenURI(BigInteger tokenId) {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
-                FUNC_TOKENURI, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(tokenId)), 
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
+
+    public RemoteFunctionCall<Utf8String> tokenURI(Uint256 tokenId) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_TOKENURI,
+                Arrays.asList(tokenId),
+                Arrays.asList(new TypeReference<Utf8String>() {
+                }));
+        return executeRemoteCallSingleValueReturn(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> transferFrom(String from, String to, BigInteger tokenId) {
@@ -403,10 +403,10 @@ public class WaltidSoulBound extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteFunctionCall<TransactionReceipt> unequip(BigInteger tokenId) {
+    public RemoteFunctionCall<TransactionReceipt> unequip(Uint256 tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_UNEQUIP, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(tokenId)), 
+                Arrays.<Type>asList(tokenId),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
