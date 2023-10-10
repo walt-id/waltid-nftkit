@@ -117,6 +117,49 @@ object NftController {
         it.description("")
     }.json<MintingResponse>("200") { it.description("Transaction ID and token ID") }
 
+    fun revoke(ctx: Context) {
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val tokenId = ctx.pathParam("tokenId")
+        val signedAccount = ctx.queryParam("signedAccount")
+        val result =
+            NftService.revokeToken(Common.getEVMChain(chain.uppercase()), contractAddress, BigInteger.valueOf(tokenId.toLong()), signedAccount)
+        ctx.json(
+            result
+        )
+    }
+
+    fun revokeDocs() = document().operation {
+        it.summary("NFT revoking")
+            .operationId("revokeNft").addTagsItem(TAG1)
+    }.pathParam<String>("chain") {
+        it.schema<EVMChain> { }
+    }.pathParam<String>("contractAddress") {
+    }.pathParam<String>("tokenId") {
+    }.queryParam<String>("signedAccount") {
+    }.json<TransactionResponse>("200") { it.description("Transaction ID") }
+
+    fun unequip(ctx: Context){
+        val chain = ctx.pathParam("chain")
+        val contractAddress = ctx.pathParam("contractAddress")
+        val tokenId = ctx.pathParam("tokenId")
+        val signedAccount = ctx.queryParam("signedAccount")
+        val result =
+            NftService.unequipToken(Common.getEVMChain(chain.uppercase()), contractAddress, BigInteger.valueOf(tokenId.toLong()), signedAccount)
+        ctx.json(
+            result
+        )
+    }
+
+    fun unequipDocs() = document().operation {
+        it.summary("NFT unequipping")
+            .operationId("unequipNft").addTagsItem(TAG1)
+    }.pathParam<String>("chain") {
+        it.schema<EVMChain> { }
+    }.pathParam<String>("contractAddress") {
+    }.pathParam<String>("tokenId") {
+    }.queryParam<String>("signedAccount") {
+    }.json<TransactionResponse>("200") { it.description("Transaction ID") }
 
     fun getNftMetadatUri(ctx: Context) {
         val chain = ctx.pathParam("chain")

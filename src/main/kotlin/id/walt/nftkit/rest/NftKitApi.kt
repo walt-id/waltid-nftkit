@@ -167,6 +167,14 @@ object NftKitApi {
                             documented(NftController.getAccountNFTsDocs(), NftController::getAccountNFTs)
                         )
                         post(
+                            "chain/{chain}/contract/{contractAddress}/token/{tokenId}/revokeToken",
+                            documented(NftController.revokeDocs(), NftController::revoke)
+                        )
+                        post(
+                            "chain/{chain}/contract/{contractAddress}/token/{tokenId}/unequipToken",
+                            documented(NftController.unequipDocs(), NftController::unequip)
+                        )
+                        post(
                             "chain/{chain}/contract/{contractAddress}/token/{tokenId}/metadata",
                             documented(NftController.updateMetadataDocs(), NftController::updateMetadata)
                         )

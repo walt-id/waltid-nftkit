@@ -14,7 +14,7 @@ import org.web3j.tx.RawTransactionManager
 import org.web3j.tx.TransactionManager
 import org.web3j.tx.gas.ContractGasProvider
 import org.web3j.utils.Numeric
-import smart_contract_wrapper.SoulBoundTest
+import smart_contract_wrapper.WaltidSoulBound
 import java.math.BigInteger
 
 object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
@@ -24,7 +24,7 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
 
 
 
-    private fun loadContract(chain: EVMChain, address: String, signedAccount: String? ="") : SoulBoundTest {
+    private fun loadContract(chain: EVMChain, address: String, signedAccount: String? ="") : WaltidSoulBound {
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
 
         val privateKey: String = if(signedAccount == null || "" == (signedAccount)){
@@ -50,7 +50,7 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
         val transactionManager: TransactionManager = RawTransactionManager(
             web3j, credentials, chainId
         )
-        return  SoulBoundTest.load(address, web3j,transactionManager,gasProvider)
+        return  WaltidSoulBound.load(address, web3j,transactionManager,gasProvider)
 
     }
 
@@ -107,11 +107,11 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
         val gasProvider: ContractGasProvider = WaltIdGasProvider
-        val remotCall: RemoteCall<SoulBoundTest>
+        val remotCall: RemoteCall<WaltidSoulBound>
         val transactionManager: TransactionManager = RawTransactionManager(
             web3j, credentials, chainId
         )
-        remotCall = SoulBoundTest.deploy(web3j, transactionManager, gasProvider)
+        remotCall = WaltidSoulBound.deploy(web3j, transactionManager, gasProvider)
 
         val contract = remotCall.send()
 
@@ -129,5 +129,24 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
         val data = Numeric.hexStringToByteArray("0x5b5e139f") // ERC721 interface id
         val interfaceId = Bytes4(data)
         return erc721URIStorageWrapper.supportsInterface(interfaceId).send().value
+    }
+
+
+    override fun revoke(
+        chain: EVMChain,
+        contractAddress: String,
+        tokenId: Uint256,
+        signedAccount: String?
+    ): TransactionReceipt {
+        return loadContract(chain, contractAddress, signedAccount).revoke(tokenId).send()
+    }
+
+    override fun unequip(
+        chain: EVMChain,
+        contractAddress: String,
+        tokenId: Uint256,
+        signedAccount: String?
+    ): TransactionReceipt {
+        return loadContract(chain, contractAddress, signedAccount).unequip(tokenId).send()
     }
 }
