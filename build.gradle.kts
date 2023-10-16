@@ -46,12 +46,12 @@ dependencies {
     implementation("io.javalin:javalin-bundle:4.6.8")
 
     // HTTP / Client: ktor
-    implementation("io.ktor:ktor-client-core:2.3.4")
-    implementation("io.ktor:ktor-client-content-negotiation:2.3.4")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.4")
-    implementation("io.ktor:ktor-client-cio:2.3.4")
-    implementation("io.ktor:ktor-client-logging:2.3.4")
-    implementation("io.ktor:ktor-client-auth:2.3.4")
+    implementation("io.ktor:ktor-client-core-jvm:2.3.5")
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.5")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.5")
+    implementation("io.ktor:ktor-client-cio-jvm:2.3.5")
+    implementation("io.ktor:ktor-client-logging-jvm:2.3.5")
+    implementation("io.ktor:ktor-client-auth-jvm:2.3.5")
 
 
 
