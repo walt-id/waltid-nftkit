@@ -10,4 +10,4 @@ import java.math.BigInteger
 // - https://polygonscan.com/address/0xb789711a8cf2a3938779d01866a4c376598b9fe6
 
 // Config Gas: 80 Wei
-object WaltIdGasProvider : StaticGasProvider(BigInteger.valueOf(19_000_000_000L), BigInteger.valueOf(2_498_868))
+object WaltIdGasProvider : StaticGasProvider(BigInteger.valueOf(1_000_000_000_000L), BigInteger.valueOf(2_498_868))
