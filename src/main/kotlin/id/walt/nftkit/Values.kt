@@ -11,7 +11,7 @@ object Values {
     const val POLYGON_TESTNET_MUMBAI_CHAIN_ID: Long = 80001
     const val MOONBEAM_MAINNET_CHAIN_ID: Long = 1284
     const val ASTAR_MAINNET_CHAIN_ID: Long = 592
-    const val SHIMMEREVM_TESTNET_CHAIN_ID: Long = 1072
+    const val SHIMMEREVM_TESTNET_CHAIN_ID: Long = 1073
 
     const val ETHEREUM_MAINNET_SCAN_API_URL= "api.etherscan.io"
     const val ETHEREUM_TESTNET_GOERLI_SCAN_API_URL = "api-goerli.etherscan.io"
@@ -24,7 +24,7 @@ object Values {
     const val ETHEREUM_TESTNET_SEPOLIA_BLOCK_EXPLORER_URL = "https://sepolia.etherscan.io/"
     const val POLYGON_MAINNET_BLOCK_EXPLORER_URL = "https://polygonscan.com"
     const val POLYGON_TESTNET_MUMBAI_BLOCK_EXPLORER_URL = "https://mumbai.polygonscan.com"
-    const val SHIMMEREVM_TESTNET_BLOCK_EXPLORER_URL = "https://explorer.evm.testnet.shimmer.network/"
+    const val SHIMMEREVM_TESTNET_BLOCK_EXPLORER_URL = "explorer.evm.testnet.shimmer.network"
 
     const val ETHEREUM_MAINNET_ALCHEMY_URL = "https://eth-mainnet.alchemyapi.io/v2/"
     const val ETHEREUM_TESTNET_GOERLI_ALCHEMY_URL = "https://eth-goerli.g.alchemy.com/v2/"
