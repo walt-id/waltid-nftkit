@@ -61,6 +61,7 @@ data class ApproveRequest(
 object NftController {
     val TAG1 ="EVM based Blockchain"
     val TAG2 ="General"
+    val TAG3 ="ShimmerEVM"
     fun deploy(ctx: Context) {
         val deployReq = ctx.bodyAsClass(DeployRequest::class.java)
         val chain = ctx.pathParam("chain")
@@ -464,5 +465,17 @@ object NftController {
     }.pathParam<String>("tokenId") {
     }.json<String>("200") {  }
 
+
+    fun getShimmerNFTinstances(ctx: Context) {
+        val contractAddress = ctx.pathParam("contractAddress")
+        val result= NftService.getShimmerNFTinstances(contractAddress)
+        ctx.json(result)
+    }
+
+    fun getShimmerNFTinstancesDocs() = document().operation {
+        it.summary("Get Shimmer NFT instances")
+            .operationId("Get Shimmer NFT instances").addTagsItem(TAG3)
+    }.pathParam<String>("contractAddress") {
+    }.json<List<shimmerNFT>>("200") {  }
 
 }
