@@ -210,6 +210,12 @@ object NftKitApi {
                             "chain/{chain}/contract/{contractAddress}/token/{tokenId}/getapproved",
                             documented(NftController.getApprovedDocs(), NftController::getApproved)
                         )
+                        path("ShimmerEVM"){
+                            post(
+                                "contract/{contractAddress}/token/instances",
+                                documented(NftController.getShimmerNFTinstancesDocs(), NftController::getShimmerNFTinstances)
+                            )
+                        }
                         path("tezos"){
                             post(
                                 "chain/{chain}/contract/deploy",

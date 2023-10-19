@@ -200,6 +200,60 @@ data class Token(
     val timeStamp: Long
 )
 
+@Serializable
+data class Trait_shimmer(
+    val trait_type: String,
+    val value: String
+)
+@Serializable
+
+data class Metadata(
+    val attributes: List<Trait_shimmer>?=null,
+    val description: String?=null,
+    val name: String?=null,
+)
+@Serializable
+data class Owner(
+    val hash: String,
+    val implementation_name: String?,
+    val is_contract: Boolean,
+    val is_verified: Boolean?,
+    val name: String?,
+    val private_tags: List<String>?,
+    val public_tags: List<String>?,
+    val watchlist_names: List<String>?
+)
+@Serializable
+
+data class Token_info(
+    val address: String,
+    val circulating_market_cap: String?,
+    val decimals: Int?,
+    val exchange_rate: String?,
+    val holders: String,
+    val icon_url: String?,
+    val name: String,
+    val symbol: String,
+    val total_supply: String?,
+    val type: String
+)
+@Serializable
+data class Item(
+    val animation_url: String?,
+    val external_app_url: String?,
+    val id: String,
+    val image_url: String?,
+    val is_unique: Boolean,
+    val metadata: Metadata,
+    val owner: Owner,
+    val token: Token_info
+)
+@Serializable
+
+data class shimmerNFT(
+    val items: List<Item>,
+    val next_page_params: String?,
+)
 
 /*@Serializable
 data class NFTsAlchemyResult(
@@ -454,6 +508,24 @@ object NftService {
             return@runBlocking result
         }
     }
+
+
+    fun getShimmerNFTinstances(smartContractAddress: String) : shimmerNFT{
+
+        return runBlocking {
+            val url = "https://explorer.evm.testnet.shimmer.network/api/v2/tokens/${smartContractAddress}/instances"
+            val nfts = client.get(url)
+            {
+                contentType(ContentType.Application.Json)
+            }.body<shimmerNFT>()
+
+            println("nfts: $nfts")
+            return@runBlocking nfts
+        }
+
+    }
+
+
 
     fun getAccountNFTsByAlchemy(chain: Chain, account: String): List<NFTsAlchemyResult.NftTokenByAlchemy> {
         return runBlocking {
