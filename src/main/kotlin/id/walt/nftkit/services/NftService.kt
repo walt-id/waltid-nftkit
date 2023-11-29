@@ -208,7 +208,7 @@ data class Trait_shimmer(
 @Serializable
 
 data class Metadata(
-    val attributes: List<Trait_shimmer>?=null,
+    val attributes: JsonArray?=null,
     val description: String?=null,
     val name: String?=null,
 )
