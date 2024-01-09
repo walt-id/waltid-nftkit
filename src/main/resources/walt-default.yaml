@@ -13,10 +13,10 @@ azureKeyVaultConfig:
 
 providers:
     ethereum: "ethereum"
-    goerli: "https://eth-goerli.g.alchemy.com/v2/UZxlqC4BxlRf9JAvWXPbsrq3Gcs254MP"
-    sepolia: "https://eth-sepolia.g.alchemy.com/v2/fIMNHk84uPoPL1OVmI1qGeLTQ6eJAFNy"
-    polygon: "https://polygon-mainnet.g.alchemy.com/v2/JuHdLsZxB3VxxlaCi8bX5_jg8yM86gOz"
-    mumbai: "https://polygon-mumbai.g.alchemy.com/v2/C0cILVib97lQAQ_y32UsM-0Rb3n8Tozj"
+    goerli: "https://eth-goerli.g.alchemy.com/v2/nC_mn2_pURV1zQvQAM5xFFMKVxLbvHbk"
+    sepolia: "https://eth-sepolia.g.alchemy.com/v2/LSlLS4At2l4RfC9x_Z_913wtdlZ2wEJK"
+    polygon: "https://polygon-mainnet.g.alchemy.com/v2/J-GrcOix50BCbOVuVybCFEmKAeKQNBtr"
+    mumbai: "https://polygon-mumbai.g.alchemy.com/v2/zyd0WGIMKdIdBGhDYX9bGwD7iVshxdCi"
     astar: "https://evm.astar.network"
     moonbeam: "https://rpc.api.moonbeam.network"
     unique: "https://rpc.unique.network"
@@ -59,8 +59,8 @@ polkadotAccounts:
 apiKeys:
   ethereumBlockExplorer: "xEakmyYnTV2XB7xluT3Ot6PYhf4M3OuE"
   polygonBlockExplorer: "C0cILVib97lQAQ_y32UsM-0Rb3n8Tozj"
-  alchemy: "C0cILVib97lQAQ_y32UsM-0Rb3n8Tozj"
-  nftstorage: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEIwNGU5YzMyNzczNjI1MEQ0QTkzQjZmYThjODUwNzQwQkI0N0YyMmYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY5NTgxNzQ0NjA0MCwibmFtZSI6IndhbHRpZCJ9.SAYrmTqCferCVTb5a9XcCmVrJlfRtzf0nIqPysWUwGQ"
+  alchemy: "zyd0WGIMKdIdBGhDYX9bGwD7iVshxdCi"
+  nftstorage: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEIwNGU5YzMyNzczNjI1MEQ0QTkzQjZmYThjODUwNzQwQkI0N0YyMmYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTcwNDgzMTk2NjUxNiwibmFtZSI6IndhbHRfaWRfbmV3In0.US2XREzruFyovZKHTzRn_TXOJg9mxo1YVUL5JvdHuZ4"
   subscan: ""
   shimmerBlockExplorer: "52bb3024-d769-44e7-afa8-8845ee4a4419"
 
