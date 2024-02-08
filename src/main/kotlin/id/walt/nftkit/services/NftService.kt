@@ -210,12 +210,14 @@ data class Trait_shimmer(
 @Serializable
 
 data class Metadata(
-    val attributes: JsonArray?=null,
+    val attributes: JsonElement?=null,
     val description: String?=null,
     val name: String?=null,
+    val image: String?=null,
 )
 @Serializable
 data class Owner(
+    val ens_domain_name: String?,
     val hash: String,
     val implementation_name: String?,
     val is_contract: Boolean,
@@ -246,7 +248,7 @@ data class Item(
     val id: String,
     val image_url: String?,
     val is_unique: Boolean,
-    val metadata: Metadata,
+    val metadata: Metadata?,
     val owner: Owner,
     val token: Token_info
 )
@@ -512,7 +514,7 @@ object NftService {
     }
 
 
-    fun getShimmerNFTinstances(smartContractAddress: String) : shimmerNFT{
+    fun getShimmerNFTinstances(smartContractAddress: String) : shimmerNFT {
 
         return runBlocking {
             val url = "https://explorer.evm.testnet.shimmer.network/api/v2/tokens/${smartContractAddress}/instances"
