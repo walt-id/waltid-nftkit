@@ -59,15 +59,16 @@ class Erc721Standard : StringSpec({
 
 
     "Verifying IPFS metadata using NFTs storage".config(){
-        val tokenid = BigInteger.valueOf(10)
-        var uri = NftService.getNftMetadataUri(EVMChain.MUMBAI,"0xf277BE034881eE38A9b270E5b6C5c6f333Af2517" ,tokenid)
+        val tokenid = BigInteger.valueOf(3)
+        var uri = NftService.getNftMetadataUri(EVMChain.MUMBAI,"0x7Bf34C715e9A7ADEc6c4fa1CFEE4120E2808fD8c" ,tokenid)
         val result = NftService.getIPFSMetadataUsingNFTStorage(uri)
-        result.description shouldBe "string"
-        result.name shouldBe "string"
-        result.image shouldBe "string"
-        result.external_url shouldBe "string"
-        result.attributes?.get(0)!!.trait_type shouldBe "string"
-        (result.attributes?.get(0)!!.value?.content ?:  "") shouldBe "15/7/2022 10:30:07"
+        result.description shouldBe "Walt Membership"
+        result.name shouldBe "Walt Membership"
+        result.image shouldBe "ipfs://bafkreicl5qtcwcckkblm2qdut4bwyu3dksq36wipfrzui5tnbdydzpuhcq"
+        result.external_url shouldBe ""
+        result.attributes?.get(0)!!.trait_type shouldBe "ceramic_hackathon_attendee"
+
+
     }
 
 

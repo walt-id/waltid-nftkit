@@ -294,6 +294,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
             EVMChain.ASTAR -> Values.ASTAR_MAINNET_CHAIN_ID
             EVMChain.MOONBEAM -> Values.MOONBEAM_MAINNET_CHAIN_ID
             EVMChain.SHIMMEREVM -> Values.SHIMMEREVM_TESTNET_CHAIN_ID
+            EVMChain.SHIMMEREVM_APPCHAIN -> Values.SHIMMEREVM_APPCHAIN_CHAIN_ID
         }
         val transactionManager: TransactionManager = RawTransactionManager(
             web3j, credentials, chainId

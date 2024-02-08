@@ -21,14 +21,14 @@ providers:
     moonbeam: "https://rpc.api.moonbeam.network"
     unique: "https://rpc.unique.network"
     opal: "https://rpc-opal.unique.network"
-    shimmerevm: "https://json-rpc.evm.testnet.shimmer.network"
-
+    shimmerevmAppChain: "https://fpgaonkrwz.dune.spyce5.com/wasp/api/v1/chains/rms1pzhlaz2aalpsktkqacayyl2xr6s3rsa5h69lmc7mleq4wnaryejkgnprd6k/evm"
+    shimmerevm : "https://json-rpc.evm.testnet.shimmer.network"
 
 #privateKey: "bd4cb3e507f342ee3a710370cef39dda48f17b0a158b0b8dd3f000fbd5b2c2d9"
-privateKey: "9224cd6478dc789815e4baaf3771709c69e55432ac8eb38dec4826a48840ddca"
+privateKeyAppchain: "57901fd46ccf70f3f21e3f16815c9b18add89e0d7f2fcb3c847882ad8126408d"
 #privateKey: "a1fcab9b58015f452c9a89d4cde4807a80111ab27142730bfb96be936e576be1"
 #privateKey: "bd4cb3e507f342ee3a710370cef39dda48f17b0a158b0b8dd3f000fbd5b2c2d9"
-
+privateKey: "9224cd6478dc789815e4baaf3771709c69e55432ac8eb38dec4826a48840ddca"
 keys:
   0xaf87c5Ce7a1fb6BD5aaDB6dd9C0b8EF51EF1BC31: "bd4cb3e507f342ee3a710370cef39dda48f17b0a158b0b8dd3f000fbd5b2c2d9"
   0x8448Ff4b2733b52f62d81ca46d64bD16786299Cd: "d720ef2cb49c6cbe94175ed413d27e635c5acaa1b7cf03d1faad3a0abc2f53f3"
