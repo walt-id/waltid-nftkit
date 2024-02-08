@@ -94,7 +94,8 @@ enum class Chain {
     ALGORAND_MAINNET,
     ALGORAND_TESTNET,
     ALGORAND_BETANET,
-    SHIMMEREVM
+    SHIMMEREVM,
+    SHIMMEREVM_APPCHAIN
 }
 
 enum class EVMChain {
@@ -106,6 +107,7 @@ enum class EVMChain {
     ASTAR,
     MOONBEAM,
     SHIMMEREVM,
+    SHIMMEREVM_APPCHAIN
 }
 
 enum class TokenStandard {

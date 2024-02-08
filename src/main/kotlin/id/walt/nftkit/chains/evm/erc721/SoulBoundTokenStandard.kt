@@ -27,11 +27,14 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
     private fun loadContract(chain: EVMChain, address: String, signedAccount: String? ="") : WaltidSoulBound {
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()
 
-        val privateKey: String = if(signedAccount == null || "" == (signedAccount)){
+        val privateKey: String = if((signedAccount == null || "" == (signedAccount)) && chain == EVMChain.SHIMMEREVM_APPCHAIN){
+            WaltIdServices.loadChainConfig().privateKeyAppchain
+        }else if(signedAccount == null || "" == (signedAccount) ) {
             WaltIdServices.loadChainConfig().privateKey
-        }else{
+        }
+        else{
             val lowercaseAddress= WaltIdServices.loadAccountKeysConfig().keys.mapKeys { it.key.lowercase() }
-            lowercaseAddress[signedAccount.lowercase()]!!
+            lowercaseAddress[signedAccount?.lowercase()]!!
         }
 
         val credentials: Credentials = Credentials.create(privateKey)
@@ -46,6 +49,7 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
             EVMChain.ASTAR -> Values.ASTAR_MAINNET_CHAIN_ID
             EVMChain.MOONBEAM -> Values.MOONBEAM_MAINNET_CHAIN_ID
             EVMChain.SHIMMEREVM -> Values.SHIMMEREVM_TESTNET_CHAIN_ID
+            EVMChain.SHIMMEREVM_APPCHAIN -> Values.SHIMMEREVM_APPCHAIN_CHAIN_ID
         }
         val transactionManager: TransactionManager = RawTransactionManager(
             web3j, credentials, chainId
@@ -102,6 +106,7 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
             EVMChain.ASTAR -> Values.ASTAR_MAINNET_CHAIN_ID
             EVMChain.MOONBEAM -> Values.MOONBEAM_MAINNET_CHAIN_ID
             EVMChain.SHIMMEREVM -> Values.SHIMMEREVM_TESTNET_CHAIN_ID
+            EVMChain.SHIMMEREVM_APPCHAIN -> Values.SHIMMEREVM_APPCHAIN_CHAIN_ID
         }
 
         val web3j = ProviderFactory.getProvider(chain)?.getWeb3j()

@@ -18,10 +18,11 @@ data class Providers(
     val moonbeam: String,
     val opal: String,
     val unique: String,
-    val shimmerevm: String
+    val shimmerevm: String,
+    val shimmerevmAppChain : String
 )
 
-data class ChainConfig(val providers: Providers, val privateKey: String)
+data class ChainConfig(val providers: Providers, val privateKey: String , val privateKeyAppchain: String)
 
 data class KeysConfig(val keys: Map<String, String>)
 
@@ -146,6 +147,7 @@ object WaltIdServices {
             EVMChain.POLYGON -> Values.POLYGON_MAINNET_BLOCK_EXPLORER_URL
             EVMChain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_BLOCK_EXPLORER_URL
             EVMChain.SHIMMEREVM -> Values.SHIMMEREVM_TESTNET_BLOCK_EXPLORER_URL
+            EVMChain.SHIMMEREVM_APPCHAIN -> Values.SHIMMEREVM_APPCHAIN_BLOCK_EXPLORER_URL
             else -> {
                 throw Exception("${chain.toString()} is not supported")
             }
