@@ -17,14 +17,14 @@ class Erc721Standard : StringSpec({
     "Smart contract deployment".config() {
         val deploymentOptions = DeploymentOptions(AccessControl.OWNABLE, TokenStandard.ERC721)
         val deploymentParameter = DeploymentParameter("Metaverse", "MTV", DeploymentParameter.Options(true, true))
-        val result = NftService.deploySmartContractToken(EVMChain.MUMBAI, deploymentParameter, deploymentOptions)
+        val result = NftService.deploySmartContractToken(EVMChain.AMOY, deploymentParameter, deploymentOptions)
         val privateKey= WaltIdServices.loadChainConfig().privateKey
         val credentials: Credentials = Credentials.create(privateKey)
         result.contractAddress shouldNotBe  ""
         result.contractAddress shouldNotBe null
-        val owner = AccessControlService.owner(EVMChain.MUMBAI, result.contractAddress)
+        val owner = AccessControlService.owner(EVMChain.AMOY, result.contractAddress)
         owner shouldBe credentials.address
-        val checkInfo = NftService.getTokenCollectionInfo(EVMChain.MUMBAI, result.contractAddress )
+        val checkInfo = NftService.getTokenCollectionInfo(EVMChain.AMOY, result.contractAddress )
         checkInfo.name shouldBe "Metaverse"
         checkInfo.symbol shouldBe "MTV"
     }
@@ -33,8 +33,8 @@ class Erc721Standard : StringSpec({
         val nftMetaData = NftMetadata("Ticket 2 description", "Ticket 2", "string", "string","string")
         val mintingParametre = MintingParameter(metadataUri = "", recipientAddress="0xaf87c5ce7a1fb6bd5aadb6dd9c0b8ef51ef1bc31", metadata = nftMetaData )
         val mintingOption = MintingOptions(MetadataStorageType.ON_CHAIN)
-        val result = NftService.mintToken(EVMChain.MUMBAI, contractAddress = "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517",mintingParametre, mintingOption , false)
-        val newNFT = NftService.getNftMetadata(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", result.tokenId!!)
+        val result = NftService.mintToken(EVMChain.AMOY, contractAddress = "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517",mintingParametre, mintingOption , false)
+        val newNFT = NftService.getNftMetadata(EVMChain.AMOY, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", result.tokenId!!)
         result.tokenId shouldNotBe null
         newNFT shouldBe nftMetaData
     }
@@ -42,14 +42,14 @@ class Erc721Standard : StringSpec({
     "Setting metadata".config(){
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
         val currentDate = sdf.format(Date())
-        val result = NftService.updateMetadata(chain=EVMChain.MUMBAI,
+        val result = NftService.updateMetadata(chain=EVMChain.AMOY,
             contractAddress = "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517",
             tokenId="5",
             key= "t1",
             value= currentDate,
             signedAccount = null
             )
-        val check = NftService.getNftMetadata(chain=EVMChain.MUMBAI, contractAddress = "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", tokenId=BigInteger.valueOf(5))
+        val check = NftService.getNftMetadata(chain=EVMChain.AMOY, contractAddress = "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517", tokenId=BigInteger.valueOf(5))
         check.attributes!![0].value shouldBe currentDate
         result.transactionId shouldNotBe null
     }

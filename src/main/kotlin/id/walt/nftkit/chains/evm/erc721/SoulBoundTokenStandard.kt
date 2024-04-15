@@ -45,7 +45,7 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
             EVMChain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_CHAIN_ID
             EVMChain.SEPOLIA -> Values.ETHEREUM_TESTNET_SEPOLIA_CHAIN_ID
             EVMChain.POLYGON -> Values.POLYGON_MAINNET_CHAIN_ID
-            EVMChain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
+            EVMChain.AMOY -> Values.POLYGON_TESTNET_AMOY_CHAIN_ID
             EVMChain.ASTAR -> Values.ASTAR_MAINNET_CHAIN_ID
             EVMChain.MOONBEAM -> Values.MOONBEAM_MAINNET_CHAIN_ID
             EVMChain.SHIMMEREVM -> Values.SHIMMEREVM_TESTNET_CHAIN_ID
@@ -102,7 +102,7 @@ object SoulBoundTokenStandard :  ISoulBoundTokenStandard  {
             EVMChain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_CHAIN_ID
             EVMChain.SEPOLIA -> Values.ETHEREUM_TESTNET_SEPOLIA_CHAIN_ID
             EVMChain.POLYGON -> Values.POLYGON_MAINNET_CHAIN_ID
-            EVMChain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
+            EVMChain.AMOY -> Values.POLYGON_TESTNET_AMOY_CHAIN_ID
             EVMChain.ASTAR -> Values.ASTAR_MAINNET_CHAIN_ID
             EVMChain.MOONBEAM -> Values.MOONBEAM_MAINNET_CHAIN_ID
             EVMChain.SHIMMEREVM -> Values.SHIMMEREVM_TESTNET_CHAIN_ID

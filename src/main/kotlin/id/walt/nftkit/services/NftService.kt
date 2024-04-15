@@ -81,7 +81,7 @@ enum class Chain {
     POLYGON,
     GOERLI,
     SEPOLIA,
-    MUMBAI,
+    AMOY,
     TEZOS,
     GHOSTNET,
     MAINNET,
@@ -103,7 +103,7 @@ enum class EVMChain {
     POLYGON,
     GOERLI,
     SEPOLIA,
-    MUMBAI,
+    AMOY,
     ASTAR,
     MOONBEAM,
     SHIMMEREVM,
@@ -538,7 +538,7 @@ object NftService {
                 Chain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_ALCHEMY_URL
                 Chain.SEPOLIA -> Values.ETHEREUM_TESTNET_SEPOLIA_ALCHEMY_URL
                 Chain.POLYGON -> Values.POLYGON_MAINNET_ALCHEMY_URL
-                Chain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_ALCHEMY_URL
+                Chain.AMOY -> Values.POLYGON_TESTNET_AMOY_ALCHEMY_URL
                 Chain.SHIMMEREVM -> Values.SHIMMEREVM_TESTNET_BLOCK_EXPLORER_URL
                 Chain.TEZOS -> throw Exception("Tezos is not supported")
                 Chain.GHOSTNET -> throw Exception("Ghostnet is not supported")

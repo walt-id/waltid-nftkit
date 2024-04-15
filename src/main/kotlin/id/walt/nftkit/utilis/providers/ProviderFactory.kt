@@ -9,7 +9,7 @@ object ProviderFactory {
         EVMChain.GOERLI -> GoerliWeb3()
         EVMChain.SEPOLIA -> SepoliaWeb3()
         EVMChain.POLYGON -> PolygonWeb3()
-        EVMChain.MUMBAI -> MumbaiWeb3()
+        EVMChain.AMOY -> AmoyWeb3()
         EVMChain.ASTAR -> AstarWeb3()
         EVMChain.MOONBEAM -> MoonbeamWeb3()
         EVMChain.SHIMMEREVM -> IotaWeb3()
