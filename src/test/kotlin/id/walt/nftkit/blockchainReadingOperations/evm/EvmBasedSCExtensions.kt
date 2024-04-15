@@ -15,7 +15,7 @@ class EvmBasedSCExtensions : StringSpec({
 
 
     "Verifying Smart contract state ".config() {
-        val result= ExtensionsService.paused(EVMChain.MUMBAI, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
+        val result= ExtensionsService.paused(EVMChain.AMOY, "0xf277BE034881eE38A9b270E5b6C5c6f333Af2517")
         result shouldBe false
     }
 

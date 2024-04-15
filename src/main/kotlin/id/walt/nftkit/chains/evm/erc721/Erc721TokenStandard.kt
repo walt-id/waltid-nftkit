@@ -30,12 +30,12 @@ object Erc721TokenStandard : IErc721TokenStandard {
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
         val gasProvider: ContractGasProvider = WaltIdGasProvider
         val remotCall : RemoteCall<ERC721URIStorage>
-        if(chain == Chain.POLYGON || chain == Chain.MUMBAI){
+        if(chain == Chain.POLYGON || chain == Chain.AMOY){
             val chainId : Long
             if(chain == Chain.POLYGON){
                 chainId = Values.POLYGON_MAINNET_CHAIN_ID
             }else{
-                chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
+                chainId = Values.POLYGON_TESTNET_AMOY_CHAIN_ID
             }
             val transactionManager: TransactionManager = RawTransactionManager(
                 web3j, credentials, chainId
@@ -182,12 +182,12 @@ object Erc721TokenStandard : IErc721TokenStandard {
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
         val gasProvider: ContractGasProvider = WaltIdGasProvider
         val remotCall: RemoteCall<CustomOwnableERC721>
-        if (chain == EVMChain.POLYGON || chain == EVMChain.MUMBAI) {
+        if (chain == EVMChain.POLYGON || chain == EVMChain.AMOY) {
             val chainId: Long
             if (chain == EVMChain.POLYGON) {
                 chainId = Values.POLYGON_MAINNET_CHAIN_ID
             } else {
-                chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
+                chainId = Values.POLYGON_TESTNET_AMOY_CHAIN_ID
             }
             val transactionManager: TransactionManager = RawTransactionManager(
                 web3j, credentials, chainId
@@ -228,12 +228,12 @@ object Erc721TokenStandard : IErc721TokenStandard {
         val credentials: Credentials = Credentials.create(WaltIdServices.loadChainConfig().privateKey)
         val gasProvider: ContractGasProvider = WaltIdGasProvider
         val remotCall: RemoteCall<CustomAccessControlERC721>
-        if (chain == EVMChain.POLYGON || chain == EVMChain.MUMBAI) {
+        if (chain == EVMChain.POLYGON || chain == EVMChain.AMOY) {
             val chainId: Long
             if (chain == EVMChain.POLYGON) {
                 chainId = Values.POLYGON_MAINNET_CHAIN_ID
             } else {
-                chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
+                chainId = Values.POLYGON_TESTNET_AMOY_CHAIN_ID
             }
             val transactionManager: TransactionManager = RawTransactionManager(
                 web3j, credentials, chainId
@@ -290,7 +290,7 @@ object Erc721TokenStandard : IErc721TokenStandard {
             EVMChain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_CHAIN_ID
             EVMChain.SEPOLIA -> Values.ETHEREUM_TESTNET_SEPOLIA_CHAIN_ID
             EVMChain.POLYGON -> Values.POLYGON_MAINNET_CHAIN_ID
-            EVMChain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
+            EVMChain.AMOY -> Values.POLYGON_TESTNET_AMOY_CHAIN_ID
             EVMChain.ASTAR -> Values.ASTAR_MAINNET_CHAIN_ID
             EVMChain.MOONBEAM -> Values.MOONBEAM_MAINNET_CHAIN_ID
             EVMChain.SHIMMEREVM -> Values.SHIMMEREVM_TESTNET_CHAIN_ID
@@ -300,12 +300,12 @@ object Erc721TokenStandard : IErc721TokenStandard {
             web3j, credentials, chainId
         )
         return  CustomOwnableERC721.load(address, web3j,transactionManager,gasProvider)
-        /*if (chain == EVMChain.POLYGON || chain == EVMChain.MUMBAI) {
+        /*if (chain == EVMChain.POLYGON || chain == EVMChain.AMOY) {
             val chainId: Long
             if (chain == EVMChain.POLYGON) {
                 chainId = Values.POLYGON_MAINNET_CHAIN_ID
             } else {
-                chainId = Values.POLYGON_TESTNET_MUMBAI_CHAIN_ID
+                chainId = Values.POLYGON_TESTNET_AMOY_CHAIN_ID
             }
             val transactionManager: TransactionManager = RawTransactionManager(
                 web3j, credentials, chainId

@@ -16,7 +16,7 @@ providers:
     goerli: "https://eth-goerli.g.alchemy.com/v2/x4Ovq8l3SL30X4B3Uz7Q9aYhxVfxhIFg"
     sepolia: "https://eth-sepolia.g.alchemy.com/v2/FFX-XLBauFYuxdKDF5QUHCt7AlSGAs5q"
     polygon: "https://polygon-mainnet.g.alchemy.com/v2/SUV8QnbFOKnb5eMk5amGinUMCamjLT4l"
-    mumbai: "https://polygon-mumbai.g.alchemy.com/v2/JzLeph1oVQq2hQByKZYMyVLCjMaZ2J-K"
+    amoy: "https://polygon-amoy.g.alchemy.com/v2/JzLeph1oVQq2hQByKZYMyVLCjMaZ2J-K"
     astar: "https://evm.astar.network"
     moonbeam: "https://rpc.api.moonbeam.network"
     unique: "https://rpc.unique.network"

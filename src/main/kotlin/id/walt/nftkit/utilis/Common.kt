@@ -96,7 +96,7 @@ object Common {
             EVMChain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_SCAN_API_URL
             EVMChain.SEPOLIA -> Values.ETHEREUM_TESTNET_SEPOLIA_SCAN_API_URL
             EVMChain.POLYGON -> Values.POLYGON_MAINNET_SCAN_API_URL
-            EVMChain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_SCAN_API_URL
+            EVMChain.AMOY -> Values.POLYGON_TESTNET_AMOY_SCAN_API_URL
             else -> {throw Exception("$chain is not supported")}
         }
     }
@@ -107,14 +107,14 @@ object Common {
             EVMChain.GOERLI -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
             EVMChain.SEPOLIA -> WaltIdServices.loadApiKeys().apiKeys.ethereumBlockExplorer
             EVMChain.POLYGON -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
-            EVMChain.MUMBAI -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
+            EVMChain.AMOY -> WaltIdServices.loadApiKeys().apiKeys.polygonBlockExplorer
             EVMChain.SHIMMEREVM -> WaltIdServices.loadApiKeys().apiKeys.shimmerBlockExplorer
             else -> {throw Exception("$chain is not supported")}
         }
     }
 
     fun isEVMChain(chain: Chain): Boolean{
-        val EVMChains= listOf(Chain.ETHEREUM, Chain.POLYGON, Chain.GOERLI, Chain.SEPOLIA, Chain.MUMBAI, Chain.SHIMMEREVM , Chain.SHIMMEREVM_APPCHAIN)
+        val EVMChains= listOf(Chain.ETHEREUM, Chain.POLYGON, Chain.GOERLI, Chain.SEPOLIA, Chain.AMOY, Chain.SHIMMEREVM , Chain.SHIMMEREVM_APPCHAIN)
         return chain in EVMChains
     }
 

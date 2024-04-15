@@ -94,6 +94,7 @@ tasks.withType<Test> {
     // > gradle build -PrunIntegrationTests
     if (!project.hasProperty("runIntegrationTests")) {
         exclude("id/walt/nftkit/blockchainTransactionsCalls/**")
+        exclude("id/walt/nftkit/blockchainReadingOperations/**")
     }
 }
 

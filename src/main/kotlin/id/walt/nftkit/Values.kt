@@ -8,7 +8,7 @@ object Values {
     const val ETHEREUM_TESTNET_GOERLI_CHAIN_ID: Long = 5
     const val ETHEREUM_TESTNET_SEPOLIA_CHAIN_ID: Long = 11155111
     const val POLYGON_MAINNET_CHAIN_ID: Long = 137
-    const val POLYGON_TESTNET_MUMBAI_CHAIN_ID: Long = 80001
+    const val POLYGON_TESTNET_AMOY_CHAIN_ID: Long = 80002
     const val MOONBEAM_MAINNET_CHAIN_ID: Long = 1284
     const val ASTAR_MAINNET_CHAIN_ID: Long = 592
     const val SHIMMEREVM_TESTNET_CHAIN_ID: Long = 1073
@@ -18,21 +18,21 @@ object Values {
     const val ETHEREUM_TESTNET_GOERLI_SCAN_API_URL = "api-goerli.etherscan.io"
     const val ETHEREUM_TESTNET_SEPOLIA_SCAN_API_URL = "api-sepolia.etherscan.io"
     const val POLYGON_MAINNET_SCAN_API_URL = "api.polygonscan.com"
-    const val POLYGON_TESTNET_MUMBAI_SCAN_API_URL = "api-testnet.polygonscan.com"
+    const val POLYGON_TESTNET_AMOY_SCAN_API_URL = "api-testnet.polygonscan.com"
     const val SHIMMEREVM_APPCHAIN_BLOCK_EXPLORER_URL = ""
 
     const val ETHEREUM_MAINNET_BLOCK_EXPLORER_URL = "https://etherscan.io"
     const val ETHEREUM_TESTNET_GOERLI_BLOCK_EXPLORER_URL = "https://goerli.etherscan.io/"
     const val ETHEREUM_TESTNET_SEPOLIA_BLOCK_EXPLORER_URL = "https://sepolia.etherscan.io/"
     const val POLYGON_MAINNET_BLOCK_EXPLORER_URL = "https://polygonscan.com"
-    const val POLYGON_TESTNET_MUMBAI_BLOCK_EXPLORER_URL = "https://mumbai.polygonscan.com"
+    const val POLYGON_TESTNET_AMOY_BLOCK_EXPLORER_URL = "https://www.oklink.com/amoy"
     const val SHIMMEREVM_TESTNET_BLOCK_EXPLORER_URL = "https://explorer.evm.testnet.shimmer.network/"
 
     const val ETHEREUM_MAINNET_ALCHEMY_URL = "https://eth-mainnet.alchemyapi.io/v2/"
     const val ETHEREUM_TESTNET_GOERLI_ALCHEMY_URL = "https://eth-goerli.g.alchemy.com/v2/"
     const val ETHEREUM_TESTNET_SEPOLIA_ALCHEMY_URL = "https://eth-sepolia.g.alchemy.com/v2/"
     const val POLYGON_MAINNET_ALCHEMY_URL = "https://polygon-mainnet.g.alchemy.com/v2/"
-    const val POLYGON_TESTNET_MUMBAI_ALCHEMY_URL = "https://polygon-mumbai.g.alchemy.com/v2/"
+    const val POLYGON_TESTNET_AMOY_ALCHEMY_URL = "https://polygon-amoy.g.alchemy.com/v2/"
 
     const val TEZOS_MAINNET_BETTER_CALL_DEV = "https://better-call.dev/mainnet"
     const val TEZOS_GHOSTNET_BETTER_CALL_DEV = "https://better-call.dev/ghostnet"

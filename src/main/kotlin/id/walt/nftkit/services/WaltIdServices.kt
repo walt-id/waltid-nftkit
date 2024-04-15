@@ -13,7 +13,7 @@ data class Providers(
     val goerli: String,
     val sepolia: String,
     val polygon: String,
-    val mumbai: String,
+    val amoy: String,
     val astar: String,
     val moonbeam: String,
     val opal: String,
@@ -145,7 +145,7 @@ object WaltIdServices {
             EVMChain.GOERLI -> Values.ETHEREUM_TESTNET_GOERLI_BLOCK_EXPLORER_URL
             EVMChain.SEPOLIA -> Values.ETHEREUM_TESTNET_SEPOLIA_BLOCK_EXPLORER_URL
             EVMChain.POLYGON -> Values.POLYGON_MAINNET_BLOCK_EXPLORER_URL
-            EVMChain.MUMBAI -> Values.POLYGON_TESTNET_MUMBAI_BLOCK_EXPLORER_URL
+            EVMChain.AMOY -> Values.POLYGON_TESTNET_AMOY_BLOCK_EXPLORER_URL
             EVMChain.SHIMMEREVM -> Values.SHIMMEREVM_TESTNET_BLOCK_EXPLORER_URL
             EVMChain.SHIMMEREVM_APPCHAIN -> Values.SHIMMEREVM_APPCHAIN_BLOCK_EXPLORER_URL
             else -> {
