@@ -114,7 +114,7 @@ object Common {
     }
 
     fun isEVMChain(chain: Chain): Boolean{
-        val EVMChains= listOf(Chain.ETHEREUM, Chain.POLYGON, Chain.GOERLI, Chain.SEPOLIA, Chain.AMOY, Chain.SHIMMEREVM , Chain.SHIMMEREVM_APPCHAIN)
+        val EVMChains= listOf(Chain.ETHEREUM, Chain.POLYGON, Chain.GOERLI, Chain.SEPOLIA, Chain.AMOY, Chain.SHIMMEREVM , Chain.IOTA_TESTNET)
         return chain in EVMChains
     }
 

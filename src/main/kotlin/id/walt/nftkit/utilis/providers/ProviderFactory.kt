@@ -13,7 +13,7 @@ object ProviderFactory {
         EVMChain.ASTAR -> AstarWeb3()
         EVMChain.MOONBEAM -> MoonbeamWeb3()
         EVMChain.SHIMMEREVM -> IotaWeb3()
-        EVMChain.SHIMMEREVM_APPCHAIN -> ShimmerAppChain()
+        EVMChain.IOTA_TESTNET -> IotaTestnet()
     }
 }
 

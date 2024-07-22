@@ -21,11 +21,12 @@ providers:
     moonbeam: "https://rpc.api.moonbeam.network"
     unique: "https://rpc.unique.network"
     opal: "https://rpc-opal.unique.network"
-    shimmerevmAppChain: "https://fpgaonkrwz.dune.spyce5.com/wasp/api/v1/chains/rms1pzhlaz2aalpsktkqacayyl2xr6s3rsa5h69lmc7mleq4wnaryejkgnprd6k/evm"
+    iotatestnet: "https://json-rpc.evm.testnet.iotaledger.net"
     shimmerevm : "https://json-rpc.evm.testnet.shimmer.network"
 
 #privateKey: "bd4cb3e507f342ee3a710370cef39dda48f17b0a158b0b8dd3f000fbd5b2c2d9"
-privateKeyAppchain: "57901fd46ccf70f3f21e3f16815c9b18add89e0d7f2fcb3c847882ad8126408d"
+privateKeyIotaTestnet: "3166cf13febd8b817cdd2a88dac1e76ddd3fc413f16c1c3dcb7b2c2eb0cd3b63"
+#"57901fd46ccf70f3f21e3f16815c9b18add89e0d7f2fcb3c847882ad8126408d"
 #privateKey: "a1fcab9b58015f452c9a89d4cde4807a80111ab27142730bfb96be936e576be1"
 #privateKey: "bd4cb3e507f342ee3a710370cef39dda48f17b0a158b0b8dd3f000fbd5b2c2d9"
 privateKey: "9224cd6478dc789815e4baaf3771709c69e55432ac8eb38dec4826a48840ddca"
@@ -63,6 +64,7 @@ apiKeys:
   nftstorage: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEIwNGU5YzMyNzczNjI1MEQ0QTkzQjZmYThjODUwNzQwQkI0N0YyMmYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTcxMzE4Nzg3MjQ3NywibmFtZSI6Im5ldyJ9.erLykT5fM3nFG1TkxYB9I2783wq9W6Iurn1FJch4OvI"
   subscan: ""
   shimmerBlockExplorer: "52bb3024-d769-44e7-afa8-8845ee4a4419"
+
 
 
 
