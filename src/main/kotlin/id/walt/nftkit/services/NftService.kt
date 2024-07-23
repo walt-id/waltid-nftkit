@@ -95,7 +95,7 @@ enum class Chain {
     ALGORAND_TESTNET,
     ALGORAND_BETANET,
     SHIMMEREVM,
-    SHIMMEREVM_APPCHAIN
+    IOTA_TESTNET
 }
 
 enum class EVMChain {
@@ -107,7 +107,8 @@ enum class EVMChain {
     ASTAR,
     MOONBEAM,
     SHIMMEREVM,
-    SHIMMEREVM_APPCHAIN
+  //  SHIMMEREVM_APPCHAIN,
+    IOTA_TESTNET
 }
 
 enum class TokenStandard {
@@ -517,7 +518,7 @@ object NftService {
     fun getShimmerNFTinstances(smartContractAddress: String) : shimmerNFT {
 
         return runBlocking {
-            val url = "https://explorer.evm.testnet.shimmer.network/api/v2/tokens/${smartContractAddress}/instances"
+            val url = "https://explorer.evm.testnet.iotaledger.net/api/v2/tokens/${smartContractAddress}/instances"
             val nfts = client.get(url)
             {
                 contentType(ContentType.Application.Json)

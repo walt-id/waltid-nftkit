@@ -12,14 +12,14 @@ object Values {
     const val MOONBEAM_MAINNET_CHAIN_ID: Long = 1284
     const val ASTAR_MAINNET_CHAIN_ID: Long = 592
     const val SHIMMEREVM_TESTNET_CHAIN_ID: Long = 1073
-    const val SHIMMEREVM_APPCHAIN_CHAIN_ID: Long = 1074
+    const val IOTA_TESTNET_CHAIN_ID: Long = 1075
 
     const val ETHEREUM_MAINNET_SCAN_API_URL= "api.etherscan.io"
     const val ETHEREUM_TESTNET_GOERLI_SCAN_API_URL = "api-goerli.etherscan.io"
     const val ETHEREUM_TESTNET_SEPOLIA_SCAN_API_URL = "api-sepolia.etherscan.io"
     const val POLYGON_MAINNET_SCAN_API_URL = "api.polygonscan.com"
     const val POLYGON_TESTNET_AMOY_SCAN_API_URL = "api-testnet.polygonscan.com"
-    const val SHIMMEREVM_APPCHAIN_BLOCK_EXPLORER_URL = ""
+    const val IOTA_TESTNET_BLOCK_EXPLORER_URL = "https://explorer.evm.testnet.iotaledger.net"
 
     const val ETHEREUM_MAINNET_BLOCK_EXPLORER_URL = "https://etherscan.io"
     const val ETHEREUM_TESTNET_GOERLI_BLOCK_EXPLORER_URL = "https://goerli.etherscan.io/"

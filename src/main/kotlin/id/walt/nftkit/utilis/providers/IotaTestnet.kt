@@ -4,8 +4,8 @@ import id.walt.nftkit.services.WaltIdServices
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 
-class ShimmerAppChain : Web3jInstance {
+class IotaTestnet : Web3jInstance {
     override fun getWeb3j(): Web3j {
-        return Web3j.build(HttpService(WaltIdServices.loadChainConfig().providers.shimmerevmAppChain))
+        return Web3j.build(HttpService(WaltIdServices.loadChainConfig().providers.iotatestnet))
     }
 }
