@@ -7,6 +7,7 @@
 > 
 ### 👉 Code **https://github.com/walt-id/waltid-identity** & Docs **https://docs.walt.id**
 
+
 <div align="center">
  <h1>NFT Kit</h1>
  <span>by </span><a href="https://walt.id">walt.id</a>
